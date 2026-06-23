@@ -4,9 +4,9 @@
  */
 
 const SITE = {
-  email: "simone.conca@example.com",
+  email: "simone.conca2006@gmail.com",
   links: [
-    { label: "GitHub", url: "https://github.com/TUO-USERNAME" },
+    { label: "GitHub", url: "https://github.com/simoneconca" },
     { label: "LinkedIn", url: "https://linkedin.com/in/TUO-PROFILO" }
   ]
 };
@@ -17,7 +17,7 @@ const PROJECTS = [
     description: "Breve descrizione di cosa fa e perché l'hai creato. Può essere un tool per studenti, un eserciziario o un lavoro personale.",
     tags: ["Didattica", "Web"],
     demo: "",
-    repo: "https://github.com/TUO-USERNAME/nome-repo"
+    repo: "https://github.com/simoneconca/nome-repo"
   },
   {
     title: "Progetto di diploma",
