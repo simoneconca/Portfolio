@@ -2,17 +2,17 @@ function renderProjects() {
   const grid = document.getElementById("projects-grid");
   if (!grid || typeof PROJECTS === "undefined") return;
 
-  grid.innerHTML = PROJECTS.map((project) => {
+  grid.innerHTML = PROJECTS.map((project, i) => {
     const tags = (project.tags || [])
       .map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`)
       .join("");
 
     const links = [];
     if (project.demo) {
-      links.push(`<a href="${escapeAttr(project.demo)}" target="_blank" rel="noopener noreferrer">Demo</a>`);
+      links.push(`<a href="${escapeAttr(project.demo)}" target="_blank" rel="noopener noreferrer">Demo →</a>`);
     }
     if (project.repo) {
-      links.push(`<a href="${escapeAttr(project.repo)}" target="_blank" rel="noopener noreferrer">Codice</a>`);
+      links.push(`<a href="${escapeAttr(project.repo)}" target="_blank" rel="noopener noreferrer">Codice →</a>`);
     }
 
     const titleHtml = project.demo || project.repo
@@ -20,7 +20,8 @@ function renderProjects() {
       : escapeHtml(project.title);
 
     return `
-      <article class="card${project.placeholder ? " card-placeholder" : ""}">
+      <article class="card reveal-card${project.placeholder ? " card-placeholder" : ""}" style="transition-delay: ${i * 0.1}s">
+        <div class="card-glow" aria-hidden="true"></div>
         <div class="card-meta">${tags}</div>
         <h3>${titleHtml}</h3>
         <p>${escapeHtml(project.description)}</p>
@@ -28,20 +29,22 @@ function renderProjects() {
       </article>
     `;
   }).join("");
+
+  observeReveal(".card.reveal-card");
 }
 
 function renderPublications() {
   const list = document.getElementById("publications-list");
   if (!list || typeof PUBLICATIONS === "undefined") return;
 
-  list.innerHTML = PUBLICATIONS.map((pub) => {
+  list.innerHTML = PUBLICATIONS.map((pub, i) => {
     const statusClass = pub.url ? "" : " soon";
     const action = pub.url
       ? `<a class="publication-link" href="${escapeAttr(pub.url)}" target="_blank" rel="noopener noreferrer">Su Amazon</a>`
       : `<span class="publication-status${statusClass}">${escapeHtml(pub.status || "In arrivo")}</span>`;
 
     return `
-      <article class="publication">
+      <article class="publication reveal-item" style="transition-delay: ${i * 0.12}s">
         <span class="publication-year">${escapeHtml(pub.year || "")}</span>
         <div class="publication-body">
           <h3>${escapeHtml(pub.title)}</h3>
@@ -51,6 +54,8 @@ function renderPublications() {
       </article>
     `;
   }).join("");
+
+  observeReveal(".publication.reveal-item");
 }
 
 function renderContacts() {
@@ -60,11 +65,12 @@ function renderContacts() {
   const items = [];
 
   if (SITE.email) {
-    items.push(`<a href="mailto:${escapeAttr(SITE.email)}">${escapeHtml(SITE.email)}</a>`);
+    items.push(`<a href="mailto:${escapeAttr(SITE.email)}">✉ ${escapeHtml(SITE.email)}</a>`);
   }
 
   (SITE.links || []).forEach((link) => {
-    items.push(`<a href="${escapeAttr(link.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(link.label)}</a>`);
+    const icon = link.label === "GitHub" ? "⌘" : link.label === "LinkedIn" ? "◆" : "→";
+    items.push(`<a href="${escapeAttr(link.url)}" target="_blank" rel="noopener noreferrer">${icon} ${escapeHtml(link.label)}</a>`);
   });
 
   container.innerHTML = items.join("");
@@ -86,22 +92,91 @@ function setupNavigation() {
   const toggle = document.querySelector(".nav-toggle");
   const nav = document.querySelector(".nav");
   const header = document.querySelector(".site-header");
+  const navLinks = nav?.querySelectorAll("a") ?? [];
 
   toggle?.addEventListener("click", () => {
     const expanded = toggle.getAttribute("aria-expanded") === "true";
     toggle.setAttribute("aria-expanded", String(!expanded));
     nav?.classList.toggle("open");
+    document.body.style.overflow = expanded ? "" : "hidden";
   });
 
-  nav?.querySelectorAll("a").forEach((link) => {
+  navLinks.forEach((link) => {
     link.addEventListener("click", () => {
       toggle?.setAttribute("aria-expanded", "false");
-      nav.classList.remove("open");
+      nav?.classList.remove("open");
+      document.body.style.overflow = "";
     });
   });
 
   window.addEventListener("scroll", () => {
-    header?.classList.toggle("scrolled", window.scrollY > 8);
+    header?.classList.toggle("scrolled", window.scrollY > 20);
+    updateActiveNav();
+  }, { passive: true });
+}
+
+function updateActiveNav() {
+  const sections = ["progetti", "pubblicazioni", "ripetizioni", "contatti"];
+  const scrollPos = window.scrollY + 120;
+
+  let current = "";
+  sections.forEach((id) => {
+    const el = document.getElementById(id);
+    if (el && el.offsetTop <= scrollPos) current = id;
+  });
+
+  document.querySelectorAll(".nav a").forEach((link) => {
+    link.classList.toggle("active", link.dataset.section === current);
+  });
+}
+
+function observeReveal(selector) {
+  const elements = document.querySelectorAll(selector);
+  if (!elements.length) return;
+
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    },
+    { threshold: 0.15, rootMargin: "0px 0px -40px 0px" }
+  );
+
+  elements.forEach((el) => observer.observe(el));
+}
+
+function setupReveal() {
+  observeReveal(".reveal");
+}
+
+function setupCursorGlow() {
+  const glow = document.querySelector(".cursor-glow");
+  if (!glow || window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+  if (window.matchMedia("(max-width: 768px)").matches) return;
+
+  let raf;
+  document.addEventListener("mousemove", (e) => {
+    cancelAnimationFrame(raf);
+    raf = requestAnimationFrame(() => {
+      glow.style.left = `${e.clientX}px`;
+      glow.style.top = `${e.clientY}px`;
+    });
+  }, { passive: true });
+}
+
+function setupParallaxOrbs() {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+  const orbs = document.querySelectorAll(".orb");
+  window.addEventListener("scroll", () => {
+    const y = window.scrollY;
+    orbs.forEach((orb, i) => {
+      orb.style.transform = `translateY(${y * (0.03 + i * 0.02)}px)`;
+    });
   }, { passive: true });
 }
 
@@ -110,3 +185,6 @@ renderProjects();
 renderPublications();
 renderContacts();
 setupNavigation();
+setupReveal();
+setupCursorGlow();
+setupParallaxOrbs();

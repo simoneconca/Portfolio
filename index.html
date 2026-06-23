@@ -5,28 +5,42 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="description" content="Simone Conca — progetti, pubblicazioni e ripetizioni di informatica.">
   <meta name="author" content="Simone Conca">
+  <meta name="theme-color" content="#07070d">
   <title>Simone Conca</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Source+Sans+3:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/styles.css">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>S</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'><stop stop-color='%236366f1'/><stop offset='1' stop-color='%23ec4899'/></linearGradient></defs><rect width='100' height='100' rx='22' fill='%2307070d'/><text x='50' y='68' text-anchor='middle' font-size='52' font-family='sans-serif' font-weight='700' fill='url(%23g)'>S</text></svg>">
 </head>
 <body>
+  <div class="bg-canvas" aria-hidden="true">
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
+    <div class="grid-overlay"></div>
+  </div>
+
+  <div class="cursor-glow" aria-hidden="true"></div>
+
   <a class="skip-link" href="#contenuto">Salta al contenuto</a>
 
   <header class="site-header">
     <div class="container header-inner">
-      <a class="logo" href="#">Simone Conca</a>
+      <a class="logo" href="#">
+        <span class="logo-mark">SC</span>
+        <span class="logo-text">Simone Conca</span>
+      </a>
       <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-menu" aria-label="Apri menu">
+        <span></span>
         <span></span>
         <span></span>
       </button>
       <nav id="nav-menu" class="nav" aria-label="Navigazione principale">
-        <a href="#progetti">Progetti</a>
-        <a href="#pubblicazioni">Pubblicazioni</a>
-        <a href="#ripetizioni">Ripetizioni</a>
-        <a href="#contatti">Contatti</a>
+        <a href="#progetti" data-section="progetti">Progetti</a>
+        <a href="#pubblicazioni" data-section="pubblicazioni">Pubblicazioni</a>
+        <a href="#ripetizioni" data-section="ripetizioni">Ripetizioni</a>
+        <a href="#contatti" data-section="contatti">Contatti</a>
       </nav>
     </div>
   </header>
@@ -34,41 +48,79 @@
   <main id="contenuto">
     <section class="hero">
       <div class="container hero-inner">
-        <p class="eyebrow">Informatica · didattica · scrittura</p>
-        <h1>Progetti, manuali e ripetizioni di informatica.</h1>
-        <p class="lead">
-          Mi chiamo Simone Conca. Sono diplomato in informatica, insegnante di materie
-          tecnologiche e autore di manuali. Questo sito raccoglie il lavoro che condivido
-          pubblicamente.
-        </p>
-        <div class="hero-links">
-          <a class="btn btn-primary" href="#progetti">Vedi i progetti</a>
-          <a class="btn btn-ghost" href="#ripetizioni">Ripetizioni</a>
+        <div class="hero-badge reveal">
+          <span class="pulse-dot"></span>
+          Disponibile per ripetizioni
         </div>
+        <h1 class="hero-title reveal reveal-delay-1">
+          <span class="line">Ciao, sono</span>
+          <span class="line gradient-text">Simone Conca</span>
+        </h1>
+        <p class="hero-sub reveal reveal-delay-2">
+          Progetti, manuali e ripetizioni di informatica — un posto dove metto insieme
+          tutto quello che creo e condivido.
+        </p>
+        <div class="hero-stats reveal reveal-delay-3">
+          <div class="stat">
+            <span class="stat-num">A041</span>
+            <span class="stat-label">Insegnamento</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat">
+            <span class="stat-num">Manuali</span>
+            <span class="stat-label">Su Amazon</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat">
+            <span class="stat-num">Code</span>
+            <span class="stat-label">Progetti open</span>
+          </div>
+        </div>
+        <div class="hero-links reveal reveal-delay-4">
+          <a class="btn btn-gradient" href="#progetti">
+            Esplora progetti
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <a class="btn btn-glass" href="#ripetizioni">Ripetizioni</a>
+        </div>
+      </div>
+      <div class="scroll-hint" aria-hidden="true">
+        <span>Scroll</span>
+        <div class="scroll-line"></div>
       </div>
     </section>
 
     <section class="about section">
-      <div class="container narrow">
-        <h2>Chi sono</h2>
-        <p>
-          Ho vent'anni e un percorso che unisce studio, lavoro e didattica. Dopo il diploma
-          in informatica ho lavorato qualche mese in azienda, poi ho scelto di insegnare
-          nelle scuole superiori — attualmente al secondo anno in classe di concorso A041.
-        </p>
-        <p>
-          Oggi il mio tempo lo divido tra le lezioni, la scrittura di manuali e lo sviluppo
-          di piccoli progetti utili alla didattica. Preferisco mostrare il lavoro concreto
-          piuttosto che elencare competenze.
-        </p>
+      <div class="container about-grid">
+        <div class="section-label reveal">
+          <span class="section-num">01</span>
+          <span class="section-name">Chi sono</span>
+        </div>
+        <div class="about-content">
+          <h2 class="reveal">Studio, insegno, scrivo codice.</h2>
+          <div class="about-text reveal reveal-delay-1">
+            <p>
+              Ho vent'anni e un percorso che unisce studio, lavoro e didattica. Dopo il diploma
+              in informatica ho lavorato qualche mese in azienda, poi ho scelto di insegnare
+              nelle scuole superiori — attualmente al secondo anno in classe di concorso A041.
+            </p>
+            <p>
+              Oggi il mio tempo lo divido tra le lezioni, la scrittura di manuali e lo sviluppo
+              di piccoli progetti utili alla didattica.
+            </p>
+          </div>
+        </div>
       </div>
     </section>
 
-    <section id="progetti" class="section section-alt">
+    <section id="progetti" class="section">
       <div class="container">
-        <div class="section-head">
-          <h2>Progetti</h2>
-          <p>Strumenti, esercizi e lavori personali. Aggiorno questa sezione man mano che pubblico qualcosa di nuovo.</p>
+        <div class="section-header reveal">
+          <div class="section-label">
+            <span class="section-num">02</span>
+            <span class="section-name">Progetti</span>
+          </div>
+          <p class="section-desc">Strumenti, esercizi e lavori personali — aggiornati man mano che pubblico qualcosa di nuovo.</p>
         </div>
         <div id="projects-grid" class="card-grid" aria-live="polite"></div>
       </div>
@@ -76,62 +128,74 @@
 
     <section id="pubblicazioni" class="section">
       <div class="container">
-        <div class="section-head">
-          <h2>Pubblicazioni</h2>
-          <p>Manuali e materiali che sto pubblicando su Amazon. I link saranno attivi al momento dell'uscita.</p>
+        <div class="section-header reveal">
+          <div class="section-label">
+            <span class="section-num">03</span>
+            <span class="section-name">Pubblicazioni</span>
+          </div>
+          <p class="section-desc">Manuali e materiali che sto pubblicando su Amazon.</p>
         </div>
         <div id="publications-list" class="publications-list" aria-live="polite"></div>
       </div>
     </section>
 
-    <section id="ripetizioni" class="section section-alt">
+    <section id="ripetizioni" class="section">
       <div class="container">
-        <div class="ripetizioni-layout">
-          <div class="ripetizioni-copy">
+        <div class="bento reveal">
+          <div class="bento-main">
+            <div class="section-label">
+              <span class="section-num">04</span>
+              <span class="section-name">Ripetizioni</span>
+            </div>
             <h2>Ripetizioni di informatica</h2>
             <p>
-              Offro lezioni private per studenti delle superiori e dell'università.
-              Programmazione, web, database, reti e preparazione agli esami — con un
-              approccio chiaro e adattato al livello di partenza.
+              Lezioni private per studenti delle superiori e dell'università.
+              Programmazione, web, database, reti e preparazione agli esami — chiaro,
+              pratico, sul tuo livello.
             </p>
-            <ul class="ripetizioni-points">
-              <li>Lezioni online o in presenza (da concordare)</li>
-              <li>Supporto su compiti, verifiche e progetti</li>
-              <li>Materiale di ripasso su misura</li>
+            <ul class="check-list">
+              <li><span class="check-icon">✓</span> Online o in presenza</li>
+              <li><span class="check-icon">✓</span> Compiti, verifiche e progetti</li>
+              <li><span class="check-icon">✓</span> Materiale su misura</li>
             </ul>
-            <a class="btn btn-primary" href="#contatti">Scrivimi per info</a>
+            <a class="btn btn-gradient" href="#contatti">
+              Scrivimi
+              <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </a>
           </div>
-          <aside class="ripetizioni-aside">
-            <h3>Argomenti</h3>
-            <ul class="tag-list">
-              <li>Programmazione</li>
-              <li>Web design</li>
-              <li>Database</li>
-              <li>Reti</li>
-              <li>Logica e algoritmi</li>
-              <li>Preparazione esami</li>
-            </ul>
-          </aside>
+          <div class="bento-tags">
+            <span class="floating-tag" style="--i:0">Programmazione</span>
+            <span class="floating-tag" style="--i:1">Web Design</span>
+            <span class="floating-tag" style="--i:2">Database</span>
+            <span class="floating-tag" style="--i:3">Reti</span>
+            <span class="floating-tag" style="--i:4">Algoritmi</span>
+            <span class="floating-tag" style="--i:5">Esami</span>
+          </div>
         </div>
       </div>
     </section>
 
     <section id="contatti" class="section">
-      <div class="container narrow">
-        <h2>Contatti</h2>
-        <p>
-          Per ripetizioni, collaborazioni o domande sui miei lavori, scrivimi via email
-          o sui social qui sotto.
-        </p>
-        <div class="contact-links" id="contact-links"></div>
+      <div class="container">
+        <div class="contact-box reveal">
+          <div class="section-label">
+            <span class="section-num">05</span>
+            <span class="section-name">Contatti</span>
+          </div>
+          <h2>Parliamone.</h2>
+          <p>Per ripetizioni, collaborazioni o domande sui miei lavori — scrivimi.</p>
+          <div class="contact-links" id="contact-links"></div>
+        </div>
       </div>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="container footer-inner">
-      <p>&copy; <span id="year"></span> Simone Conca</p>
-      <p class="footer-note">Realizzato per GitHub Pages</p>
+      <p class="footer-brand">
+        <span class="gradient-text">Simone Conca</span>
+      </p>
+      <p>&copy; <span id="year"></span> — Tutti i diritti riservati</p>
     </div>
   </footer>
 
