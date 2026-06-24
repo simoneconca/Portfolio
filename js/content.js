@@ -7,9 +7,8 @@
 const SITE = {
   email: "simone.conca2006@gmail.com",
   links: [
-    { label: "GitHub", url: "https://github.com/simoneconca" },
-    // Sostituisci con il tuo profilo, oppure elimina la riga:
-    { label: "LinkedIn", url: "https://www.linkedin.com/in/simoneconca/" }
+    { label: "GitHub", url: "https://github.com/simoneconca" }
+    // Aggiungi altri link qui, es: { label: "LinkedIn", url: "https://..." }
   ]
 };
 
