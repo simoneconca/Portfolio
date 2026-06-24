@@ -1,23 +1,28 @@
-/**
- * Modifica questo file per aggiornare progetti, pubblicazioni e contatti.
- * Non serve ricompilare nulla: salva e ricarica la pagina.
- */
+/* ============================================================
+   CONTENUTI DEL SITO — modifica solo questo file.
+   Salva e ricarica la pagina: nessuna compilazione necessaria.
+   ============================================================ */
 
+/* --- Contatti e link social --- */
 const SITE = {
   email: "simone.conca2006@gmail.com",
   links: [
     { label: "GitHub", url: "https://github.com/simoneconca" },
-    { label: "LinkedIn", url: "https://linkedin.com/in/TUO-PROFILO" }
+    // Sostituisci con il tuo profilo, oppure elimina la riga:
+    { label: "LinkedIn", url: "https://www.linkedin.com/in/simoneconca/" }
   ]
 };
 
+/* --- Progetti ---
+   Campi: title, description, tags[], demo (URL o ""), repo (URL o "").
+   Aggiungi "placeholder: true" alle card ancora da riempire. */
 const PROJECTS = [
   {
-    title: "Titolo del tuo primo progetto",
-    description: "Breve descrizione di cosa fa e perché l'hai creato. Può essere un tool per studenti, un eserciziario o un lavoro personale.",
+    title: "Primo progetto",
+    description: "Breve descrizione di cosa fa e perché l'hai creato — un tool per studenti, un eserciziario o un lavoro personale.",
     tags: ["Didattica", "Web"],
     demo: "",
-    repo: "https://github.com/simoneconca/nome-repo"
+    repo: "https://github.com/simoneconca"
   },
   {
     title: "Progetto di diploma",
@@ -28,7 +33,7 @@ const PROJECTS = [
   },
   {
     title: "Prossimo progetto",
-    description: "Placeholder: sostituisci o elimina questa card quando aggiungi qualcosa di nuovo.",
+    description: "Placeholder: sostituisci o elimina questa card quando pubblichi qualcosa di nuovo.",
     tags: ["In arrivo"],
     demo: "",
     repo: "",
@@ -36,6 +41,8 @@ const PROJECTS = [
   }
 ];
 
+/* --- Pubblicazioni (manuali Amazon) ---
+   Campi: title, description, year, status, url (lascia "" se non ancora online). */
 const PUBLICATIONS = [
   {
     title: "Titolo del primo manuale",
@@ -45,7 +52,7 @@ const PUBLICATIONS = [
     url: ""
   },
   {
-    title: "Secondo manuale (opzionale)",
+    title: "Secondo manuale",
     description: "Aggiungi altre pubblicazioni man mano che le completi.",
     year: "2026",
     status: "Bozza",
