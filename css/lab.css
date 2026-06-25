@@ -1,0 +1,219 @@
+/* ============================================================
+   lab.css — portale didattico /lab/
+   Usa le fondamenta di base.css (token, header, footer, ecc.).
+   ============================================================ */
+
+/* ---------- Header del Lab ---------- */
+.brand-lab {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--accent);
+  padding: 0.15rem 0.45rem;
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--line));
+  border-radius: 6px;
+  margin-left: 0.3rem;
+}
+
+/* ---------- Hero del Lab ---------- */
+.lab-hero {
+  position: relative;
+  z-index: 2;
+  padding-top: clamp(3rem, 8vw, 6rem);
+  padding-bottom: clamp(2rem, 5vw, 3.5rem);
+}
+.lab-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+  margin-bottom: clamp(1.25rem, 3vw, 2rem);
+}
+.lab-kicker .dot {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--accent);
+}
+.lab-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.4rem, 8vw, 5.2rem);
+  line-height: 1.0;
+  letter-spacing: -0.03em;
+  max-width: 16ch;
+}
+.lab-title em { font-style: italic; font-weight: 400; color: var(--accent); }
+.lab-intro {
+  margin-top: clamp(1.5rem, 4vw, 2.25rem);
+  padding-top: clamp(1.5rem, 3vw, 2rem);
+  border-top: 1px solid var(--line);
+  max-width: 60ch;
+  color: var(--ink-soft);
+  font-size: clamp(1.02rem, 0.9rem + 0.5vw, 1.18rem);
+}
+.lab-intro strong { color: var(--ink); font-weight: 600; }
+
+/* ---------- Griglia strumenti ---------- */
+.tools-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  gap: 1.25rem;
+}
+.tool-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.85rem;
+  background: var(--bg-elev);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  overflow: hidden;
+  transition: border-color 0.35s var(--ease), transform 0.35s var(--ease),
+              box-shadow 0.35s var(--ease);
+}
+.tool-card::after {
+  content: "";
+  position: absolute;
+  top: -40%; right: -30%;
+  width: 60%; height: 80%;
+  background: radial-gradient(circle, var(--accent-wash), transparent 70%);
+  opacity: 0;
+  transition: opacity 0.4s var(--ease);
+  pointer-events: none;
+}
+.tool-card:hover {
+  border-color: color-mix(in srgb, var(--accent) 50%, var(--line));
+  transform: translateY(-4px);
+  box-shadow: 0 18px 40px -28px rgba(0,0,0,0.5);
+}
+.tool-card:hover::after { opacity: 1; }
+
+.tool-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.tool-num {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--ink-faint);
+}
+.tool-icon {
+  width: 44px; height: 44px;
+  display: grid; place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  color: var(--accent);
+  background: var(--bg);
+}
+.tool-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.5rem;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+}
+.tool-desc { color: var(--ink-soft); font-size: 0.96rem; flex: 1; }
+
+.tool-meta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 0.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line-soft);
+}
+.tool-levels {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.02em;
+  color: var(--ink-soft);
+}
+.tool-status {
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  padding: 0.28rem 0.6rem;
+  border-radius: 100px;
+}
+.tool-status.soon { color: var(--ink-soft); border: 1px solid var(--line); }
+.tool-status.live { color: var(--accent-ink); background: var(--accent); }
+
+/* tutta la card è cliccabile */
+.tool-link { display: contents; }
+.tool-card .tool-arrow {
+  position: absolute;
+  top: 1.85rem; right: 1.85rem;
+  color: var(--ink-faint);
+  transition: transform 0.3s var(--ease), color 0.3s var(--ease);
+}
+.tool-card:hover .tool-arrow { transform: translate(3px, -3px); color: var(--accent); }
+
+/* ---------- Breadcrumb ---------- */
+.breadcrumb {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  margin-bottom: 1.5rem;
+}
+.breadcrumb a { color: var(--ink-soft); transition: color 0.2s var(--ease); }
+.breadcrumb a:hover { color: var(--accent); }
+.breadcrumb .sep { color: var(--line); }
+.breadcrumb .current { color: var(--ink); }
+
+/* ---------- Pagina strumento (stub) ---------- */
+.tool-hero { padding-top: clamp(2.5rem, 6vw, 4rem); }
+.tool-hero h1 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.2rem, 6vw, 3.6rem);
+  line-height: 1.02;
+  letter-spacing: -0.025em;
+  margin-bottom: 1rem;
+}
+.tool-hero .lead { max-width: 56ch; color: var(--ink-soft); font-size: 1.05rem; }
+.tool-hero-meta {
+  display: flex; flex-wrap: wrap; gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+.wip {
+  margin-top: clamp(2.5rem, 6vw, 4rem);
+  padding: clamp(2rem, 5vw, 3.5rem);
+  border: 1px dashed var(--line);
+  border-radius: calc(var(--radius) + 6px);
+  background: var(--bg-elev);
+  text-align: center;
+}
+.wip-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 1rem;
+}
+.wip h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.5rem, 4vw, 2.2rem);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.75rem;
+}
+.wip p { max-width: 48ch; margin: 0 auto 1.75rem; color: var(--ink-soft); }
+.wip-actions { display: flex; gap: 0.75rem; justify-content: center; flex-wrap: wrap; }
+
+/* ---------- Responsive ---------- */
+@media (max-width: 620px) {
+  .tool-card .tool-arrow { top: 1.85rem; right: 1.5rem; }
+}

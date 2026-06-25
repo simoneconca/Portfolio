@@ -1,36 +1,8 @@
 /* ============================================================
-   Simone Conca — Portfolio · interazioni
-   Nessuna dipendenza. Modifica i contenuti in js/content.js.
+   main.js — render dei contenuti della HOME PAGE
+   Comportamenti condivisi (tema, nav, reveal) in js/core.js.
+   Dati in js/content.js.
    ============================================================ */
-
-/* ---------- Utils ---------- */
-function escapeHtml(text) {
-  return String(text)
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
-}
-function escapeAttr(text) {
-  return escapeHtml(text).replace(/'/g, "&#39;");
-}
-const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-/* ---------- Reveal on scroll ---------- */
-const revealObserver = new IntersectionObserver(
-  (entries, obs) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add("visible");
-        obs.unobserve(entry.target);
-      }
-    });
-  },
-  { threshold: 0.12, rootMargin: "0px 0px -10% 0px" }
-);
-function observeReveal(selector) {
-  document.querySelectorAll(selector).forEach((el) => revealObserver.observe(el));
-}
 
 /* ---------- Render: progetti ---------- */
 function renderProjects() {
@@ -112,67 +84,6 @@ function renderContacts() {
   }
 }
 
-/* ---------- Tema chiaro/scuro ---------- */
-function setupTheme() {
-  const toggle = document.querySelector(".theme-toggle");
-  if (!toggle) return;
-
-  toggle.addEventListener("click", () => {
-    const next = document.documentElement.getAttribute("data-theme") === "dark" ? "light" : "dark";
-    document.documentElement.setAttribute("data-theme", next);
-    try { localStorage.setItem("theme", next); } catch (e) {}
-  });
-
-  // Segui il sistema solo se l'utente non ha mai scelto manualmente
-  window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (e) => {
-    let saved = null;
-    try { saved = localStorage.getItem("theme"); } catch (err) {}
-    if (!saved) document.documentElement.setAttribute("data-theme", e.matches ? "dark" : "light");
-  });
-}
-
-/* ---------- Navigazione ---------- */
-function setupNavigation() {
-  const toggle = document.querySelector(".nav-toggle");
-  const mobileNav = document.querySelector(".nav-mobile");
-  const header = document.querySelector(".site-header");
-
-  toggle?.addEventListener("click", () => {
-    const open = toggle.getAttribute("aria-expanded") === "true";
-    toggle.setAttribute("aria-expanded", String(!open));
-    mobileNav?.classList.toggle("open", !open);
-    document.body.style.overflow = open ? "" : "hidden";
-  });
-
-  mobileNav?.querySelectorAll("a").forEach((link) => {
-    link.addEventListener("click", () => {
-      toggle?.setAttribute("aria-expanded", "false");
-      mobileNav.classList.remove("open");
-      document.body.style.overflow = "";
-    });
-  });
-
-  const onScroll = () => {
-    header?.classList.toggle("scrolled", window.scrollY > 10);
-    updateActiveNav();
-  };
-  window.addEventListener("scroll", onScroll, { passive: true });
-  onScroll();
-}
-
-function updateActiveNav() {
-  const sections = ["progetti", "pubblicazioni", "ripetizioni", "contatti"];
-  const pos = window.scrollY + 140;
-  let current = "";
-  sections.forEach((id) => {
-    const el = document.getElementById(id);
-    if (el && el.offsetTop <= pos) current = id;
-  });
-  document.querySelectorAll(".nav a").forEach((link) => {
-    link.classList.toggle("active", link.dataset.section === current);
-  });
-}
-
 /* ---------- Glow che segue il cursore sulle card ---------- */
 function setupCardGlow() {
   if (prefersReducedMotion || window.matchMedia("(max-width: 768px)").matches) return;
@@ -185,11 +96,7 @@ function setupCardGlow() {
   });
 }
 
-/* ---------- Init ---------- */
-document.getElementById("year").textContent = new Date().getFullYear();
+/* ---------- Init home ---------- */
 renderProjects();
 renderPublications();
 renderContacts();
-setupTheme();
-setupNavigation();
-observeReveal(".reveal");
