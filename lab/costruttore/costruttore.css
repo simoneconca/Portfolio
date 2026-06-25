@@ -1,0 +1,229 @@
+/* ============================================================
+   costruttore.css — Costruttore di conversioni
+   Primitive (panel, seg, field) in lab.css.
+   ============================================================ */
+
+.builder-grid { display: grid; gap: 1.25rem; }
+
+/* ---------- Input obiettivo (modalità diretta) ---------- */
+.target-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+.target-row label { font-size: 0.92rem; font-weight: 500; }
+.target-field { max-width: 16rem; }
+.target-field input { font-size: 1.15rem; }
+
+.target-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem 1.25rem;
+  flex-wrap: wrap;
+  padding: 0.95rem 1.2rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  transition: border-color 0.25s var(--ease), background-color 0.25s var(--ease);
+}
+.target-banner .big { font-size: 1.35rem; font-weight: 600; color: var(--ink); }
+.target-banner .lbl { font-size: 0.72rem; color: var(--ink-soft); letter-spacing: 0.03em; }
+.target-banner .rem-val { color: var(--accent); }
+.target-banner.success {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+  background: var(--accent-wash);
+}
+.target-banner.over { border-color: #e0533d; background: rgba(224,83,61,0.08); }
+.target-banner.over .rem-val { color: #e0533d; }
+
+/* ---------- Posizioni (modalità inversa) ---------- */
+.pos-row { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem; }
+.pos-stepper {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  padding: 0.2rem;
+  background: var(--bg);
+}
+.pos-stepper button {
+  width: 2rem; height: 2rem;
+  border: 0; border-radius: 50%;
+  background: transparent;
+  color: var(--ink);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.2s var(--ease), color 0.2s var(--ease);
+}
+.pos-stepper button:hover { background: var(--accent); color: var(--accent-ink); }
+.pos-stepper #posCount {
+  min-width: 2rem;
+  text-align: center;
+  font-family: var(--font-mono);
+  font-weight: 600;
+}
+
+/* ---------- Griglia dei blocchi ---------- */
+.slots-wrap { overflow-x: auto; padding: 0.25rem 0 0.75rem; }
+.slots {
+  display: flex;
+  gap: 0.6rem;
+  align-items: stretch;
+  min-width: min-content;
+}
+.slot {
+  flex: 1 1 0;
+  min-width: 4.6rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.85rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+  text-align: center;
+  transition: border-color 0.2s var(--ease), background-color 0.2s var(--ease), transform 0.12s var(--ease);
+}
+.slot.active {
+  border-color: color-mix(in srgb, var(--accent) 55%, var(--line));
+  background: var(--accent-wash);
+}
+.slot.hint { animation: slotHint 1.1s var(--ease) 2; }
+@keyframes slotHint {
+  0%, 100% { box-shadow: 0 0 0 0 transparent; }
+  50% { box-shadow: 0 0 0 3px var(--accent); }
+}
+.slot-exp {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  color: var(--ink-faint);
+}
+.slot-digit-wrap { display: flex; flex-direction: column; align-items: center; gap: 0.1rem; }
+.slot-nudge {
+  width: 1.6rem; height: 1.1rem;
+  border: 0; background: transparent;
+  color: var(--ink-faint);
+  cursor: pointer; font-size: 0.7rem; line-height: 1;
+  border-radius: 5px;
+  transition: color 0.15s var(--ease), background-color 0.15s var(--ease);
+}
+.slot-nudge:hover { color: var(--accent); background: var(--bg-sunk); }
+.slot-digit {
+  width: 2.6rem; height: 2.6rem;
+  display: grid; place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 9px;
+  background: var(--bg-elev);
+  font-family: var(--font-mono);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--ink-faint);
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.18s var(--ease), color 0.18s var(--ease), border-color 0.18s var(--ease), transform 0.1s var(--ease);
+}
+.slot-digit:hover { border-color: var(--accent); color: var(--ink); }
+.slot-digit:active { transform: scale(0.92); }
+.slot.active .slot-digit {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+.slot-digit:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.slot-weight {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: var(--ink);
+}
+.slot.active .slot-weight { color: var(--accent); }
+.slot-contrib {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--ink-faint);
+  min-height: 0.8rem;
+}
+
+/* ---------- Azioni ---------- */
+.builder-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+.ghost-btn {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  padding: 0.5rem 0.95rem;
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  background: var(--bg);
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.15s var(--ease);
+}
+.ghost-btn:hover { border-color: var(--accent); color: var(--accent); }
+.ghost-btn:active { transform: translateY(1px); }
+
+/* ---------- Output ---------- */
+.builder-output {
+  margin-top: 1.5rem;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--line-soft);
+}
+.out-sum {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  line-height: 1.8;
+  color: var(--ink-soft);
+}
+.out-sum .term { color: var(--accent); white-space: nowrap; }
+.out-sum .plus { color: var(--ink-faint); }
+.out-result {
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-top: 1rem;
+}
+.out-result .big {
+  font-family: var(--font-display);
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.out-result .sub { font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-soft); }
+.out-string {
+  font-family: var(--font-mono);
+  font-size: clamp(1.1rem, 3vw, 1.5rem);
+  font-weight: 600;
+  color: var(--accent);
+  word-break: break-all;
+}
+.out-success-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--accent);
+  margin-bottom: 0.85rem;
+}
+.out-hint { font-family: var(--font-mono); font-size: 0.85rem; color: var(--ink-soft); }
+
+/* ---------- Nota didattica ---------- */
+.note-text { color: var(--ink-soft); max-width: 70ch; line-height: 1.7; }
+.note-text em { color: var(--accent); font-style: italic; }
+.note-text .mono { font-family: var(--font-mono); font-size: 0.9em; color: var(--ink); }
+
+@media (max-width: 560px) {
+  .slot { min-width: 4rem; }
+  .slot-digit { width: 2.2rem; height: 2.2rem; font-size: 1.2rem; }
+}
