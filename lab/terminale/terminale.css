@@ -1,0 +1,232 @@
+/* ============================================================
+   terminale.css — Virtual Terminal
+   Primitive (panel, ecc.) in lab.css.
+   ============================================================ */
+
+.term-layout {
+  display: grid;
+  grid-template-columns: 1fr 280px;
+  gap: 1.25rem;
+  align-items: start;
+}
+@media (max-width: 900px) {
+  .term-layout { grid-template-columns: 1fr; }
+  .fs-aside { order: -1; }
+}
+
+/* ---------- Terminale ---------- */
+.terminal {
+  display: flex;
+  flex-direction: column;
+  height: min(68vh, 620px);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg-sunk);
+  overflow: hidden;
+}
+.term-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.6rem 0.9rem;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg-elev);
+}
+.term-dots { display: flex; gap: 0.4rem; }
+.term-dots span { width: 11px; height: 11px; border-radius: 50%; background: var(--line); }
+.term-dots span:nth-child(1) { background: #e0533d; }
+.term-dots span:nth-child(2) { background: #d9a531; }
+.term-dots span:nth-child(3) { background: #3fae6b; }
+.term-bar-title {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-soft);
+  margin-left: 0.3rem;
+}
+.term-bar-actions { margin-left: auto; display: flex; gap: 0.4rem; }
+.term-bar-actions button {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  background: var(--bg);
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease);
+}
+.term-bar-actions button:hover { border-color: var(--accent); color: var(--accent); }
+
+.term-screen {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem 1.1rem;
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+  line-height: 1.55;
+  color: var(--ink);
+}
+.term-screen::-webkit-scrollbar { width: 10px; }
+.term-screen::-webkit-scrollbar-thumb { background: var(--line); border-radius: 10px; }
+
+.term-line { white-space: pre-wrap; word-break: break-word; }
+.term-line.cmd .ps { color: var(--ink-faint); }
+.term-line.err { color: #e0533d; }
+.term-line.muted { color: var(--ink-soft); }
+.term-line.ok { color: #3fae6b; }
+.term-dir { color: var(--accent); font-weight: 600; }
+.term-exe { color: #3fae6b; }
+
+.ps-user { color: #3fae6b; }
+.ps-user.root { color: #e0533d; }
+.ps-host { color: var(--ink-soft); }
+.ps-path { color: var(--accent); }
+.ps-char { color: var(--ink-soft); }
+
+.term-inputline {
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+  padding: 0.5rem 1.1rem 0.9rem;
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+}
+#prompt { white-space: nowrap; }
+#cmd {
+  flex: 1;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+  outline: none;
+  caret-color: var(--accent);
+  min-width: 0;
+}
+
+/* ---------- Sidebar filesystem ---------- */
+.fs-aside {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--bg-elev);
+  overflow: hidden;
+}
+.fs-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.8rem 1rem;
+  border-bottom: 1px solid var(--line);
+}
+.fs-head h3 {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--ink-soft);
+}
+.fs-head .fs-user { font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent); }
+.fs-tree {
+  padding: 0.6rem 0.4rem 1rem;
+  max-height: min(60vh, 540px);
+  overflow: auto;
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
+.fs-node {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.16rem 0.5rem;
+  border-radius: 6px;
+  white-space: nowrap;
+}
+.fs-node.dir { cursor: pointer; color: var(--ink); }
+.fs-node.dir:hover { background: var(--bg-sunk); }
+.fs-node.file { color: var(--ink-soft); }
+.fs-node.cwd { background: var(--accent-wash); color: var(--accent); font-weight: 600; }
+.fs-ico { width: 1rem; text-align: center; opacity: 0.8; }
+.fs-node.dir .fs-ico { color: var(--accent); }
+
+/* ---------- Hint comandi ---------- */
+.cmd-hint {
+  margin-top: 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: var(--ink-faint);
+  line-height: 1.7;
+}
+.cmd-hint code {
+  color: var(--ink-soft);
+  background: var(--bg-elev);
+  padding: 0.05rem 0.35rem;
+  border-radius: 5px;
+  border: 1px solid var(--line-soft);
+}
+
+/* ---------- Editor vi ---------- */
+.vi-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg-sunk);
+}
+.vi-overlay[hidden] { display: none; }
+.vi-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 1.1rem;
+  border-bottom: 1px solid var(--line);
+  background: var(--bg-elev);
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+}
+.vi-bar .vi-file { color: var(--ink); font-weight: 600; }
+.vi-bar .vi-hint { margin-left: auto; color: var(--ink-faint); font-size: 0.74rem; }
+.vi-screen {
+  flex: 1;
+  overflow: auto;
+  padding: 0.5rem 0;
+  font-family: var(--font-mono);
+  font-size: 0.9rem;
+  line-height: 1.5;
+  counter-reset: viln;
+}
+.vi-row { display: flex; }
+.vi-gutter {
+  width: 3.2rem;
+  flex-shrink: 0;
+  text-align: right;
+  padding-right: 1rem;
+  color: var(--ink-faint);
+  user-select: none;
+}
+.vi-text { white-space: pre-wrap; word-break: break-word; color: var(--ink); }
+.vi-cursor { background: var(--accent); color: var(--accent-ink); }
+.vi-cursor.insert { background: transparent; border-left: 2px solid var(--accent); margin-left: -1px; color: var(--ink); }
+.vi-status {
+  padding: 0.5rem 1.1rem;
+  border-top: 1px solid var(--line);
+  background: var(--bg-elev);
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--ink);
+  min-height: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.vi-mode {
+  font-weight: 600;
+  padding: 0.15rem 0.6rem;
+  border-radius: 5px;
+  background: var(--bg-sunk);
+  border: 1px solid var(--line);
+}
+.vi-mode.insert { color: #3fae6b; border-color: #3fae6b; }
+.vi-mode.ex { color: var(--accent); border-color: var(--accent); }
+.vi-cmdline { color: var(--ink); }

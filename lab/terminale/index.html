@@ -3,16 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Virtual Terminal — una shell Linux simulata nel browser per imparare la riga di comando.">
+  <meta name="description" content="Virtual Terminal — una shell Linux simulata nel browser per imparare la riga di comando, i permessi, gli utenti e l'editor vi.">
   <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#100f0c" media="(prefers-color-scheme: dark)">
   <title>Virtual Terminal — Lab · Simone Conca</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../css/base.css">
   <link rel="stylesheet" href="../../css/lab.css">
+  <link rel="stylesheet" href="terminale.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23100f0c'/><text x='50' y='71' text-anchor='middle' font-size='62' font-family='Georgia,serif' font-style='italic' font-weight='600' fill='%23f4f1ea'>S</text></svg>">
   <script>
     (function () { try { var s = localStorage.getItem("theme"); document.documentElement.setAttribute("data-theme", s || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")); } catch (e) {} })();
@@ -50,30 +51,68 @@
   </nav>
 
   <main>
-    <section class="section tool-hero">
+    <section class="section tool-hero" style="padding-bottom: clamp(1.5rem,4vw,2.5rem)">
       <div class="container">
         <nav class="breadcrumb" aria-label="Percorso">
           <a href="../">Lab</a><span class="sep">/</span><span class="current">Virtual Terminal</span>
         </nav>
         <h1>Virtual Terminal</h1>
-        <p class="lead">Una shell Linux simulata nel browser: esercitati con la riga di comando in un ambiente sicuro, dove sbagliare non costa nulla.</p>
-        <div class="tool-hero-meta">
-          <span class="tool-status soon">Presto</span>
-          <span class="pub-status">Linux · CLI — 3ª–5ª</span>
+        <p class="lead">Una shell Linux simulata nel browser. Il prompt mostra sempre <strong>chi sei</strong> e <strong>dove ti trovi</strong>, e l'albero del filesystem qui a fianco si aggiorna a ogni comando, così vedi i tuoi spostamenti e le tue operazioni. Niente da installare, niente da rompere.</p>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:0">
+      <div class="container">
+        <div class="term-layout">
+          <div class="terminal">
+            <div class="term-bar">
+              <div class="term-dots"><span></span><span></span><span></span></div>
+              <span class="term-bar-title" id="termTitle">studente@lab</span>
+              <div class="term-bar-actions">
+                <button type="button" id="btnHelp">help</button>
+                <button type="button" id="btnReset">reset</button>
+              </div>
+            </div>
+            <div class="term-screen" id="screen" tabindex="0"></div>
+            <div class="term-inputline">
+              <span id="prompt"></span>
+              <input id="cmd" type="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" aria-label="Riga di comando">
+            </div>
+          </div>
+
+          <aside class="fs-aside">
+            <div class="fs-head">
+              <h3>Filesystem</h3>
+              <span class="fs-user" id="fsUser">studente</span>
+            </div>
+            <div class="fs-tree" id="tree"></div>
+          </aside>
         </div>
 
-        <div class="wip">
-          <p class="wip-badge">⚙ In costruzione</p>
-          <h2>Disponibile a breve</h2>
-          <p>Qui potrai muoverti tra le cartelle, leggere e creare file e usare i comandi più comuni (<code>ls</code>, <code>cd</code>, <code>cat</code>, <code>mkdir</code>, <code>grep</code>…) seguendo mini-sfide guidate — tutto simulato nel browser, senza installare niente.</p>
-          <div class="wip-actions">
-            <a class="btn btn-ghost" href="../">← Tutti gli strumenti</a>
-            <a class="btn btn-primary" href="../../#contatti">Richiedi una lezione</a>
-          </div>
-        </div>
+        <p class="cmd-hint">
+          Comandi disponibili: <code>pwd</code> <code>ls</code> <code>cd</code> <code>mkdir</code> <code>touch</code>
+          <code>cp</code> <code>mv</code> <code>rm</code> <code>echo</code> <code>cat</code> <code>head</code>
+          <code>tail</code> <code>grep</code> <code>chmod</code> <code>chown</code> <code>su</code> <code>sudo</code>
+          <code>useradd</code> <code>userdel</code> <code>passwd</code> <code>groupadd</code> <code>usermod</code>
+          <code>groups</code> <code>vi</code> <code>tree</code> <code>whoami</code> <code>clear</code> — scrivi <code>help</code> per la guida.
+          Supporta <code>&gt;</code> <code>&gt;&gt;</code> e <code>|</code> (pipe). I comandi sono <em>case-sensitive</em>.
+        </p>
       </div>
     </section>
   </main>
+
+  <!-- Editor vi (overlay) -->
+  <div class="vi-overlay" id="vi" hidden>
+    <div class="vi-bar">
+      <span class="vi-file" id="viFile"></span>
+      <span class="vi-hint" id="viHint">i = inserisci · Esc = comando · :w salva · :q esci · :wq salva&amp;esci · :q! forza</span>
+    </div>
+    <div class="vi-screen" id="viScreen"></div>
+    <div class="vi-status">
+      <span class="vi-mode" id="viMode">NORMALE</span>
+      <span class="vi-cmdline" id="viCmd"></span>
+    </div>
+  </div>
 
   <footer class="site-footer">
     <div class="container footer-inner">
@@ -84,5 +123,6 @@
   </footer>
 
   <script src="../../js/core.js"></script>
+  <script src="terminale.js"></script>
 </body>
 </html>

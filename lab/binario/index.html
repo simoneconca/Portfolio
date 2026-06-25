@@ -64,8 +64,64 @@
     <section class="section" style="padding-top:0">
       <div class="container app-grid">
 
+        <!-- 01 Costruttore guidato (per principianti) -->
+        <div class="panel full builder-panel">
+          <header class="panel-head">
+            <span class="panel-kicker">01 — Per iniziare</span>
+            <h2 class="panel-title">Costruttore guidato di conversioni</h2>
+            <p class="panel-sub">Se parti da zero, comincia da qui: componi un numero attivando i blocchi dei pesi posizionali e guarda la conversione formarsi passo dopo passo. Funziona in entrambi i versi, per basi 2, 8 e 16.</p>
+          </header>
+
+          <div class="builder-controls">
+            <div class="control-group">
+              <span class="control-label">Verso</span>
+              <div class="seg" id="modeSeg" role="group" aria-label="Verso della conversione">
+                <button type="button" data-mode="fwd" class="seg-btn active">Decimale → Base</button>
+                <button type="button" data-mode="rev" class="seg-btn">Base → Decimale</button>
+              </div>
+            </div>
+            <div class="control-group">
+              <span class="control-label">Base</span>
+              <div class="seg" id="baseSeg" role="group" aria-label="Base">
+                <button type="button" data-base="2" class="seg-btn active">Bin · 2</button>
+                <button type="button" data-base="8" class="seg-btn">Ott · 8</button>
+                <button type="button" data-base="16" class="seg-btn">Esa · 16</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="fwdBlock" class="mode-block">
+            <div class="target-row">
+              <label for="target">Numero decimale di partenza</label>
+              <div class="field target-field"><span class="field-prefix">#</span><input id="target" inputmode="numeric" spellcheck="false" autocomplete="off" value="2443"></div>
+            </div>
+            <div class="target-banner" id="fwdBanner" aria-live="polite"></div>
+          </div>
+
+          <div id="revBlock" class="mode-block" hidden>
+            <div class="pos-row">
+              <span class="control-label">Quante posizioni</span>
+              <div class="pos-stepper">
+                <button type="button" id="posMinus" aria-label="Rimuovi una posizione">−</button>
+                <span id="posCount">8</span>
+                <button type="button" id="posPlus" aria-label="Aggiungi una posizione">+</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="slots-wrap"><div class="slots" id="slots" aria-label="Blocchi dei pesi posizionali"></div></div>
+
+          <div class="builder-actions" id="actions">
+            <button type="button" class="ghost-btn" data-act="reset">Azzera i blocchi</button>
+            <button type="button" class="ghost-btn fwd-only" data-act="hint">Suggerimento</button>
+            <button type="button" class="ghost-btn fwd-only" data-act="solve">Mostra soluzione</button>
+          </div>
+
+          <div class="builder-output" id="output" aria-live="polite"></div>
+        </div>
+
         <!-- Barra controlli -->
-        <div class="panel controls-panel">
+        <div class="panel controls-panel full">
           <div class="control-group">
             <span class="control-label">Larghezza</span>
             <div class="seg" id="widthSeg" role="group" aria-label="Larghezza in bit">
@@ -88,7 +144,7 @@
         <!-- Convertitore -->
         <div class="panel">
           <header class="panel-head">
-            <span class="panel-kicker">01 — Convertitore</span>
+            <span class="panel-kicker">02 — Convertitore</span>
             <h2 class="panel-title">Un numero, quattro basi</h2>
           </header>
 
@@ -119,7 +175,7 @@
         <!-- Visualizzatore bit -->
         <div class="panel">
           <header class="panel-head">
-            <span class="panel-kicker">02 — Visualizzatore di bit</span>
+            <span class="panel-kicker">03 — Visualizzatore di bit</span>
             <h2 class="panel-title">Clicca un bit per accenderlo</h2>
           </header>
 
@@ -142,9 +198,9 @@
         </div>
 
         <!-- Operazioni bit a bit -->
-        <div class="panel">
+        <div class="panel full">
           <header class="panel-head">
-            <span class="panel-kicker">03 — Operazioni bit a bit</span>
+            <span class="panel-kicker">04 — Operazioni bit a bit</span>
             <h2 class="panel-title">Algebra booleana sui bit</h2>
           </header>
 
@@ -193,6 +249,7 @@
   </footer>
 
   <script src="../../js/core.js"></script>
+  <script src="builder.js"></script>
   <script src="binario.js"></script>
 </body>
 </html>
