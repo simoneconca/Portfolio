@@ -3,16 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Binary &amp; Base Analyzer — strumento didattico interattivo del Lab di Simone Conca.">
+  <meta name="description" content="Binary & Base Analyzer — convertitore interattivo tra binario, decimale, ottale ed esadecimale, con visualizzazione dei bit, complemento a due e operazioni bit a bit.">
   <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#100f0c" media="(prefers-color-scheme: dark)">
   <title>Binary &amp; Base Analyzer — Lab · Simone Conca</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../css/base.css">
   <link rel="stylesheet" href="../../css/lab.css">
+  <link rel="stylesheet" href="binario.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23100f0c'/><text x='50' y='71' text-anchor='middle' font-size='62' font-family='Georgia,serif' font-style='italic' font-weight='600' fill='%23f4f1ea'>S</text></svg>">
   <script>
     (function () { try { var s = localStorage.getItem("theme"); document.documentElement.setAttribute("data-theme", s || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")); } catch (e) {} })();
@@ -29,7 +30,7 @@
         <span class="brand-lab">LAB</span>
       </a>
       <nav class="nav" aria-label="Navigazione">
-        <a href="../">&larr; Lab</a>
+        <a href="../">← Lab</a>
         <a href="../../">Portfolio</a>
         <a href="../../#contatti">Contatti</a>
       </nav>
@@ -44,45 +45,154 @@
   </header>
 
   <nav id="nav-mobile" class="nav-mobile" aria-label="Navigazione mobile">
-    <a href="../">&larr; Lab</a>
+    <a href="../">← Lab</a>
     <a href="../../">Portfolio</a>
     <a href="../../#contatti">Contatti</a>
   </nav>
 
   <main>
-    <section class="section tool-hero">
+    <section class="section tool-hero" style="padding-bottom: clamp(1.5rem,4vw,2.5rem)">
       <div class="container">
         <nav class="breadcrumb" aria-label="Percorso">
           <a href="../">Lab</a><span class="sep">/</span><span class="current">Binary &amp; Base Analyzer</span>
         </nav>
         <h1>Binary &amp; Base Analyzer</h1>
-        <p class="lead">Conversioni al volo tra binario, decimale, ottale ed esadecimale, con la visualizzazione dei singoli bit.</p>
-        <div class="tool-hero-meta">
-          <span class="tool-status soon">Presto</span>
-          <span class="pub-status">Numerazione — 1&ordf;&ndash;3&ordf;</span>
+        <p class="lead">Converti un numero tra le basi, accendi e spegni i bit con un clic, osserva i pesi posizionali e il complemento a due, e prova le operazioni logiche bit a bit. Tutto in tempo reale.</p>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:0">
+      <div class="container app-grid">
+
+        <!-- Barra controlli -->
+        <div class="panel controls-panel">
+          <div class="control-group">
+            <span class="control-label">Larghezza</span>
+            <div class="seg" id="widthSeg" role="group" aria-label="Larghezza in bit">
+              <button type="button" data-width="8" class="seg-btn active">8 bit</button>
+              <button type="button" data-width="16" class="seg-btn">16</button>
+              <button type="button" data-width="32" class="seg-btn">32</button>
+              <button type="button" data-width="64" class="seg-btn">64</button>
+            </div>
+          </div>
+          <div class="control-group">
+            <span class="control-label">Interpretazione</span>
+            <div class="seg" id="signSeg" role="group" aria-label="Interpretazione del numero">
+              <button type="button" data-sign="unsigned" class="seg-btn active">Senza segno</button>
+              <button type="button" data-sign="signed" class="seg-btn">Con segno (C2)</button>
+            </div>
+          </div>
+          <p class="control-meta" id="rangeInfo" aria-live="polite"></p>
         </div>
 
-        <div class="wip">
-          <p class="wip-badge">&#9881; In costruzione</p>
-          <h2>Disponibile a breve</h2>
-          <p>Qui potrai convertire numeri tra le varie basi, vedere i bit accendersi e spegnersi, lavorare con il complemento a due e le operazioni bit a bit.</p>
-          <div class="wip-actions">
-            <a class="btn btn-ghost" href="../">&larr; Tutti gli strumenti</a>
-            <a class="btn btn-primary" href="../../#contatti">Richiedi una lezione</a>
+        <!-- Convertitore -->
+        <div class="panel">
+          <header class="panel-head">
+            <span class="panel-kicker">01 — Convertitore</span>
+            <h2 class="panel-title">Un numero, quattro basi</h2>
+          </header>
+
+          <div class="conv">
+            <div class="conv-row">
+              <label for="inDec">Decimale <span class="base-tag">base 10</span></label>
+              <div class="field"><span class="field-prefix">#</span><input id="inDec" inputmode="numeric" spellcheck="false" autocomplete="off" value="0"></div>
+              <span class="field-err" data-for="inDec"></span>
+            </div>
+            <div class="conv-row">
+              <label for="inBin">Binario <span class="base-tag">base 2</span></label>
+              <div class="field"><span class="field-prefix">0b</span><input id="inBin" spellcheck="false" autocomplete="off" value="0"></div>
+              <span class="field-err" data-for="inBin"></span>
+            </div>
+            <div class="conv-row">
+              <label for="inOct">Ottale <span class="base-tag">base 8</span></label>
+              <div class="field"><span class="field-prefix">0o</span><input id="inOct" spellcheck="false" autocomplete="off" value="0"></div>
+              <span class="field-err" data-for="inOct"></span>
+            </div>
+            <div class="conv-row">
+              <label for="inHex">Esadecimale <span class="base-tag">base 16</span></label>
+              <div class="field"><span class="field-prefix">0x</span><input id="inHex" spellcheck="false" autocomplete="off" value="0"></div>
+              <span class="field-err" data-for="inHex"></span>
+            </div>
           </div>
         </div>
+
+        <!-- Visualizzatore bit -->
+        <div class="panel">
+          <header class="panel-head">
+            <span class="panel-kicker">02 — Visualizzatore di bit</span>
+            <h2 class="panel-title">Clicca un bit per accenderlo</h2>
+          </header>
+
+          <div class="bitfield-wrap">
+            <div class="bitfield" id="bitField" aria-label="Bit del numero"></div>
+          </div>
+
+          <div class="bit-actions">
+            <div class="stepper" role="group" aria-label="Operazioni rapide">
+              <button type="button" data-act="dec">−1</button>
+              <button type="button" data-act="inc">+1</button>
+              <button type="button" data-act="shl">«&nbsp;×2</button>
+              <button type="button" data-act="shr">÷2&nbsp;»</button>
+              <button type="button" data-act="not">NOT</button>
+              <button type="button" data-act="clear">Azzera</button>
+            </div>
+          </div>
+
+          <div class="decomp" id="decomp" aria-live="polite"></div>
+        </div>
+
+        <!-- Operazioni bit a bit -->
+        <div class="panel">
+          <header class="panel-head">
+            <span class="panel-kicker">03 — Operazioni bit a bit</span>
+            <h2 class="panel-title">Algebra booleana sui bit</h2>
+          </header>
+
+          <div class="bitwise">
+            <div class="bw-inputs">
+              <div class="bw-operand">
+                <label for="opA">Operando A <span class="base-tag">dec</span></label>
+                <div class="field"><span class="field-prefix">A</span><input id="opA" inputmode="numeric" spellcheck="false" autocomplete="off" value="12"></div>
+              </div>
+              <div class="bw-op">
+                <label for="opSelect">Operazione</label>
+                <select id="opSelect">
+                  <option value="and">A AND B</option>
+                  <option value="or">A OR B</option>
+                  <option value="xor">A XOR B</option>
+                  <option value="not">NOT A</option>
+                  <option value="shl">A « B</option>
+                  <option value="shr">A » B</option>
+                </select>
+              </div>
+              <div class="bw-operand" id="opBWrap">
+                <label for="opB">Operando B <span class="base-tag">dec</span></label>
+                <div class="field"><span class="field-prefix">B</span><input id="opB" inputmode="numeric" spellcheck="false" autocomplete="off" value="10"></div>
+              </div>
+            </div>
+
+            <div class="bw-rows" id="bwRows" aria-live="polite"></div>
+
+            <div class="bw-result">
+              <span class="bw-result-label">Risultato</span>
+              <div class="bw-result-vals" id="bwResult"></div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </section>
   </main>
 
   <footer class="site-footer">
     <div class="container footer-inner">
-      <span class="footer-brand">Simone Conca &middot; Lab</span>
-      <span class="footer-meta">&copy; <span id="year"></span></span>
-      <a class="footer-top" href="../">&larr; Tutti gli strumenti</a>
+      <span class="footer-brand">Simone Conca · Lab</span>
+      <span class="footer-meta">© <span id="year"></span></span>
+      <a class="footer-top" href="../">← Tutti gli strumenti</a>
     </div>
   </footer>
 
   <script src="../../js/core.js"></script>
+  <script src="binario.js"></script>
 </body>
 </html>
