@@ -1,0 +1,78 @@
+/* ============================================================
+   hardware.css — PC Assembly Lab
+   Primitive (panel, seg, ghost-btn, field) in lab.css.
+   ============================================================ */
+
+.sort-hero { padding-top: clamp(2rem, 5vw, 3.5rem); padding-bottom: 1.1rem; }
+.sort-controls { display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem; align-items: center; }
+.examples { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.example-chip {
+  font-family: var(--font-mono); font-size: 0.76rem;
+  padding: 0.35rem 0.75rem; border: 1px solid var(--line);
+  border-radius: 100px; background: var(--bg); color: var(--ink); cursor: pointer;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease);
+}
+.example-chip:hover { border-color: var(--accent); color: var(--accent); }
+
+.so-layout { grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr); }
+@media (max-width: 880px) { .so-layout { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- Configuratore ---------- */
+.config { display: grid; gap: 0.7rem; }
+.cfg-row { display: grid; grid-template-columns: 8rem 1fr; gap: 0.75rem; align-items: center; }
+.cfg-label { display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-soft); }
+.cfg-label .ico { width: 18px; height: 18px; color: var(--accent); flex-shrink: 0; }
+.cfg-select {
+  width: 100%; font-family: var(--font-sans); font-size: 0.88rem;
+  padding: 0.55rem 0.7rem; border: 1px solid var(--line); border-radius: 9px;
+  background: var(--bg); color: var(--ink); cursor: pointer; outline: none;
+}
+.cfg-select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-wash); }
+.cfg-row.bad .cfg-select { border-color: #e0533d; }
+
+@media (max-width: 440px) { .cfg-row { grid-template-columns: 1fr; gap: 0.3rem; } }
+
+/* ---------- Diagnostica ---------- */
+.verdict {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.9rem 1.1rem; border-radius: 11px; margin-bottom: 1.2rem;
+  font-family: var(--font-display); font-size: 1.15rem; font-weight: 500;
+}
+.verdict .v-ico { font-size: 1.4rem; }
+.verdict.ok { background: color-mix(in srgb, #3fae6b 14%, transparent); border: 1px solid #3fae6b; color: #2e8c57; }
+.verdict.bad { background: rgba(224,83,61,0.1); border: 1px solid #e0533d; color: #e0533d; }
+[data-theme="dark"] .verdict.ok { color: #6fce9a; }
+
+.checks { display: grid; gap: 0.5rem; }
+.check { display: grid; grid-template-columns: 1.4rem 1fr; gap: 0.6rem; align-items: start; padding: 0.5rem 0.65rem; border: 1px solid var(--line); border-radius: 9px; background: var(--bg); }
+.check .ci { font-weight: 700; line-height: 1.4; }
+.check.pass .ci { color: #3fae6b; }
+.check.fail .ci { color: #e0533d; }
+.check.warn .ci { color: #c98a1b; }
+.check .ct { font-size: 0.86rem; }
+.check .ct b { font-weight: 600; }
+.check .cd { font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-soft); margin-top: 0.15rem; }
+.check.fail .cd { color: #e0533d; }
+.check.warn .cd { color: #c98a1b; }
+
+/* ---------- Misuratori ---------- */
+.meters { display: grid; gap: 0.9rem; margin-top: 1.3rem; padding-top: 1.1rem; border-top: 1px solid var(--line-soft); }
+.meter .meter-head { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.76rem; margin-bottom: 0.35rem; }
+.meter .meter-head b { color: var(--ink); }
+.meter .meter-head span { color: var(--ink-soft); }
+.meter-track { height: 10px; border-radius: 5px; background: var(--bg-sunk); overflow: hidden; position: relative; }
+.meter-fill { height: 100%; border-radius: 5px; background: var(--accent); transition: width 0.3s var(--ease), background-color 0.3s var(--ease); }
+.meter-fill.over { background: #e0533d; }
+.meter-fill.warn { background: #c98a1b; }
+.meter-mark { position: absolute; top: -3px; bottom: -3px; width: 2px; background: var(--ink); opacity: 0.55; }
+.meter-note { font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-faint); margin-top: 0.3rem; }
+.meter-note b { color: var(--ink); }
+
+.summary { margin-top: 1.3rem; padding-top: 1.1rem; border-top: 1px solid var(--line-soft); }
+.summary-list { display: grid; gap: 0.25rem; font-family: var(--font-mono); font-size: 0.78rem; }
+.summary-list .sl { display: flex; justify-content: space-between; gap: 1rem; }
+.summary-list .sl span { color: var(--ink-soft); }
+.summary-list .sl b { color: var(--ink); }
+.summary-total { display: flex; justify-content: space-between; margin-top: 0.6rem; padding-top: 0.6rem; border-top: 1px solid var(--line); font-family: var(--font-mono); }
+.summary-total .st-lbl { color: var(--ink-soft); font-size: 0.78rem; align-self: center; }
+.summary-total .st-val { font-family: var(--font-display); font-size: 1.5rem; font-weight: 500; color: var(--ink); }
