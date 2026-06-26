@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="PC Assembly Lab — assembla un computer scegliendo i componenti e verifica compatibilità (socket, RAM, alimentazione, case) e colli di bottiglia.">
+  <meta name="description" content="PC Assembly Lab — un percorso guidato e semplice per imparare ad assemblare un computer, un componente alla volta.">
   <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#100f0c" media="(prefers-color-scheme: dark)">
   <title>PC Assembly Lab — Lab · Simone Conca</title>
@@ -56,42 +56,24 @@
         <nav class="breadcrumb" aria-label="Percorso">
           <a href="../">Lab</a><span class="sep">/</span><span class="current">PC Assembly Lab</span>
         </nav>
-        <h1>PC Assembly Lab</h1>
-        <p class="lead">Assembla un computer scegliendo i componenti: la diagnostica controlla in tempo reale la <strong>compatibilità</strong> (socket, RAM, form factor, lunghezza della GPU, alimentazione) e segnala i <strong>colli di bottiglia</strong>.</p>
+        <h1>Assembla il tuo primo PC</h1>
+        <p class="lead">Un percorso guidato, un componente alla volta. Ti spiego a cosa serve ogni pezzo e ti faccio scegliere <strong>solo tra le opzioni compatibili</strong>: così impari come si incastrano, senza sbagliare.</p>
       </div>
     </section>
 
     <section class="section so-section" style="padding-top:0">
       <div class="container">
-        <div class="panel controls-panel sort-controls">
-          <span class="control-label">Configurazioni pronte</span>
-          <div id="presets" class="examples"></div>
-        </div>
+        <div class="steps-bar" id="stepsBar"></div>
       </div>
     </section>
 
     <section class="section so-section" style="padding-top:0">
       <div class="container so-layout">
-
-        <!-- Configuratore -->
-        <div class="panel">
-          <header class="panel-head">
-            <span class="panel-kicker">01 — Componenti</span>
-            <h2 class="panel-title">Configura il PC</h2>
-          </header>
-          <div id="config" class="config"></div>
-        </div>
-
-        <!-- Diagnostica -->
-        <div class="panel">
-          <header class="panel-head">
-            <span class="panel-kicker">02 — Diagnostica</span>
-            <h2 class="panel-title">Verifica e problemi</h2>
-          </header>
-          <div id="verdict" class="verdict"></div>
-          <div id="checks" class="checks"></div>
-          <div id="meters" class="meters"></div>
-          <div id="summary" class="summary"></div>
+        <div class="panel wizard-panel" id="wizard"></div>
+        <div class="panel build-panel">
+          <header class="panel-head"><span class="panel-kicker">Il tuo PC</span><h2 class="panel-title">Pezzi scelti</h2></header>
+          <div id="buildList" class="build-list"></div>
+          <div id="buildTotal" class="build-total"></div>
         </div>
       </div>
     </section>
