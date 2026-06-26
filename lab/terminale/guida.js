@@ -127,18 +127,47 @@
     },
     {
       cat: "Permessi: r, w, x",
-      intro: "Chi può leggere, scrivere ed eseguire un file o una cartella.",
+      intro: "I permessi decidono chi può leggere, scrivere ed eseguire ogni file o cartella: è così che Linux protegge i dati di ogni utente.",
       items: [
-        { name: "concetto: r w x", concept: true, syntax: "rwx per utente/gruppo/altri",
-          desc: "Ogni file ha tre permessi — <b>r</b> (lettura), <b>w</b> (scrittura), <b>x</b> (esecuzione) — ripetuti per tre categorie: <b>proprietario</b>, <b>gruppo</b>, <b>altri</b>. In <code>ls -l</code> li leggi così: <code>-rwxr-x---</code>. Su una <b>cartella</b>: r = elencarne il contenuto, w = crearci/cancellarci dentro, x = attraversarla (entrarci con cd).",
-          ex: ["ls -l benvenuto.txt"] },
+        { name: "concetto: leggere i permessi (ls -l)", concept: true, syntax: "i 10 caratteri di ls -l",
+          desc: "Con <code>ls -l</code> ogni riga inizia con <b>10 caratteri</b>, per esempio <code>-rwxr-x---</code>. " +
+            "Il <b>1°</b> dice il tipo: <code>-</code> è un file, <code>d</code> una cartella. " +
+            "Gli altri <b>9</b> sono <b>tre gruppi da tre</b>: i primi 3 sono i permessi del <b>proprietario</b>, " +
+            "i tre centrali del <b>gruppo</b>, gli ultimi 3 di <b>tutti gli altri</b>. " +
+            "In ogni terzina l'ordine è sempre <b>r&nbsp;w&nbsp;x</b> (lettura, scrittura, esecuzione); un trattino <code>-</code> vuol dire che quel permesso manca. " +
+            "Quindi <code>-rwxr-x---</code> = il proprietario può fare tutto, il gruppo può leggere ed eseguire ma non modificare, gli altri non possono nulla.",
+          ex: ["ls -l benvenuto.txt", "ls -l documenti"] },
+
+        { name: "concetto: cosa significano r, w, x", concept: true, syntax: "file vs cartella",
+          desc: "Su un <b>file</b>: <b>r</b> = leggerne il contenuto (con <code>cat</code>), <b>w</b> = modificarlo o sovrascriverlo, <b>x</b> = eseguirlo (se è un programma o uno script). " +
+            "Su una <b>cartella</b> cambiano significato: <b>r</b> = vedere l'elenco dei file (<code>ls</code>), <b>w</b> = creare, rinominare o cancellare file al suo interno, <b>x</b> = attraversarla, cioè entrarci con <code>cd</code> e raggiungere i file che contiene. " +
+            "Spesso servono insieme: per usare davvero una cartella di solito ti serve <code>r</code> + <code>x</code>.",
+          ex: ["ls -l documenti", "cd documenti"] },
+
+        { name: "concetto: la notazione ottale (i numeri)", concept: true, syntax: "r=4 · w=2 · x=1",
+          desc: "Ogni permesso vale un numero: <b>r&nbsp;=&nbsp;4</b>, <b>w&nbsp;=&nbsp;2</b>, <b>x&nbsp;=&nbsp;1</b>. " +
+            "Per ogni categoria <b>sommi</b> i numeri dei permessi che vuoi dare: " +
+            "<code>7</code> = 4+2+1 = rwx, <code>6</code> = 4+2 = rw-, <code>5</code> = 4+1 = r-x, <code>4</code> = r--, <code>0</code> = nessuno. " +
+            "Usi <b>tre cifre</b>, una per proprietario, gruppo e altri: " +
+            "<code>755</code> = rwx&nbsp;r-x&nbsp;r-x (tipico di programmi e cartelle), " +
+            "<code>644</code> = rw-&nbsp;r--&nbsp;r-- (tipico dei file normali), " +
+            "<code>600</code> = rw-&nbsp;---&nbsp;--- (solo il proprietario).",
+          ex: ["chmod 644 documenti/note.txt", "ls -l documenti/note.txt"] },
+
         { name: "chmod", syntax: "chmod MODO file",
-          desc: "<i>Change Mode</i>: cambia i permessi. Due notazioni: <b>simbolica</b> (es. <code>u+x</code> = aggiungi esecuzione al proprietario, <code>go-w</code> = togli scrittura a gruppo e altri) e <b>ottale</b> a tre cifre (es. <code>755</code> = rwx per il proprietario, r-x per gli altri).",
-          opts: [["u g o a", "utente, gruppo, altri, tutti"], ["+ - =", "aggiungi, togli, imposta"], ["755 / 644 / 600", "notazione ottale (r=4, w=2, x=1)"]],
-          ex: ["touch script.sh", "chmod u+x script.sh", "chmod 644 script.sh", "ls -l script.sh"] },
+          desc: "<i>Change Mode</i>: cambia i permessi di un file o cartella. Hai due modi. " +
+            "<b>Simbolico</b> — scegli <b>chi</b> (<code>u</code> proprietario, <code>g</code> gruppo, <code>o</code> altri, <code>a</code> tutti), l'<b>operazione</b> (<code>+</code> aggiunge, <code>-</code> toglie, <code>=</code> imposta esatto) e i <b>permessi</b> (r/w/x). " +
+            "Es.: <code>u+x</code> dà l'esecuzione al proprietario, <code>go-w</code> toglie la scrittura a gruppo e altri, <code>a=r</code> mette solo lettura a tutti. " +
+            "<b>Ottale</b> — le tre cifre viste sopra, es. <code>chmod 755 script.sh</code>.",
+          opts: [["u / g / o / a", "proprietario · gruppo · altri · tutti"], ["+   -   =", "aggiungi · togli · imposta esatto"], ["r=4 w=2 x=1", "i valori da sommare nella notazione ottale"], ["755 · 644 · 600", "esempi pronti: programmi · file · privati"]],
+          ex: ["touch script.sh", "ls -l script.sh", "chmod u+x script.sh", "chmod go-w script.sh", "chmod 600 script.sh", "ls -l script.sh"] },
+
         { name: "chown", syntax: "chown utente[:gruppo] file",
-          desc: "<i>Change Owner</i>: cambia il proprietario (ed eventualmente il gruppo) di un file. Operazione riservata a <b>root</b>.",
-          ex: ["sudo chown root benvenuto.txt", "ls -l benvenuto.txt"] },
+          desc: "<i>Change Owner</i>: cambia il <b>proprietario</b> di un file (e, aggiungendo <code>:gruppo</code>, anche il gruppo). Serve quando un file deve passare a un altro utente. " +
+            "È un'operazione potente, riservata a <b>root</b>: usala con <code>sudo</code>. " +
+            "Es.: <code>sudo chown studente file.txt</code> rende «studente» il proprietario; <code>sudo chown studente:studente file.txt</code> cambia proprietario <b>e</b> gruppo.",
+          opts: [["utente", "nuovo proprietario"], ["utente:gruppo", "cambia anche il gruppo"]],
+          ex: ["ls -l benvenuto.txt", "sudo chown root benvenuto.txt", "ls -l benvenuto.txt"] },
       ],
     },
     {
