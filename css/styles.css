@@ -221,6 +221,91 @@
 .card-placeholder { border-style: dashed; opacity: 0.72; }
 .card-placeholder:hover { opacity: 1; }
 
+/* ---------- Lab promo (banner) ---------- */
+.lab-promo {
+  position: relative;
+  z-index: 2;
+  padding-block: clamp(1.5rem, 4vw, 3rem);
+}
+.lab-promo-inner {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  border-radius: calc(var(--radius) + 12px);
+  background: var(--ink);
+  color: var(--bg);
+  padding: clamp(2.25rem, 6vw, 4.75rem);
+}
+/* Bagliore decorativo dietro il contenuto */
+.lab-promo-glow {
+  position: absolute;
+  z-index: -1;
+  top: -50%;
+  right: -12%;
+  width: 62%;
+  height: 200%;
+  background: radial-gradient(circle, var(--accent), transparent 60%);
+  opacity: 0.4;
+  pointer-events: none;
+}
+.lab-promo-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: color-mix(in srgb, var(--bg) 72%, transparent);
+  margin-bottom: 1.4rem;
+}
+.lab-promo-title {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(2.1rem, 5.5vw, 3.8rem);
+  line-height: 1.03;
+  letter-spacing: -0.025em;
+  max-width: 20ch;
+}
+.lab-promo-title em { font-style: italic; font-weight: 400; }
+.lab-promo-text {
+  margin-top: 1.25rem;
+  max-width: 56ch;
+  color: color-mix(in srgb, var(--bg) 82%, transparent);
+  font-size: 1.05rem;
+}
+.lab-promo-chips {
+  list-style: none;
+  padding: 0;
+  margin: 1.85rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+.lab-promo-chips li {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.02em;
+  padding: 0.34rem 0.72rem;
+  border-radius: 100px;
+  border: 1px solid color-mix(in srgb, var(--bg) 26%, transparent);
+  color: color-mix(in srgb, var(--bg) 86%, transparent);
+}
+.lab-promo-foot {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 1.25rem;
+  margin-top: 2.25rem;
+}
+.lab-promo-btn { background: var(--bg); color: var(--ink); }
+.lab-promo-btn:hover { transform: translateY(-2px); }
+.lab-promo-count {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  color: color-mix(in srgb, var(--bg) 68%, transparent);
+}
+.lab-promo-count strong { color: var(--bg); font-weight: 600; }
+
 /* ---------- Publications ---------- */
 .pub-list { display: grid; gap: 0; border-top: 1px solid var(--line); }
 .pub {
