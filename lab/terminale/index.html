@@ -99,6 +99,24 @@
         </p>
       </div>
     </section>
+
+    <section class="section" style="padding-top:0">
+      <div class="container">
+        <div class="panel guide-panel">
+          <header class="panel-head">
+            <span class="panel-kicker">Guida</span>
+            <h2 class="panel-title">Ogni comando, spiegato</h2>
+            <p class="panel-sub">Sintassi, descrizione, opzioni ed esempi per ogni comando. Premi <strong>inserisci</strong> accanto a un esempio per scriverlo nel terminale e provarlo.</p>
+          </header>
+          <div class="guide-search field">
+            <span class="field-prefix">⌕</span>
+            <input id="guideSearch" type="text" autocomplete="off" spellcheck="false" placeholder="Cerca un comando o una parola (es. permessi, copia, grep)…" aria-label="Cerca nei comandi">
+          </div>
+          <p class="guide-empty" id="guideEmpty" hidden>Nessun comando corrisponde alla ricerca.</p>
+          <div id="guide"></div>
+        </div>
+      </div>
+    </section>
   </main>
 
   <!-- Editor vi (overlay) -->
@@ -124,5 +142,6 @@
 
   <script src="../../js/core.js"></script>
   <script src="terminale.js"></script>
+  <script src="guida.js"></script>
 </body>
 </html>

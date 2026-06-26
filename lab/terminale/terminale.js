@@ -922,5 +922,16 @@
   $("btnReset").addEventListener("click", () => { boot(); });
   $("btnHelp").addEventListener("click", () => { echoCommand("help"); print(COMMANDS.help().out); });
 
+  // Hook usato dalla guida sotto al terminale: scrive un comando nell'input
+  window.VT = {
+    type(line) {
+      if (cmdEl.disabled) boot();
+      cmdEl.value = line;
+      const term = document.querySelector(".terminal");
+      if (term) term.scrollIntoView({ behavior: "smooth", block: "center" });
+      cmdEl.focus();
+    },
+  };
+
   boot();
 })();
