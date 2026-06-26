@@ -3,16 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Live SQL Sandbox — strumento didattico interattivo del Lab di Simone Conca.">
+  <meta name="description" content="Live SQL Sandbox — un database SQLite reale che gira nel browser: scrivi query SQL e vedi subito i risultati. Schema d'esempio già pronto.">
   <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#100f0c" media="(prefers-color-scheme: dark)">
   <title>Live SQL Sandbox — Lab · Simone Conca</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../css/base.css">
   <link rel="stylesheet" href="../../css/lab.css">
+  <link rel="stylesheet" href="sql.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23100f0c'/><text x='50' y='71' text-anchor='middle' font-size='62' font-family='Georgia,serif' font-style='italic' font-weight='600' fill='%23f4f1ea'>S</text></svg>">
   <script>
     (function () { try { var s = localStorage.getItem("theme"); document.documentElement.setAttribute("data-theme", s || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")); } catch (e) {} })();
@@ -29,7 +30,7 @@
         <span class="brand-lab">LAB</span>
       </a>
       <nav class="nav" aria-label="Navigazione">
-        <a href="../">&larr; Lab</a>
+        <a href="../">← Lab</a>
         <a href="../../">Portfolio</a>
         <a href="../../#contatti">Contatti</a>
       </nav>
@@ -44,32 +45,73 @@
   </header>
 
   <nav id="nav-mobile" class="nav-mobile" aria-label="Navigazione mobile">
-    <a href="../">&larr; Lab</a>
+    <a href="../">← Lab</a>
     <a href="../../">Portfolio</a>
     <a href="../../#contatti">Contatti</a>
   </nav>
 
   <main>
-    <section class="section tool-hero">
+    <section class="section tool-hero" style="padding-bottom: clamp(1.5rem,4vw,2.5rem)">
       <div class="container">
         <nav class="breadcrumb" aria-label="Percorso">
           <a href="../">Lab</a><span class="sep">/</span><span class="current">Live SQL Sandbox</span>
         </nav>
         <h1>Live SQL Sandbox</h1>
-        <p class="lead">Un database SQLite completo che gira nel browser: scrivi query e vedi subito i risultati, su uno schema d'esempio gi&agrave; pronto.</p>
-        <div class="tool-hero-meta">
-          <span class="tool-status soon">Presto</span>
-          <span class="pub-status">Database — 3&ordf;&ndash;5&ordf;</span>
+        <p class="lead">Un database <strong>SQLite vero</strong> che gira interamente nel tuo browser — nessun server, nessun account. Scrivi una query, premi <strong>Esegui</strong> e vedi subito il risultato. C'è già un database d'esempio di una scuola: studenti, corsi e voti.</p>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:0">
+      <div class="container sql-grid">
+
+        <!-- Editor -->
+        <div class="panel editor-panel">
+          <header class="panel-head">
+            <span class="panel-kicker">01 — Editor SQL</span>
+            <h2 class="panel-title">Scrivi la tua query</h2>
+          </header>
+          <textarea id="sqlEditor" class="sql-editor" spellcheck="false" autocomplete="off" autocapitalize="off">SELECT * FROM studenti;</textarea>
+          <div class="editor-bar">
+            <button id="btnRun" class="run-btn" type="button" disabled>▶ Esegui <span class="kbd">Ctrl+Invio</span></button>
+            <button id="btnReset" class="ghost-btn" type="button">Ripristina database</button>
+            <span class="editor-status" id="status">Carico il motore SQL…</span>
+          </div>
         </div>
 
-        <div class="wip">
-          <p class="wip-badge">&#9881; In costruzione</p>
-          <h2>Disponibile a breve</h2>
-          <p>Qui troverai un editor SQL con un database d'esempio gi&agrave; popolato, esecuzione istantanea delle query e risultati in tabella, con esercizi guidati su SELECT, WHERE, JOIN e GROUP BY.</p>
-          <div class="wip-actions">
-            <a class="btn btn-ghost" href="../">&larr; Tutti gli strumenti</a>
-            <a class="btn btn-primary" href="../../#contatti">Richiedi una lezione</a>
+        <!-- Schema + esempi -->
+        <div class="panel side-panel">
+          <header class="panel-head">
+            <span class="panel-kicker">Database · scuola</span>
+            <h2 class="panel-title">Tabelle</h2>
+          </header>
+          <div id="schema" class="schema"></div>
+
+          <div class="examples-block">
+            <span class="examples-label">Esempi — clicca per provare</span>
+            <div id="examples" class="examples"></div>
           </div>
+        </div>
+
+        <!-- Risultati -->
+        <div class="panel result-panel">
+          <header class="panel-head">
+            <span class="panel-kicker">02 — Risultato</span>
+            <h2 class="panel-title">Output della query</h2>
+          </header>
+          <div id="result" class="result"></div>
+        </div>
+
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:0">
+      <div class="container">
+        <div class="panel">
+          <header class="panel-head">
+            <span class="panel-kicker">Promemoria</span>
+            <h2 class="panel-title">La struttura di una query</h2>
+          </header>
+          <p class="panel-sub"><code>SELECT</code> colonne <code>FROM</code> tabella <code>WHERE</code> condizione <code>GROUP BY</code> colonna <code>ORDER BY</code> colonna <code>LIMIT</code> n — le clausole vanno scritte in quest'ordine. Le modifiche (<code>INSERT</code>, <code>UPDATE</code>, <code>DELETE</code>) cambiano il database; con <strong>Ripristina database</strong> torni ai dati originali.</p>
         </div>
       </div>
     </section>
@@ -77,12 +119,14 @@
 
   <footer class="site-footer">
     <div class="container footer-inner">
-      <span class="footer-brand">Simone Conca &middot; Lab</span>
-      <span class="footer-meta">&copy; <span id="year"></span></span>
-      <a class="footer-top" href="../">&larr; Tutti gli strumenti</a>
+      <span class="footer-brand">Simone Conca · Lab</span>
+      <span class="footer-meta">© <span id="year"></span></span>
+      <a class="footer-top" href="../">← Tutti gli strumenti</a>
     </div>
   </footer>
 
   <script src="../../js/core.js"></script>
+  <script src="vendor/sql-wasm.js"></script>
+  <script src="sandbox.js"></script>
 </body>
 </html>
