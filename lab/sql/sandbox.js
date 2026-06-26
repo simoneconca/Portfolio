@@ -52,10 +52,16 @@
       (8,5,8,'2026-04-08'),(8,1,6,'2026-03-10'),(8,2,7,'2026-03-13');
   `;
 
+  // colonne: [nome, tipo SQLite, tipo MySQL, nota chiave]
   const SCHEMA_INFO = [
-    { table: "studenti", cols: [["id","INTEGER","PK"],["nome","TEXT"],["cognome","TEXT"],["classe","TEXT"],["citta","TEXT"],["eta","INTEGER"]] },
-    { table: "corsi", cols: [["id","INTEGER","PK"],["nome","TEXT"],["docente","TEXT"]] },
-    { table: "voti", cols: [["id","INTEGER","PK"],["studente_id","INTEGER","→ studenti"],["corso_id","INTEGER","→ corsi"],["voto","INTEGER"],["data","TEXT"]] },
+    { table: "studenti", cols: [
+      ["id","INTEGER","INT","PK"],["nome","TEXT","VARCHAR(30)"],["cognome","TEXT","VARCHAR(30)"],
+      ["classe","TEXT","VARCHAR(5)"],["citta","TEXT","VARCHAR(40)"],["eta","INTEGER","INT"]] },
+    { table: "corsi", cols: [
+      ["id","INTEGER","INT","PK"],["nome","TEXT","VARCHAR(40)"],["docente","TEXT","VARCHAR(40)"]] },
+    { table: "voti", cols: [
+      ["id","INTEGER","INT","PK"],["studente_id","INTEGER","INT","→ studenti"],
+      ["corso_id","INTEGER","INT","→ corsi"],["voto","INTEGER","INT"],["data","TEXT","DATE"]] },
   ];
 
   const EXAMPLES = [
@@ -63,6 +69,9 @@
     { label: "Filtro · WHERE", q: "SELECT nome, cognome, classe\nFROM studenti\nWHERE classe = '5A';" },
     { label: "Ordinamento · ORDER BY", q: "SELECT nome, cognome, eta\nFROM studenti\nORDER BY eta DESC;" },
     { label: "Unione tabelle · JOIN", q: "SELECT s.cognome, c.nome AS corso, v.voto\nFROM voti v\nJOIN studenti s ON v.studente_id = s.id\nJOIN corsi c ON v.corso_id = c.id;" },
+    { label: "Concatenazione testo", q: {
+        mysql: "SELECT CONCAT(nome, ' ', cognome) AS nome_completo, classe\nFROM studenti;",
+        sqlite: "SELECT nome || ' ' || cognome AS nome_completo, classe\nFROM studenti;" } },
     { label: "Media per studente · GROUP BY", q: "SELECT s.nome, s.cognome,\n       ROUND(AVG(v.voto), 2) AS media\nFROM voti v\nJOIN studenti s ON v.studente_id = s.id\nGROUP BY v.studente_id\nORDER BY media DESC;" },
     { label: "Conteggio · COUNT", q: "SELECT classe, COUNT(*) AS n_studenti\nFROM studenti\nGROUP BY classe;" },
     { label: "Migliori voti · LIMIT", q: "SELECT s.cognome, c.nome AS corso, v.voto\nFROM voti v\nJOIN studenti s ON v.studente_id = s.id\nJOIN corsi c ON v.corso_id = c.id\nORDER BY v.voto DESC\nLIMIT 5;" },
@@ -73,7 +82,63 @@
   const editor = $("sqlEditor"), result = $("result"), statusEl = $("status");
   const btnRun = $("btnRun"), btnReset = $("btnReset");
 
-  let SQL = null, db = null;
+  let SQL = null, db = null, dialect = "mysql";
+
+  const exampleQ = (e) => (typeof e.q === "string" ? e.q : e.q[dialect]);
+
+  /* ---------- Adattamento MySQL → SQLite (il motore è SQLite) ---------- */
+  function splitArgs(s) {
+    const parts = []; let depth = 0, q = null, cur = "";
+    for (let i = 0; i < s.length; i++) {
+      const ch = s[i];
+      if (q) { cur += ch; if (ch === q) q = null; }
+      else if (ch === "'" || ch === '"' || ch === "`") { q = ch; cur += ch; }
+      else if (ch === "(") { depth++; cur += ch; }
+      else if (ch === ")") { depth--; cur += ch; }
+      else if (ch === "," && depth === 0) { parts.push(cur); cur = ""; }
+      else cur += ch;
+    }
+    if (cur.trim() !== "") parts.push(cur);
+    return parts;
+  }
+  function translateConcat(sql) {
+    let out = sql, guard = 0;
+    const re = /\bCONCAT\s*\(/i;
+    let idx;
+    while ((idx = out.search(re)) !== -1 && guard++ < 50) {
+      const open = out.indexOf("(", idx);
+      let depth = 0, q = null, end = -1;
+      for (let i = open; i < out.length; i++) {
+        const ch = out[i];
+        if (q) { if (ch === q) q = null; }
+        else if (ch === "'" || ch === '"' || ch === "`") q = ch;
+        else if (ch === "(") depth++;
+        else if (ch === ")") { depth--; if (depth === 0) { end = i; break; } }
+      }
+      if (end === -1) break;
+      const args = splitArgs(out.slice(open + 1, end)).map((a) => a.trim());
+      out = out.slice(0, idx) + "(" + args.join(" || ") + ")" + out.slice(end + 1);
+    }
+    return out;
+  }
+  function normalizeMySQL(sql) {
+    let s = translateConcat(sql);
+    s = s.replace(/\bAUTO_INCREMENT\b/gi, "");
+    s = s.replace(/\bNOW\s*\(\s*\)/gi, "datetime('now')");
+    s = s.replace(/\bCURDATE\s*\(\s*\)/gi, "date('now')");
+    s = s.replace(/\bCURRENT_DATE\b/gi, "date('now')");
+    s = s.replace(/\bYEAR\s*\(([^()]+)\)/gi, "CAST(strftime('%Y',$1) AS INTEGER)");
+    s = s.replace(/\bMONTH\s*\(([^()]+)\)/gi, "CAST(strftime('%m',$1) AS INTEGER)");
+    s = s.replace(/\bDAY\s*\(([^()]+)\)/gi, "CAST(strftime('%d',$1) AS INTEGER)");
+    return s;
+  }
+
+  function setDialectNote() {
+    const el = $("dialectNote");
+    if (el) el.textContent = dialect === "mysql"
+      ? "Sintassi MySQL · adattata al motore SQLite"
+      : "Sintassi SQLite nativa";
+  }
 
   /* ---------- Render schema + esempi ---------- */
   function renderSchema() {
@@ -81,10 +146,11 @@
       `<div class="schema-table">` +
         `<div class="schema-table-name" data-q="SELECT * FROM ${t.table};" title="SELECT * FROM ${t.table}">${esc(t.table)}<span>SELECT *</span></div>` +
         `<div class="schema-cols">` +
-          t.cols.map((c) =>
-            `<div class="schema-col"><span class="c-name">${c[0]}</span>` +
-            `<span class="c-type">${c[1]}${c[2] ? ` <span class="c-key">${esc(c[2])}</span>` : ""}</span></div>`
-          ).join("") +
+          t.cols.map((c) => {
+            const type = dialect === "mysql" ? c[2] : c[1];
+            return `<div class="schema-col"><span class="c-name">${esc(c[0])}</span>` +
+              `<span class="c-type">${esc(type)}${c[3] ? ` <span class="c-key">${esc(c[3])}</span>` : ""}</span></div>`;
+          }).join("") +
         `</div>` +
       `</div>`
     ).join("");
@@ -104,8 +170,9 @@
   /* ---------- Esecuzione ---------- */
   function run() {
     if (!db) return;
-    const sql = editor.value.trim();
-    if (!sql) { setStatus("Scrivi una query.", "err"); return; }
+    const raw = editor.value.trim();
+    if (!raw) { setStatus("Scrivi una query.", "err"); return; }
+    const sql = dialect === "mysql" ? normalizeMySQL(raw) : raw;
 
     let results;
     try {
@@ -167,8 +234,15 @@
 
   $("examples").addEventListener("click", (e) => {
     const b = e.target.closest(".example-chip"); if (!b) return;
-    editor.value = EXAMPLES[+b.dataset.i].q;
+    editor.value = exampleQ(EXAMPLES[+b.dataset.i]);
     editor.focus(); run();
+  });
+  $("dialectSeg").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-dialect]"); if (!b) return;
+    dialect = b.dataset.dialect;
+    $("dialectSeg").querySelectorAll(".seg-btn").forEach((x) => x.classList.remove("active"));
+    b.classList.add("active");
+    renderSchema(); setDialectNote();
   });
   $("schema").addEventListener("click", (e) => {
     const n = e.target.closest(".schema-table-name"); if (!n) return;
@@ -176,6 +250,7 @@
   });
 
   /* ---------- Avvio: carica sql.js (WASM) ---------- */
+  setDialectNote();
   renderSchema();
   result.innerHTML = `<div class="result-empty">Premi <b>Esegui</b> per lanciare la query e vedere qui il risultato.</div>`;
 

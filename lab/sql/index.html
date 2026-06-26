@@ -70,6 +70,14 @@
             <span class="panel-kicker">01 — Editor SQL</span>
             <h2 class="panel-title">Scrivi la tua query</h2>
           </header>
+          <div class="dialect-row">
+            <span class="control-label">Dialetto</span>
+            <div class="seg" id="dialectSeg" role="group" aria-label="Dialetto SQL">
+              <button type="button" data-dialect="mysql" class="seg-btn active">MySQL · principale</button>
+              <button type="button" data-dialect="sqlite" class="seg-btn">SQLite</button>
+            </div>
+            <span class="dialect-note" id="dialectNote"></span>
+          </div>
           <textarea id="sqlEditor" class="sql-editor" spellcheck="false" autocomplete="off" autocapitalize="off">SELECT * FROM studenti;</textarea>
           <div class="editor-bar">
             <button id="btnRun" class="run-btn" type="button" disabled>▶ Esegui <span class="kbd">Ctrl+Invio</span></button>

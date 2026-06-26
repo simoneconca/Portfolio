@@ -20,6 +20,21 @@
   .result-panel { order: 2; }
 }
 
+/* ---------- Selettore dialetto ---------- */
+.dialect-row {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.9rem;
+}
+.dialect-note {
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  color: var(--ink-faint);
+  margin-left: auto;
+}
+
 /* ---------- Editor ---------- */
 .sql-editor {
   width: 100%;
