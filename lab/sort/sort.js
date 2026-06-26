@@ -108,7 +108,14 @@
 
   /* ---------- Codice nei 4 linguaggi (//@chiave = riga evidenziabile) ---------- */
   const ALGOS = {
-    bubble: { name: "Bubble Sort", big: "O(n²)", gen: bubble, code: {
+    bubble: { name: "Bubble Sort", big: "O(n²)", gen: bubble,
+      explain: {
+        idea: "Confronta due elementi vicini e li scambia se sono nell'ordine sbagliato, ripetendo finché la lista è tutta in ordine.",
+        how: "Scorre la lista da sinistra a destra confrontando ogni coppia di elementi vicini: se il primo è più grande del secondo, li scambia. A ogni passata il valore più grande \"galleggia\" fino in fondo, come una bolla, e la parte ordinata cresce da destra.",
+        analogy: "Come sistemare una fila di persone per altezza guardando solo due vicini alla volta e facendoli cambiare posto quando sono invertiti.",
+        note: "È il più facile da capire e da scrivere, ma anche il più lento: con tanti elementi fa moltissimi confronti."
+      },
+      code: {
       c: `void bubbleSort(int a[], int n) {
   for (int i = 0; i < n - 1; i++)
     for (int j = 0; j < n - 1 - i; j++)
@@ -142,7 +149,14 @@
             if a[j] > a[j + 1]:           #@compare
                 a[j], a[j+1] = a[j+1], a[j]   #@swap` } },
 
-    selection: { name: "Selection Sort", big: "O(n²)", gen: selection, code: {
+    selection: { name: "Selection Sort", big: "O(n²)", gen: selection,
+      explain: {
+        idea: "Cerca ogni volta l'elemento più piccolo rimasto e lo porta al suo posto.",
+        how: "Guarda tutta la parte non ancora ordinata e trova il minimo, poi lo scambia con il primo elemento di quella parte. Sposta l'inizio di una posizione e ripete: la parte ordinata cresce da sinistra.",
+        analogy: "Come scegliere da un mazzo di carte ogni volta la più bassa e metterla in fila, una dopo l'altra.",
+        note: "Fa pochissimi scambi (utile quando spostare gli elementi costa), ma controlla comunque sempre tanti elementi."
+      },
+      code: {
       c: `void selectionSort(int a[], int n) {
   for (int i = 0; i < n; i++) {
     int min = i;                    //@min
@@ -179,7 +193,14 @@
                 mn = j               #@min
         a[i], a[mn] = a[mn], a[i]    #@swap` } },
 
-    insertion: { name: "Insertion Sort", big: "O(n²)", gen: insertion, code: {
+    insertion: { name: "Insertion Sort", big: "O(n²)", gen: insertion,
+      explain: {
+        idea: "Prende un elemento alla volta e lo infila nel punto giusto tra quelli già ordinati.",
+        how: "Considera il primo elemento come già a posto. Prende il successivo (la \"chiave\"), lo confronta all'indietro con quelli già sistemati e li sposta di un posto a destra finché trova dove inserirlo.",
+        analogy: "Proprio come si ordinano le carte da gioco in mano: ne peschi una e la inserisci al punto giusto tra quelle che hai già sistemato.",
+        note: "Velocissimo se la lista è già quasi ordinata ed efficiente sulle liste piccole. Rallenta nel caso peggiore."
+      },
+      code: {
       c: `void insertionSort(int a[], int n) {
   for (int i = 1; i < n; i++) {
     int key = a[i], j = i - 1;      //@key
@@ -218,7 +239,14 @@
             j -= 1
         a[j + 1] = key               #@insert` } },
 
-    merge: { name: "Merge Sort", big: "O(n log n)", gen: merge, code: {
+    merge: { name: "Merge Sort", big: "O(n log n)", gen: merge,
+      explain: {
+        idea: "Divide la lista a metà, ordina le due metà e poi le fonde insieme già in ordine.",
+        how: "Usa la strategia \"divide et impera\": continua a dividere la lista in due finché restano pezzetti da un solo elemento (già ordinati). Poi li fonde a coppie confrontando i primi elementi di ciascun pezzo, formando liste sempre più grandi e ordinate.",
+        analogy: "Come unire due mazzi di carte già ordinati in uno solo: guardi la carta in cima a ciascun mazzo e prendi ogni volta la più piccola.",
+        note: "Veloce e affidabile anche con molti dati. In cambio usa un po' di memoria in più per fondere le parti."
+      },
+      code: {
       c: `void merge(int a[], int l, int m, int r) {
   /* fonde a[l..m] e a[m+1..r] ordinati */
   int i = l, j = m + 1, k = 0, tmp[r - l + 1];
@@ -261,7 +289,14 @@
     while i < len(L): a[k] = L[i]; i += 1; k += 1
     while j < len(R): a[k] = R[j]; j += 1; k += 1` } },
 
-    quick: { name: "Quick Sort", big: "O(n log n)", gen: quick, code: {
+    quick: { name: "Quick Sort", big: "O(n log n)", gen: quick,
+      explain: {
+        idea: "Sceglie un elemento \"pivot\" e mette i più piccoli a sinistra e i più grandi a destra, poi ripete sulle due parti.",
+        how: "Sceglie un pivot (qui l'ultimo elemento) e scorre la parte spostando a sinistra tutti i valori minori del pivot. Alla fine mette il pivot tra i minori e i maggiori: ora è al suo posto definitivo. Poi rifà lo stesso lavoro sulla parte sinistra e su quella destra.",
+        analogy: "Come dividere i compagni in \"più bassi\" e \"più alti\" di una persona scelta, e poi rifare la stessa divisione dentro ciascun gruppo.",
+        note: "In media molto veloce e ordina sul posto, senza liste extra. Può rallentare se il pivot viene scelto male."
+      },
+      code: {
       c: `int partition(int a[], int lo, int hi) {
   int pivot = a[hi], i = lo;        //@pivot
   for (int j = lo; j < hi; j++)
@@ -313,7 +348,19 @@
     stopAuto();
     if (newValues) values = newValues;
     frames = gen(values, ALGOS[algo].gen);
-    step = 0; render();
+    step = 0; render(); renderExplain();
+  }
+
+  /* ---------- Spiegazione dell'algoritmo selezionato ---------- */
+  function renderExplain() {
+    const a = ALGOS[algo];
+    if (!a.explain || !$("explainTitle")) return;
+    $("explainTitle").textContent = a.name;
+    $("explainBig").innerHTML = `Complessità <b>${esc(a.big)}</b>`;
+    $("explainIdea").textContent = a.explain.idea;
+    $("explainHow").textContent = a.explain.how;
+    $("explainAnalogy").textContent = a.explain.analogy;
+    $("explainNote").textContent = a.explain.note;
   }
 
   /* ---------- Render ---------- */

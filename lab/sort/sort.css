@@ -22,6 +22,27 @@
 .sort-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
 @media (max-width: 880px) { .sort-layout { grid-template-columns: minmax(0, 1fr); } }
 
+/* ---------- Spiegazione dell'algoritmo ---------- */
+.explain-panel { margin-bottom: 1.25rem; }
+.explain-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.65rem; }
+.explain-head h2 {
+  font-family: var(--font-display); font-weight: 500;
+  font-size: clamp(1.3rem, 3vw, 1.85rem); letter-spacing: -0.015em; line-height: 1.1;
+}
+.explain-big {
+  font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-soft);
+  border: 1px solid var(--line); border-radius: 100px; padding: 0.28rem 0.75rem; white-space: nowrap;
+}
+.explain-big b { color: var(--accent); }
+.explain-idea { font-size: 1.02rem; color: var(--ink); max-width: 78ch; margin-bottom: 1.4rem; }
+.explain-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem 1.6rem; }
+@media (max-width: 760px) { .explain-grid { grid-template-columns: 1fr; gap: 1rem; } }
+.explain-label {
+  display: block; font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.07em;
+  text-transform: uppercase; color: var(--accent); margin-bottom: 0.35rem;
+}
+.explain-item p { font-size: 0.9rem; color: var(--ink-soft); line-height: 1.55; }
+
 /* ---------- Barra controlli esecuzione ---------- */
 .exec-bar { display: flex; align-items: center; gap: 0.55rem; flex-wrap: wrap; margin-bottom: 1.1rem; padding-bottom: 0.9rem; border-bottom: 1px solid var(--line-soft); }
 .speed { display: inline-flex; align-items: center; gap: 0.5rem; margin-left: auto; font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-soft); }
