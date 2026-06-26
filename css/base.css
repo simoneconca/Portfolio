@@ -49,7 +49,9 @@
 *, *::before, *::after { box-sizing: border-box; }
 * { margin: 0; }
 
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; overflow-x: hidden; }
+/* overflow-x: clip taglia lo sfondamento orizzontale senza creare un
+   contenitore di scroll, così position: sticky continua a funzionare */
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; overflow-x: clip; }
 
 body {
   background: var(--bg);
@@ -59,7 +61,7 @@ body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
-  overflow-x: hidden;
+  overflow-x: clip;
   transition: background-color 0.4s var(--ease), color 0.4s var(--ease);
 }
 
