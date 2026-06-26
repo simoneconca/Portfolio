@@ -7,54 +7,46 @@
 const SITE = {
   email: "simone.conca2006@gmail.com",
   links: [
-    { label: "GitHub", url: "https://github.com/simoneconca" }
-    // Aggiungi altri link qui, es: { label: "LinkedIn", url: "https://..." }
+    { label: "Instagram", url: "https://instagram.com/simoneconca_" },
+    { label: "YouTube", url: "https://www.youtube.com/@SimoneConca" }
   ]
 };
 
 /* --- Progetti ---
-   Campi: title, description, tags[], demo (URL o ""), repo (URL o "").
+   Campi: title, description, tags[], page (pagina di presentazione interna),
+          demo (URL app/live o ""), repo (URL codice o "").
+   "page" apre nella stessa scheda; "demo"/"repo" in una nuova.
    Aggiungi "placeholder: true" alle card ancora da riempire. */
 const PROJECTS = [
   {
-    title: "Primo progetto",
-    description: "Breve descrizione di cosa fa e perché l'hai creato — un tool per studenti, un eserciziario o un lavoro personale.",
-    tags: ["Didattica", "Web"],
-    demo: "",
-    repo: "https://github.com/simoneconca"
-  },
-  {
-    title: "Progetto di diploma",
-    description: "Descrivi qui il tuo lavoro di maturità o un progetto scolastico rilevante.",
-    tags: ["Progetto scolastico"],
+    title: "AURA",
+    description: "App personale (Flutter) per tenere insieme la vita di tutti i giorni: calendario ed eventi, abitudini, obiettivi, diario, spese, galleria e documenti. Funziona offline, con un database locale crittografato.",
+    tags: ["Flutter", "Dart", "App mobile"],
+    page: "progetti/aura/",
     demo: "",
     repo: ""
   },
   {
-    title: "Prossimo progetto",
-    description: "Placeholder: sostituisci o elimina questa card quando pubblichi qualcosa di nuovo.",
-    tags: ["In arrivo"],
+    title: "Gestionale Dipendenti e Corsi",
+    description: "Gestionale web (PHP + MySQL) per tenere traccia di dipendenti, corsi di formazione, visite mediche e relative scadenze. È uno dei miei primi progetti, realizzato durante le superiori.",
+    tags: ["PHP", "MySQL", "Progetto scolastico"],
+    page: "progetti/gestionale/",
     demo: "",
-    repo: "",
-    placeholder: true
+    repo: ""
   }
+  // Aggiungi qui gli altri tuoi progetti:
+  // { title: "...", description: "...", tags: ["..."], page: "", demo: "", repo: "" }
 ];
 
 /* --- Pubblicazioni (manuali Amazon) ---
-   Campi: title, description, year, status, url (lascia "" se non ancora online). */
+   Campi: title, description, year, status, url (lascia "" se non ancora online).
+   Sostituisci con i titoli reali appena i manuali sono pronti. */
 const PUBLICATIONS = [
   {
-    title: "Titolo del primo manuale",
-    description: "Di cosa tratta, a chi è rivolto e cosa imparerà chi lo legge.",
+    title: "Manuale di informatica per le superiori",
+    description: "Un manuale pensato per studenti e docenti, con spiegazioni chiare ed esempi pratici. Attualmente in scrittura: il titolo definitivo e i dettagli arriveranno alla pubblicazione.",
     year: "2026",
     status: "In preparazione",
-    url: ""
-  },
-  {
-    title: "Secondo manuale",
-    description: "Aggiungi altre pubblicazioni man mano che le completi.",
-    year: "2026",
-    status: "Bozza",
     url: ""
   }
 ];

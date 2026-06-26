@@ -14,14 +14,19 @@ function renderProjects() {
       .map((tag) => `<span class="tag">${escapeHtml(tag)}</span>`)
       .join("");
 
-    const links = [];
-    if (project.demo) links.push(`<a href="${escapeAttr(project.demo)}" target="_blank" rel="noopener noreferrer">Demo →</a>`);
-    if (project.repo) links.push(`<a href="${escapeAttr(project.repo)}" target="_blank" rel="noopener noreferrer">Codice →</a>`);
+    // I link interni (pagina di presentazione) restano nella stessa scheda;
+    // quelli esterni (demo live, repo) si aprono in una nuova.
+    const isExternal = (url) => /^https?:\/\//i.test(url);
+    const link = (url, label) =>
+      `<a href="${escapeAttr(url)}"${isExternal(url) ? ' target="_blank" rel="noopener noreferrer"' : ""}>${label}</a>`;
 
-    const href = project.demo || project.repo;
-    const titleHtml = href
-      ? `<a href="${escapeAttr(href)}" target="_blank" rel="noopener noreferrer">${escapeHtml(project.title)}</a>`
-      : escapeHtml(project.title);
+    const links = [];
+    if (project.page) links.push(link(project.page, "Scopri il progetto →"));
+    if (project.demo) links.push(link(project.demo, "Demo →"));
+    if (project.repo) links.push(link(project.repo, "Codice →"));
+
+    const href = project.page || project.demo || project.repo;
+    const titleHtml = href ? link(href, escapeHtml(project.title)) : escapeHtml(project.title);
 
     const num = String(i + 1).padStart(2, "0");
 

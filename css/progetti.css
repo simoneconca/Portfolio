@@ -1,0 +1,230 @@
+/* ============================================================
+   progetti.css — pagine di presentazione dei singoli progetti.
+   Carica DOPO base.css. Riusa i token e l'header/footer condivisi.
+   ============================================================ */
+
+/* Etichetta "PROGETTO" accanto al brand nell'header */
+.brand-tag {
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent);
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  border-radius: 5px;
+  padding: 0.15rem 0.4rem;
+  margin-left: 0.2rem;
+}
+
+/* ---------- Hero del progetto ---------- */
+.proj-hero {
+  position: relative;
+  z-index: 2;
+  padding-top: clamp(3rem, 8vw, 6rem);
+  padding-bottom: clamp(2rem, 5vw, 3.5rem);
+}
+.proj-kicker {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: var(--ink-soft);
+  margin-bottom: 1.3rem;
+}
+.proj-kicker .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+.proj-title {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: clamp(2.8rem, 9vw, 6rem);
+  line-height: 0.98;
+  letter-spacing: -0.03em;
+}
+.proj-tagline {
+  margin-top: 1.2rem;
+  max-width: 60ch;
+  font-size: clamp(1.1rem, 1rem + 0.6vw, 1.4rem);
+  color: var(--ink-soft);
+  line-height: 1.5;
+}
+.proj-tagline strong { color: var(--ink); font-weight: 600; }
+
+.proj-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.8rem;
+}
+.proj-chip {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.02em;
+  color: var(--ink-soft);
+  background: var(--bg-sunk);
+  border: 1px solid var(--line-soft);
+  border-radius: 100px;
+  padding: 0.35rem 0.8rem;
+}
+.proj-chip.accent {
+  color: var(--accent);
+  background: var(--accent-wash);
+  border-color: color-mix(in srgb, var(--accent) 30%, transparent);
+}
+
+.proj-cta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.8rem;
+  margin-top: 2.2rem;
+}
+/* Bottone "in arrivo": disattivato ma chiaro */
+.btn.is-soon {
+  cursor: not-allowed;
+  opacity: 0.65;
+  background: var(--bg-sunk);
+  color: var(--ink-soft);
+  border-color: var(--line);
+}
+.btn.is-soon:hover { transform: none; }
+
+/* ---------- Sezioni di contenuto ---------- */
+.proj-section { padding-block: clamp(2.5rem, 6vw, 4.5rem); }
+.proj-section .section-num { margin-bottom: 0.6rem; }
+.proj-h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.7rem, 4vw, 2.6rem);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  margin-bottom: 1.4rem;
+}
+.proj-lead {
+  max-width: 62ch;
+  color: var(--ink-soft);
+  font-size: 1.05rem;
+}
+.proj-lead + .proj-lead { margin-top: 1rem; }
+.proj-lead strong { color: var(--ink); font-weight: 600; }
+
+/* ---------- Griglia funzionalità ---------- */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.feature {
+  background: var(--bg-elev);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  padding: 1.4rem 1.4rem 1.5rem;
+  transition: border-color 0.25s var(--ease), transform 0.25s var(--ease);
+}
+.feature:hover { border-color: var(--line); transform: translateY(-3px); }
+.feature-ico {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 10px;
+  background: var(--accent-wash);
+  color: var(--accent);
+  margin-bottom: 1rem;
+}
+.feature h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.2rem;
+  letter-spacing: -0.01em;
+  margin-bottom: 0.4rem;
+}
+.feature p { color: var(--ink-soft); font-size: 0.95rem; line-height: 1.55; }
+
+/* ---------- Stack tecnologico ---------- */
+.stack {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.55rem;
+  margin-top: 1.6rem;
+}
+.stack-tag {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--ink);
+  background: var(--bg-elev);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.45rem 0.85rem;
+}
+.stack-tag span { color: var(--ink-faint); }
+
+/* ---------- Anteprime (placeholder) ---------- */
+.shot-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.shot-ph {
+  display: grid;
+  place-items: center;
+  gap: 0.6rem;
+  aspect-ratio: 4 / 3;
+  text-align: center;
+  padding: 1.5rem;
+  border: 1.5px dashed var(--line);
+  border-radius: var(--radius);
+  background: var(--bg-sunk);
+  color: var(--ink-faint);
+}
+.shot-ph svg { opacity: 0.6; }
+.shot-ph span {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+}
+
+/* ---------- Callout / nota ---------- */
+.callout {
+  margin-top: 2rem;
+  padding: 1.3rem 1.5rem;
+  background: var(--bg-elev);
+  border: 1px solid var(--line-soft);
+  border-left: 3px solid var(--accent);
+  border-radius: 10px;
+}
+.callout p { color: var(--ink-soft); font-size: 0.98rem; }
+.callout p + p { margin-top: 0.6rem; }
+.callout strong { color: var(--ink); font-weight: 600; }
+
+/* ---------- Navigazione di chiusura ---------- */
+.proj-foot-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: clamp(2.5rem, 6vw, 4rem);
+  padding-top: 2rem;
+  border-top: 1px solid var(--line-soft);
+}
+.proj-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  transition: color 0.2s var(--ease);
+}
+.proj-back:hover { color: var(--ink); }
+
+@media (max-width: 620px) {
+  .proj-cta .btn { width: 100%; justify-content: center; }
+}
