@@ -1,0 +1,85 @@
+/* ============================================================
+   sort.css — Visualizzatore di algoritmi di ordinamento
+   Primitive (panel, seg, ghost-btn) in lab.css.
+   ============================================================ */
+
+.sort-hero { padding-top: clamp(2rem, 5vw, 3.5rem); padding-bottom: 1.1rem; }
+
+.run-btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-family: var(--font-sans); font-size: 0.88rem; font-weight: 500;
+  padding: 0.5rem 0.95rem; border: 1px solid var(--accent); border-radius: 100px;
+  background: var(--accent); color: var(--accent-ink); cursor: pointer;
+  transition: transform 0.15s var(--ease);
+}
+.run-btn:hover:not(:disabled) { transform: translateY(-1px); }
+.run-btn:disabled { opacity: 0.5; cursor: default; }
+
+.sort-controls { display: flex; flex-wrap: wrap; gap: 1rem 1.75rem; align-items: center; }
+.slider { accent-color: var(--accent); cursor: pointer; max-width: 8rem; }
+.slider-val { font-family: var(--font-mono); font-size: 0.85rem; color: var(--ink); min-width: 1.5rem; }
+
+.sort-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+@media (max-width: 880px) { .sort-layout { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- Barra controlli esecuzione ---------- */
+.exec-bar { display: flex; align-items: center; gap: 0.55rem; flex-wrap: wrap; margin-bottom: 1.1rem; padding-bottom: 0.9rem; border-bottom: 1px solid var(--line-soft); }
+.speed { display: inline-flex; align-items: center; gap: 0.5rem; margin-left: auto; font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-soft); }
+.speed .slider { max-width: 5.5rem; }
+
+/* ---------- Barre ---------- */
+.bars-wrap { background: var(--bg-sunk); border: 1px solid var(--line); border-radius: 12px; padding: 0.75rem; }
+.bars {
+  display: flex; align-items: flex-end; gap: 2px;
+  height: clamp(180px, 34vh, 280px);
+}
+.bar {
+  flex: 1 1 0; min-width: 0;
+  background: var(--accent);
+  border-radius: 4px 4px 0 0;
+  display: flex; align-items: flex-start; justify-content: center;
+  font-family: var(--font-mono); font-size: 0.6rem; font-weight: 600;
+  color: var(--accent-ink); padding-top: 3px;
+  transition: height 0.18s var(--ease), background-color 0.12s var(--ease);
+}
+.bar.compare { background: #c98a1b; }
+.bar.swap { background: #e0533d; }
+.bar.pivot { background: #8a5cf0; }
+.bar.sorted { background: #3fae6b; }
+@media (max-width: 560px) { .bar { font-size: 0; padding-top: 0; } }
+
+.sort-progress { height: 4px; border-radius: 2px; background: var(--bg-sunk); overflow: hidden; margin-top: 0.9rem; }
+.sort-progress-fill { height: 100%; width: 0; background: var(--accent); transition: width 0.2s var(--ease); }
+
+.sort-desc { font-family: var(--font-mono); font-size: 0.84rem; color: var(--ink); min-height: 1.4rem; margin-top: 0.9rem; }
+.sort-desc .hl { color: var(--accent); font-weight: 600; }
+.sort-counters { display: flex; gap: 1.25rem; flex-wrap: wrap; margin-top: 0.6rem; font-family: var(--font-mono); font-size: 0.76rem; color: var(--ink-soft); }
+.sort-counters b { color: var(--ink); }
+.sort-counters .done-tag { color: #3fae6b; font-weight: 600; }
+
+/* ---------- Codice ---------- */
+.lang-bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.9rem; }
+.complexity { font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-faint); }
+.complexity b { color: var(--accent); }
+.code-view {
+  margin: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--bg-sunk);
+  font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.55;
+  overflow: auto; max-height: clamp(260px, 42vh, 460px);
+}
+.code-view .ln {
+  display: grid; grid-template-columns: 2.2rem 1fr; gap: 0.6rem;
+  padding: 0 0.7rem; white-space: pre;
+}
+.code-view .ln .num { color: var(--ink-faint); text-align: right; user-select: none; font-size: 0.72rem; }
+.code-view .ln .src { color: var(--ink); }
+.code-view .ln.current { background: var(--accent); }
+.code-view .ln.current .num, .code-view .ln.current .src { color: var(--accent-ink); }
+.code-view .kw { color: var(--accent); }
+.code-view .current .kw { color: var(--accent-ink); }
+.code-view .cm { color: var(--ink-faint); font-style: italic; }
+.code-view .current .cm { color: var(--accent-ink); opacity: 0.85; }
+
+@media (max-width: 480px) {
+  .sort-controls { gap: 0.9rem 1.25rem; }
+  .speed { margin-left: 0; }
+}
