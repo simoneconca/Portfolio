@@ -1,166 +1,161 @@
 /* ============================================================
-   vonneumann.js — Macchina di Von Neumann
-   Simula il ciclo fetch-decode-execute di un piccolo programma e
-   anima il percorso dei dati (pacchetto sui bus). Zero dipendenze.
+   vonneumann.js — Macchina di Von Neumann (lab esplorativo)
+   1) Clicca un componente -> scopri cosa fa (definizioni dal corso).
+   2) "Guarda come funziona" -> demo animata del percorso dei dati.
+   Zero dipendenze.
    ============================================================ */
 (function () {
   "use strict";
   const $ = (id) => document.getElementById(id);
 
-  // Programma fisso: legge 2 numeri, li somma, mostra il risultato.
-  // La memoria contiene istruzioni (0–5) E dati (cella 6): è il cuore
-  // dell'idea di Von Neumann (programma e dati nella stessa memoria).
-  const PROGRAM = [
-    { type: "instr", text: "IN" },        // 0: input → ACC
-    { type: "instr", text: "STORE 6" },   // 1: ACC → memoria[6]
-    { type: "instr", text: "IN" },        // 2: input → ACC
-    { type: "instr", text: "ADD 6" },     // 3: ACC = ACC + memoria[6]
-    { type: "instr", text: "OUT" },       // 4: ACC → output
-    { type: "instr", text: "HLT" },       // 5: stop
-    { type: "data", value: 0 },           // 6: dato
+  /* ---------- Spiegazioni dei componenti (linguaggio da 1ª) ---------- */
+  const INFO = {
+    input:   { emoji: "📥", name: "Dispositivi di Input", tag: "tu → computer",
+      text: "Servono per <b>immettere dati e istruzioni</b> nel computer: è il modo in cui l'utente comunica con la macchina. Esempi: <b>tastiera</b>, <b>mouse</b>, microfono, webcam, scanner." },
+    output:  { emoji: "📤", name: "Dispositivi di Output", tag: "computer → tu",
+      text: "Mostrano o restituiscono i <b>risultati dell'elaborazione</b>: è il modo in cui il computer comunica con l'utente. Esempi: <b>schermo</b>, <b>stampante</b>, casse audio." },
+    cpu:     { emoji: "🧠", name: "CPU — Central Processing Unit", tag: "il cervello",
+      text: "È il <b>cervello del computer</b>: esegue le istruzioni dei programmi. È composta da tre parti che lavorano insieme: l'<b>Unità di Controllo (CU)</b>, l'<b>Unità Aritmetico-Logica (ALU)</b> e i <b>Registri</b>. Cliccale per scoprirle!" },
+    cu:      { emoji: "🎛️", name: "CU — Unità di Controllo", tag: "il direttore",
+      text: "<b>Interpreta le istruzioni</b> del programma e <b>dirige il flusso dei dati</b> tra le varie componenti del computer. È come il direttore d'orchestra: dice a ogni parte cosa fare e quando." },
+    alu:     { emoji: "➗", name: "ALU — Unità Aritmetico-Logica", tag: "i calcoli",
+      text: "Esegue le operazioni <b>matematiche</b> (addizioni, sottrazioni…) e <b>logiche</b> (confronti, es. «è più grande?»). È la parte che fa i veri e propri calcoli." },
+    registri:{ emoji: "⚡", name: "Registri", tag: "memoria lampo",
+      text: "Sono <b>piccole e velocissime aree di memoria</b> dentro la CPU. Conservano <b>temporaneamente</b> i dati e le istruzioni che la CPU sta elaborando in quel preciso istante." },
+    memoria: { emoji: "💾", name: "Memoria centrale", tag: "i tre tipi",
+      text: "È il luogo dove il computer memorizza <b>temporaneamente</b> i dati e le istruzioni dei programmi in esecuzione. È ad <b>accesso rapido</b> e si divide in tre tipi: <b>RAM</b>, <b>ROM</b> e <b>Cache</b>. Cliccali per scoprirli!" },
+    ram:     { emoji: "🧮", name: "RAM — Random Access Memory", tag: "memoria di lavoro",
+      text: "È la <b>memoria di lavoro</b>: contiene il sistema operativo, i programmi in esecuzione e i dati in elaborazione. È <b>volatile</b>: i dati si <b>perdono quando spegni</b> il computer. «Random Access» = accede a qualsiasi dato in modo diretto e velocissimo." },
+    rom:     { emoji: "🔒", name: "ROM — Read Only Memory", tag: "l'avvio",
+      text: "È una memoria <b>non volatile</b> (non si cancella) che contiene le istruzioni per l'<b>avvio</b> del computer — il <b>BIOS/UEFI</b>. All'accensione la CPU parte da qui: controlla l'hardware e <b>carica il sistema operativo</b> nella RAM (processo chiamato <b>bootstrap</b>)." },
+    cache:   { emoji: "🚀", name: "Cache", tag: "ultra-veloce",
+      text: "Una memoria <b>piccolissima e ultra-veloce</b>, posizionata tra la CPU e la RAM. Fa da «deposito» per i dati che la CPU usa <b>più spesso</b>, così li recupera quasi all'istante e tutto va più veloce." },
+    busaddr: { emoji: "📍", name: "Bus indirizzi (Address Bus)", tag: "il «dove»",
+      text: "Indica la <b>posizione in memoria</b> (l'indirizzo) da cui i dati devono essere <b>letti o scritti</b>. In pratica dice alla memoria QUALE cella serve." },
+    busdata: { emoji: "📦", name: "Bus dati (Data Bus)", tag: "il «cosa»",
+      text: "Si occupa del <b>trasferimento dei dati veri e propri</b> tra le componenti: le informazioni viaggiano avanti e indietro qui sopra." },
+    busctrl: { emoji: "🚦", name: "Bus controllo (Control Bus)", tag: "i comandi",
+      text: "Gestisce le <b>operazioni di controllo</b>, coordinando le attività di tutte le componenti: dice quando leggere, quando scrivere, chi deve agire." },
+  };
+
+  const INTRO = { emoji: "👆", name: "Esplora la macchina", tag: "inizia da qui",
+    text: "I tre pezzi principali sono la <b>CPU</b>, la <b>memoria centrale</b> e il <b>bus di sistema</b>; ci sono poi i dispositivi di <b>input</b> e <b>output</b>. <b>Clicca un componente</b> qui sopra per scoprire cosa fa, oppure premi <b>« Guarda come funziona »</b> per vedere il percorso dei dati." };
+
+  /* ---------- Demo: il percorso dei dati (somma 3 + 4) ---------- */
+  const DEMO = [
+    { narr: "L'utente digita i numeri con un <b>dispositivo di input</b> (la tastiera): i dati e il programma entrano nella <b>memoria</b> (RAM).",
+      from: "compInput", to: "ram", value: "3 e 4", hi: ["compInput", "ram"], inv: "3 e 4" },
+    { narr: "La <b>CPU</b> deve sapere cosa fare: chiede alla memoria la prossima istruzione indicando la cella sul <b>bus indirizzi</b>.",
+      from: "cu", to: "ram", bus: "addr", value: "cella n.…", hi: ["cu", "ram"], inv: "3 e 4" },
+    { narr: "La memoria invia l'istruzione alla CPU viaggiando sul <b>bus dati</b>: finisce nei <b>Registri</b>.",
+      from: "ram", to: "registri", bus: "data", value: "SOMMA 3+4", hi: ["registri"], inv: "3 e 4" },
+    { narr: "L'<b>Unità di Controllo (CU)</b> interpreta l'istruzione e, tramite il <b>bus controllo</b>, comanda le altre parti.",
+      from: null, to: null, bus: "ctrl", hi: ["cu"], inv: "3 e 4" },
+    { narr: "L'<b>ALU</b> esegue il calcolo vero e proprio: <b>3 + 4 = 7</b>, usando i <b>Registri</b> per i numeri.",
+      from: "registri", to: "alu", value: "3 + 4", hi: ["alu", "registri"], inv: "3 e 4" },
+    { narr: "Il risultato <b>7</b> esce dalla CPU e va a un <b>dispositivo di output</b> (lo schermo): ora lo vedi!",
+      from: "alu", to: "compOutput", value: "7", hi: ["compOutput"], inv: "3 e 4", outv: "7" },
+    { narr: "✓ Fatto! Hai visto il <b>percorso dei dati</b>: <b>Input → Memoria → CPU → Output</b>. È così che lavora un computer, milioni di volte al secondo.",
+      from: null, to: null, done: true, inv: "3 e 4", outv: "7" },
   ];
 
-  let frames = [], step = 0, timer = null;
+  let demoStep = -1, timer = null;
 
-  /* ---------- Generazione dei micro-passi ---------- */
-  function build(inputs) {
-    const mem = PROGRAM.map((c) => Object.assign({}, c));
-    let PC = 0, IR = "—", MAR = "—", MDR = "—", ACC = 0, inIdx = 0;
-    const out = [];
-    const fr = [];
-    const snap = (o) => fr.push(Object.assign({
-      PC, IR, MAR, MDR, ACC, mem: mem.map((c) => Object.assign({}, c)), out: out.slice(),
-      inNext: inputs[inIdx] != null ? inputs[inIdx] : null,
-    }, o));
-
-    snap({ desc: "Il programma è già in <b>memoria</b> insieme ai dati. Premi <b>Passo</b> per iniziare il ciclo.", phase: "—", from: null, to: null });
-
-    let guard = 0;
-    let halted = false;
-    while (!halted && guard++ < 60) {
-      // ---- FETCH ----
-      MAR = PC;
-      snap({ desc: `<span class="ph">FETCH</span> Il <b>Program Counter</b> (PC=${PC}) indica la prossima istruzione: va nel <b>MAR</b>.`, phase: "fetch", from: "regPC", to: "regMAR", value: PC, hi: ["regMAR"] });
-      snap({ desc: `<span class="ph">FETCH</span> L'indirizzo nel MAR viaggia sul <b>bus indirizzi</b> verso la memoria.`, phase: "fetch", from: "regMAR", to: "mem-" + MAR, bus: "addr", value: MAR, hi: ["mem-" + MAR] });
-      MDR = mem[MAR].text;
-      snap({ desc: `<span class="ph">FETCH</span> La memoria mette l'istruzione sul <b>bus dati</b> → <b>MDR</b>.`, phase: "fetch", from: "mem-" + MAR, to: "regMDR", bus: "data", value: MDR, hi: ["regMDR"] });
-      IR = MDR;
-      snap({ desc: `<span class="ph">FETCH</span> L'istruzione passa nel registro istruzioni <b>IR</b>.`, phase: "fetch", from: "regMDR", to: "regIR", value: IR, hi: ["regIR"] });
-      PC = PC + 1;
-      snap({ desc: `<span class="ph">FETCH</span> Il PC avanza: punterà alla prossima istruzione (PC=${PC}).`, phase: "fetch", from: "regPC", to: "regPC", value: PC, hi: ["regPC"] });
-
-      // ---- DECODE ----
-      const parts = IR.split(" ");
-      const op = parts[0], arg = parts[1] != null ? +parts[1] : null;
-      snap({ desc: `<span class="ph">DECODE</span> L'<b>unità di controllo</b> riconosce l'istruzione: «<b>${op}</b>»${arg != null ? " sulla cella " + arg : ""}.`, phase: "decode", from: null, to: null, hi: ["cu", "regIR"] });
-
-      // ---- EXECUTE ----
-      if (op === "IN") {
-        const v = inputs[inIdx] != null ? inputs[inIdx] : 0; inIdx++;
-        ACC = v;
-        snap({ desc: `<span class="ph">EXECUTE</span> Il dispositivo di <b>Input</b> invia il numero <b>${v}</b> alla CPU → <b>ACC</b>.`, phase: "execute", from: "compInput", to: "regACC", value: v, hi: ["compInput", "regACC"] });
-      } else if (op === "OUT") {
-        out.push(ACC);
-        snap({ desc: `<span class="ph">EXECUTE</span> Il valore dell'<b>ACC</b> (${ACC}) va al dispositivo di <b>Output</b>.`, phase: "execute", from: "regACC", to: "compOutput", value: ACC, hi: ["compOutput", "regACC"] });
-      } else if (op === "STORE") {
-        MAR = arg;
-        snap({ desc: `<span class="ph">EXECUTE</span> L'indirizzo <b>${arg}</b> (dall'IR) va nel <b>MAR</b>.`, phase: "execute", from: "regIR", to: "regMAR", value: arg, hi: ["regMAR"] });
-        MDR = ACC;
-        snap({ desc: `<span class="ph">EXECUTE</span> Il valore dell'ACC (${ACC}) va nel <b>MDR</b>.`, phase: "execute", from: "regACC", to: "regMDR", value: ACC, hi: ["regMDR"] });
-        mem[arg] = { type: "data", value: ACC };
-        snap({ desc: `<span class="ph">EXECUTE</span> Il MDR scrive il valore in <b>memoria[${arg}]</b> tramite il bus dati.`, phase: "execute", from: "regMDR", to: "mem-" + arg, bus: "data", value: ACC, hi: ["mem-" + arg] });
-      } else if (op === "ADD") {
-        MAR = arg;
-        snap({ desc: `<span class="ph">EXECUTE</span> L'indirizzo <b>${arg}</b> va nel <b>MAR</b>.`, phase: "execute", from: "regIR", to: "regMAR", value: arg, hi: ["regMAR"] });
-        MDR = mem[arg].value;
-        snap({ desc: `<span class="ph">EXECUTE</span> La <b>memoria[${arg}]</b> (${MDR}) viaggia sul bus dati → <b>MDR</b>.`, phase: "execute", from: "mem-" + arg, to: "regMDR", bus: "data", value: MDR, hi: ["regMDR"] });
-        const res = ACC + MDR;
-        snap({ desc: `<span class="ph">EXECUTE</span> L'<b>ALU</b> somma ACC (${ACC}) e MDR (${MDR}) = <b>${res}</b>.`, phase: "execute", from: "regMDR", to: "alu", value: ACC + " + " + MDR, hi: ["alu", "regACC"] });
-        ACC = res;
-        snap({ desc: `<span class="ph">EXECUTE</span> Il risultato (<b>${res}</b>) torna nell'<b>ACC</b>.`, phase: "execute", from: "alu", to: "regACC", value: res, hi: ["regACC"] });
-      } else if (op === "HLT") {
-        halted = true;
-        snap({ desc: `<span class="ph">HALT</span> La macchina si ferma. In <b>output</b>: ${out.join(", ") || "—"}. ✓`, phase: "stop", from: null, to: null, done: true });
-      }
-    }
-    return fr;
+  /* ---------- Rendering pannello info ---------- */
+  function showInfo(key) {
+    stopDemo();
+    const c = INFO[key]; if (!c) return;
+    clearHighlights();
+    $("packet").hidden = true;
+    document.querySelectorAll(".clickable").forEach((e) => e.classList.remove("info-active"));
+    document.querySelectorAll('[data-info="' + key + '"]').forEach((e) => e.classList.add("info-active"));
+    renderInfo(c, false);
+  }
+  function renderInfo(c, demo) {
+    $("infoBox").className = "info-box" + (demo ? " demo" : "");
+    $("infoBox").innerHTML =
+      '<div class="ib-head"><span class="ib-emoji">' + (c.emoji || "") + '</span>' +
+      '<span class="ib-name">' + c.name + '</span>' +
+      (c.tag ? '<span class="ib-tag">' + c.tag + "</span>" : "") + "</div>" +
+      '<div class="ib-text">' + c.text + "</div>" +
+      (demo && demoStep >= 0 ? '<div class="step-count">Passo ' + (demoStep + 1) + " di " + DEMO.length + "</div>" : "");
   }
 
-  /* ---------- Rendering ---------- */
-  function renderMem(f) {
-    $("memCells").innerHTML = f.mem.map((c, i) => {
-      const isData = c.type === "data";
-      const cls = "mem-cell " + (isData ? "data" : "instr") + (i === f.PC && !f.done ? " pc" : "");
-      const content = isData ? c.value : c.text;
-      return `<div class="mem-cell ${isData ? "data" : "instr"}${i === f.PC && !f.done ? " pc" : ""}" id="mem-${i}"><span class="ma">[${i}]</span><span class="mc">${content}</span></div>`;
-    }).join("");
+  function clearHighlights() {
+    document.querySelectorAll(".active").forEach((e) => e.classList.remove("active"));
   }
-  function render() {
-    const f = frames[step];
-    $("vPC").textContent = f.PC; $("vIR").textContent = f.IR; $("vMAR").textContent = f.MAR;
-    $("vMDR").textContent = f.MDR; $("vACC").textContent = f.ACC;
-    $("inVal").textContent = f.done ? "—" : (f.inNext != null ? f.inNext : "—");
-    $("outVal").textContent = f.out.length ? f.out.join(", ") : "—";
-    renderMem(f);
 
-    // fasi badge
-    const ph = $("phase");
-    ph.className = "phase-badge" + (f.phase && f.phase !== "—" ? " " + (f.phase === "stop" ? "stop" : f.phase) : "");
-    ph.textContent = { fetch: "FETCH", decode: "DECODE", execute: "EXECUTE", stop: "STOP" }[f.phase] || "pronto";
-
-    // evidenzia componenti
-    document.querySelectorAll(".comp, .reg, .cu, .alu, .lane").forEach((e) => e.classList.remove("active"));
+  /* ---------- Demo player ---------- */
+  function renderDemo() {
+    const f = DEMO[demoStep];
+    document.querySelectorAll(".clickable").forEach((e) => e.classList.remove("info-active"));
+    clearHighlights();
     (f.hi || []).forEach((id) => { const e = $(id); if (e) e.classList.add("active"); });
-    if (f.bus) $("bus" + (f.bus === "addr" ? "Addr" : "Data")).classList.add("active");
+    if (f.bus) $("bus" + (f.bus === "addr" ? "Addr" : f.bus === "data" ? "Data" : "Ctrl")).classList.add("active");
 
-    $("desc").innerHTML = f.desc;
-    $("btnStep").disabled = step >= frames.length - 1;
+    // valori input/output
+    $("inVal").textContent = f.inv || "tastiera, mouse…";
+    const ov = $("outVal");
+    if (f.outv) { ov.textContent = f.outv; ov.classList.add("has-val"); }
+    else { ov.textContent = "schermo, stampante…"; ov.classList.remove("has-val"); }
 
+    renderInfo({ emoji: f.done ? "✅" : "▶️", name: f.done ? "Percorso completato" : "Come funziona", tag: f.done ? "fine" : "demo", text: f.narr }, true);
     animatePacket(f);
+    $("btnStep").textContent = demoStep >= DEMO.length - 1 ? "Fine" : "Passo";
+  }
+  function stepDemo() {
+    if (demoStep >= DEMO.length - 1) { resetDemo(); return; }
+    demoStep++; renderDemo();
+  }
+  function playDemo() {
+    if (timer) { stopDemo(); return; }
+    if (demoStep >= DEMO.length - 1) demoStep = -1;
+    $("btnPlay").textContent = "⏸ Pausa";
+    stepDemo();
+    timer = setInterval(() => { if (demoStep < DEMO.length - 1) stepDemo(); else stopDemo(); }, 2600);
+  }
+  function stopDemo() {
+    if (timer) { clearInterval(timer); timer = null; }
+    $("btnPlay").textContent = "▶ Guarda come funziona";
+  }
+  function resetDemo() {
+    stopDemo();
+    demoStep = -1; clearHighlights();
+    document.querySelectorAll(".clickable").forEach((e) => e.classList.remove("info-active"));
+    $("packet").hidden = true;
+    $("inVal").textContent = "tastiera, mouse…";
+    $("outVal").textContent = "schermo, stampante…"; $("outVal").classList.remove("has-val");
+    $("btnStep").textContent = "Passo";
+    renderInfo(INTRO, false);
   }
 
+  /* ---------- Pacchetto animato ---------- */
   function animatePacket(f) {
     const p = $("packet");
-    if (!f.from || !f.to || f.from === f.to) { p.hidden = true; return; }
+    if (!f.from || !f.to) { p.hidden = true; return; }
     const a = $(f.from), b = $(f.to), m = $("machine");
     if (!a || !b) { p.hidden = true; return; }
     const mr = m.getBoundingClientRect(), ar = a.getBoundingClientRect(), br = b.getBoundingClientRect();
-    p.hidden = false; p.textContent = f.value;
+    p.hidden = false; p.textContent = f.value || "";
     p.style.transition = "none";
     p.style.left = (ar.left + ar.width / 2 - mr.left) + "px";
     p.style.top = (ar.top + ar.height / 2 - mr.top) + "px";
-    p.style.opacity = "1";
     requestAnimationFrame(() => requestAnimationFrame(() => {
-      p.style.transition = "left .55s var(--ease), top .55s var(--ease)";
+      p.style.transition = "left .7s var(--ease), top .7s var(--ease)";
       p.style.left = (br.left + br.width / 2 - mr.left) + "px";
       p.style.top = (br.top + br.height / 2 - mr.top) + "px";
     }));
   }
 
-  /* ---------- Controlli ---------- */
-  function rebuild() {
-    stopAuto();
-    const a = Math.max(0, Math.min(99, +$("in1").value || 0));
-    const b = Math.max(0, Math.min(99, +$("in2").value || 0));
-    frames = build([a, b]); step = 0; render();
-  }
-  function stepFwd() { if (step < frames.length - 1) { step++; render(); } else stopAuto(); }
-  function stopAuto() { if (timer) { clearInterval(timer); timer = null; $("btnAuto").textContent = "▶ Auto"; } }
-  function toggleAuto() {
-    if (timer) { stopAuto(); return; }
-    if (step >= frames.length - 1) { step = 0; render(); }
-    $("btnAuto").textContent = "⏸ Pausa";
-    const delay = 1500 - (+$("speed").value) * 110; // 1390 → 400 ms
-    timer = setInterval(() => { if (step < frames.length - 1) stepFwd(); else stopAuto(); }, delay);
-  }
-
-  $("btnStep").addEventListener("click", () => { stopAuto(); stepFwd(); });
-  $("btnAuto").addEventListener("click", toggleAuto);
-  $("btnReset").addEventListener("click", () => { stopAuto(); step = 0; render(); });
-  $("in1").addEventListener("input", rebuild);
-  $("in2").addEventListener("input", rebuild);
-  window.addEventListener("resize", () => { if (frames[step]) animatePacket(frames[step]); });
+  /* ---------- Eventi ---------- */
+  document.querySelectorAll("[data-info]").forEach((el) => {
+    el.addEventListener("click", () => showInfo(el.dataset.info));
+  });
+  $("btnPlay").addEventListener("click", playDemo);
+  $("btnStep").addEventListener("click", () => { stopDemo(); stepDemo(); });
+  $("btnReset").addEventListener("click", resetDemo);
+  window.addEventListener("resize", () => { if (timer === null && demoStep >= 0) animatePacket(DEMO[demoStep]); });
 
   /* ---------- Avvio ---------- */
-  rebuild();
+  renderInfo(INTRO, false);
 })();

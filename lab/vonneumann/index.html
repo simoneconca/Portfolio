@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Macchina di Von Neumann — laboratorio interattivo che mostra il percorso dei dati dall'input all'output nel ciclo fetch-decode-execute.">
+  <meta name="description" content="Macchina di Von Neumann — laboratorio interattivo per scoprire tutti i componenti del computer (CPU, memoria, bus, input/output) e come collaborano dall'input all'output.">
   <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#100f0c" media="(prefers-color-scheme: dark)">
   <title>Macchina di Von Neumann — Lab · Simone Conca</title>
@@ -57,26 +57,7 @@
           <a href="../">Lab</a><span class="sep">/</span><span class="current">Macchina di Von Neumann</span>
         </nav>
         <h1>La macchina di Von Neumann</h1>
-        <p class="lead">È lo schema su cui sono costruiti quasi tutti i computer: una <strong>memoria unica</strong> che contiene sia le istruzioni sia i dati, una <strong>CPU</strong> che le esegue, e i <strong>bus</strong> che collegano tutto. Segui il <strong>percorso dei dati</strong> dall'input all'output, un passo alla volta.</p>
-      </div>
-    </section>
-
-    <section class="section so-section" style="padding-top:0">
-      <div class="container">
-        <div class="panel controls-panel vn-controls">
-          <div class="control-group">
-            <span class="control-label">Programma</span>
-            <span class="vn-prog">somma due numeri e mostra il risultato</span>
-          </div>
-          <div class="control-group">
-            <span class="control-label">Primo numero</span>
-            <div class="field" style="max-width:5rem"><input id="in1" type="number" value="7" min="0" max="99"></div>
-          </div>
-          <div class="control-group">
-            <span class="control-label">Secondo numero</span>
-            <div class="field" style="max-width:5rem"><input id="in2" type="number" value="5" min="0" max="99"></div>
-          </div>
-        </div>
+        <p class="lead">È lo schema su cui sono costruiti quasi tutti i computer. Scopri <strong>tutti i pezzi</strong> che lo compongono — <strong>clicca un componente</strong> per sapere cosa fa — e poi premi <strong>Guarda come funziona</strong> per vedere come collaborano, dal dato che inserisci (input) al risultato che vedi (output).</p>
       </div>
     </section>
 
@@ -84,52 +65,53 @@
       <div class="container">
         <div class="panel vn-panel">
           <div class="exec-bar">
-            <button id="btnStep" class="run-btn" type="button">Passo ▶</button>
-            <button id="btnAuto" class="ghost-btn" type="button">▶ Auto</button>
+            <button id="btnPlay" class="run-btn" type="button">▶ Guarda come funziona</button>
+            <button id="btnStep" class="ghost-btn" type="button">Passo</button>
             <button id="btnReset" class="ghost-btn" type="button">Reset ↺</button>
-            <label class="speed"><span>Velocità</span><input id="speed" type="range" min="1" max="10" value="5" class="slider"></label>
-            <span class="phase-badge" id="phase">—</span>
+            <span class="hint" id="modeHint">Oppure clicca un componente per scoprirlo 👆</span>
           </div>
 
           <div class="machine" id="machine">
-            <!-- Colonna sinistra: Input · CPU · Output -->
+            <!-- Input / CPU / Output -->
             <div class="left-col">
-              <div class="comp io input" id="compInput"><span class="comp-ico">📥</span><div><div class="comp-name">Input</div><div class="comp-val" id="inVal">in attesa</div></div></div>
-
-              <div class="comp cpu" id="cpu">
-                <div class="comp-name cpu-name">CPU — Processore</div>
-                <div class="cu" id="cu">Unità di Controllo (CU)</div>
-                <div class="regs">
-                  <div class="reg" id="regPC"><span>PC</span><b id="vPC">0</b></div>
-                  <div class="reg" id="regIR"><span>IR</span><b id="vIR">—</b></div>
-                  <div class="reg" id="regMAR"><span>MAR</span><b id="vMAR">—</b></div>
-                  <div class="reg" id="regMDR"><span>MDR</span><b id="vMDR">—</b></div>
-                  <div class="reg acc" id="regACC"><span>ACC</span><b id="vACC">0</b></div>
-                </div>
-                <div class="alu" id="alu"><span>ALU</span><small>Unità Aritmetico-Logica</small></div>
+              <div class="comp io input clickable" data-info="input" id="compInput">
+                <span class="comp-ico">📥</span>
+                <div><div class="comp-name">Input</div><div class="comp-val" id="inVal">tastiera, mouse…</div></div>
               </div>
 
-              <div class="comp io output" id="compOutput"><span class="comp-ico">📤</span><div><div class="comp-name">Output</div><div class="comp-val" id="outVal">—</div></div></div>
+              <div class="comp cpu" id="cpu">
+                <div class="comp-name cpu-name clickable" data-info="cpu">CPU — il cervello</div>
+                <div class="part clickable" data-info="cu" id="cu"><b>CU</b><small>Unità di Controllo</small></div>
+                <div class="part clickable" data-info="alu" id="alu"><b>ALU</b><small>calcoli e confronti</small></div>
+                <div class="part clickable" data-info="registri" id="registri"><b>Registri</b><small>memorie velocissime</small></div>
+              </div>
+
+              <div class="comp io output clickable" data-info="output" id="compOutput">
+                <span class="comp-ico">📤</span>
+                <div><div class="comp-name">Output</div><div class="comp-val" id="outVal">schermo, stampante…</div></div>
+              </div>
             </div>
 
-            <!-- Bus -->
+            <!-- Bus di sistema -->
             <div class="bus">
-              <div class="lane" id="busAddr"><i></i><span>Bus indirizzi</span></div>
-              <div class="lane" id="busData"><i></i><span>Bus dati</span></div>
-              <div class="lane" id="busCtrl"><i></i><span>Bus controllo</span></div>
+              <span class="bus-title">Bus di sistema</span>
+              <div class="lane clickable" data-info="busaddr" id="busAddr"><i></i><span>Bus indirizzi</span></div>
+              <div class="lane clickable" data-info="busdata" id="busData"><i></i><span>Bus dati</span></div>
+              <div class="lane clickable" data-info="busctrl" id="busCtrl"><i></i><span>Bus controllo</span></div>
             </div>
 
-            <!-- Memoria -->
+            <!-- Memoria centrale -->
             <div class="comp memory" id="memory">
-              <div class="comp-name">Memoria centrale (RAM)</div>
-              <div class="mem-hint">istruzioni <b>e</b> dati insieme</div>
-              <div class="mem-cells" id="memCells"></div>
+              <div class="comp-name clickable" data-info="memoria">Memoria centrale</div>
+              <div class="part clickable" data-info="ram" id="ram"><b>RAM</b><small>memoria di lavoro</small></div>
+              <div class="part clickable" data-info="rom" id="rom"><b>ROM</b><small>avvio (BIOS/UEFI)</small></div>
+              <div class="part clickable" data-info="cache" id="cache"><b>Cache</b><small>piccola e velocissima</small></div>
             </div>
 
             <div class="packet" id="packet" hidden></div>
           </div>
 
-          <p class="vn-desc" id="desc"></p>
+          <div class="info-box" id="infoBox"></div>
         </div>
       </div>
     </section>
