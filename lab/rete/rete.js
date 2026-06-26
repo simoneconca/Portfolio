@@ -186,9 +186,13 @@
 
   /* ---------- Scrollytelling ---------- */
   const wrap = $("voyager"), stage = $("stage");
-  let startY = 0, total = 1, stepPx = 300, syncing = false;
+  let startY = 0, total = 0, stepPx = 300, syncing = false;
+  const isMobile = () => window.matchMedia("(max-width: 860px)").matches;
 
   function layout() {
+    // Su telefono lo scrollytelling è disattivato: scena in flusso normale,
+    // si avanza solo con i pulsanti (niente spazi vuoti di scroll).
+    if (isMobile()) { wrap.style.height = ""; total = 0; return; }
     stepPx = Math.max(200, Math.round(window.innerHeight * 0.52));
     const sh = stage.offsetHeight;
     wrap.style.height = (sh + N * stepPx) + "px";
@@ -196,12 +200,13 @@
     startY = wrap.offsetTop - 74;
   }
   function onScroll() {
-    if (syncing) return;
+    if (syncing || total <= 0) return;
     const p = (window.scrollY - startY) / total;
     const s = Math.max(0, Math.min(N, Math.round(p * N)));
     if (s !== step) { step = s; render(); }
   }
   function scrollToStep(s) {
+    if (total <= 0) return; // mobile: niente scroll, solo render
     syncing = true;
     const target = startY + (s / N) * total + 2;
     window.scrollTo({ top: target, behavior: "smooth" });

@@ -360,18 +360,46 @@
 .osi.active, .proto.active { border-color: var(--lc); background: color-mix(in srgb, var(--lc) 12%, transparent); }
 .tcp-box.active { box-shadow: 0 0 0 2px var(--lc); }
 
+.msg-field { max-width: 18rem; }
+
 /* ---------- Responsive ---------- */
 @media (max-width: 860px) {
-  .stage { position: static; }
-  .stage-grid { grid-template-columns: 1fr; }
+  /* niente "pinning": la scena scorre normalmente, si usa coi pulsanti */
+  .stage { position: static; padding-block: 0.25rem 0.5rem; }
+  .voyager { height: auto !important; }
+
+  .stage-grid { grid-template-columns: 1fr; gap: 0.9rem; }
+  .packet-area { order: 1; min-height: 0; }
   .rail { order: 2; }
-  .dossier { order: 3; }
-  .cmp { grid-template-columns: 1fr; }
+  .dossier { order: 3; min-height: 0; }
+
+  /* confronto OSI: colonna singola, le intestazioni non servono */
+  .cmp { grid-template-columns: 1fr; gap: 0.4rem; }
   .cmp .tcp-box { grid-column: 1 !important; grid-row: auto !important; }
-  .cmp-h:nth-child(3) { display: none; }
+  .cmp-h { display: none; }
+
+  /* controlli: barra di avanzamento su riga propria, pulsanti affiancati */
+  .stage-controls { flex-wrap: wrap; gap: 0.6rem; }
+  .progress { order: -1; flex-basis: 100%; }
+  .stage-controls .ctrl-btn { flex: 1; text-align: center; padding-inline: 0.6rem; }
+
+  /* campo messaggio a tutta larghezza */
+  .controls-panel .control-group { flex-wrap: wrap; }
+  .msg-field { max-width: none; width: 100%; }
 }
-@media (max-width: 560px) {
-  .scene { grid-template-columns: 1fr; gap: 1.5rem; }
-  .wire { height: 40px; }
-  .stage-controls { flex-wrap: wrap; }
+
+@media (max-width: 480px) {
+  .scene { gap: 0.5rem; }
+  .pc-screen { max-width: 92px; border-width: 1.5px; }
+  .pc-base { width: 44px; }
+  .pc-label { font-size: 0.56rem; }
+  .wire { height: 44px; }
+  .lyr { padding: 0.5rem; }
+  .lyr-tag { font-size: 0.64rem; }
+  .lyr-fields { gap: 0.25rem; }
+  .lyr-fields span { font-size: 0.56rem; padding: 0.08rem 0.3rem; }
+  .payload { font-size: 0.85rem; }
+  .dossier, .rail { padding: 0.8rem; }
+  .osi, .proto, .tcp-box { font-size: 0.82rem; padding: 0.5rem 0.6rem; }
+  .proto { font-size: 0.68rem; }
 }
