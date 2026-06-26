@@ -194,14 +194,14 @@
       return;
     }
 
-    steps.push({ t: `L'indirizzo ${hex(addr, 4)} viene scomposto in <b>pagina ${page}</b> e <b>offset ${hex(offset, 3)}</b>.` });
+    steps.push({ t: `Numero pagina = indirizzo ÷ dimensione = ${addr} ÷ ${PAGE_SIZE} = <b>${page}</b>. Offset = resto = ${addr} mod ${PAGE_SIZE} = <b>${hex(offset, 3)}</b>.` });
 
     if (pageTable[page].present) {
       const frame = pageTable[page].frame;
       pageTable[page].lastUse = ++lru;
       const phys = (frame << PAGE_BITS) | offset;
       steps.push({ t: `Bit di presenza della pagina ${page} = <b>1</b>: è in RAM, frame <b>${frame}</b>.` });
-      steps.push({ t: `Indirizzo fisico = frame ${frame} × ${hex(PAGE_SIZE, 4)} + offset = <b>${hex(phys, 4)}</b>.` });
+      steps.push({ t: `Indirizzo fisico = frame × dimensione + offset = ${frame} × ${PAGE_SIZE} + ${offset} = <b>${hex(phys, 4)}</b>.` });
       procStateMini("run");
       renderMem(info, { steps, result: { phys, page } }, changed);
       setMemStatus("Tradotto · HIT", "ok");
@@ -251,11 +251,13 @@
     // scomposizione indirizzo
     if (info) {
       $("addrBreak").innerHTML =
-        `<div class="addr-part"><div class="ap-label">Indirizzo logico</div><div class="ap-val">${hex(info.addr, 4)}</div><div class="ap-bits">16 bit</div></div>` +
-        `<div class="addr-op">→</div>` +
-        `<div class="addr-part page"><div class="ap-label">N° pagina</div><div class="ap-val">${info.page}</div><div class="ap-bits">bit alti</div></div>` +
-        `<div class="addr-op">·</div>` +
-        `<div class="addr-part offset"><div class="ap-label">Offset</div><div class="ap-val">${hex(info.offset, 3)}</div><div class="ap-bits">12 bit bassi</div></div>`;
+        `<div class="addr-part"><div class="ap-label">Indirizzo logico</div><div class="ap-val">${hex(info.addr, 4)}</div><div class="ap-sub">${info.addr} dec</div></div>` +
+        `<div class="addr-op">÷</div>` +
+        `<div class="addr-part size"><div class="ap-label">Dimensione</div><div class="ap-val">${hex(PAGE_SIZE, 4)}</div><div class="ap-sub">${PAGE_SIZE} dec</div></div>` +
+        `<div class="addr-op">=</div>` +
+        `<div class="addr-part page"><div class="ap-label">N° pagina</div><div class="ap-val">${info.page}</div><div class="ap-sub">quoziente</div></div>` +
+        `<div class="addr-op">resto</div>` +
+        `<div class="addr-part offset"><div class="ap-label">Offset</div><div class="ap-val">${hex(info.offset, 3)}</div><div class="ap-sub">${info.offset} dec</div></div>`;
     }
     // passi
     $("transSteps").innerHTML = out.steps.map((s, i) =>

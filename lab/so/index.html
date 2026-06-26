@@ -51,173 +51,124 @@
   </nav>
 
   <main>
-    <section class="section tool-hero" style="padding-bottom: clamp(1.5rem,4vw,2.5rem)">
+    <section class="section tool-hero so-hero">
       <div class="container">
         <nav class="breadcrumb" aria-label="Percorso">
           <a href="../">Lab</a><span class="sep">/</span><span class="current">Sistemi Operativi</span>
         </nav>
-        <h1>Sistemi Operativi · Processi &amp; Memoria</h1>
-        <p class="lead">Due simulatori che mostrano cosa fa davvero il sistema operativo. Lo <strong>scheduler</strong> divide la CPU tra i processi (Round-Robin, FIFO); la <strong>MMU</strong> traduce gli indirizzi logici in fisici con la paginazione e gestisce i <strong>page fault</strong>.</p>
-      </div>
-    </section>
-
-    <section class="section" style="padding-top:0">
-      <div class="container">
-        <div class="panel controls-panel">
-          <div class="control-group">
-            <span class="control-label">Argomento</span>
-            <div class="seg" id="modeSeg" role="group" aria-label="Argomento">
-              <button type="button" data-mode="proc" class="seg-btn active">Scheduling dei processi</button>
-              <button type="button" data-mode="mem" class="seg-btn">Memoria virtuale (MMU)</button>
-            </div>
+        <h1>Sistemi Operativi</h1>
+        <p class="lead">Lo <strong>scheduler</strong> divide la CPU tra i processi (Round-Robin, FIFO); la <strong>MMU</strong> traduce gli indirizzi logici in fisici con la paginazione e gestisce i <strong>page fault</strong>.</p>
+        <div class="so-mode">
+          <div class="seg" id="modeSeg" role="group" aria-label="Argomento">
+            <button type="button" data-mode="proc" class="seg-btn active">Scheduling processi</button>
+            <button type="button" data-mode="mem" class="seg-btn">Memoria virtuale</button>
           </div>
         </div>
       </div>
     </section>
 
     <!-- =================== PROCESSI =================== -->
-    <div id="procMode">
-      <section class="section" style="padding-top:0">
-        <div class="container">
-          <div class="panel">
-            <header class="panel-head">
-              <span class="panel-kicker">Impostazioni</span>
-              <h2 class="panel-title">Processi e algoritmo</h2>
-            </header>
-            <div class="proc-controls">
-              <div class="control-group">
-                <span class="control-label">Algoritmo</span>
-                <div class="seg" id="algSeg" role="group" aria-label="Algoritmo di scheduling">
-                  <button type="button" data-alg="rr" class="seg-btn active">Round-Robin</button>
-                  <button type="button" data-alg="fifo" class="seg-btn">FIFO</button>
-                  <button type="button" data-alg="lifo" class="seg-btn">LIFO</button>
-                </div>
-              </div>
-              <div class="control-group" id="quantumGroup">
-                <span class="control-label">Quanto di tempo</span>
-                <div class="field" style="max-width:6rem"><input id="quantum" type="number" min="1" max="20" value="3"></div>
-              </div>
-              <div class="control-group">
-                <span class="control-label">Esempi</span>
-                <div id="procExamples" class="examples"></div>
-              </div>
-            </div>
+    <section class="section so-section" id="procMode">
+      <div class="container so-layout">
 
-            <div class="proc-table-wrap">
-              <div class="proc-table-head"><span>Processo</span><span>Arrivo</span><span>Durata CPU</span><span></span></div>
-              <div id="procTable"></div>
-              <button type="button" id="addProc" class="ghost-btn" style="margin-top:0.6rem">+ Aggiungi processo</button>
+        <!-- SETUP -->
+        <div class="panel setup-panel">
+          <div class="proc-controls">
+            <div class="control-group">
+              <span class="control-label">Algoritmo</span>
+              <div class="seg" id="algSeg" role="group" aria-label="Algoritmo">
+                <button type="button" data-alg="rr" class="seg-btn active">Round-Robin</button>
+                <button type="button" data-alg="fifo" class="seg-btn">FIFO</button>
+                <button type="button" data-alg="lifo" class="seg-btn">LIFO</button>
+              </div>
             </div>
-
-            <div class="code-bar" style="margin-top:1.25rem">
-              <button id="procStep" class="run-btn" type="button">Avanza ▶</button>
-              <button id="procRun" class="ghost-btn" type="button">Esegui tutto ⏩</button>
-              <button id="procReset" class="ghost-btn" type="button">Reset ↺</button>
-              <span class="code-status" id="procStatus">Pronto</span>
+            <div class="control-group" id="quantumGroup">
+              <span class="control-label">Quanto</span>
+              <div class="field" style="max-width:4.5rem"><input id="quantum" type="number" min="1" max="20" value="3"></div>
             </div>
+          </div>
+          <div class="control-group">
+            <span class="control-label">Esempi</span>
+            <div id="procExamples" class="examples"></div>
+          </div>
+          <div class="proc-table-wrap">
+            <div class="proc-table-head"><span>Proc.</span><span>Arrivo</span><span>Durata</span><span></span></div>
+            <div id="procTable"></div>
+            <button type="button" id="addProc" class="ghost-btn" style="margin-top:0.5rem">+ Processo</button>
           </div>
         </div>
-      </section>
 
-      <section class="section" style="padding-top:0">
-        <div class="container proc-grid">
-          <div class="panel">
-            <header class="panel-head">
-              <span class="panel-kicker">Esecuzione</span>
-              <h2 class="panel-title">CPU e coda dei pronti</h2>
-            </header>
-            <div class="clock">Tempo: <b id="clock">0</b></div>
-            <div class="cpu-stage">
-              <div class="cpu-core" id="cpuCore"><span class="cpu-label">CPU</span><span class="cpu-proc" id="cpuProc">—</span></div>
-              <div class="ready-queue-wrap">
-                <span class="queue-label">Coda Ready</span>
-                <div class="ready-queue" id="readyQueue"></div>
-              </div>
-            </div>
-            <div class="gantt-wrap">
-              <span class="queue-label">Diagramma di Gantt</span>
-              <div class="gantt" id="gantt"></div>
+        <!-- ESECUZIONE (live) -->
+        <div class="panel exec-panel">
+          <div class="exec-bar">
+            <button id="procStep" class="run-btn" type="button">Avanza ▶</button>
+            <button id="procRun" class="ghost-btn" type="button">Tutto ⏩</button>
+            <button id="procReset" class="ghost-btn" type="button">Reset ↺</button>
+            <span class="clock">t = <b id="clock">0</b></span>
+          </div>
+          <div class="cpu-stage">
+            <div class="cpu-core" id="cpuCore"><span class="cpu-label">CPU</span><span class="cpu-proc" id="cpuProc">—</span></div>
+            <div class="ready-queue-wrap">
+              <span class="queue-label">Coda Ready</span>
+              <div class="ready-queue" id="readyQueue"></div>
             </div>
           </div>
-
-          <div class="panel">
-            <header class="panel-head">
-              <span class="panel-kicker">Stato</span>
-              <h2 class="panel-title">I processi</h2>
-            </header>
-            <div id="procStates" class="proc-states"></div>
-            <div id="procMetrics" class="proc-metrics"></div>
+          <div class="gantt-wrap">
+            <span class="queue-label">Gantt — uso della CPU nel tempo</span>
+            <div class="gantt" id="gantt"></div>
           </div>
+          <div id="procStates" class="proc-states"></div>
+          <div id="procMetrics" class="proc-metrics"></div>
+          <span class="code-status" id="procStatus"></span>
         </div>
-      </section>
-    </div>
+      </div>
+    </section>
 
     <!-- =================== MEMORIA =================== -->
-    <div id="memMode" hidden>
-      <section class="section" style="padding-top:0">
-        <div class="container">
-          <div class="panel">
-            <header class="panel-head">
-              <span class="panel-kicker">Impostazioni</span>
-              <h2 class="panel-title">Accesso alla memoria</h2>
-            </header>
-            <div class="proc-controls">
-              <div class="control-group">
-                <span class="control-label">Indirizzo logico</span>
-                <div class="field" style="max-width:9rem"><span class="field-prefix">0x</span><input id="logAddr" spellcheck="false" autocomplete="off" value="1A05"></div>
-              </div>
-              <div class="control-group">
-                <span class="control-label">Rimpiazzo</span>
-                <div class="seg" id="policySeg" role="group" aria-label="Politica di rimpiazzo">
-                  <button type="button" data-pol="fifo" class="seg-btn active">FIFO</button>
-                  <button type="button" data-pol="lru" class="seg-btn">LRU</button>
-                </div>
-              </div>
-              <div class="control-group">
-                <span class="control-label">Sequenze</span>
-                <div id="memExamples" class="examples"></div>
+    <section class="section so-section" id="memMode" hidden>
+      <div class="container so-layout">
+
+        <!-- CONTROLLI + TRADUZIONE -->
+        <div class="panel">
+          <div class="proc-controls">
+            <div class="control-group">
+              <span class="control-label">Indirizzo logico</span>
+              <div class="field" style="max-width:8rem"><span class="field-prefix">0x</span><input id="logAddr" spellcheck="false" autocomplete="off" value="1A05"></div>
+            </div>
+            <div class="control-group">
+              <span class="control-label">Rimpiazzo</span>
+              <div class="seg" id="policySeg" role="group" aria-label="Politica di rimpiazzo">
+                <button type="button" data-pol="fifo" class="seg-btn active">FIFO</button>
+                <button type="button" data-pol="lru" class="seg-btn">LRU</button>
               </div>
             </div>
-            <p class="control-meta" style="margin:0.5rem 0 0">Dimensione pagina: <b>0x1000</b> (4096 byte) — offset di 12 bit.</p>
-            <div class="code-bar" style="margin-top:1.1rem">
-              <button id="memAccess" class="run-btn" type="button">Accedi ▶</button>
-              <button id="memReset" class="ghost-btn" type="button">Reset ↺</button>
-              <span class="code-status" id="memStatus">Pronto</span>
-            </div>
           </div>
+          <div class="control-group">
+            <span class="control-label">Sequenze</span>
+            <div id="memExamples" class="examples"></div>
+          </div>
+          <div class="exec-bar" style="margin-top:0.9rem">
+            <button id="memAccess" class="run-btn" type="button">Accedi ▶</button>
+            <button id="memReset" class="ghost-btn" type="button">Reset ↺</button>
+            <span class="code-status" id="memStatus"></span>
+          </div>
+          <p class="mem-note">Pagina = indirizzo ÷ dimensione · offset = resto. Dimensione pagina: <b>0x1000</b> (4096 byte).</p>
+          <div id="addrBreak" class="addr-break"></div>
+          <div id="transSteps" class="trans-steps"></div>
+          <div id="memResult" class="mem-result"></div>
         </div>
-      </section>
 
-      <section class="section" style="padding-top:0">
-        <div class="container">
-          <div class="panel">
-            <header class="panel-head">
-              <span class="panel-kicker">MMU</span>
-              <h2 class="panel-title">Traduzione dell'indirizzo</h2>
-            </header>
-            <div id="addrBreak" class="addr-break"></div>
-            <div id="transSteps" class="trans-steps"></div>
-            <div id="memResult" class="mem-result"></div>
-          </div>
+        <!-- TABELLE -->
+        <div class="panel">
+          <span class="state-label">Tabella delle pagine <span id="procStateMini" class="proc-state-mini"></span></span>
+          <div id="pageTable" class="page-table"></div>
+          <span class="state-label" style="margin-top:1.1rem">RAM — frame fisici</span>
+          <div id="ramFrames" class="ram-frames"></div>
+          <span class="state-label" style="margin-top:1.1rem">Disco — area di swap</span>
+          <div id="swapArea" class="swap-area"></div>
         </div>
-      </section>
-
-      <section class="section" style="padding-top:0">
-        <div class="container mem-grid">
-          <div class="panel">
-            <header class="panel-head"><span class="panel-kicker">Kernel</span><h2 class="panel-title">Tabella delle pagine</h2></header>
-            <div id="pageTable" class="page-table"></div>
-            <div class="proc-state-mini" id="procStateMini"></div>
-          </div>
-          <div class="panel">
-            <header class="panel-head"><span class="panel-kicker">RAM</span><h2 class="panel-title">Frame fisici</h2></header>
-            <div id="ramFrames" class="ram-frames"></div>
-            <header class="panel-head" style="margin-top:1.4rem"><span class="panel-kicker">Disco</span><h2 class="panel-title">Area di swap</h2></header>
-            <div id="swapArea" class="swap-area"></div>
-          </div>
-        </div>
-      </section>
-    </div>
+      </div>
+    </section>
   </main>
 
   <footer class="site-footer">
