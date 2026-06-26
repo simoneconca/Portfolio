@@ -353,4 +353,14 @@
 @media (max-width: 560px) {
   .g-ex { flex-wrap: wrap; }
   .g-opts li { flex-direction: column; gap: 0.15rem; }
+  .g-syntax { flex-basis: 100%; }
+}
+@media (max-width: 480px) {
+  .terminal { height: min(64vh, 540px); }
+  .term-bar-title { display: none; }
+  .term-screen { font-size: 0.78rem; padding: 0.8rem 0.85rem; }
+  .term-inputline { padding: 0.4rem 0.85rem 0.8rem; }
+  #cmd { font-size: 0.78rem; }
+  .guide-panel { padding: 1.1rem; }
+  .g-ex code { font-size: 0.72rem; }
 }

@@ -195,6 +195,17 @@
   .bw-inputs { grid-template-columns: 1fr; }
   .bit-box { width: 2.1rem; height: 2.3rem; font-size: 1.1rem; }
 }
+@media (max-width: 480px) {
+  .panel { padding: 1.1rem; }
+  .controls-panel, .builder-controls { gap: 0.9rem 1.1rem; }
+  .control-group { flex-wrap: wrap; }
+  .seg { flex-wrap: wrap; }
+  .seg-btn { padding: 0.4rem 0.62rem; font-size: 0.74rem; }
+  .control-label { font-size: 0.7rem; }
+  .target-field { max-width: none; width: 100%; }
+  .target-row { gap: 0.6rem; }
+  .bw-op select { width: 100%; }
+}
 
 /* ============================================================
    Costruttore guidato (primo blocco) — ex strumento separato
