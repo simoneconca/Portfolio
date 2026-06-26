@@ -3,16 +3,17 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="CPU &amp; Assembly Visualizer — strumento didattico interattivo del Lab di Simone Conca.">
+  <meta name="description" content="CPU & Assembly Visualizer — scrivi assembly emu8086 o MIPS ed eseguilo passo per passo, osservando registri, flag e memoria.">
   <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#100f0c" media="(prefers-color-scheme: dark)">
   <title>CPU &amp; Assembly Visualizer — Lab · Simone Conca</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../css/base.css">
   <link rel="stylesheet" href="../../css/lab.css">
+  <link rel="stylesheet" href="cpu.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23100f0c'/><text x='50' y='71' text-anchor='middle' font-size='62' font-family='Georgia,serif' font-style='italic' font-weight='600' fill='%23f4f1ea'>S</text></svg>">
   <script>
     (function () { try { var s = localStorage.getItem("theme"); document.documentElement.setAttribute("data-theme", s || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")); } catch (e) {} })();
@@ -29,7 +30,7 @@
         <span class="brand-lab">LAB</span>
       </a>
       <nav class="nav" aria-label="Navigazione">
-        <a href="../">&larr; Lab</a>
+        <a href="../">← Lab</a>
         <a href="../../">Portfolio</a>
         <a href="../../#contatti">Contatti</a>
       </nav>
@@ -44,32 +45,93 @@
   </header>
 
   <nav id="nav-mobile" class="nav-mobile" aria-label="Navigazione mobile">
-    <a href="../">&larr; Lab</a>
+    <a href="../">← Lab</a>
     <a href="../../">Portfolio</a>
     <a href="../../#contatti">Contatti</a>
   </nav>
 
   <main>
-    <section class="section tool-hero">
+    <section class="section tool-hero" style="padding-bottom: clamp(1.5rem,4vw,2.5rem)">
       <div class="container">
         <nav class="breadcrumb" aria-label="Percorso">
           <a href="../">Lab</a><span class="sep">/</span><span class="current">CPU &amp; Assembly Visualizer</span>
         </nav>
         <h1>CPU &amp; Assembly Visualizer</h1>
-        <p class="lead">Una CPU didattica che esegue assembly passo-passo: registri, ALU e memoria che cambiano davanti ai tuoi occhi.</p>
-        <div class="tool-hero-meta">
-          <span class="tool-status soon">Presto</span>
-          <span class="pub-status">Architettura — 4&ordf;&ndash;5&ordf;</span>
+        <p class="lead">Scrivi un programma in <strong>assembly</strong> ed eseguilo un'istruzione alla volta: vedi i <strong>registri</strong>, i <strong>flag</strong> e la <strong>memoria</strong> cambiare in tempo reale. Scegli tra due architetture — <strong>emu8086</strong> (Intel x86) e <strong>MIPS</strong> — con la loro sintassi.</p>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:0">
+      <div class="container">
+        <div class="panel controls-panel">
+          <div class="control-group">
+            <span class="control-label">Architettura</span>
+            <div class="seg" id="archSeg" role="group" aria-label="Architettura">
+              <button type="button" data-arch="emu8086" class="seg-btn active">emu8086 · x86</button>
+              <button type="button" data-arch="mips" class="seg-btn">MIPS</button>
+            </div>
+          </div>
+          <div class="control-group examples-inline">
+            <span class="control-label">Esempi</span>
+            <div id="examples" class="examples"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:0">
+      <div class="container cpu-grid">
+
+        <!-- Programma -->
+        <div class="panel code-panel">
+          <header class="panel-head">
+            <span class="panel-kicker">01 — Programma</span>
+            <h2 class="panel-title">Codice assembly</h2>
+          </header>
+          <textarea id="editor" class="code-edit" spellcheck="false" autocomplete="off" autocapitalize="off"></textarea>
+          <div id="listing" class="code-listing" hidden></div>
+          <div class="code-bar">
+            <button id="btnStep" class="run-btn" type="button">Step ▶</button>
+            <button id="btnRun" class="ghost-btn" type="button">Esegui tutto ⏩</button>
+            <button id="btnReset" class="ghost-btn" type="button">Reset ↺</button>
+            <button id="btnEdit" class="ghost-btn" type="button" hidden>✎ Modifica</button>
+            <span class="code-status" id="status">Pronto</span>
+          </div>
         </div>
 
-        <div class="wip">
-          <p class="wip-badge">&#9881; In costruzione</p>
-          <h2>Disponibile a breve</h2>
-          <p>Qui potrai scrivere o caricare un programma in assembly, eseguirlo istruzione per istruzione e osservare in tempo reale registri, program counter, ALU e memoria.</p>
-          <div class="wip-actions">
-            <a class="btn btn-ghost" href="../">&larr; Tutti gli strumenti</a>
-            <a class="btn btn-primary" href="../../#contatti">Richiedi una lezione</a>
+        <!-- Stato della CPU -->
+        <div class="panel state-panel">
+          <header class="panel-head">
+            <span class="panel-kicker">02 — Stato della CPU</span>
+            <h2 class="panel-title" id="archTitle">emu8086</h2>
+          </header>
+
+          <div class="state-block">
+            <span class="state-label">Registri</span>
+            <div id="registers" class="registers"></div>
           </div>
+
+          <div class="state-block" id="flagsBlock">
+            <span class="state-label">Flag</span>
+            <div id="flags" class="flags"></div>
+          </div>
+
+          <div class="state-block">
+            <span class="state-label">Memoria dati</span>
+            <div id="memory" class="memory"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" style="padding-top:0">
+      <div class="container">
+        <div class="panel">
+          <header class="panel-head">
+            <span class="panel-kicker">Riferimento</span>
+            <h2 class="panel-title" id="refTitle">Istruzioni disponibili</h2>
+          </header>
+          <div id="reference" class="reference"></div>
         </div>
       </div>
     </section>
@@ -77,12 +139,13 @@
 
   <footer class="site-footer">
     <div class="container footer-inner">
-      <span class="footer-brand">Simone Conca &middot; Lab</span>
-      <span class="footer-meta">&copy; <span id="year"></span></span>
-      <a class="footer-top" href="../">&larr; Tutti gli strumenti</a>
+      <span class="footer-brand">Simone Conca · Lab</span>
+      <span class="footer-meta">© <span id="year"></span></span>
+      <a class="footer-top" href="../">← Tutti gli strumenti</a>
     </div>
   </footer>
 
   <script src="../../js/core.js"></script>
+  <script src="cpu.js"></script>
 </body>
 </html>

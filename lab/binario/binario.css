@@ -333,19 +333,7 @@
 .slot-contrib { font-family: var(--font-mono); font-size: 0.62rem; color: var(--ink-faint); min-height: 0.8rem; }
 
 .builder-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.5rem; }
-.ghost-btn {
-  font-family: var(--font-mono);
-  font-size: 0.82rem;
-  padding: 0.5rem 0.95rem;
-  border: 1px solid var(--line);
-  border-radius: 100px;
-  background: var(--bg);
-  color: var(--ink);
-  cursor: pointer;
-  transition: border-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.15s var(--ease);
-}
-.ghost-btn:hover { border-color: var(--accent); color: var(--accent); }
-.ghost-btn:active { transform: translateY(1px); }
+/* .ghost-btn è ora una primitiva condivisa in lab.css */
 
 .builder-output { margin-top: 1.5rem; padding-top: 1.4rem; border-top: 1px solid var(--line-soft); }
 .out-sum { font-family: var(--font-mono); font-size: 0.95rem; line-height: 1.8; color: var(--ink-soft); }

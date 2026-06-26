@@ -1,0 +1,160 @@
+/* ============================================================
+   cpu.css — CPU & Assembly Visualizer
+   Primitive (panel, seg, ghost-btn) in lab.css.
+   ============================================================ */
+
+.examples-inline { flex: 1; align-items: flex-start; }
+.examples { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.example-chip {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  padding: 0.35rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  background: var(--bg);
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease);
+}
+.example-chip:hover { border-color: var(--accent); color: var(--accent); }
+
+.cpu-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+@media (max-width: 900px) { .cpu-grid { grid-template-columns: 1fr; } }
+
+/* ---------- Editor / listing ---------- */
+.code-edit, .code-listing {
+  width: 100%;
+  min-height: 280px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg-sunk);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.88rem;
+  line-height: 1.7;
+  padding: 0.9rem 1rem;
+}
+.code-edit { resize: vertical; outline: none; tab-size: 4; white-space: pre; }
+.code-edit:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-wash); }
+
+.code-listing { overflow: auto; counter-reset: ln; }
+.code-listing .row {
+  display: grid;
+  grid-template-columns: 2rem 1fr;
+  gap: 0.75rem;
+  padding: 0 0.3rem;
+  border-radius: 5px;
+  white-space: pre;
+}
+.code-listing .ln { color: var(--ink-faint); text-align: right; user-select: none; font-size: 0.78rem; }
+.code-listing .src { color: var(--ink); }
+.code-listing .row.label .src { color: var(--c-ip, var(--accent)); }
+.code-listing .row.comment .src { color: var(--ink-faint); font-style: italic; }
+.code-listing .row.current {
+  background: var(--accent);
+}
+.code-listing .row.current .ln,
+.code-listing .row.current .src { color: var(--accent-ink); }
+.code-listing .row.halt-here { background: color-mix(in srgb, #3fae6b 22%, transparent); }
+
+.code-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+  margin-top: 0.9rem;
+}
+.run-btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-family: var(--font-sans); font-size: 0.9rem; font-weight: 500;
+  padding: 0.55rem 1.05rem;
+  border: 1px solid var(--accent); border-radius: 100px;
+  background: var(--accent); color: var(--accent-ink); cursor: pointer;
+  transition: transform 0.15s var(--ease);
+}
+.run-btn:hover:not(:disabled) { transform: translateY(-1px); }
+.run-btn:disabled { opacity: 0.5; cursor: default; }
+.code-status {
+  font-family: var(--font-mono); font-size: 0.76rem;
+  color: var(--ink-soft); margin-left: auto;
+}
+.code-status.err { color: #e0533d; }
+.code-status.ok { color: #3fae6b; }
+
+/* ---------- Stato CPU ---------- */
+.state-block { margin-bottom: 1.4rem; }
+.state-block:last-child { margin-bottom: 0; }
+.state-label {
+  display: block;
+  font-family: var(--font-mono); font-size: 0.7rem;
+  letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--ink-faint); margin-bottom: 0.6rem;
+}
+
+.registers {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.45rem;
+}
+.reg {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.4rem 0.6rem;
+  background: var(--bg);
+  transition: border-color 0.25s var(--ease), background-color 0.25s var(--ease);
+}
+.reg-name { font-family: var(--font-mono); font-size: 0.74rem; color: var(--accent); font-weight: 600; }
+.reg-val { font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink); }
+.reg-hex { font-family: var(--font-mono); font-size: 0.64rem; color: var(--ink-faint); }
+.reg.changed { border-color: var(--accent); background: var(--accent-wash); }
+.reg.pc { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: baseline; }
+.reg.pc .reg-name { color: #c98a1b; }
+
+.flags { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+.flag {
+  font-family: var(--font-mono); font-size: 0.78rem;
+  display: flex; align-items: center; gap: 0.4rem;
+  padding: 0.35rem 0.65rem;
+  border: 1px solid var(--line); border-radius: 8px;
+  background: var(--bg);
+}
+.flag b { color: var(--ink-soft); }
+.flag .v { color: var(--ink); font-weight: 600; }
+.flag.on .v { color: var(--accent); }
+.flag.changed { border-color: var(--accent); background: var(--accent-wash); }
+
+.memory { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.4rem; }
+.mem-cell {
+  border: 1px solid var(--line); border-radius: 7px;
+  padding: 0.35rem; text-align: center; background: var(--bg);
+  transition: border-color 0.25s var(--ease), background-color 0.25s var(--ease);
+}
+.mem-addr { font-family: var(--font-mono); font-size: 0.6rem; color: var(--ink-faint); }
+.mem-val { font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink); }
+.mem-cell.changed { border-color: var(--accent); background: var(--accent-wash); }
+
+/* ---------- Riferimento ---------- */
+.reference { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 0.5rem 1.25rem; }
+.ref-item {
+  display: flex; gap: 0.6rem; align-items: baseline;
+  font-size: 0.84rem; padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--line-soft);
+}
+.ref-item code {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent);
+  flex-shrink: 0; min-width: 5.5rem;
+}
+.ref-item span { color: var(--ink-soft); }
+
+@media (max-width: 480px) {
+  .panel { padding: 1.1rem; }
+  .registers { grid-template-columns: 1fr 1fr; }
+  .memory { grid-template-columns: repeat(2, 1fr); }
+  .code-bar { gap: 0.4rem; }
+  .code-status { margin-left: 0; flex-basis: 100%; }
+}

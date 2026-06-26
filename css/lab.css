@@ -292,6 +292,21 @@
 .seg-btn:hover { color: var(--ink); }
 .seg-btn.active { background: var(--accent); color: var(--accent-ink); }
 
+/* Bottone "fantasma" generico */
+.ghost-btn {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  padding: 0.5rem 0.95rem;
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  background: var(--bg);
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease), transform 0.15s var(--ease);
+}
+.ghost-btn:hover { border-color: var(--accent); color: var(--accent); }
+.ghost-btn:active { transform: translateY(1px); }
+
 /* Tag della base */
 .base-tag {
   font-family: var(--font-mono);
