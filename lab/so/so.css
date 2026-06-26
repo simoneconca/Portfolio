@@ -42,7 +42,8 @@
   gap: 1rem; align-items: start;
 }
 .so-layout > * { min-width: 0; }
-#memMode .so-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+/* la memoria è più chiara in verticale: un blocco sotto l'altro */
+#memMode .so-layout { grid-template-columns: minmax(0, 1fr); gap: 1.1rem; }
 @media (max-width: 880px) {
   .so-layout { grid-template-columns: minmax(0, 1fr); }
   .exec-panel { order: -1; } /* su mobile la vista live sta sopra le impostazioni */
@@ -172,7 +173,8 @@
 .proc-state-mini .st.active { border-color: var(--accent); color: var(--accent); background: var(--accent-wash); font-weight: 600; }
 .proc-state-mini .st.wait.active { border-color: #c98a1b; color: #c98a1b; background: rgba(201,138,27,0.1); }
 
-.ram-frames { display: grid; grid-template-columns: repeat(2, minmax(0,1fr)); gap: 0.45rem; }
+.ram-frames { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 0.45rem; }
+@media (max-width: 560px) { .ram-frames { grid-template-columns: repeat(2, minmax(0,1fr)); } }
 .frame-cell {
   border: 1px solid var(--line); border-radius: 9px; padding: 0.5rem 0.6rem; background: var(--bg);
   transition: border-color 0.3s var(--ease), background-color 0.3s var(--ease);
