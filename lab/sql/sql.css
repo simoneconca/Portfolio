@@ -13,8 +13,9 @@
 .side-panel   { grid-column: 2; grid-row: 1 / span 2; }
 .result-panel { grid-column: 1; grid-row: 2; }
 
+.sql-grid > * { min-width: 0; }
 @media (max-width: 900px) {
-  .sql-grid { grid-template-columns: 1fr; }
+  .sql-grid { grid-template-columns: minmax(0, 1fr); }
   .editor-panel, .side-panel, .result-panel { grid-column: 1; grid-row: auto; }
   .side-panel { order: 3; }
   .result-panel { order: 2; }

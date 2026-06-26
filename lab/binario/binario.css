@@ -5,13 +5,14 @@
 
 .app-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
   gap: 1.25rem;
 }
+.app-grid > * { min-width: 0; }
 .app-grid > .full { grid-column: 1 / -1; }
 
 @media (max-width: 920px) {
-  .app-grid { grid-template-columns: 1fr; }
+  .app-grid { grid-template-columns: minmax(0, 1fr); }
   .app-grid > .full { grid-column: auto; }
 }
 

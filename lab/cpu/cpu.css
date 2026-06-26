@@ -24,7 +24,8 @@
   gap: 1.25rem;
   align-items: start;
 }
-@media (max-width: 900px) { .cpu-grid { grid-template-columns: 1fr; } }
+.cpu-grid > * { min-width: 0; }
+@media (max-width: 900px) { .cpu-grid { grid-template-columns: minmax(0, 1fr); } }
 
 /* ---------- Editor / listing ---------- */
 .code-edit, .code-listing {

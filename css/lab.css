@@ -57,7 +57,7 @@
 /* ---------- Griglia strumenti ---------- */
 .tools-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(330px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr));
   gap: 1.25rem;
 }
 .tool-card {
@@ -228,6 +228,7 @@
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: clamp(1.4rem, 3vw, 2rem);
+  min-width: 0; /* permette alla griglia di restringersi su mobile */
 }
 .panel-head { margin-bottom: 1.4rem; }
 .panel-kicker {

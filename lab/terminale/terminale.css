@@ -5,12 +5,13 @@
 
 .term-layout {
   display: grid;
-  grid-template-columns: 1fr 280px;
+  grid-template-columns: minmax(0, 1fr) 280px;
   gap: 1.25rem;
   align-items: start;
 }
+.term-layout > * { min-width: 0; }
 @media (max-width: 900px) {
-  .term-layout { grid-template-columns: 1fr; }
+  .term-layout { grid-template-columns: minmax(0, 1fr); }
   .fs-aside { order: -1; }
 }
 
