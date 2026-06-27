@@ -29,10 +29,11 @@
   background: var(--bg-sunk); border: 1px solid var(--line); border-radius: 14px; padding: 1rem;
 }
 .vn-box, .vn-grouphead, .vn-bus {
-  font-family: var(--font-sans); color: var(--ink); cursor: pointer;
+  font-family: var(--font-sans); color: var(--ink); cursor: pointer; min-width: 0;
   border: 1.5px solid var(--line); border-radius: 11px; background: var(--bg);
   transition: border-color 0.18s var(--ease), background-color 0.18s var(--ease), box-shadow 0.2s var(--ease), transform 0.12s var(--ease);
 }
+.vn-box .vn-name { overflow-wrap: anywhere; }
 .vn-box:hover, .vn-grouphead:hover, .vn-bus:hover { border-color: var(--accent); }
 
 .vn-box.input { grid-area: inp; }
@@ -52,7 +53,7 @@
 }
 .vn-bus small { font-size: 0.62rem; font-weight: 400; color: var(--ink-soft); letter-spacing: 0.02em; }
 
-.vn-group { border: 1.5px solid var(--line); border-radius: 12px; background: var(--bg); padding: 0.6rem; display: flex; flex-direction: column; gap: 0.5rem; }
+.vn-group { border: 1.5px solid var(--line); border-radius: 12px; background: var(--bg); padding: 0.6rem; display: flex; flex-direction: column; gap: 0.5rem; min-width: 0; }
 .vn-group.cpu { grid-area: cpu; }
 .vn-group.mem { grid-area: mem; }
 .vn-grouphead {
@@ -61,7 +62,7 @@
   border: 0; background: transparent; padding: 0.15rem 0.2rem;
 }
 .vn-grouphead:hover { color: var(--accent); }
-.vn-subs { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.4rem; }
+.vn-subs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.4rem; }
 .vn-box.sub {
   display: flex; flex-direction: column; align-items: center; gap: 0.15rem; padding: 0.5rem 0.3rem;
   font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; text-align: center;
@@ -80,6 +81,17 @@
 .vn-flow-desc { min-height: 2.6rem; margin-top: 1rem; padding: 0.7rem 0.9rem; border-radius: 10px; background: var(--bg); border: 1px solid var(--line-soft); font-size: 0.9rem; line-height: 1.5; color: var(--ink); }
 .vn-flow-desc .fd-n { color: var(--accent); font-weight: 700; }
 .vn-flow-desc b { font-weight: 600; }
+
+/* segmented control (etichette lunghe) su mobile: piena larghezza, testo a capo */
+@media (max-width: 560px) {
+  .vn-mode .seg { display: flex; width: 100%; }
+  .vn-mode .seg-btn { flex: 1 1 0; white-space: normal; text-align: center; line-height: 1.25; }
+  /* schema a colonna singola: ogni componente a tutta larghezza */
+  .vn-diagram {
+    grid-template-columns: 1fr;
+    grid-template-areas: "inp" "out" "bus" "cpu" "mem" "sto";
+  }
+}
 
 /* altre componenti */
 .vn-extra { margin-top: 1.2rem; padding-top: 1rem; border-top: 1px solid var(--line-soft); }
