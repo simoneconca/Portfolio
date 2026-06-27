@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Editor HTML/CSS dal vivo: scrivi il codice a sinistra e guarda la pagina prendere forma a destra, in tempo reale. Per chi inizia a fare web.">
+  <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#100f0c" media="(prefers-color-scheme: dark)">
+  <title>Editor HTML/CSS dal vivo — Lab · Simone Conca</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/base.css">
+  <link rel="stylesheet" href="../../css/lab.css">
+  <link rel="stylesheet" href="editor.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23100f0c'/><text x='50' y='71' text-anchor='middle' font-size='62' font-family='Georgia,serif' font-style='italic' font-weight='600' fill='%23f4f1ea'>S</text></svg>">
+  <script>
+    (function () { try { var s = localStorage.getItem("theme"); document.documentElement.setAttribute("data-theme", s || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")); } catch (e) {} })();
+  </script>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="../../" aria-label="Simone Conca — home">
+        <span class="brand-mark">SC</span>
+        <span class="brand-name">Simone Conca</span>
+        <span class="brand-lab">LAB</span>
+      </a>
+      <nav class="nav" aria-label="Navigazione">
+        <a href="../">← Lab</a>
+        <a href="../../">Portfolio</a>
+        <a href="../../#contatti">Contatti</a>
+      </nav>
+      <div class="header-actions">
+        <button class="theme-toggle" type="button" aria-label="Cambia tema chiaro/scuro" title="Cambia tema">
+          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        </button>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-mobile" aria-label="Apri menu"><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <nav id="nav-mobile" class="nav-mobile" aria-label="Navigazione mobile">
+    <a href="../">← Lab</a>
+    <a href="../../">Portfolio</a>
+    <a href="../../#contatti">Contatti</a>
+  </nav>
+
+  <main>
+    <section class="section tool-hero" style="padding-bottom:0">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Percorso">
+          <a href="../">Lab</a><span class="sep">/</span><span class="current">Editor HTML/CSS</span>
+        </nav>
+        <h1>Editor <em>HTML/CSS</em> dal vivo</h1>
+        <p class="lead">Scrivi <strong>HTML</strong> e <strong>CSS</strong> a sinistra e guarda la pagina prendere forma a destra, <strong>in tempo reale</strong>. Cambia un colore, un testo, un margine: il risultato si aggiorna mentre scrivi. La palestra perfetta per chi inizia a fare web.</p>
+      </div>
+    </section>
+
+    <section class="section ed-sec" style="padding-top:clamp(1.5rem,4vw,2.5rem);padding-bottom:clamp(4rem,9vw,7rem)">
+      <div class="container">
+        <div class="ed-bar">
+          <button class="ghost-btn" id="edReset" type="button">↺ Esempio</button>
+          <button class="ghost-btn" id="edClear" type="button">Svuota</button>
+          <span class="ed-hint">L'anteprima gira isolata: solo HTML e CSS, nessuno script.</span>
+        </div>
+
+        <div class="ed-layout">
+          <div class="ed-editors">
+            <div class="ed-pane">
+              <div class="ed-pane-head"><span class="ed-tag html">HTML</span><span class="lbl">la struttura della pagina</span></div>
+              <textarea class="ed-code html" id="edHtml" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Codice HTML"></textarea>
+            </div>
+            <div class="ed-pane">
+              <div class="ed-pane-head"><span class="ed-tag css">CSS</span><span class="lbl">lo stile e i colori</span></div>
+              <textarea class="ed-code css" id="edCss" spellcheck="false" autocapitalize="off" autocomplete="off" aria-label="Codice CSS"></textarea>
+            </div>
+          </div>
+
+          <div class="ed-preview-col">
+            <div class="ed-frame">
+              <div class="ed-frame-bar">
+                <span class="ed-dots"><i></i><i></i><i></i></span>
+                <span class="ed-frame-url">la-mia-pagina.html</span>
+              </div>
+              <iframe class="ed-iframe" id="edFrame" title="Anteprima" sandbox="allow-same-origin"></iframe>
+            </div>
+            <p class="ed-note">Suggerimento: il tag <code>&lt;style&gt;</code> è già pronto per te — scrivi le regole CSS direttamente nel riquadro CSS.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <span class="footer-brand">Simone Conca · Lab</span>
+      <span class="footer-meta">© <span id="year"></span></span>
+      <a class="footer-top" href="../">← Tutti gli strumenti</a>
+    </div>
+  </footer>
+
+  <script src="../../js/core.js"></script>
+  <script src="editor.js"></script>
+</body>
+</html>

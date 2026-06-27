@@ -1,0 +1,42 @@
+/* ============================================================
+   editor.css — Editor HTML/CSS dal vivo
+   Prefisso .ed-  ·  Usa base.css + lab.css.
+   ============================================================ */
+
+.ed-sec { position: relative; z-index: 2; }
+.ed-bar { display: flex; align-items: center; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 1.1rem; }
+.ed-bar .ghost-btn { padding: 0.45rem 0.85rem; }
+.ed-bar .ed-hint { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-faint); margin-left: auto; }
+
+.ed-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.1rem; align-items: stretch; }
+@media (max-width: 880px) { .ed-layout { grid-template-columns: 1fr; } }
+
+/* ---------- Editor ---------- */
+.ed-editors { display: flex; flex-direction: column; gap: 1rem; }
+.ed-pane { display: flex; flex-direction: column; }
+.ed-pane-head { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; }
+.ed-tag { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.05em; text-transform: uppercase; padding: 0.2rem 0.55rem; border-radius: 6px; }
+.ed-tag.html { background: color-mix(in srgb, #e0533d 18%, transparent); color: #c0392b; }
+.ed-tag.css { background: color-mix(in srgb, #2c6fe0 18%, transparent); color: #1f5fae; }
+[data-theme="dark"] .ed-tag.css { color: #7aa2ec; }
+.ed-pane-head span.lbl { font-size: 0.86rem; color: var(--ink-soft); }
+.ed-code {
+  width: 100%; min-height: 9rem; resize: vertical;
+  border: 1px solid var(--line); border-radius: 10px; background: var(--bg-sunk); color: var(--ink);
+  font-family: var(--font-mono); font-size: 0.86rem; line-height: 1.55; tab-size: 2;
+  padding: 0.8rem 0.9rem; outline: none; white-space: pre; overflow: auto;
+  transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+.ed-code:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-wash); }
+.ed-code.html { min-height: 12rem; }
+
+/* ---------- Anteprima ---------- */
+.ed-preview-col { display: flex; flex-direction: column; }
+.ed-frame { border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: #fff; display: flex; flex-direction: column; height: 100%; min-height: 360px; }
+.ed-frame-bar { display: flex; align-items: center; gap: 0.6rem; padding: 0.5rem 0.8rem; background: var(--bg-sunk); border-bottom: 1px solid var(--line); }
+.ed-dots { display: inline-flex; gap: 0.35rem; }
+.ed-dots i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.ed-dots i:nth-child(1){ background:#e0533d; } .ed-dots i:nth-child(2){ background:#d9a72b; } .ed-dots i:nth-child(3){ background:#3fae6b; }
+.ed-frame-url { font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-soft); background: var(--bg); border: 1px solid var(--line); border-radius: 100px; padding: 0.2rem 0.7rem; flex: 1; }
+.ed-iframe { flex: 1; width: 100%; border: 0; background: #fff; min-height: 320px; }
+.ed-note { margin-top: 0.8rem; font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-faint); line-height: 1.5; }
