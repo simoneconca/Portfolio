@@ -27,8 +27,8 @@ const PROJECTS = [
     repo: ""
   },
   {
-    title: "Gestionale Dipendenti e Corsi",
-    description: "Gestionale web (PHP + MySQL) per tenere traccia di dipendenti, corsi di formazione, visite mediche e relative scadenze. È uno dei miei primi progetti, realizzato durante le superiori.",
+    title: "GestForm",
+    description: "Gestionale web (PHP + MySQL) per dipendenti, corsi di formazione, visite mediche e relative scadenze. È uno dei miei primi progetti, realizzato durante le superiori.",
     tags: ["PHP", "MySQL", "Progetto scolastico"],
     page: "progetti/gestionale/",
     demo: "",
