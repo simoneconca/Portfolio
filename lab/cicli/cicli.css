@@ -1,0 +1,102 @@
+/* ============================================================
+   cicli.css — I cicli: for, while, do-while
+   Diagramma di flusso (stile Flowgorithm) + codice C/C++.
+   Usa base.css + lab.css.
+   ============================================================ */
+
+.cl-sec { position: relative; z-index: 2; }
+
+/* ---------- Pulsanti / controlli ---------- */
+.run-btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-family: var(--font-sans); font-size: 0.88rem; font-weight: 500;
+  padding: 0.5rem 0.95rem; border: 1px solid var(--accent); border-radius: 100px;
+  background: var(--accent); color: var(--accent-ink); cursor: pointer;
+  transition: transform 0.15s var(--ease);
+}
+.run-btn:hover:not(:disabled) { transform: translateY(-1px); }
+.run-btn:disabled { opacity: 0.5; cursor: default; }
+.cl-controls { display: flex; flex-wrap: wrap; gap: 1rem 1.75rem; align-items: center; }
+.slider { accent-color: var(--accent); cursor: pointer; max-width: 8rem; }
+.slider-val { font-family: var(--font-mono); font-size: 0.85rem; color: var(--ink); min-width: 1.5rem; }
+
+/* ---------- Spiegazione ---------- */
+.explain-panel { margin-bottom: 0; }
+.explain-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.65rem; }
+.explain-head h2 { font-family: var(--font-display); font-weight: 500; font-size: clamp(1.3rem, 3vw, 1.85rem); letter-spacing: -0.015em; line-height: 1.1; }
+.explain-big { font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent-ink); background: var(--accent); border-radius: 100px; padding: 0.28rem 0.7rem; white-space: nowrap; }
+.explain-idea { font-size: 1.02rem; color: var(--ink); max-width: 78ch; margin-bottom: 1.4rem; }
+.explain-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.1rem 1.6rem; }
+@media (max-width: 760px) { .explain-grid { grid-template-columns: 1fr; gap: 1rem; } }
+.explain-label { display: block; font-family: var(--font-mono); font-size: 0.66rem; letter-spacing: 0.07em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.35rem; }
+.explain-item p { font-size: 0.9rem; color: var(--ink-soft); line-height: 1.55; }
+
+/* ---------- Layout ---------- */
+.cl-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.25rem; align-items: start; margin-top: 1.25rem; }
+@media (max-width: 880px) { .cl-layout { grid-template-columns: 1fr; } }
+
+.exec-bar { display: flex; align-items: center; gap: 0.55rem; flex-wrap: wrap; margin-bottom: 1.1rem; padding-bottom: 0.9rem; border-bottom: 1px solid var(--line-soft); }
+.speed { display: inline-flex; align-items: center; gap: 0.5rem; margin-left: auto; font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-soft); }
+.speed .slider { max-width: 5.5rem; }
+
+/* ---------- Diagramma di flusso ---------- */
+.cl-flow { background: var(--bg-sunk); border: 1px solid var(--line); border-radius: 12px; padding: 0.5rem; }
+.fc-svg { display: block; width: 100%; height: auto; }
+.fc-shape { fill: var(--bg-elev); stroke: var(--ink); stroke-width: 1.6; transition: fill 0.2s var(--ease), stroke 0.2s var(--ease); }
+.fc-label { font-family: var(--font-mono); font-size: 12px; fill: var(--ink); text-anchor: middle; dominant-baseline: central; transition: fill 0.2s var(--ease); }
+.fc-arrow { fill: none; stroke: var(--ink-soft); stroke-width: 1.6; }
+.fc-edge { font-family: var(--font-mono); font-size: 10px; fill: var(--ink-faint); text-anchor: middle; }
+.fc-node.active .fc-shape { fill: var(--accent); stroke: var(--accent); }
+.fc-node.active .fc-label { fill: var(--accent-ink); }
+.fc-node.active.cond-true .fc-shape { fill: #3fae6b; stroke: #3fae6b; }
+.fc-node.active.cond-false .fc-shape { fill: #e0533d; stroke: #e0533d; }
+#fc-head { fill: var(--ink-soft); }
+
+/* ---------- Stato (variabili + output) ---------- */
+.cl-state { display: flex; flex-wrap: wrap; gap: 1.25rem; align-items: flex-start; margin-top: 1.1rem; }
+.cl-vars { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+.cl-var {
+  display: inline-flex; flex-direction: column; align-items: center; gap: 2px;
+  min-width: 56px; padding: 0.5rem 0.7rem;
+  border: 1px solid var(--line); border-radius: 10px; background: var(--bg);
+}
+.cl-var b { font-family: var(--font-mono); font-size: 0.66rem; color: var(--ink-soft); font-weight: 500; }
+.cl-var i { font-family: var(--font-mono); font-style: normal; font-size: 1.15rem; font-weight: 600; color: var(--accent); }
+
+.cl-output-wrap { flex: 1 1 180px; min-width: 0; }
+.cl-output { display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.4rem; min-height: 2rem; }
+.cl-output span {
+  font-family: var(--font-mono); font-size: 0.85rem; font-weight: 600;
+  padding: 0.2rem 0.55rem; border-radius: 7px;
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line));
+  color: var(--accent); background: var(--accent-wash);
+}
+.cl-output span.fresh { animation: cl-pop 0.4s var(--ease); }
+@keyframes cl-pop { 0% { transform: scale(0.4); opacity: 0; } 60% { transform: scale(1.12); } 100% { transform: scale(1); opacity: 1; } }
+.cl-output-empty { font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-faint); }
+
+.cl-desc { font-family: var(--font-mono); font-size: 0.84rem; color: var(--ink); min-height: 1.4rem; margin-top: 1rem; }
+.cl-desc strong { color: var(--accent); }
+
+/* ---------- Codice ---------- */
+.cl-code-panel { min-width: 0; }
+.lang-bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.9rem; }
+.code-view {
+  margin: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--bg-sunk);
+  font-family: var(--font-mono); font-size: 0.84rem; line-height: 1.7;
+  overflow: auto; padding: 0.3rem 0;
+}
+.code-view .ln { display: grid; grid-template-columns: 2.2rem 1fr; gap: 0.6rem; padding: 0 0.7rem; white-space: pre; }
+.code-view .ln .num { color: var(--ink-faint); text-align: right; user-select: none; font-size: 0.74rem; }
+.code-view .ln .src { color: var(--ink); }
+.code-view .ln.current { background: var(--accent); border-radius: 4px; }
+.code-view .ln.current .num, .code-view .ln.current .src { color: var(--accent-ink); }
+.code-view .kw { color: var(--accent); }
+.code-view .current .kw { color: var(--accent-ink); }
+.code-view .cm { color: var(--ink-faint); font-style: italic; }
+.code-view .current .cm { color: var(--accent-ink); opacity: 0.85; }
+
+.cl-codenote { margin-top: 0.9rem; font-size: 0.86rem; color: var(--ink-soft); line-height: 1.6; }
+.cl-codenote b { color: var(--ink); font-weight: 600; }
+
+@media (prefers-reduced-motion: reduce) { .cl-output span.fresh { animation: none; } }
