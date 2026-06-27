@@ -1,60 +1,19 @@
 <!DOCTYPE html>
 <html lang="it" data-theme="light">
-<!--
-============================================================
- ISTRUZIONI PER CLAUDE (sessione futura) — PLACEHOLDER
- Strumento DA COSTRUIRE. Sostituisci <main>, crea crittografia.js e
- crittografia.css in questa cartella e linkali qui.
-============================================================
- CONTESTO
- - Sito statico (GitHub Pages, simoneconca.it), ZERO backend, niente
-   framework/build, tutto in italiano. Portale /lab/ per superiori.
-   Autore: Simone Conca (insegnante A041). Tono didattico.
- DESIGN SYSTEM (riusa): css/base.css (token+dark), css/lab.css
-   (.panel,.seg,.ghost-btn,.field,.breadcrumb,.tool-hero,.wip),
-   js/core.js. Pattern lab/<nome>/ con index.html+<nome>.js+<nome>.css,
-   prefisso CSS .cr-. Copia header/footer/breadcrumb da lab/cicli/.
-   Per il pattern a modalità (.seg) vedi lab/strutture/ o lab/sort/.
- QUANDO FINITO: card lab/index.html "soon"→"live"; aggiorna contatori
-   home; verifica browser; commit+push. Piano: memory/lab-portal-plan.md.
-============================================================
- SPECIFICA — Crittografia di base
- Categoria: Sicurezza & Hacking. Scopo: introdurre la crittografia.
- Più modalità (segmented control):
- 1) CIFRARIO DI CESARE: testo + slider di scorrimento (0–25);
-    cifra/decifra dal vivo; mostra la mappatura dell'alfabeto
-    (es. ruota o A→D) e la corrispondenza lettera per lettera.
- 2) VIGENÈRE: testo + parola chiave; mostra lo scorrimento variabile
-    per ogni lettera (chiave ripetuta sotto al testo).
- 3) CHIAVE PUBBLICA / PRIVATA: metafora visiva (lucchetto/cassetta):
-    si chiude con la chiave pubblica, si apre solo con la privata.
-    Interattivo. Opzionale: un mini-RSA "giocattolo" con numeri piccoli
-    che mostra la generazione della coppia di chiavi (solo didattico).
- 4) HASHING + EFFETTO VALANGA: input testo → hash SHA-256 calcolato con
-    window.crypto.subtle.digest('SHA-256', ...) (NIENTE backend/librerie).
-    Cambiando UN solo carattere l'hash cambia completamente: evidenzia
-    quanto (es. % di caratteri/bit diversi) per mostrare l'"effetto
-    valanga". Nota: MD5 non è in SubtleCrypto; usa SHA-256 (o SHA-1) e
-    spiega che l'hash è a senso unico.
- Didattica: ogni modalità con una spiegazione breve. Niente promesse di
-   sicurezza reale sui cifrari storici (sono didattici/deboli: dillo).
- Acceptance: le 4 modalità funzionano dal vivo; l'hashing usa
-   crypto.subtle ed evidenzia l'effetto valanga.
-============================================================
--->
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Crittografia di base: cifrari di Cesare e Vigenère, chiavi pubblica/privata e hashing con effetto valanga. Strumento in sviluppo.">
+  <meta name="description" content="Crittografia di base: cifrari di Cesare e Vigenère, chiave pubblica/privata con RSA giocattolo e hashing SHA-256 con effetto valanga dal vivo.">
   <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#100f0c" media="(prefers-color-scheme: dark)">
-  <title>Crittografia di base (in sviluppo) — Lab · Simone Conca</title>
+  <title>Crittografia di base — Lab · Simone Conca</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../css/base.css">
   <link rel="stylesheet" href="../../css/lab.css">
+  <link rel="stylesheet" href="crittografia.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23100f0c'/><text x='50' y='71' text-anchor='middle' font-size='62' font-family='Georgia,serif' font-style='italic' font-weight='600' fill='%23f4f1ea'>S</text></svg>">
   <script>
     (function () { try { var s = localStorage.getItem("theme"); document.documentElement.setAttribute("data-theme", s || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")); } catch (e) {} })();
@@ -92,23 +51,175 @@
   </nav>
 
   <main>
-    <section class="section tool-hero">
+    <section class="section tool-hero" style="padding-bottom:0">
       <div class="container">
         <nav class="breadcrumb" aria-label="Percorso">
           <a href="../">Lab</a><span class="sep">/</span><span class="current">Crittografia di base</span>
         </nav>
-        <h1>Crittografia di base</h1>
+        <h1>Crittografia <em>di base</em></h1>
         <p class="lead">I cifrari storici (<strong>Cesare</strong>, <strong>Vigenère</strong>) e i concetti moderni: la coppia di chiavi <strong>pubblica/privata</strong> e l'<strong>hashing</strong>, con l'effetto valanga che vedi cambiando un solo carattere.</p>
+      </div>
+    </section>
 
-        <div class="wip">
-          <span class="wip-badge"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor"></span> In sviluppo</span>
-          <h2>Questo strumento sta arrivando</h2>
-          <p>Lo sto ancora costruendo. Tornerà presto, con i cifrari interattivi e l'hashing SHA-256 dal vivo. Intanto dai un'occhiata agli altri strumenti del Lab.</p>
-          <div class="wip-actions">
-            <a class="btn btn-primary" href="../">← Tutti gli strumenti</a>
-            <a class="btn btn-ghost" href="../../#contatti">Suggerisci un'idea</a>
+    <section class="section cr-sec" style="padding-top:clamp(1.5rem,4vw,2.5rem)">
+      <div class="container">
+        <div class="panel controls-panel cr-seg-modes">
+          <div class="control-group">
+            <span class="control-label">Argomento</span>
+            <div class="seg" id="crModeSeg" role="group" aria-label="Argomento">
+              <button type="button" class="seg-btn active" data-mode="cesare">Cesare</button>
+              <button type="button" class="seg-btn" data-mode="vigenere">Vigenère</button>
+              <button type="button" class="seg-btn" data-mode="chiavi">Chiave pub/priv</button>
+              <button type="button" class="seg-btn" data-mode="hash">Hashing</button>
+            </div>
           </div>
         </div>
+      </div>
+    </section>
+
+    <section class="section cr-sec" style="padding-top:0;padding-bottom:clamp(4rem,9vw,7rem)">
+      <div class="container">
+
+        <!-- CESARE -->
+        <div class="cr-mode-panel" data-mode="cesare">
+          <div class="panel">
+            <p class="cr-explain">Il <b>cifrario di Cesare</b> sposta ogni lettera dell'alfabeto di un numero fisso di posizioni. Semplice e antichissimo — ma debolissimo: le combinazioni sono solo 25.</p>
+            <div class="cr-controls">
+              <div class="control-group">
+                <span class="control-label">Operazione</span>
+                <div class="seg" id="cesDir" role="group" aria-label="Operazione">
+                  <button type="button" class="seg-btn active" data-dir="enc">Cifra</button>
+                  <button type="button" class="seg-btn" data-dir="dec">Decifra</button>
+                </div>
+              </div>
+              <div class="control-group">
+                <span class="control-label">Scorrimento</span>
+                <input id="cesShift" class="slider" type="range" min="0" max="25" value="3">
+                <span class="cr-shiftval" id="cesShiftVal">+3</span>
+              </div>
+            </div>
+            <div class="cr-grid2">
+              <div>
+                <span class="cr-field-label">Testo</span>
+                <textarea id="cesIn" class="cr-text">Ciao mondo</textarea>
+              </div>
+              <div>
+                <span class="cr-field-label">Risultato</span>
+                <div id="cesOut" class="cr-out"></div>
+              </div>
+            </div>
+            <span class="cr-field-label" style="margin-top:1.25rem">Mappatura dell'alfabeto</span>
+            <div class="cr-alpha"><div class="cr-alpha-row" id="cesAlpha"></div></div>
+            <p class="cr-note"><b>Sicurezza reale: nessuna.</b> Con 25 sole chiavi si rompe «a forza bruta» in un istante. È solo un esempio storico.</p>
+          </div>
+        </div>
+
+        <!-- VIGENÈRE -->
+        <div class="cr-mode-panel" data-mode="vigenere" hidden>
+          <div class="panel">
+            <p class="cr-explain">Vigenère usa una <b>parola chiave</b> ripetuta: ogni lettera del testo viene spostata di una quantità <b>diversa</b>, dettata dalla lettera della chiave sotto di essa. Per secoli fu considerato «indecifrabile».</p>
+            <div class="cr-controls">
+              <div class="control-group">
+                <span class="control-label">Operazione</span>
+                <div class="seg" id="vigDir" role="group" aria-label="Operazione">
+                  <button type="button" class="seg-btn active" data-dir="enc">Cifra</button>
+                  <button type="button" class="seg-btn" data-dir="dec">Decifra</button>
+                </div>
+              </div>
+              <div class="control-group">
+                <span class="control-label">Chiave</span>
+                <span class="field" style="max-width:12rem"><input id="vigKey" type="text" value="SOLE" aria-label="Parola chiave"></span>
+              </div>
+            </div>
+            <div class="cr-grid2">
+              <div>
+                <span class="cr-field-label">Testo</span>
+                <textarea id="vigIn" class="cr-text">Attacco all alba</textarea>
+              </div>
+              <div>
+                <span class="cr-field-label">Risultato</span>
+                <div id="vigOut" class="cr-out"></div>
+              </div>
+            </div>
+            <span class="cr-field-label" style="margin-top:1.25rem">Chiave ripetuta sotto il testo</span>
+            <div class="cr-vig"><div class="cr-vig-row" id="vigRow"></div></div>
+          </div>
+        </div>
+
+        <!-- CHIAVI -->
+        <div class="cr-mode-panel" data-mode="chiavi" hidden>
+          <div class="panel">
+            <p class="cr-explain">Nella crittografia <b>asimmetrica</b> ci sono due chiavi diverse: la <b>pubblica</b> (che chiunque può avere) <b>chiude</b> il lucchetto; solo la <b>privata</b> (segreta) lo <b>apre</b>. Così chiunque può scriverti in segreto, ma solo tu leggi.</p>
+            <div class="cr-keys">
+              <div class="cr-keycard pub">
+                <span class="cr-keyicon">🔑</span>
+                <div><h3>Chiave pubblica</h3><p>La distribuisci a tutti. Serve solo per <b>cifrare</b> (chiudere il lucchetto).</p></div>
+              </div>
+              <div class="cr-keycard priv">
+                <span class="cr-keyicon">🗝️</span>
+                <div><h3>Chiave privata</h3><p>La tieni segreta. È l'unica che può <b>decifrare</b> (aprire).</p></div>
+              </div>
+            </div>
+            <div class="control-group" style="margin-bottom:1rem">
+              <span class="control-label">Messaggio</span>
+              <span class="field" style="max-width:16rem"><input id="crMsg" type="text" value="CIAO" aria-label="Messaggio da cifrare"></span>
+            </div>
+            <div class="cr-lockstage">
+              <div class="cr-lock" id="crLock">🔓</div>
+              <div class="cr-lockmsg" id="crLockMsg"></div>
+              <div class="cr-lockstate" id="crLockState"></div>
+              <div class="cr-keybtns">
+                <button class="btn btn-primary" id="btnLock" type="button">🔒 Cifra con la pubblica</button>
+                <button class="btn btn-ghost" id="btnUnlock" type="button">🗝️ Decifra con la privata</button>
+              </div>
+            </div>
+
+            <div class="cr-rsa">
+              <span class="panel-kicker">RSA giocattolo (numeri piccoli)</span>
+              <p class="cr-explain" style="margin:0.5rem 0 0">Ecco la matematica vera dietro le chiavi, con numeri minuscoli per vederla tutta. Nella realtà p e q sono enormi (centinaia di cifre).</p>
+              <div class="cr-rsa-grid" id="rsaChips"></div>
+              <div class="control-group" style="margin-bottom:0.9rem">
+                <span class="control-label">Messaggio m</span>
+                <input id="rsaM" class="slider" type="range" min="0" max="32" value="4">
+                <span class="cr-shiftval" id="rsaMval">4</span>
+              </div>
+              <p class="cr-rsa-flow" id="rsaFlow"></p>
+            </div>
+            <p class="cr-note"><b>L'idea chiave:</b> ciò che la pubblica chiude, solo la privata apre. Non serve scambiarsi un segreto in anticipo — è la base di HTTPS, della firma digitale e di SPID.</p>
+          </div>
+        </div>
+
+        <!-- HASHING -->
+        <div class="cr-mode-panel" data-mode="hash" hidden>
+          <div class="panel">
+            <p class="cr-explain">Un <b>hash</b> trasforma qualsiasi testo in un'impronta di lunghezza fissa, ed è a <b>senso unico</b>: dall'impronta non si torna al testo. Scrivi nei due riquadri e guarda quanto cambia l'hash al minimo cambiamento.</p>
+            <div class="cr-hash-pair">
+              <div>
+                <span class="cr-field-label">Testo A</span>
+                <textarea id="hashInA" class="cr-text" style="min-height:3.4rem">ciao</textarea>
+                <span class="cr-field-label" style="margin-top:0.8rem">SHA-256 di A</span>
+                <div id="hashA" class="cr-hex"></div>
+              </div>
+              <div>
+                <span class="cr-field-label">Testo B</span>
+                <textarea id="hashInB" class="cr-text" style="min-height:3.4rem">ciap</textarea>
+                <span class="cr-field-label" style="margin-top:0.8rem">SHA-256 di B</span>
+                <div id="hashB" class="cr-hex"></div>
+              </div>
+            </div>
+            <div style="margin-top:1rem">
+              <button class="ghost-btn" id="btnFlip" type="button">Cambia un solo carattere di B →</button>
+            </div>
+            <div class="cr-aval">
+              <span class="cr-field-label">Effetto valanga · bit diversi tra i due hash</span>
+              <div class="cr-aval-bar"><div class="cr-aval-fill" id="avalFill"></div></div>
+              <div class="cr-aval-num" id="avalNum">0%</div>
+              <p class="cr-explain" id="avalCaption" style="text-align:center;margin:0.5rem auto 0"></p>
+            </div>
+            <p class="cr-note"><b>Nota:</b> qui l'hash è calcolato davvero dal browser con <code>crypto.subtle</code> (SHA-256). MD5 non è disponibile in SubtleCrypto — e comunque è considerato insicuro.</p>
+          </div>
+        </div>
+
       </div>
     </section>
   </main>
@@ -122,5 +233,6 @@
   </footer>
 
   <script src="../../js/core.js"></script>
+  <script src="crittografia.js"></script>
 </body>
 </html>

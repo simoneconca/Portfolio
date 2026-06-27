@@ -1,65 +1,19 @@
 <!DOCTYPE html>
 <html lang="it" data-theme="light">
-<!--
-============================================================
- ISTRUZIONI PER CLAUDE (sessione futura) — PLACEHOLDER
- Strumento DA COSTRUIRE. Sostituisci <main>, crea sqli.js e sqli.css
- in questa cartella e linkali qui.
-============================================================
- CONTESTO
- - Sito statico (GitHub Pages, simoneconca.it), ZERO backend, niente
-   framework/build, tutto in italiano. Portale /lab/ per superiori.
-   Autore: Simone Conca (insegnante A041). Tono didattico.
- - CONTESTO ETICO: laboratorio DIDATTICO in ambiente simulato e chiuso,
-   per insegnare come nascono le vulnerabilità e SOPRATTUTTO come si
-   difende (query parametrizzate). Tutto finto e locale.
- DESIGN SYSTEM (riusa): css/base.css, css/lab.css (.panel,.seg,
-   .ghost-btn,.field,.breadcrumb,.tool-hero,.wip), js/core.js
-   (escapeHtml!). Pattern lab/<nome>/ con index.html+<nome>.js+<nome>.css,
-   prefisso CSS .si-. Copia header/footer/breadcrumb da lab/cicli/.
-   È il seguito di lab/sql/ (c'è già sql.js / sql-wasm vendorizzato lì,
-   riutilizzabile se vuoi eseguire query vere in-browser).
- QUANDO FINITO: card lab/index.html "soon"→"live"; aggiorna contatori
-   home; verifica browser; commit+push. Piano: memory/lab-portal-plan.md.
-============================================================
- SPECIFICA — SQL Injection Sandbox (seguito offensivo di lab/sql/)
- Categoria: Sicurezza & Hacking. Scopo: far capire come un input non
- controllato altera la LOGICA di una query.
- - Finta schermata di LOGIN (username + password).
- - Sotto al form, mostra IN TEMPO REALE la query che il "server"
-   comporrebbe per concatenazione, es.:
-     SELECT * FROM utenti WHERE user = 'INPUT_UTENTE' AND pass = 'INPUT_PASS'
-   Riempi i placeholder mentre l'utente digita.
- - Se l'utente scrive il classico  admin' OR '1'='1  la query mostrata
-   diventa:
-     SELECT * FROM utenti WHERE user = 'admin' OR '1'='1' AND pass = '...'
-   Premendo "Accedi": evidenzia che '1'='1' è SEMPRE vero, il controllo
-   è bypassato → "sei entrato come admin" (vittoria).
- - GUIDATO: spiegazioni, suggerimenti e più scenari/sfide
-   (es. bypass login; UNION-based per leggere altri dati; commento -- ).
- - Esecuzione: o simuli il parsing per gli highlight didattici
-   (deterministico), oppure usi sql.js (vendor in lab/sql/vendor/) su un
-   DB finto in memoria per eseguire davvero. Consiglio: simulazione
-   guidata per le sfide + evidenziazione della parte "iniettata".
- - CHIUSURA DIFENSIVA OBBLIGATORIA: mostra la versione sicura con query
-   parametrizzate / prepared statement e spiega perché blocca l'attacco.
- Acceptance: la query si compone dal vivo; l'input malevolo cambia la
- logica ed è evidenziato; il form "bypassa"; c'è la spiegazione della difesa.
-============================================================
--->
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="SQL Injection Sandbox: come un input non controllato altera una query, e come difendersi. Strumento didattico in sviluppo.">
+  <meta name="description" content="SQL Injection Sandbox didattico: un finto login dove la query si compone dal vivo, l'input malevolo cambia la logica e impari a difenderti con le query parametrizzate.">
   <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#100f0c" media="(prefers-color-scheme: dark)">
-  <title>SQL Injection Sandbox (in sviluppo) — Lab · Simone Conca</title>
+  <title>SQL Injection Sandbox — Lab · Simone Conca</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../css/base.css">
   <link rel="stylesheet" href="../../css/lab.css">
+  <link rel="stylesheet" href="sqli.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23100f0c'/><text x='50' y='71' text-anchor='middle' font-size='62' font-family='Georgia,serif' font-style='italic' font-weight='600' fill='%23f4f1ea'>S</text></svg>">
   <script>
     (function () { try { var s = localStorage.getItem("theme"); document.documentElement.setAttribute("data-theme", s || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")); } catch (e) {} })();
@@ -97,23 +51,90 @@
   </nav>
 
   <main>
-    <section class="section tool-hero">
+    <section class="section tool-hero" style="padding-bottom:0">
       <div class="container">
         <nav class="breadcrumb" aria-label="Percorso">
           <a href="../">Lab</a><span class="sep">/</span><span class="current">SQL Injection Sandbox</span>
         </nav>
-        <h1>SQL Injection Sandbox</h1>
-        <p class="lead">Il seguito offensivo della SQL Sandbox: una finta schermata di login dove vedi <strong>comporsi la query in tempo reale</strong> e scopri come <code>admin' OR '1'='1</code> aggira il controllo — e poi come ci si difende.</p>
+        <h1>SQL Injection <em>Sandbox</em></h1>
+        <p class="lead">Una finta schermata di login dove vedi <strong>comporsi la query in tempo reale</strong> e scopri come <code>admin' OR '1'='1</code> aggira il controllo. Ambiente totalmente <strong>simulato e locale</strong>: serve a capire la falla e — soprattutto — a chiuderla.</p>
+      </div>
+    </section>
 
-        <div class="wip">
-          <span class="wip-badge"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor"></span> In sviluppo</span>
-          <h2>Questo strumento sta arrivando</h2>
-          <p>Lo sto ancora costruendo. Tornerà presto, con il login vulnerabile, la query che si compone dal vivo e la spiegazione delle query parametrizzate. Intanto dai un'occhiata agli altri strumenti del Lab.</p>
-          <div class="wip-actions">
-            <a class="btn btn-primary" href="../">← Tutti gli strumenti</a>
-            <a class="btn btn-ghost" href="../sql/">Vai alla SQL Sandbox</a>
+    <section class="section si-sec" style="padding-top:clamp(1.5rem,4vw,2.5rem);padding-bottom:clamp(4rem,9vw,7rem)">
+      <div class="container">
+
+        <div class="si-layout">
+          <!-- LOGIN -->
+          <div class="panel">
+            <div class="si-login-head"><span class="dot"></span><h2>Accedi al registro</h2></div>
+            <div class="si-formrow">
+              <label for="siUser">Username</label>
+              <input class="si-input" id="siUser" type="text" autocomplete="off" spellcheck="false" value="">
+            </div>
+            <div class="si-formrow">
+              <label for="siPass">Password</label>
+              <input class="si-input" id="siPass" type="text" autocomplete="off" spellcheck="false" value="">
+            </div>
+            <button class="btn btn-primary si-login-btn" id="siLogin" type="button">Accedi</button>
+
+            <div class="si-mode">
+              <span class="control-label">Server</span>
+              <div class="seg" id="siMode" role="group" aria-label="Tipo di server">
+                <button type="button" class="seg-btn active" data-mode="vuln">Vulnerabile</button>
+                <button type="button" class="seg-btn" data-mode="secure">Sicuro</button>
+              </div>
+            </div>
+
+            <div class="si-banner" id="siBanner"></div>
+          </div>
+
+          <!-- QUERY + RISULTATI -->
+          <div class="panel">
+            <span class="si-qlabel">Query che il «server» costruisce ed esegue</span>
+            <div class="si-query" id="siQuery"></div>
+            <div id="siResult"></div>
           </div>
         </div>
+
+        <!-- SFIDE -->
+        <div class="panel si-challenges">
+          <span class="panel-kicker">Sfide guidate</span>
+          <h2 class="panel-title">Prova a entrare senza la password</h2>
+          <p class="panel-sub">Le sfide funzionano sul <b>server vulnerabile</b>. Cliccane una: riempie i campi e lancia l'attacco.</p>
+          <div class="si-chips">
+            <button class="si-chip" type="button" data-challenge="or">Bypass con OR</button>
+            <button class="si-chip" type="button" data-challenge="comment">Bypass con commento --</button>
+            <button class="si-chip" type="button" data-challenge="all">Vedi tutti gli utenti</button>
+            <button class="si-chip" type="button" data-challenge="union">UNION: ruba le password</button>
+          </div>
+          <p class="si-hint" id="siHint">Suggerimento: il trucco è «chiudere» l'apice della stringa e iniettare logica SQL tua.</p>
+        </div>
+
+        <!-- DIFESA -->
+        <div class="panel si-defense">
+          <span class="panel-kicker">La difesa (la parte che conta)</span>
+          <h2>Come si blocca: query parametrizzate</h2>
+          <p class="panel-sub">Il problema non è «filtrare gli apici»: è non <b>mescolare</b> mai codice e dati. Con i <b>prepared statement</b> i valori dell'utente restano <b>dati</b> e non possono diventare comandi.</p>
+          <div class="si-cols">
+            <div class="si-defcard bad">
+              <h3>✗ Vulnerabile — concatenazione</h3>
+              <pre>sql = <span class="si-kw">"SELECT * FROM utenti "</span> +
+      <span class="si-kw">"WHERE username = '"</span> + user + <span class="si-kw">"'"</span> +
+      <span class="si-kw">" AND password = '"</span> + pass + <span class="si-kw">"'"</span>;
+db.exec(sql);  <span style="color:var(--ink-faint)">// l'input diventa codice</span></pre>
+            </div>
+            <div class="si-defcard good">
+              <h3>✓ Sicuro — parametri</h3>
+              <pre>sql = <span class="si-kw">"SELECT * FROM utenti "</span> +
+      <span class="si-kw">"WHERE username = ? AND password = ?"</span>;
+stmt = db.prepare(sql);
+stmt.bind([user, pass]); <span style="color:var(--ink-faint)">// input = solo dati</span></pre>
+            </div>
+          </div>
+          <p class="si-note"><b>In sintesi:</b> con i parametri, <code>admin' OR '1'='1</code> viene cercato come <i>nome utente letterale</i> — e non esiste nessun utente che si chiama così. Passa al «Server sicuro» qui sopra e riprova una sfida: non funzionerà più. Regola d'oro: <b>parametrizza sempre</b>, e non costruire mai query incollando input.</p>
+        </div>
+
       </div>
     </section>
   </main>
@@ -126,6 +147,8 @@
     </div>
   </footer>
 
+  <script src="../sql/vendor/sql-wasm.js"></script>
   <script src="../../js/core.js"></script>
+  <script src="sqli.js"></script>
 </body>
 </html>

@@ -1,61 +1,19 @@
 <!DOCTYPE html>
 <html lang="it" data-theme="light">
-<!--
-============================================================
- ISTRUZIONI PER CLAUDE (sessione futura) — PLACEHOLDER
- Strumento DA COSTRUIRE. Sostituisci <main>, crea cookie.js e
- cookie.css in questa cartella e linkali qui.
-============================================================
- CONTESTO
- - Sito statico (GitHub Pages, simoneconca.it), ZERO backend, niente
-   framework/build, tutto in italiano. Portale /lab/ per superiori.
-   Autore: Simone Conca (insegnante A041). Tono didattico.
- - CONTESTO ETICO: laboratorio DIDATTICO in ambiente totalmente
-   simulato (nessun cookie/server reale: lo "stato di sessione" è una
-   struttura JS in pagina, modificabile da un finto pannello). Scopo:
-   capire perché l'autorizzazione NON va mai fidata lato client.
- DESIGN SYSTEM (riusa): css/base.css, css/lab.css (.panel,.seg,
-   .ghost-btn,.field,.breadcrumb,.tool-hero,.wip), js/core.js (escapeHtml!).
-   Pattern lab/<nome>/ con index.html+<nome>.js+<nome>.css, prefisso
-   CSS .ck-. Copia header/footer/breadcrumb da lab/cicli/.
- QUANDO FINITO: card lab/index.html "soon"→"live"; aggiorna contatori
-   home; verifica browser; commit+push. Piano: memory/lab-portal-plan.md.
-============================================================
- SPECIFICA — Web Hacking: Cookie & Privilege Escalation
- Categoria: Sicurezza & Hacking. Scopo: capire perché i controlli di
- autorizzazione lato client sono inutili (lezione difensiva).
- - Una finta DASHBOARD scolastica. L'utente "accede" come STUDENTE base:
-   vede i propri voti (NON modificabili) e una sezione "Impostazioni".
- - Includi un finto pannello stile "DevTools / Cookie" che mostra i
-   cookie di sessione, es.:  role=student  ,  user_id=104 .
-   (Tutto simulato in JS: un oggetto stato + una UI per vederlo/editarlo.)
- - LA SFIDA: l'utente intuisce (o è guidato) che modificando il valore
-   role=student → role=admin (o role=professore) e "ricaricando", il
-   finto server sblocca i privilegi: ora può MODIFICARE i voti e "vince".
- - Guida passo-passo / suggerimenti progressivi. Effetto "vittoria"
-   quando l'escalation riesce.
- - CHIUSURA DIFENSIVA OBBLIGATORIA: spiega che il vero problema è fidarsi
-   del client; l'autorizzazione va verificata SEMPRE lato server (il
-   ruolo non si tiene in un cookie modificabile, si valida sul server,
-   firma/sessione lato server, ecc.).
- Acceptance: si parte da studente (sola lettura), si modifica il "cookie"
-   role→admin, al refresh la dashboard sblocca la modifica dei voti, ed
-   è presente la spiegazione difensiva.
-============================================================
--->
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Cookie & Privilege Escalation: viola una finta dashboard scolastica e scopri perché l'autorizzazione lato client non basta. Strumento didattico in sviluppo.">
+  <meta name="description" content="Cookie & Privilege Escalation: viola una finta dashboard scolastica modificando il cookie role=student in role=admin, e scopri perché l'autorizzazione va sempre verificata lato server.">
   <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#100f0c" media="(prefers-color-scheme: dark)">
-  <title>Cookie &amp; Privilege Escalation (in sviluppo) — Lab · Simone Conca</title>
+  <title>Cookie &amp; Privilege Escalation — Lab · Simone Conca</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../css/base.css">
   <link rel="stylesheet" href="../../css/lab.css">
+  <link rel="stylesheet" href="cookie.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23100f0c'/><text x='50' y='71' text-anchor='middle' font-size='62' font-family='Georgia,serif' font-style='italic' font-weight='600' fill='%23f4f1ea'>S</text></svg>">
   <script>
     (function () { try { var s = localStorage.getItem("theme"); document.documentElement.setAttribute("data-theme", s || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")); } catch (e) {} })();
@@ -93,23 +51,100 @@
   </nav>
 
   <main>
-    <section class="section tool-hero">
+    <section class="section tool-hero" style="padding-bottom:0">
       <div class="container">
         <nav class="breadcrumb" aria-label="Percorso">
           <a href="../">Lab</a><span class="sep">/</span><span class="current">Cookie &amp; Privilege Escalation</span>
         </nav>
-        <h1>Cookie &amp; Privilege Escalation</h1>
-        <p class="lead">Viola una finta dashboard scolastica: ispeziona i cookie di sessione, cambia <code>role=student</code> in <code>role=admin</code> e sblocca i privilegi per modificare i voti. La lezione vera: <strong>non fidarsi mai del client</strong>.</p>
+        <h1>Cookie &amp; <em>Privilege Escalation</em></h1>
+        <p class="lead">Viola una finta dashboard scolastica: ispeziona i cookie di sessione, cambia <code>role=student</code> in <code>role=admin</code> e sblocca i privilegi per modificare i voti. La lezione vera: <strong>non fidarsi mai del client</strong>. Tutto simulato e locale.</p>
+      </div>
+    </section>
 
-        <div class="wip">
-          <span class="wip-badge"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor"></span> In sviluppo</span>
-          <h2>Questo strumento sta arrivando</h2>
-          <p>Lo sto ancora costruendo. Tornerà presto, con la dashboard da violare, il finto pannello dei cookie e la spiegazione su perché l'autorizzazione va sempre verificata lato server. Intanto dai un'occhiata agli altri strumenti del Lab.</p>
-          <div class="wip-actions">
-            <a class="btn btn-primary" href="../">← Tutti gli strumenti</a>
-            <a class="btn btn-ghost" href="../../#contatti">Suggerisci un'idea</a>
+    <section class="section ck-sec" style="padding-top:clamp(1.5rem,4vw,2.5rem);padding-bottom:clamp(4rem,9vw,7rem)">
+      <div class="container">
+
+        <div class="ck-layout">
+          <!-- DASHBOARD -->
+          <div class="ck-window">
+            <div class="ck-chrome">
+              <span class="ck-dots"><i></i><i></i><i></i></span>
+              <span class="ck-url" id="ckUrl"></span>
+            </div>
+            <div class="ck-app">
+              <div class="ck-appbar">
+                <div class="ck-applogo">Pario<span>Voti</span> · Registro</div>
+                <div class="ck-user"><span id="ckUserName">Marco Rossi</span><span class="ck-rolebadge student" id="ckRoleBadge">studente</span></div>
+              </div>
+              <h3 class="ck-h">I tuoi voti</h3>
+              <p class="ck-sub" id="ckSub"></p>
+              <table class="ck-grades">
+                <thead><tr><th>Materia</th><th>Voto</th></tr></thead>
+                <tbody id="ckGradesBody"></tbody>
+              </table>
+              <div class="ck-adminbox" id="ckAdminBox" hidden>
+                <h4>⚙ Strumenti amministratore</h4>
+                <p>Sblocco riservato al personale. Da qui i voti dell'intera classe sono modificabili. (In una vera app questo non dovrebbe MAI dipendere da un cookie.)</p>
+              </div>
+              <p class="ck-savemsg" id="ckSaveMsg"></p>
+            </div>
+          </div>
+
+          <!-- FINTO DEVTOOLS / COOKIE -->
+          <div class="ck-devtools">
+            <div class="ck-dev-head">
+              <span>DevTools</span>
+              <span class="tab">Console</span>
+              <span class="tab active">Application</span>
+            </div>
+            <div class="ck-dev-body">
+              <p class="ck-dev-note">▸ Cookies · registro-pariovoti.it<br>(questi valori vengono inviati al server a ogni richiesta)</p>
+              <div class="ck-cookie-row">
+                <span class="key">role</span>
+                <input class="ck-cookie-input" id="ckCookieRole" type="text" spellcheck="false" value="student">
+              </div>
+              <div class="ck-cookie-row">
+                <span class="key">user_id</span>
+                <input class="ck-cookie-input" id="ckCookieId" type="text" spellcheck="false" value="104">
+              </div>
+              <div style="display:flex;gap:0.4rem;flex-wrap:wrap;margin-top:0.6rem">
+                <button class="ghost-btn" type="button" data-setrole="admin" style="font-size:0.72rem;padding:0.3rem 0.6rem">role=admin</button>
+                <button class="ghost-btn" type="button" data-setrole="professore" style="font-size:0.72rem;padding:0.3rem 0.6rem">role=professore</button>
+              </div>
+              <button class="btn btn-primary ck-reload-btn" id="ckReload" type="button">↻ Applica e ricarica</button>
+              <p class="ck-roles-hint">Ruoli che il «server» considera privilegiati: <code>admin</code>, <code>professore</code>, <code>docente</code>. Cambia <code>role</code> e ricarica.</p>
+            </div>
           </div>
         </div>
+
+        <!-- GUIDA -->
+        <div class="panel ck-guide">
+          <span class="panel-kicker">Guida passo-passo</span>
+          <h2 class="panel-title">Da studente ad amministratore</h2>
+          <div class="ck-steps">
+            <div class="ck-step on" id="s1">Sei loggato come <b>studente</b>: i voti sono in sola lettura (lucchetto 🔒).</div>
+            <div class="ck-step" id="s2">Nel pannello <b>DevTools → Cookies</b>, cambia <code>role</code> da <code>student</code> a <code>admin</code>.</div>
+            <div class="ck-step" id="s3">Premi <b>Applica e ricarica</b>: il finto server rilegge il cookie e ti concede i privilegi.</div>
+            <div class="ck-step" id="s4">Ora <b>modifica un voto</b> e «salvalo». Escalation completata.</div>
+          </div>
+          <div style="margin-top:1rem"><button class="ghost-btn" id="ckResetBtn" type="button">Ricomincia da studente ↺</button></div>
+        </div>
+
+        <!-- VITTORIA -->
+        <div class="ck-win" id="ckWin">
+          <h3>💥 Privilege escalation riuscita!</h3>
+          <p>Hai ottenuto privilegi da amministratore <b>solo cambiando un valore lato client</b>. Non hai forzato nessuna password: il sito si è <b>fidato</b> di un dato che l'utente può modificare a piacere. Questa è una vulnerabilità reale e molto comune (<i>broken access control</i>, in cima alla OWASP Top 10).</p>
+        </div>
+
+        <!-- DIFESA -->
+        <div class="panel ck-defense">
+          <span class="panel-kicker">La difesa (la parte che conta)</span>
+          <h2>Perché non doveva funzionare</h2>
+          <p class="panel-sub">Il problema non è «nascondere meglio il cookie»: è <b>aver delegato al client una decisione di sicurezza</b>.</p>
+          <p class="ck-note"><b>Regola d'oro:</b> l'autorizzazione si verifica <b>sempre sul server</b>. Il ruolo non si legge da un cookie modificabile: si ricava da una <b>sessione server-side</b> (il client riceve solo un identificatore di sessione casuale e firmato, che non rivela né permette di scegliere il ruolo).</p>
+          <p class="ck-note"><b>In pratica:</b> ad ogni azione sensibile (modificare un voto) il server ricontrolla «questo utente <i>può davvero</i> farlo?». Token di sessione firmati, scadenza, controlli lato server, principio del <b>privilegio minimo</b>. Mai fidarsi di ciò che arriva dal browser — input, cookie o parametri che siano.</p>
+        </div>
+
       </div>
     </section>
   </main>
@@ -123,5 +158,6 @@
   </footer>
 
   <script src="../../js/core.js"></script>
+  <script src="cookie.js"></script>
 </body>
 </html>

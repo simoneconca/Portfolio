@@ -1,0 +1,78 @@
+/* ============================================================
+   git.css — Git Visual Sandbox
+   Terminale simulato + grafo dei commit a corsie. Prefisso .gv-
+   Usa base.css + lab.css.
+   ============================================================ */
+
+.gv-sec { position: relative; z-index: 2; }
+.gv-layout { display: grid; grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr); gap: 1.25rem; align-items: stretch; margin-top: 1.25rem; }
+@media (max-width: 900px) { .gv-layout { grid-template-columns: 1fr; } }
+
+/* ---------- Terminale ---------- */
+.gv-term-panel { display: flex; flex-direction: column; padding: 0; overflow: hidden; }
+.gv-term-bar {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.7rem 1rem; border-bottom: 1px solid var(--line); background: var(--bg-sunk);
+}
+.gv-dots { display: inline-flex; gap: 0.4rem; }
+.gv-dots i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+.gv-dots i:nth-child(1) { background: #e0533d; }
+.gv-dots i:nth-child(2) { background: #d9a72b; }
+.gv-dots i:nth-child(3) { background: #3fae6b; }
+.gv-term-title { font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-soft); }
+.gv-term-reset { margin-left: auto; }
+
+.gv-term {
+  flex: 1; min-height: 300px; max-height: 460px; overflow-y: auto;
+  padding: 0.9rem 1rem; font-family: var(--font-mono); font-size: 0.85rem; line-height: 1.55;
+  background: var(--bg-sunk);
+}
+.gv-line { white-space: pre-wrap; word-break: break-word; }
+.gv-line.cmd { color: var(--ink); }
+.gv-line.cmd .gv-prompt { color: var(--accent); }
+.gv-line.out { color: var(--ink-soft); }
+.gv-line.err { color: #e0533d; }
+.gv-line.ok { color: #3fae6b; }
+.gv-line.note { color: var(--ink-faint); }
+
+.gv-inputline { display: flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1rem; border-top: 1px solid var(--line); background: var(--bg-elev); }
+.gv-prompt { color: var(--accent); font-family: var(--font-mono); font-size: 0.85rem; white-space: nowrap; }
+.gv-input {
+  flex: 1; border: 0; background: transparent; color: var(--ink); outline: none;
+  font-family: var(--font-mono); font-size: 0.85rem; min-width: 0;
+}
+
+.gv-suggests { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 1rem; }
+.gv-chip {
+  font-family: var(--font-mono); font-size: 0.75rem; padding: 0.35rem 0.7rem;
+  border: 1px solid var(--line); border-radius: 100px; background: var(--bg); color: var(--ink-soft); cursor: pointer;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease);
+}
+.gv-chip:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ---------- Grafo ---------- */
+.gv-graph-panel { display: flex; flex-direction: column; }
+.gv-graph-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.5rem; }
+.gv-graph-head h2 { font-family: var(--font-display); font-weight: 500; font-size: clamp(1.2rem, 2.6vw, 1.6rem); letter-spacing: -0.015em; }
+.gv-graph-scroll { flex: 1; overflow: auto; background: var(--bg-sunk); border: 1px solid var(--line); border-radius: 12px; min-height: 320px; max-height: 520px; }
+.gv-svg { display: block; }
+.gv-empty { padding: 2.5rem 1.5rem; text-align: center; color: var(--ink-faint); font-family: var(--font-mono); font-size: 0.85rem; }
+
+.gv-edge { fill: none; stroke-width: 2; }
+.gv-node circle { stroke: var(--bg-sunk); stroke-width: 3; transition: r 0.2s var(--ease); }
+.gv-node text.gv-id { font-family: var(--font-mono); font-size: 11px; fill: var(--ink); dominant-baseline: central; }
+.gv-node text.gv-msg { font-family: var(--font-mono); font-size: 11px; fill: var(--ink-soft); dominant-baseline: central; }
+.gv-node.head circle { stroke: var(--ink); stroke-width: 3; }
+.gv-headring { fill: none; stroke: var(--ink); stroke-width: 2; stroke-dasharray: 3 3; }
+
+.gv-blabel { font-family: var(--font-mono); font-size: 11px; font-weight: 600; dominant-baseline: central; }
+.gv-bpill { rx: 5; }
+.gv-headtag text { fill: var(--accent-ink); }
+
+.gv-explain { margin-top: 1.1rem; font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink); line-height: 1.6; min-height: 1.4rem; }
+.gv-explain b { color: var(--accent); }
+.gv-refs { display: flex; flex-wrap: wrap; gap: 0.5rem 0.9rem; margin-top: 0.9rem; padding-top: 0.9rem; border-top: 1px solid var(--line-soft); font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-soft); }
+.gv-refs .gv-ref b { color: var(--ink); font-weight: 600; }
+.gv-refs .gv-ref.head b { color: var(--accent); }
+
+@media (prefers-reduced-motion: reduce) { .gv-node circle { transition: none; } }

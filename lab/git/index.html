@@ -1,67 +1,19 @@
 <!DOCTYPE html>
 <html lang="it" data-theme="light">
-<!--
-============================================================
- ISTRUZIONI PER CLAUDE (sessione futura) — PLACEHOLDER
- Strumento DA COSTRUIRE. Sostituisci <main>, crea git.js e git.css
- in questa cartella e linkali qui.
-============================================================
- CONTESTO
- - Sito statico (GitHub Pages, simoneconca.it), ZERO backend, niente
-   framework/build, tutto in italiano. Portale /lab/ per superiori
-   (1ª–5ª). Autore: Simone Conca (insegnante A041). Tono didattico.
- DESIGN SYSTEM (riusa): css/base.css (token+dark mode), css/lab.css
-   (.panel,.seg,.ghost-btn,.field,.breadcrumb,.tool-hero,.wip),
-   js/core.js (tema/nav/reveal/escapeHtml). Pattern lab/<nome>/ con
-   index.html + <nome>.js + <nome>.css, prefisso CSS .gv-. Copia
-   header/footer/breadcrumb da lab/cicli/.
- - Per la RIGA DI COMANDO simulata vedi lab/terminale/ (input, storia
-   comandi, prompt). Per un GRAFO SVG che si ridisegna vedi
-   lab/strutture/ (BST) e lab/logica/ (canvas scorrevole + fitCanvas).
- QUANDO FINITO: card lab/index.html "soon"→"live"; aggiorna contatori
-   home (index.html); verifica browser; commit+push. Piano:
-   memory/lab-portal-plan.md.
-============================================================
- SPECIFICA — Git Visual Sandbox
- Categoria: Sistemi e reti. Pubblico: 5ª / PCTO. Scopo: togliere
- l'astrazione a Git facendo VEDERE cosa succede sotto il cofano.
- - Layout a due: a sinistra una riga di comando simulata, a destra un
-   GRAFO dei commit che cresce/cambia a ogni comando (animato).
- - Modello in memoria (NESSUN git reale): commit {id, parent(i), msg},
-   branch = puntatori a commit, HEAD = puntatore a branch (o detached).
- - Comandi minimi da supportare:
-     git init
-     git commit -m "..."   → nuovo cerchio collegato al precedente
-     git branch <nome>      → nuovo puntatore colorato sul commit corrente
-     git checkout <nome> / git switch <nome>  → sposta HEAD
-     git checkout -b <nome>
-     git merge <nome>       → commit di merge con DUE genitori; i rami
-                              si uniscono visivamente
-     git log                → lista commit
-     git status
-   (opzionali: git reset, git tag)
- - VISIVO: commit = cerchi connessi ai genitori; rami = etichette/
-   puntatori colorati; HEAD evidenziato; il merge disegna l'unione.
-   Layout a "corsie" (lane) per ramo. Anima la modifica a ogni comando.
- - Didattica: testo che spiega cosa è appena successo (HEAD, branch,
-   merge, checkout). Eventuale set di comandi d'esempio precaricati.
- Acceptance: digitando commit/branch/checkout/merge il grafo cresce e
- HEAD/branch si spostano coerentemente; il merge mostra due genitori.
-============================================================
--->
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Git Visual Sandbox: riga di comando simulata e grafo dei commit che cresce. Strumento in sviluppo.">
+  <meta name="description" content="Git Visual Sandbox: una riga di comando simulata e un grafo dei commit che cresce a ogni comando. HEAD, branch e merge resi visibili.">
   <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#100f0c" media="(prefers-color-scheme: dark)">
-  <title>Git Visual Sandbox (in sviluppo) — Lab · Simone Conca</title>
+  <title>Git Visual Sandbox — Lab · Simone Conca</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../css/base.css">
   <link rel="stylesheet" href="../../css/lab.css">
+  <link rel="stylesheet" href="git.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23100f0c'/><text x='50' y='71' text-anchor='middle' font-size='62' font-family='Georgia,serif' font-style='italic' font-weight='600' fill='%23f4f1ea'>S</text></svg>">
   <script>
     (function () { try { var s = localStorage.getItem("theme"); document.documentElement.setAttribute("data-theme", s || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")); } catch (e) {} })();
@@ -99,23 +51,57 @@
   </nav>
 
   <main>
-    <section class="section tool-hero">
+    <section class="section tool-hero" style="padding-bottom:0">
       <div class="container">
         <nav class="breadcrumb" aria-label="Percorso">
           <a href="../">Lab</a><span class="sep">/</span><span class="current">Git Visual Sandbox</span>
         </nav>
-        <h1>Git Visual Sandbox</h1>
-        <p class="lead">Una riga di comando simulata affiancata a un <strong>grafo che cresce</strong>: digiti <code>git commit</code>, <code>git branch</code>, <code>git merge</code> e vedi nascere commit, puntatori e fusioni. <strong>HEAD</strong>, merge e checkout smettono di essere astratti.</p>
+        <h1>Git <em>Visual Sandbox</em></h1>
+        <p class="lead">Una riga di comando simulata affiancata a un <strong>grafo che cresce</strong>: digiti <code>git commit</code>, <code>git branch</code>, <code>git merge</code> e vedi nascere commit, puntatori e fusioni. <strong>HEAD</strong>, merge e checkout smettono di essere astratti. Nessun file reale: è tutto un modello in memoria.</p>
+      </div>
+    </section>
 
-        <div class="wip">
-          <span class="wip-badge"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor"></span> In sviluppo</span>
-          <h2>Questo strumento sta arrivando</h2>
-          <p>Lo sto ancora costruendo. Tornerà presto, con il terminale Git simulato e il grafo dei commit che si muove a ogni comando. Intanto dai un'occhiata agli altri strumenti del Lab.</p>
-          <div class="wip-actions">
-            <a class="btn btn-primary" href="../">← Tutti gli strumenti</a>
-            <a class="btn btn-ghost" href="../../#contatti">Suggerisci un'idea</a>
+    <section class="section gv-sec" style="padding-top:clamp(1.5rem,4vw,2.5rem);padding-bottom:clamp(4rem,9vw,7rem)">
+      <div class="container">
+
+        <div class="gv-layout">
+          <!-- TERMINALE -->
+          <div class="panel gv-term-panel">
+            <div class="gv-term-bar">
+              <span class="gv-dots"><i></i><i></i><i></i></span>
+              <span class="gv-term-title">terminale — git</span>
+              <button class="ghost-btn gv-term-reset" id="gvResetBtn" type="button">Reset ↺</button>
+            </div>
+            <div class="gv-term" id="gvTerm" aria-live="polite"></div>
+            <div class="gv-inputline">
+              <span class="gv-prompt">$</span>
+              <input class="gv-input" id="gvInput" type="text" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder='git commit -m "..."' aria-label="Comando git">
+            </div>
+          </div>
+
+          <!-- GRAFO -->
+          <div class="panel gv-graph-panel">
+            <div class="gv-graph-head">
+              <h2>Grafo dei commit</h2>
+              <button class="ghost-btn" id="gvDemoBtn" type="button">▶ Carica esempio</button>
+            </div>
+            <div class="gv-graph-scroll" id="gvGraph"></div>
+            <p class="gv-explain" id="gvExplain"></p>
+            <div class="gv-refs" id="gvRefs"></div>
           </div>
         </div>
+
+        <div class="gv-suggests">
+          <button class="gv-chip" type="button" data-cmd='git commit -m "primo"'>git commit -m "primo"</button>
+          <button class="gv-chip" type="button" data-cmd="git checkout -b feature">git checkout -b feature</button>
+          <button class="gv-chip" type="button" data-cmd='git commit -m "lavoro sul ramo"'>git commit -m "lavoro sul ramo"</button>
+          <button class="gv-chip" type="button" data-cmd="git checkout main">git checkout main</button>
+          <button class="gv-chip" type="button" data-cmd="git merge feature">git merge feature</button>
+          <button class="gv-chip" type="button" data-cmd="git log">git log</button>
+          <button class="gv-chip" type="button" data-cmd="git status">git status</button>
+          <button class="gv-chip" type="button" data-cmd="help">help</button>
+        </div>
+
       </div>
     </section>
   </main>
@@ -129,5 +115,6 @@
   </footer>
 
   <script src="../../js/core.js"></script>
+  <script src="git.js"></script>
 </body>
 </html>

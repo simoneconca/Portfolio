@@ -1,0 +1,82 @@
+/* ============================================================
+   cookie.css — Web Hacking: Cookie & Privilege Escalation
+   Finta dashboard scolastica + finto pannello cookie editabile.
+   Prefisso .ck-  ·  Usa base.css + lab.css.
+   ============================================================ */
+
+.ck-sec { position: relative; z-index: 2; }
+.ck-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 340px); gap: 1.25rem; align-items: start; margin-top: 1.25rem; }
+@media (max-width: 900px) { .ck-layout { grid-template-columns: 1fr; } }
+
+/* ---------- Finestra browser ---------- */
+.ck-window { border: 1px solid var(--line); border-radius: 14px; overflow: hidden; background: var(--bg-elev); }
+.ck-chrome { display: flex; align-items: center; gap: 0.7rem; padding: 0.6rem 0.9rem; background: var(--bg-sunk); border-bottom: 1px solid var(--line); }
+.ck-dots { display: inline-flex; gap: 0.4rem; }
+.ck-dots i { width: 11px; height: 11px; border-radius: 50%; display: inline-block; }
+.ck-dots i:nth-child(1){ background:#e0533d; } .ck-dots i:nth-child(2){ background:#d9a72b; } .ck-dots i:nth-child(3){ background:#3fae6b; }
+.ck-url { flex: 1; font-family: var(--font-mono); font-size: 0.76rem; color: var(--ink-soft); background: var(--bg); border: 1px solid var(--line); border-radius: 100px; padding: 0.3rem 0.8rem; }
+.ck-url b { color: var(--ink); }
+
+.ck-app { padding: 1.4rem 1.5rem; }
+.ck-appbar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; padding-bottom: 1rem; margin-bottom: 1.2rem; border-bottom: 1px solid var(--line-soft); }
+.ck-applogo { font-family: var(--font-display); font-weight: 600; font-size: 1.2rem; }
+.ck-applogo span { color: var(--accent); }
+.ck-user { display: inline-flex; align-items: center; gap: 0.6rem; font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink-soft); }
+.ck-rolebadge { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.05em; text-transform: uppercase; padding: 0.25rem 0.6rem; border-radius: 100px; }
+.ck-rolebadge.student { background: var(--bg-sunk); color: var(--ink-soft); border: 1px solid var(--line); }
+.ck-rolebadge.priv { background: var(--accent); color: var(--accent-ink); }
+
+.ck-h { font-family: var(--font-display); font-weight: 500; font-size: 1.25rem; letter-spacing: -0.015em; margin-bottom: 0.3rem; }
+.ck-sub { font-size: 0.88rem; color: var(--ink-soft); margin-bottom: 1rem; }
+
+/* Tabella voti */
+.ck-grades { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.ck-grades th, .ck-grades td { padding: 0.6rem 0.7rem; text-align: left; border-bottom: 1px solid var(--line-soft); }
+.ck-grades th { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-faint); }
+.ck-grades td.voto { font-family: var(--font-mono); font-weight: 600; color: var(--ink); width: 6rem; }
+.ck-voto-input { width: 4rem; font-family: var(--font-mono); font-size: 0.92rem; font-weight: 600; text-align: center; padding: 0.3rem; border: 1px solid var(--accent); border-radius: 7px; background: var(--bg); color: var(--accent); }
+.ck-readonly-tag { font-family: var(--font-mono); font-size: 0.68rem; color: var(--ink-faint); }
+.ck-lockicon { opacity: 0.6; }
+
+.ck-adminbox { margin-top: 1.3rem; padding: 1rem 1.1rem; border: 1px solid var(--accent); border-radius: 12px; background: var(--accent-wash); }
+.ck-adminbox h4 { font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.5rem; }
+.ck-adminbox p { font-size: 0.85rem; color: var(--ink-soft); }
+.ck-savemsg { font-family: var(--font-mono); font-size: 0.8rem; color: #2e8c55; margin-top: 0.8rem; min-height: 1.2rem; }
+
+/* ---------- Pannello cookie (finto DevTools) ---------- */
+.ck-devtools { position: sticky; top: 84px; }
+.ck-dev-head { display: flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1rem; background: #1c1b17; color: #d7d3c6; border-radius: 12px 12px 0 0; font-family: var(--font-mono); font-size: 0.78rem; }
+.ck-dev-head .tab { padding: 0.2rem 0.6rem; border-radius: 6px; }
+.ck-dev-head .tab.active { background: #2c45ff; color: #fff; }
+.ck-dev-body { border: 1px solid var(--line); border-top: 0; border-radius: 0 0 12px 12px; background: var(--bg-elev); padding: 1rem; }
+.ck-dev-note { font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-faint); margin-bottom: 0.8rem; }
+.ck-cookie-row { display: grid; grid-template-columns: 5.5rem 1fr; gap: 0.5rem; align-items: center; margin-bottom: 0.6rem; }
+.ck-cookie-row .key { font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink-soft); }
+.ck-cookie-input { font-family: var(--font-mono); font-size: 0.85rem; padding: 0.4rem 0.6rem; border: 1px solid var(--line); border-radius: 7px; background: var(--bg); color: var(--ink); width: 100%; outline: none; }
+.ck-cookie-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-wash); }
+.ck-cookie-input.changed { border-color: #d9772b; color: #b9711d; }
+[data-theme="dark"] .ck-cookie-input.changed { color: #e6a44e; }
+.ck-reload-btn { width: 100%; justify-content: center; margin-top: 0.6rem; }
+.ck-roles-hint { font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-faint); margin-top: 0.8rem; line-height: 1.5; }
+.ck-roles-hint code { color: var(--accent); }
+
+/* ---------- Guida + vittoria ---------- */
+.ck-guide { margin-top: 1.25rem; }
+.ck-steps { counter-reset: step; margin-top: 0.8rem; display: grid; gap: 0.6rem; }
+.ck-step { display: flex; gap: 0.8rem; align-items: flex-start; font-size: 0.9rem; color: var(--ink-soft); opacity: 0.45; transition: opacity 0.3s var(--ease); }
+.ck-step.on { opacity: 1; color: var(--ink); }
+.ck-step::before { counter-increment: step; content: counter(step); flex: 0 0 auto; width: 22px; height: 22px; display: grid; place-items: center; border-radius: 50%; background: var(--bg-sunk); color: var(--ink-soft); font-family: var(--font-mono); font-size: 0.72rem; border: 1px solid var(--line); }
+.ck-step.on::before { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.ck-step.done::before { content: "✓"; background: #3fae6b; color: #fff; border-color: #3fae6b; }
+
+.ck-win { margin-top: 1.25rem; padding: 1.4rem 1.5rem; border-radius: 14px; border: 1px solid color-mix(in srgb, #e0533d 50%, transparent); background: color-mix(in srgb, #e0533d 12%, transparent); display: none; }
+.ck-win.show { display: block; animation: ck-pop 0.5s var(--ease); }
+@keyframes ck-pop { 0% { transform: scale(0.96); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+.ck-win h3 { font-family: var(--font-display); font-weight: 500; font-size: 1.4rem; color: #c0392b; margin-bottom: 0.4rem; }
+.ck-win p { font-size: 0.92rem; color: var(--ink); line-height: 1.6; }
+
+.ck-defense { margin-top: 1.25rem; }
+.ck-defense h2 { font-family: var(--font-display); font-weight: 500; font-size: clamp(1.4rem, 3.5vw, 2rem); letter-spacing: -0.02em; margin-bottom: 0.5rem; }
+.ck-note { font-size: 0.9rem; color: var(--ink-soft); line-height: 1.65; margin-top: 1rem; padding: 0.9rem 1.1rem; border-left: 3px solid #3fae6b; background: color-mix(in srgb, #3fae6b 10%, transparent); border-radius: 0 8px 8px 0; }
+.ck-note b { color: var(--ink); }
+.ck-note + .ck-note { border-left-color: var(--accent); background: var(--accent-wash); }

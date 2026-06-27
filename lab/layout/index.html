@@ -1,86 +1,19 @@
 <!DOCTYPE html>
 <html lang="it" data-theme="light">
-<!--
-============================================================
- ISTRUZIONI PER CLAUDE (sessione futura) — PLACEHOLDER
- Questo strumento è ancora DA COSTRUIRE. Sostituisci il contenuto
- di <main> con il lab vero, crea layout.js e layout.css in questa
- cartella e linkali qui (come fanno gli altri lab).
-============================================================
-
- CONTESTO
- - Sito statico (GitHub Pages, simoneconca.it), ZERO backend, niente
-   framework, niente build. Tutto in italiano. Portale didattico /lab/
-   per le superiori (1ª–5ª). Autore: Simone Conca, insegnante A041.
- - Tono didattico: "provi, sbagli, vedi cosa succede".
-
- DESIGN SYSTEM (riusa, non reinventare)
- - css/base.css: token tema (--bg,--ink,--accent,--font-*…), header,
-   footer, bottoni, .reveal, dark mode automatica.
- - css/lab.css: primitive .panel, .seg/.seg-btn, .ghost-btn, .field,
-   .controls-panel, .control-group/-label, .breadcrumb, .tool-hero, .wip.
- - js/core.js: tema, nav, reveal, escapeHtml(), prefersReducedMotion.
- - Pattern lab: cartella lab/<nome>/ con index.html + <nome>.js + <nome>.css,
-   prefisso CSS dedicato (qui .ly-). Copia header/footer/breadcrumb da
-   lab/logica/ o lab/cicli/. Rispetta prefers-reduced-motion.
- - Riferimenti utili: lab/sort/ e lab/cicli/ per il pattern a "modalità"
-   (segmented control) + pannello spiegazione + codice generato.
-
- QUANDO FINITO
- - lab/index.html: cambia la card di questo tool da
-   <span class="tool-status soon">In sviluppo</span> a
-   <span class="tool-status live">Attivo</span>.
- - index.html (home): aggiorna testo lab-promo, chips e il numero in
-   "<strong>N</strong> strumenti pronti all'uso".
- - Verifica nel browser (preview), zero errori console, responsive +
-   dark mode, poi commit + push su main. Piano: memory/lab-portal-plan.md.
-
-============================================================
- SPECIFICA — HTML/CSS: Box Model, Flexbox & Grid Playground
- Categoria: Sviluppo Web. Pubblico: 3º anno che inizia a fare web.
- Obiettivo: rendere visibile e immediato ciò che di solito è astratto.
-
- Tre modalità (segmented control .seg, come lab/sort):
- 1) BOX MODEL
-    - Un box centrale che mostra a strati e con colori distinti
-      content / padding / border / margin (stile DevTools).
-    - Slider/campi per: width, height, padding, border, margin
-      (anche per-lato sarebbe ottimo), box-sizing (content-box vs
-      border-box) con effetto visibile sulla dimensione totale.
-    - Mostra la dimensione totale calcolata (es. "occupa 320×140").
- 2) FLEXBOX
-    - Un container con N item (aggiungi/rimuovi).
-    - Controlli: flex-direction, justify-content, align-items,
-      flex-wrap, gap; opzionale per-item flex-grow/shrink/basis.
-    - Anteprima dal vivo che riflette le scelte.
- 3) GRID
-    - Controlli: grid-template-columns/rows (es. repeat(3, 1fr)),
-      gap, justify-items/align-items; opzionale posizionare un item
-      con grid-column/row span.
-    - Anteprima dal vivo.
-
- In tutte le modalità: mostra il CSS GENERATO dal vivo (pannello codice,
- monospaziato, eventualmente "copia"). Pannello spiegazione breve per
- ogni modalità (cos'è, quando si usa). Tutto client-side: applica gli
- stili agli elementi di anteprima via JS (style inline o classi).
-
- Acceptance: le tre modalità funzionano, l'anteprima cambia in tempo
- reale, il CSS mostrato corrisponde all'anteprima, responsive, dark mode.
-============================================================
--->
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Box Model, Flexbox e Grid: un sandbox visivo per capire il layout CSS. Strumento in sviluppo.">
+  <meta name="description" content="Box Model, Flexbox e Grid: un sandbox visivo per capire il layout CSS, con anteprima dal vivo e il CSS generato in tempo reale.">
   <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#100f0c" media="(prefers-color-scheme: dark)">
-  <title>Box Model, Flexbox &amp; Grid (in sviluppo) — Lab · Simone Conca</title>
+  <title>Box Model, Flexbox &amp; Grid — Lab · Simone Conca</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../css/base.css">
   <link rel="stylesheet" href="../../css/lab.css">
+  <link rel="stylesheet" href="layout.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23100f0c'/><text x='50' y='71' text-anchor='middle' font-size='62' font-family='Georgia,serif' font-style='italic' font-weight='600' fill='%23f4f1ea'>S</text></svg>">
   <script>
     (function () { try { var s = localStorage.getItem("theme"); document.documentElement.setAttribute("data-theme", s || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")); } catch (e) {} })();
@@ -118,22 +51,112 @@
   </nav>
 
   <main>
-    <section class="section tool-hero">
+    <section class="section tool-hero" style="padding-bottom:0">
       <div class="container">
         <nav class="breadcrumb" aria-label="Percorso">
           <a href="../">Lab</a><span class="sep">/</span><span class="current">Box Model, Flexbox &amp; Grid</span>
         </nav>
-        <h1>Box Model, Flexbox &amp; Grid</h1>
-        <p class="lead">Un sandbox visivo per capire <strong>margin</strong>, <strong>border</strong> e <strong>padding</strong> e come si comportano <strong>Flexbox</strong> e <strong>Grid</strong>, con il CSS generato dal vivo.</p>
+        <h1>Box Model, <em>Flexbox</em> &amp; <em>Grid</em></h1>
+        <p class="lead">Un sandbox visivo per capire <strong>margin</strong>, <strong>border</strong> e <strong>padding</strong> e come si comportano <strong>Flexbox</strong> e <strong>Grid</strong>. Muovi i controlli, guarda l'anteprima cambiare e copia il <strong>CSS generato</strong>.</p>
+      </div>
+    </section>
 
-        <div class="wip">
-          <span class="wip-badge"><span class="kicker-dot" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor"></span> In sviluppo</span>
-          <h2>Questo strumento sta arrivando</h2>
-          <p>Lo sto ancora costruendo. Tornerà presto, con il box model a strati e i playground di Flexbox e Grid in tempo reale. Intanto dai un'occhiata agli altri strumenti del Lab.</p>
-          <div class="wip-actions">
-            <a class="btn btn-primary" href="../">← Tutti gli strumenti</a>
-            <a class="btn btn-ghost" href="../../#contatti">Suggerisci un'idea</a>
+    <!-- SEGMENTED MODE -->
+    <section class="section ly-sec" style="padding-top:clamp(1.5rem,4vw,2.5rem)">
+      <div class="container">
+        <div class="panel controls-panel">
+          <div class="control-group">
+            <span class="control-label">Modalità</span>
+            <div class="seg" id="lyModeSeg" role="group" aria-label="Modalità">
+              <button type="button" class="seg-btn active" data-mode="box">Box Model</button>
+              <button type="button" class="seg-btn" data-mode="flex">Flexbox</button>
+              <button type="button" class="seg-btn" data-mode="grid">Grid</button>
+            </div>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section ly-sec" style="padding-top:0;padding-bottom:clamp(4rem,9vw,7rem)">
+      <div class="container">
+        <div class="ly-layout">
+
+          <!-- CONTROLLI -->
+          <div class="panel ly-ctrls">
+
+            <!-- BOX -->
+            <div class="ly-mode-panel" data-mode="box">
+              <span class="panel-kicker">Box Model</span>
+              <div class="control-row"><span class="control-label">width</span><input class="slider" id="bmW" type="range" min="40" max="340" value="200"><span class="ly-num"><span id="bmWval">200</span></span></div>
+              <div class="control-row"><span class="control-label">height</span><input class="slider" id="bmH" type="range" min="40" max="240" value="120"><span class="ly-num"><span id="bmHval">120</span></span></div>
+              <div class="control-row"><span class="control-label">padding</span><input class="slider" id="bmPad" type="range" min="0" max="50" value="16"><span class="ly-num"><span id="bmPadval">16</span></span></div>
+              <div class="control-row"><span class="control-label">border</span><input class="slider" id="bmBd" type="range" min="0" max="24" value="4"><span class="ly-num"><span id="bmBdval">4</span></span></div>
+              <div class="control-row"><span class="control-label">margin</span><input class="slider" id="bmMar" type="range" min="0" max="50" value="20"><span class="ly-num"><span id="bmMarval">20</span></span></div>
+              <div class="ly-row-full">
+                <span class="control-label">box-sizing</span>
+                <div class="seg" id="bmSizing" role="group" aria-label="box-sizing">
+                  <button type="button" class="seg-btn active" data-sizing="content-box">content-box</button>
+                  <button type="button" class="seg-btn" data-sizing="border-box">border-box</button>
+                </div>
+              </div>
+            </div>
+
+            <!-- FLEX -->
+            <div class="ly-mode-panel" data-mode="flex" hidden>
+              <span class="panel-kicker">Flexbox</span>
+              <div class="ly-row-full"><span class="control-label">flex-direction</span>
+                <select class="ly-select" id="fxDir"><option>row</option><option>row-reverse</option><option>column</option><option>column-reverse</option></select></div>
+              <div class="ly-row-full"><span class="control-label">justify-content</span>
+                <select class="ly-select" id="fxJustify"><option>flex-start</option><option selected>center</option><option>flex-end</option><option>space-between</option><option>space-around</option><option>space-evenly</option></select></div>
+              <div class="ly-row-full"><span class="control-label">align-items</span>
+                <select class="ly-select" id="fxAlign"><option>stretch</option><option>flex-start</option><option selected>center</option><option>flex-end</option></select></div>
+              <div class="ly-row-full"><span class="control-label">flex-wrap</span>
+                <select class="ly-select" id="fxWrap"><option>nowrap</option><option>wrap</option><option>wrap-reverse</option></select></div>
+              <div class="control-row"><span class="control-label">gap</span><input class="slider" id="fxGap" type="range" min="0" max="40" value="12"><span class="ly-num"><span id="fxGapval">12</span></span></div>
+              <div class="ly-itemctrl">
+                <button class="ghost-btn" type="button" data-items="-1">−</button>
+                <span class="ly-count">4 item</span>
+                <button class="ghost-btn" type="button" data-items="1">+</button>
+              </div>
+            </div>
+
+            <!-- GRID -->
+            <div class="ly-mode-panel" data-mode="grid" hidden>
+              <span class="panel-kicker">Grid</span>
+              <div class="ly-row-full"><span class="control-label">grid-template-columns</span>
+                <select class="ly-select" id="gdCols"><option>repeat(2, 1fr)</option><option selected>repeat(3, 1fr)</option><option>repeat(4, 1fr)</option><option>1fr 2fr</option><option>200px 1fr</option></select></div>
+              <div class="ly-row-full"><span class="control-label">grid-template-rows</span>
+                <select class="ly-select" id="gdRows"><option>auto</option><option>repeat(2, 90px)</option><option>repeat(2, 1fr)</option></select></div>
+              <div class="ly-row-full"><span class="control-label">justify-items</span>
+                <select class="ly-select" id="gdJustify"><option>stretch</option><option>start</option><option selected>center</option><option>end</option></select></div>
+              <div class="ly-row-full"><span class="control-label">align-items</span>
+                <select class="ly-select" id="gdAlign"><option>stretch</option><option>start</option><option selected>center</option><option>end</option></select></div>
+              <div class="control-row"><span class="control-label">gap</span><input class="slider" id="gdGap" type="range" min="0" max="40" value="12"><span class="ly-num"><span id="gdGapval">12</span></span></div>
+              <div class="ly-itemctrl">
+                <button class="ghost-btn" type="button" data-items="-1">−</button>
+                <span class="ly-count">4 item</span>
+                <button class="ghost-btn" type="button" data-items="1">+</button>
+              </div>
+            </div>
+
+            <p class="ly-tip" id="lyTip"></p>
+          </div>
+
+          <!-- ANTEPRIMA + CODICE -->
+          <div class="ly-preview-wrap">
+            <div>
+              <div class="ly-stage" id="lyStage"></div>
+              <p class="ly-totsize" id="lyTotSize" style="margin-top:0.8rem"></p>
+            </div>
+            <div class="panel ly-code-panel">
+              <div class="ly-code-bar">
+                <span class="panel-kicker">CSS generato</span>
+                <button class="ghost-btn ly-copy" id="lyCopy" type="button">Copia CSS</button>
+              </div>
+              <pre class="ly-code" id="lyCode"></pre>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
@@ -148,5 +171,6 @@
   </footer>
 
   <script src="../../js/core.js"></script>
+  <script src="layout.js"></script>
 </body>
 </html>

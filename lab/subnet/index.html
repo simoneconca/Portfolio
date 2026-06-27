@@ -1,60 +1,19 @@
 <!DOCTYPE html>
 <html lang="it" data-theme="light">
-<!--
-============================================================
- ISTRUZIONI PER CLAUDE (sessione futura) — PLACEHOLDER
- Strumento DA COSTRUIRE. Sostituisci <main>, crea subnet.js e
- subnet.css in questa cartella e linkali qui.
-============================================================
- CONTESTO
- - Sito statico (GitHub Pages, simoneconca.it), ZERO backend, niente
-   framework/build, tutto in italiano. Portale /lab/ per superiori
-   (1ª–5ª). Autore: Simone Conca (insegnante A041). Tono didattico.
- DESIGN SYSTEM (riusa, non reinventare)
- - css/base.css: token tema + dark mode. css/lab.css: .panel, .seg,
-   .ghost-btn, .field, .controls-panel, .control-group/-label,
-   .breadcrumb, .tool-hero, .wip. js/core.js: tema/nav/reveal/escapeHtml.
- - Pattern: lab/<nome>/ con index.html + <nome>.js + <nome>.css,
-   prefisso CSS .sn-. Copia header/footer/breadcrumb da lab/cicli/.
- - Per la visualizzazione bit-per-bit guarda lab/binario/ (stile già fatto).
- QUANDO FINITO: card in lab/index.html da "soon"→"live"; aggiorna i
- contatori in index.html (home); verifica nel browser; commit+push su
- main. Piano: memory/lab-portal-plan.md.
-============================================================
- SPECIFICA — Subnetting & IP Calculator visuale
- Categoria: Sistemi e reti. È uno degli scogli più duri: rendilo VISIVO.
- - Input: indirizzo IPv4 (4 ottetti, validati 0–255) + CIDR /0../32
-   (slider + campo). Aggiornamento dal vivo a ogni modifica.
- - VISUALIZZAZIONE CHIAVE: i 32 bit dell'IP nei 4 ottetti, colorati in
-   due gruppi — bit di RETE (network) vs bit di HOST — con il "taglio"
-   della maschera ben evidente che si SPOSTA muovendo lo slider /CIDR.
-   Mostra anche la maschera in binario allineata sotto.
- - Calcola e mostra: subnet mask (decimale puntato + binario),
-   Network ID, Broadcast, primo e ultimo host utilizzabile, numero di
-   host utilizzabili (2^h − 2, gestendo /31 e /32 come casi limite),
-   wildcard mask, classe dell'IP (A/B/C…) e se è privato.
- - Opzionale (bonus): dividere una rete in sottoreti (numero di subnet
-   o host richiesti) e listare le sottorisultanti.
- ATTENZIONE TECNICA: in JS usa operazioni unsigned a 32 bit
-   (es. (a >>> 0)) per evitare il bit di segno; costruisci gli interi
-   ottetto per ottetto. Niente librerie.
- Acceptance: cambiando /CIDR il taglio rete/host si sposta a vista e
- tutti i valori (rete, broadcast, range, n. host) si aggiornano corretti.
-============================================================
--->
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Subnetting e IP Calculator visuale: la maschera CIDR che taglia i bit tra rete e host. Strumento in sviluppo.">
+  <meta name="description" content="Subnetting e IP Calculator visuale: la maschera CIDR che taglia i 32 bit dell'IP tra rete e host, con network, broadcast, range e host calcolati al volo.">
   <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#100f0c" media="(prefers-color-scheme: dark)">
-  <title>Subnetting &amp; IP Calculator (in sviluppo) — Lab · Simone Conca</title>
+  <title>Subnetting &amp; IP Calculator — Lab · Simone Conca</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../css/base.css">
   <link rel="stylesheet" href="../../css/lab.css">
+  <link rel="stylesheet" href="subnet.css">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23100f0c'/><text x='50' y='71' text-anchor='middle' font-size='62' font-family='Georgia,serif' font-style='italic' font-weight='600' fill='%23f4f1ea'>S</text></svg>">
   <script>
     (function () { try { var s = localStorage.getItem("theme"); document.documentElement.setAttribute("data-theme", s || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")); } catch (e) {} })();
@@ -92,22 +51,97 @@
   </nav>
 
   <main>
-    <section class="section tool-hero">
+    <section class="section tool-hero" style="padding-bottom:0">
       <div class="container">
         <nav class="breadcrumb" aria-label="Percorso">
           <a href="../">Lab</a><span class="sep">/</span><span class="current">Subnetting &amp; IP Calculator</span>
         </nav>
-        <h1>Subnetting &amp; IP Calculator</h1>
-        <p class="lead">Guarda come la maschera <strong>/CIDR</strong> «taglia» i bit dell'indirizzo IP tra <strong>Network ID</strong> e <strong>Host ID</strong>, con rete, broadcast e range utilizzabile calcolati al volo.</p>
+        <h1>Subnetting &amp; <em>IP Calculator</em></h1>
+        <p class="lead">Guarda come la maschera <strong>/CIDR</strong> «taglia» i 32 bit dell'indirizzo IP tra <strong>Network ID</strong> (blu) e <strong>Host ID</strong> (arancio). Muovi lo slider e vedi il taglio spostarsi, con rete, broadcast e range ricalcolati al volo.</p>
+      </div>
+    </section>
 
-        <div class="wip">
-          <span class="wip-badge"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor"></span> In sviluppo</span>
-          <h2>Questo strumento sta arrivando</h2>
-          <p>Lo sto ancora costruendo. Tornerà presto, con i 32 bit dell'IP e il taglio della maschera che si sposta mentre cambi il /CIDR. Intanto dai un'occhiata agli altri strumenti del Lab.</p>
-          <div class="wip-actions">
-            <a class="btn btn-primary" href="../">← Tutti gli strumenti</a>
-            <a class="btn btn-ghost" href="../../#contatti">Suggerisci un'idea</a>
+    <!-- CONTROLLI -->
+    <section class="section sn-sec" style="padding-top:clamp(1.5rem,4vw,2.5rem)">
+      <div class="container">
+        <div class="panel controls-panel sn-controls">
+          <div class="control-group">
+            <span class="control-label">Indirizzo IP</span>
+            <div class="sn-ip" role="group" aria-label="Indirizzo IPv4">
+              <input class="sn-oct" type="text" inputmode="numeric" value="192" aria-label="Primo ottetto">
+              <span class="dot">.</span>
+              <input class="sn-oct" type="text" inputmode="numeric" value="168" aria-label="Secondo ottetto">
+              <span class="dot">.</span>
+              <input class="sn-oct" type="text" inputmode="numeric" value="1" aria-label="Terzo ottetto">
+              <span class="dot">.</span>
+              <input class="sn-oct" type="text" inputmode="numeric" value="10" aria-label="Quarto ottetto">
+            </div>
           </div>
+          <div class="control-group sn-cidr-group">
+            <span class="control-label">Prefisso</span>
+            <span class="sn-cidr">/<input id="cidrNum" type="text" inputmode="numeric" value="24" aria-label="Lunghezza prefisso CIDR"></span>
+            <input id="cidrRange" type="range" min="0" max="32" value="24" class="slider" aria-label="Slider CIDR">
+          </div>
+          <div class="control-group">
+            <span class="control-label">Esempi</span>
+            <div class="sn-presets">
+              <button class="ghost-btn" type="button" data-preset="192.168.1.10/24">192.168.1.10/24</button>
+              <button class="ghost-btn" type="button" data-preset="10.0.0.5/8">10.0.0.5/8</button>
+              <button class="ghost-btn" type="button" data-preset="172.16.5.4/20">172.16.5.4/20</button>
+              <button class="ghost-btn" type="button" data-preset="8.8.8.8/32">8.8.8.8/32</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- BIT -->
+    <section class="section sn-sec" style="padding-top:0">
+      <div class="container">
+        <div class="panel sn-bits-panel">
+          <div class="sn-bits-head">
+            <h2>I 32 bit dell'indirizzo</h2>
+            <div class="sn-legend">
+              <span><span class="sn-swatch sw-net"></span> bit di rete (network)</span>
+              <span><span class="sn-swatch sw-host"></span> bit di host</span>
+            </div>
+          </div>
+          <div class="sn-bitgrid">
+            <div class="sn-bitline" id="bitLine" aria-label="Bit dell'indirizzo IP"></div>
+          </div>
+          <p class="sn-masktitle">Subnet mask allineata</p>
+          <div class="sn-bitgrid">
+            <div class="sn-bitline" id="maskLine" aria-label="Bit della subnet mask"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- RISULTATI -->
+    <section class="section sn-sec" style="padding-top:0">
+      <div class="container">
+        <div class="sn-results" id="snResults" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- DIVISIONE IN SOTTORETI -->
+    <section class="section sn-sec" style="padding-top:0;padding-bottom:clamp(4rem,9vw,7rem)">
+      <div class="container">
+        <div class="panel sn-split-panel">
+          <div class="panel-head">
+            <span class="panel-kicker">Bonus</span>
+            <h2 class="panel-title">Dividi la rete in sottoreti</h2>
+            <p class="panel-sub">Prendi la rete qui sopra e spezzala in sottoreti di pari dimensione, rubando bit agli host.</p>
+          </div>
+          <div class="sn-split-ctrls">
+            <div class="control-group">
+              <span class="control-label">In quante parti</span>
+              <select id="splitSelect" class="sn-select"></select>
+            </div>
+          </div>
+          <p class="sn-note" id="splitInfo"></p>
+          <div class="sn-subnets" id="snSubnets"></div>
+          <p class="sn-note"><b>Promemoria:</b> ogni bit «rubato» agli host raddoppia il numero di sottoreti ma dimezza gli host disponibili in ciascuna. Network ID e Broadcast non sono mai assegnabili a un dispositivo (tranne nel caso /31 punto-punto).</p>
         </div>
       </div>
     </section>
@@ -122,5 +156,6 @@
   </footer>
 
   <script src="../../js/core.js"></script>
+  <script src="subnet.js"></script>
 </body>
 </html>
