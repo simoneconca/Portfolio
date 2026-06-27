@@ -1,0 +1,125 @@
+/* ============================================================
+   rete-lab.css — «Costruisci la tua rete» (Milestone 1)
+   Topologia + livello 2: PC/Switch/Router, cavi, ping stessa
+   subnet con ARP e tabella MAC. Prefisso .rl-  ·  base.css + lab.css.
+   ============================================================ */
+
+.rl-sec { position: relative; z-index: 2; }
+
+/* ---------- Toolbar ---------- */
+.rl-toolbar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.55rem 0.7rem; }
+.rl-tool {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-family: var(--font-sans); font-size: 0.86rem; font-weight: 500;
+  padding: 0.5rem 0.8rem; border: 1px solid var(--line); border-radius: 100px;
+  background: var(--bg); color: var(--ink); cursor: pointer;
+  transition: border-color 0.18s var(--ease), color 0.18s var(--ease), background-color 0.18s var(--ease);
+}
+.rl-tool:hover { border-color: var(--accent); color: var(--accent); }
+.rl-tool.on { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.rl-tool svg { width: 16px; height: 16px; }
+.rl-tool-sep { width: 1px; height: 22px; background: var(--line); margin: 0 0.2rem; }
+.rl-tool-label { font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-soft); margin-right: 0.1rem; }
+.rl-spacer { flex: 1; }
+.rl-select {
+  font-family: var(--font-mono); font-size: 0.82rem; padding: 0.45rem 0.7rem;
+  border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); cursor: pointer;
+}
+.rl-status {
+  font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent);
+  padding: 0.3rem 0.2rem; min-height: 1.2rem; flex-basis: 100%;
+}
+
+/* ---------- Layout ---------- */
+.rl-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 320px); gap: 1.1rem; align-items: start; margin-top: 1.1rem; }
+@media (max-width: 920px) { .rl-layout { grid-template-columns: 1fr; } }
+
+/* ---------- Tela ---------- */
+.rl-stage-wrap { border: 1px solid var(--line); border-radius: 14px; background: var(--bg-sunk);
+  background-image: radial-gradient(var(--line-soft) 1px, transparent 1px); background-size: 22px 22px;
+  overflow: auto; }
+.rl-stage { display: block; width: 100%; height: clamp(360px, 56vh, 560px); touch-action: none; }
+
+.rl-link { fill: none; stroke: var(--ink-faint); stroke-width: 2.5; }
+.rl-link.wireless { stroke-dasharray: 5 5; stroke: var(--accent); }
+.rl-link-hit { fill: none; stroke: transparent; stroke-width: 18; pointer-events: stroke; cursor: pointer; }
+.rl-link-hit:hover + .rl-link { stroke: #e0533d; stroke-width: 3.5; }
+.rl-link.active { stroke: var(--accent); stroke-width: 3.5; }
+
+.rl-portlbl { font-family: var(--font-mono); font-size: 9px; fill: var(--ink-faint); }
+
+.rl-dev { cursor: grab; }
+.rl-dev.dragging { cursor: grabbing; }
+.rl-dev-box { fill: var(--bg-elev); stroke: var(--line); stroke-width: 1.5; rx: 12; transition: stroke 0.15s var(--ease); }
+.rl-dev:hover .rl-dev-box { stroke: var(--accent); }
+.rl-dev.sel .rl-dev-box { stroke: var(--accent); stroke-width: 2.5; }
+.rl-dev.pingsrc .rl-dev-box { stroke: #3fae6b; stroke-width: 2.5; }
+.rl-dev-icon { stroke: var(--ink); fill: none; stroke-width: 1.7; stroke-linecap: round; stroke-linejoin: round; }
+.rl-dev.sel .rl-dev-icon, .rl-dev:hover .rl-dev-icon { stroke: var(--accent); }
+.rl-dev-name { font-family: var(--font-display); font-weight: 500; font-size: 13px; fill: var(--ink); text-anchor: middle; }
+.rl-dev-ip { font-family: var(--font-mono); font-size: 10.5px; fill: var(--ink-soft); text-anchor: middle; }
+.rl-dev-ip.none { fill: #c98a1b; }
+.rl-dev.flowing .rl-dev-box { stroke: var(--accent); stroke-width: 3; }
+
+.rl-del { cursor: pointer; }
+.rl-del circle { fill: #e0533d; }
+.rl-del text { fill: #fff; font-family: var(--font-sans); font-size: 13px; font-weight: 700; text-anchor: middle; dominant-baseline: central; }
+
+.rl-packet { fill: var(--accent); stroke: var(--accent-ink); stroke-width: 1.5; }
+.rl-packet.reply { fill: #3fae6b; }
+
+/* ---------- Pannello laterale ---------- */
+.rl-side { display: flex; flex-direction: column; gap: 1rem; position: sticky; top: 84px; }
+@media (max-width: 920px) { .rl-side { position: static; } }
+.rl-side-empty { text-align: center; color: var(--ink-soft); padding: 1.5rem 0.5rem; }
+.rl-side-empty .ico { font-size: 2rem; }
+.rl-side-empty p { font-size: 0.9rem; line-height: 1.5; margin-top: 0.6rem; }
+
+.rl-panel-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.9rem; }
+.rl-panel-head h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.2rem; }
+.rl-tabs { display: inline-flex; padding: 3px; border: 1px solid var(--line); border-radius: 100px; background: var(--bg); margin-bottom: 1rem; }
+.rl-tab { font-family: var(--font-mono); font-size: 0.74rem; padding: 0.35rem 0.7rem; border: 0; border-radius: 100px; background: transparent; color: var(--ink-soft); cursor: pointer; }
+.rl-tab.active { background: var(--accent); color: var(--accent-ink); }
+
+.rl-field { margin-bottom: 0.8rem; }
+.rl-field label { display: block; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 0.35rem; }
+.rl-field input {
+  width: 100%; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink);
+  font-family: var(--font-mono); font-size: 0.92rem; padding: 0.5rem 0.65rem; outline: none;
+  transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
+}
+.rl-field input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-wash); }
+.rl-field input.invalid { border-color: #e0533d; }
+.rl-field .err { font-family: var(--font-mono); font-size: 0.68rem; color: #e0533d; min-height: 0.85rem; margin-top: 0.2rem; }
+.rl-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+
+.rl-table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 0.76rem; }
+.rl-table th, .rl-table td { text-align: left; padding: 0.4rem 0.5rem; border-bottom: 1px solid var(--line-soft); }
+.rl-table th { color: var(--ink-faint); font-weight: 600; text-transform: uppercase; font-size: 0.66rem; letter-spacing: 0.04em; }
+.rl-table .empty { color: var(--ink-faint); font-style: italic; }
+.rl-route-form { display: grid; gap: 0.5rem; }
+
+.rl-del-btn { margin-top: 0.6rem; }
+
+/* ---------- Log ---------- */
+.rl-log-panel { margin-top: 1.1rem; }
+.rl-log-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.7rem; }
+.rl-log-head h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.15rem; }
+.rl-banner { padding: 0.7rem 0.9rem; border-radius: 10px; font-family: var(--font-mono); font-size: 0.86rem; margin-bottom: 0.8rem; display: none; }
+.rl-banner.show { display: block; }
+.rl-banner.ok { background: color-mix(in srgb, #3fae6b 14%, transparent); border: 1px solid color-mix(in srgb, #3fae6b 50%, transparent); color: #2e8c55; }
+.rl-banner.err { background: color-mix(in srgb, #e0533d 14%, transparent); border: 1px solid color-mix(in srgb, #e0533d 50%, transparent); color: #c0392b; }
+.rl-log { font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.5; max-height: 230px; overflow-y: auto;
+  border: 1px solid var(--line); border-radius: 10px; background: var(--bg-sunk); padding: 0.7rem 0.9rem; }
+.rl-log .step { padding: 0.18rem 0; border-bottom: 1px dashed var(--line-soft); color: var(--ink-soft); }
+.rl-log .step:last-child { border-bottom: 0; }
+.rl-log .step .who { color: var(--accent); font-weight: 600; }
+.rl-log .step.arp .who { color: #b9711d; }
+[data-theme="dark"] .rl-log .step.arp .who { color: #e6a44e; }
+.rl-log .step.fail { color: #c0392b; }
+.rl-log .step b { color: var(--ink); }
+.rl-log-empty { color: var(--ink-faint); }
+
+/* ---------- Aiuto sotto la tela ---------- */
+.rl-hint { margin-top: 0.7rem; font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-faint); line-height: 1.5; }
+.rl-hint b { color: #e0533d; }
