@@ -24,7 +24,7 @@
 .rl-tool svg { width: 16px; height: 16px; flex: 0 0 auto; }
 .rl-tool-label { font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-soft); white-space: nowrap; }
 .rl-select {
-  font-family: var(--font-mono); font-size: 0.82rem; padding: 0.45rem 0.7rem; max-width: 14rem;
+  font-family: var(--font-mono); font-size: 0.82rem; padding: 0.45rem 0.7rem; max-width: 14rem; min-width: 0;
   border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); cursor: pointer;
 }
 .rl-speed { display: inline-flex; align-items: center; gap: 0.45rem; }
