@@ -203,7 +203,7 @@
 
   function renderSide() {
     const d = device(selectedId);
-    if (!d) { sideEl.innerHTML = '<div class="panel"><div class="rl-side-empty"><div class="ico">🖧</div><p>Seleziona un dispositivo per configurarlo, oppure aggiungine uno dalla barra qui sopra.</p></div></div>'; return; }
+    if (!d) { sideEl.innerHTML = '<div class="panel"><div class="rl-side-empty"><svg class="rl-empty-ico" width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="5" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="8.5" y="16" width="7" height="5" rx="1"/><path d="M6.5 8v3h11V8M12 11v5"/></svg><p>Seleziona un dispositivo per configurarlo, oppure aggiungine uno dalla barra qui sopra.</p></div></div>'; return; }
     let body = '<div class="panel"><div class="rl-panel-head"><h2>' + escapeHtml(d.name) + "</h2></div>";
 
     if (d.type === "pc" || d.type === "wpc") {

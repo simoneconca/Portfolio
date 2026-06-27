@@ -1,0 +1,60 @@
+/* ============================================================
+   linguaggio.css — «Quale linguaggio?» (quiz a scelta multipla)
+   Prefisso .ql-  ·  Usa base.css + lab.css.
+   ============================================================ */
+
+.ql-sec { position: relative; z-index: 2; }
+.ql-wrap { max-width: 720px; margin: 1.25rem auto 0; }
+
+/* ---------- Quiz ---------- */
+.ql-progress-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.6rem; }
+.ql-qnum { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent); letter-spacing: 0.04em; }
+.ql-progress { height: 6px; border-radius: 100px; background: var(--bg-sunk); overflow: hidden; margin-bottom: 1.4rem; }
+.ql-progress-fill { height: 100%; background: var(--accent); border-radius: 100px; transition: width 0.35s var(--ease); }
+
+.ql-question { font-family: var(--font-display); font-weight: 500; font-size: clamp(1.4rem, 4vw, 2rem); line-height: 1.2; letter-spacing: -0.02em; margin-bottom: 1.4rem; }
+
+.ql-options { display: flex; flex-direction: column; gap: 0.7rem; }
+.ql-opt {
+  display: flex; align-items: center; gap: 0.8rem; width: 100%; text-align: left;
+  font-family: var(--font-sans); font-size: 1rem; color: var(--ink);
+  padding: 0.9rem 1.05rem; border: 1px solid var(--line); border-radius: 12px; background: var(--bg);
+  cursor: pointer; transition: border-color 0.18s var(--ease), background-color 0.18s var(--ease), transform 0.12s var(--ease);
+}
+.ql-opt:hover { border-color: var(--accent); background: var(--accent-wash); }
+.ql-opt:active { transform: translateY(1px); }
+.ql-opt.sel { border-color: var(--accent); background: var(--accent-wash); }
+.ql-opt-key { flex: 0 0 auto; width: 26px; height: 26px; display: grid; place-items: center; border-radius: 8px; background: var(--bg-sunk); color: var(--ink-soft); font-family: var(--font-mono); font-size: 0.82rem; }
+.ql-opt:hover .ql-opt-key, .ql-opt.sel .ql-opt-key { background: var(--accent); color: var(--accent-ink); }
+
+.ql-nav { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-top: 1.4rem; }
+.ql-back { visibility: hidden; }
+.ql-back.show { visibility: visible; }
+.ql-hint { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-faint); }
+
+/* ---------- Risultato ---------- */
+.ql-result { }
+.ql-rec { border-radius: 16px; padding: clamp(1.5rem, 4vw, 2.2rem); color: #fff; position: relative; overflow: hidden; }
+.ql-rec-kicker { font-family: var(--font-mono); font-size: 0.74rem; letter-spacing: 0.08em; text-transform: uppercase; opacity: 0.85; }
+.ql-rec-name { font-family: var(--font-display); font-weight: 600; font-size: clamp(2.4rem, 9vw, 4rem); line-height: 1; margin: 0.4rem 0 0.3rem; letter-spacing: -0.02em; }
+.ql-rec-tag { font-size: 1.05rem; opacity: 0.95; }
+
+.ql-block { margin-top: 1.5rem; }
+.ql-block h3 { font-family: var(--font-display); font-weight: 500; font-size: 1.25rem; margin-bottom: 0.6rem; }
+.ql-blurb { color: var(--ink-soft); font-size: 1rem; line-height: 1.65; }
+.ql-blurb b { color: var(--ink); }
+
+.ql-why { list-style: none; display: grid; gap: 0.55rem; }
+.ql-why li { display: flex; gap: 0.6rem; align-items: flex-start; font-size: 0.98rem; color: var(--ink); line-height: 1.5; }
+.ql-why li::before { content: "✓"; flex: 0 0 auto; color: #3fae6b; font-weight: 700; }
+
+.ql-rank { display: grid; gap: 0.6rem; }
+.ql-rank-row { display: grid; grid-template-columns: 7rem 1fr auto; align-items: center; gap: 0.8rem; }
+.ql-rank-name { font-family: var(--font-mono); font-size: 0.85rem; color: var(--ink); }
+.ql-rank-bar { height: 10px; border-radius: 100px; background: var(--bg-sunk); overflow: hidden; }
+.ql-rank-fill { height: 100%; border-radius: 100px; }
+.ql-rank-score { font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-faint); }
+
+.ql-note { margin-top: 1.5rem; padding: 0.9rem 1.1rem; border-left: 3px solid var(--accent); background: var(--accent-wash); border-radius: 0 8px 8px 0; font-size: 0.9rem; color: var(--ink-soft); line-height: 1.6; }
+.ql-note b { color: var(--ink); }
+.ql-result-actions { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1.6rem; }

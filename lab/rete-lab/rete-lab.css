@@ -85,6 +85,7 @@
 .rl-side { display: flex; flex-direction: column; gap: 1rem; }
 .rl-side-empty { text-align: center; color: var(--ink-soft); padding: 1.5rem 0.5rem; }
 .rl-side-empty .ico { font-size: 2rem; }
+.rl-empty-ico { color: var(--ink-faint); }
 .rl-side-empty p { font-size: 0.9rem; line-height: 1.5; margin-top: 0.6rem; }
 
 .rl-panel-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.9rem; }
