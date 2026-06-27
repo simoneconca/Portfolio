@@ -57,7 +57,7 @@
           <a href="../">Lab</a><span class="sep">/</span><span class="current">Costruisci la tua rete</span>
         </nav>
         <h1>Costruisci la tua <em>rete</em></h1>
-        <p class="lead">Trascina <strong>PC</strong>, <strong>switch</strong> e <strong>router</strong>, collegali con i cavi, assegna gli indirizzi e premi <strong>ping</strong>: guardi il pacchetto viaggiare, con <strong>ARP</strong> e <strong>tabella MAC</strong> spiegati passo-passo. <em>Milestone 1</em>: comunicazione nella stessa rete (livello 2). Routing tra reti, Wi-Fi e DHCP arriveranno nelle prossime tappe.</p>
+        <p class="lead">Trascina <strong>PC</strong>, <strong>switch</strong> e <strong>router</strong>, collegali con i cavi, assegna gli indirizzi e premi <strong>ping</strong>: guardi il pacchetto viaggiare, con <strong>ARP</strong>, <strong>tabella MAC</strong> e <strong>tabella di routing</strong> spiegati passo-passo. Ora i <strong>router instradano tra reti diverse</strong> (gateway + rotte connesse e statiche). Wi-Fi e DHCP arriveranno nelle prossime tappe.</p>
       </div>
     </section>
 
@@ -81,6 +81,8 @@
             <select class="rl-select" id="rlScenario">
               <option value="switch2pc">Due PC + switch</option>
               <option value="direct">Due PC collegati diretti</option>
+              <option value="router1">Due reti, un router</option>
+              <option value="router2">Due router (rotte statiche)</option>
               <option value="empty">Tela vuota</option>
             </select>
             <button class="rl-tool" type="button" id="rlReset">↺ Reset</button>
