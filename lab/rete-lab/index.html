@@ -57,7 +57,7 @@
           <a href="../">Lab</a><span class="sep">/</span><span class="current">Costruisci la tua rete</span>
         </nav>
         <h1>Costruisci la tua <em>rete</em></h1>
-        <p class="lead">Trascina <strong>PC</strong>, <strong>switch</strong> e <strong>router</strong>, collegali con i cavi, assegna gli indirizzi e premi <strong>ping</strong>: guardi il pacchetto viaggiare, con <strong>ARP</strong>, <strong>tabella MAC</strong> e <strong>tabella di routing</strong> spiegati passo-passo. I <strong>router instradano tra reti diverse</strong> con tre modalità (<strong>statico</strong>, <strong>RIP</strong>, <strong>OSPF</strong>), e ora ci sono anche <strong>Access Point</strong> e <strong>Wi-Fi</strong> (i Laptop si associano da soli), con un <strong>server DHCP</strong> che assegna gli indirizzi automaticamente (ciclo DORA). Manca solo qualche scenario/sfida in più.</p>
+        <p class="lead">Trascina <strong>PC</strong>, <strong>switch</strong> e <strong>router</strong>, collegali con i cavi, assegna gli indirizzi e premi <strong>ping</strong>: guardi il pacchetto viaggiare, con <strong>ARP</strong>, <strong>tabella MAC</strong> e <strong>tabella di routing</strong> spiegati passo-passo. I <strong>router instradano tra reti diverse</strong> (<strong>statico</strong>, <strong>RIP</strong>, <strong>OSPF</strong>), ci sono <strong>Access Point</strong> e <strong>Wi-Fi</strong> (i Laptop si associano da soli) e <strong>server</strong> con funzioni diverse — <strong>DHCP</strong> (ciclo DORA), <strong>firewall</strong> in linea, Web/VPN. Tutto spiegato passo-passo.</p>
       </div>
     </section>
 
@@ -73,7 +73,7 @@
             <button class="rl-tool" type="button" data-add="router"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v6M12 21v-6M3 12h6M21 12h-6M7 7l4 4M17 17l-4-4"/></svg>Router</button>
             <button class="rl-tool" type="button" data-add="ap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="14" width="10" height="7" rx="1.5"/><path d="M12 14V8M7.5 7a6 6 0 0 1 9 0M9.7 4.8a9 9 0 0 1 4.6 0"/></svg>Access Point</button>
             <button class="rl-tool" type="button" data-add="wpc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="6" width="16" height="10" rx="1.5"/><path d="M2 19h20M12 6V3.5M9.5 3a4 4 0 0 1 5 0"/></svg>Laptop</button>
-            <button class="rl-tool" type="button" data-add="dhcp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M7.5 7.5h.01M7.5 16.5h.01M11 7.5h6M11 16.5h6"/></svg>DHCP</button>
+            <button class="rl-tool" type="button" data-add="server"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M7.5 7.5h.01M7.5 16.5h.01M11 7.5h6M11 16.5h6"/></svg>Server</button>
             <span class="rl-tool-sep"></span>
             <span class="rl-tool-label">Strumenti</span>
             <button class="rl-tool on" type="button" data-tool="select"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l15 9-7 1.5L9 21z"/></svg>Sposta</button>
@@ -89,6 +89,7 @@
               <option value="rip3">Tre router (RIP dinamico)</option>
               <option value="ospf3">Triangolo (OSPF, percorso minimo)</option>
               <option value="wifi">Wi-Fi + DHCP</option>
+              <option value="firewall">Firewall in linea</option>
               <option value="empty">Tela vuota</option>
             </select>
             <button class="rl-tool" type="button" id="rlReset">↺ Reset</button>
@@ -97,26 +98,24 @@
           </div>
         </div>
 
-        <!-- TELA + PANNELLO -->
-        <div class="rl-layout">
-          <div>
-            <div class="rl-stage-wrap">
-              <svg class="rl-stage" id="rlStage" xmlns="http://www.w3.org/2000/svg">
-                <g id="rlLinks"></g>
-                <g id="rlDevices"></g>
-                <g id="rlAnim"></g>
-              </svg>
-            </div>
-            <p class="rl-hint">Trascina i dispositivi per spostarli · usa <b style="color:var(--ink-soft)">Cavo</b> per collegarli · <b>clicca un cavo per rimuoverlo</b> · seleziona un dispositivo per configurarlo.</p>
-          </div>
-          <div class="rl-side" id="rlSide"></div>
+        <!-- TELA a tutta larghezza -->
+        <div class="rl-stage-wrap">
+          <svg class="rl-stage" id="rlStage" xmlns="http://www.w3.org/2000/svg">
+            <g id="rlLinks"></g>
+            <g id="rlDevices"></g>
+            <g id="rlAnim"></g>
+          </svg>
         </div>
+        <p class="rl-hint">Trascina i dispositivi per spostarli · usa <b style="color:var(--ink-soft)">Cavo</b> per collegarli · <b>clicca un cavo per rimuoverlo</b> · seleziona un dispositivo per configurarlo qui sotto.</p>
 
-        <!-- LOG -->
-        <div class="panel rl-log-panel">
-          <div class="rl-log-head"><h2>Cosa succede</h2></div>
-          <div class="rl-banner" id="rlBanner"></div>
-          <div class="rl-log" id="rlLog"></div>
+        <!-- IMPOSTAZIONI + SPIEGAZIONE (sotto la tela) -->
+        <div class="rl-bottom">
+          <div class="rl-side" id="rlSide"></div>
+          <div class="panel rl-log-panel">
+            <div class="rl-log-head"><h2>Cosa succede</h2></div>
+            <div class="rl-banner" id="rlBanner"></div>
+            <div class="rl-log" id="rlLog"></div>
+          </div>
         </div>
 
       </div>

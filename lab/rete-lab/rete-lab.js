@@ -10,7 +10,8 @@
 
   const SVGNS = "http://www.w3.org/2000/svg";
   const DW = 108, DH = 70;
-  const PORTS = { pc: 1, switch: 6, router: 4, ap: 8, wpc: 1, dhcp: 1 };
+  const PORTS = { pc: 1, switch: 6, router: 4, ap: 8, wpc: 1, server: 2 };
+  const ROLE_LABEL = { dhcp: "DHCP", firewall: "Firewall", web: "Web/DNS", vpn: "VPN" };
   const WIFI_RANGE = 280; // raggio (px) entro cui un dispositivo wireless si associa a un AP
 
   /* ---------- Stato ---------- */
@@ -71,12 +72,12 @@
     const base = type === "switch" || type === "ap" ? "p" : type === "wpc" ? "wlan" : "eth";
     for (let i = 0; i < n; i++) ports.push({ id: uid("port"), name: base + i, mac: nextMac(), ip: null, mask: null, linkId: null });
     const count = devices.filter((d) => d.type === type).length + 1;
-    const nm = { pc: "PC", switch: "Switch", router: "Router", ap: "AP", wpc: "Laptop", dhcp: "DHCP" }[type] + count;
+    const nm = { pc: "PC", switch: "Switch", router: "Router", ap: "AP", wpc: "Laptop", server: "Server" }[type] + count;
     const dev = { id: uid("dev"), type, name: nm, x, y, ports };
     if (type === "pc" || type === "wpc") { dev.gateway = ""; dev.arp = {}; dev.ipMode = "manual"; }
     if (type === "switch" || type === "ap") dev.macTable = {};
     if (type === "router") { dev.arp = {}; dev.staticRoutes = []; dev.routingMode = "static"; }
-    if (type === "dhcp") { dev.arp = {}; dev.poolStart = ""; dev.poolEnd = ""; dev.gateway = ""; dev.leases = {}; }
+    if (type === "server") { dev.arp = {}; dev.macTable = {}; dev.role = "dhcp"; dev.poolStart = ""; dev.poolEnd = ""; dev.gateway = ""; dev.leases = {}; dev.fwBlock = []; }
     return dev;
   }
   const device = (id) => devices.find((d) => d.id === id);
@@ -89,10 +90,12 @@
     links.forEach((l) => { const da = deviceOfPort(l.a), db = deviceOfPort(l.b); if (da.id === devId) out.push({ dev: db }); else if (db.id === devId) out.push({ dev: da }); });
     return out;
   }
+  // dispositivi che fanno da "ponte" a livello 2 (transito): switch, access point e firewall in linea
+  const isTransit = (dev) => dev.type === "switch" || dev.type === "ap" || (dev.type === "server" && dev.role === "firewall");
   const ownsIp = (dev, ipInt) => dev.ports.some((p) => p.ip && ipToInt(p.ip) === ipInt);
   const portWithIpOn = (dev, ipInt) => dev.ports.find((p) => p.ip && ipToInt(p.ip) === ipInt);
   function hostPortWithIp(ip) {
-    for (const d of devices) { if (d.type === "switch" || d.type === "ap") continue; for (const p of d.ports) if (p.ip && ipToInt(p.ip) === ip) return { dev: d, port: p }; }
+    for (const d of devices) { if (isTransit(d)) continue; for (const p of d.ports) if (p.ip && ipToInt(p.ip) === ip) return { dev: d, port: p }; }
     return null;
   }
 
@@ -169,9 +172,12 @@
     devices.forEach((d) => {
       const cls = "rl-dev" + (d.id === selectedId ? " sel" : "") + (d.id === pingSrc ? " pingsrc" : "");
       let ipLine = "";
-      if (d.type === "pc" || d.type === "wpc" || d.type === "dhcp") {
+      if (d.type === "pc" || d.type === "wpc") {
         const ip = d.ports[0].ip;
         ipLine = ip ? '<text class="rl-dev-ip" x="' + (DW / 2) + '" y="58">' + escapeHtml(ip) + "</text>" : '<text class="rl-dev-ip none" x="' + (DW / 2) + '" y="58">(senza IP)</text>';
+      } else if (d.type === "server") {
+        const ip = d.ports[0].ip, lbl = ROLE_LABEL[d.role] || "Server";
+        ipLine = '<text class="rl-dev-ip" x="' + (DW / 2) + '" y="58">' + escapeHtml(lbl) + (ip ? " · " + escapeHtml(ip) : "") + "</text>";
       } else if (d.type === "router") {
         const ips = d.ports.filter((p) => p.ip).map((p) => p.ip);
         ipLine = '<text class="rl-dev-ip" x="' + (DW / 2) + '" y="58">' + (ips.length ? escapeHtml(ips[0]) + (ips.length > 1 ? " +" + (ips.length - 1) : "") : "(no IP)") + "</text>";
@@ -218,14 +224,25 @@
       body += '<p style="color:var(--ink-soft);font-size:0.85rem;margin-bottom:0.8rem">L\'<b>Access Point</b> collega i dispositivi <b>wireless</b> alla rete cablata (lavora a livello 2). Avvicina un <b>Laptop</b> per associarlo: comparirà un collegamento tratteggiato.</p>';
       body += field("Nome", "name", d.name);
       body += '<p class="control-label" style="margin:0.6rem 0 0.4rem">Tabella MAC appresa</p>' + macTable(d);
-    } else if (d.type === "dhcp") {
+    } else if (d.type === "server") {
       const p = d.ports[0];
-      body += '<p style="color:var(--ink-soft);font-size:0.85rem;margin-bottom:0.8rem">Il <b>server DHCP</b> assegna automaticamente IP, maschera e gateway agli host che lo richiedono.</p>';
       body += field("Nome", "name", d.name);
-      body += '<div class="rl-field-row"><div class="rl-field"><label>IP del server</label><input type="text" data-f="dip" value="' + escapeAttr(p.ip || "") + '"><div class="err"></div></div><div class="rl-field"><label>mask</label><input type="text" data-f="dmask" value="' + escapeAttr(p.mask || "") + '"></div></div>';
-      body += '<p class="control-label" style="margin:0.6rem 0 0.4rem">Pool di indirizzi</p>';
-      body += '<div class="rl-field-row"><div class="rl-field"><label>da</label><input type="text" data-f="dpoolstart" value="' + escapeAttr(d.poolStart || "") + '" placeholder="192.168.0.100"></div><div class="rl-field"><label>a</label><input type="text" data-f="dpoolend" value="' + escapeAttr(d.poolEnd || "") + '" placeholder="192.168.0.150"></div></div>';
-      body += field("Gateway da assegnare", "dgw", d.gateway || "", "es. 192.168.0.1");
+      body += '<div class="rl-field"><label>Funzione del server</label><select class="rl-select" data-f="role" style="width:100%"><option value="dhcp"' + (d.role === "dhcp" ? " selected" : "") + ">DHCP</option><option value=\"firewall\"" + (d.role === "firewall" ? " selected" : "") + ">Firewall</option><option value=\"web\"" + (d.role === "web" ? " selected" : "") + ">Web / DNS</option><option value=\"vpn\"" + (d.role === "vpn" ? " selected" : "") + ">VPN</option></select></div>";
+      if (d.role !== "firewall") body += '<div class="rl-field-row"><div class="rl-field"><label>IP del server</label><input type="text" data-f="dip" value="' + escapeAttr(p.ip || "") + '"><div class="err"></div></div><div class="rl-field"><label>mask</label><input type="text" data-f="dmask" value="' + escapeAttr(p.mask || "") + '"></div></div>';
+      if (d.role === "dhcp") {
+        body += '<p style="color:var(--ink-soft);font-size:0.82rem;margin:0.2rem 0 0.6rem">Assegna automaticamente IP, maschera e gateway agli host in modalità DHCP (ciclo DORA).</p>';
+        body += '<p class="control-label" style="margin:0.4rem 0 0.4rem">Pool di indirizzi</p>';
+        body += '<div class="rl-field-row"><div class="rl-field"><label>da</label><input type="text" data-f="dpoolstart" value="' + escapeAttr(d.poolStart || "") + '" placeholder="192.168.0.100"></div><div class="rl-field"><label>a</label><input type="text" data-f="dpoolend" value="' + escapeAttr(d.poolEnd || "") + '" placeholder="192.168.0.150"></div></div>';
+        body += field("Gateway da assegnare", "dgw", d.gateway || "", "es. 192.168.0.1");
+      } else if (d.role === "firewall") {
+        body += '<p style="color:var(--ink-soft);font-size:0.82rem;line-height:1.5;margin:0.2rem 0 0.6rem">Il <b>firewall</b> va messo <b>in linea</b> tra due parti della rete (come uno switch, con due cavi): controlla il traffico che lo attraversa e <b>blocca</b> i pacchetti da/verso gli IP nella lista.</p>';
+        body += '<p class="control-label" style="margin:0.4rem 0 0.4rem">Regole — IP bloccati</p>';
+        body += '<table class="rl-table"><tbody>' + (d.fwBlock.length ? d.fwBlock.map((ip, i) => '<tr><td>blocca ' + escapeHtml(ip) + '</td><td style="text-align:right"><span data-fwrm="' + i + '" style="color:#c0392b;cursor:pointer">×</span></td></tr>').join("") : '<tr><td class="empty">Nessuna regola (consenti tutto).</td></tr>') + "</tbody></table>";
+        body += '<div class="rl-field" style="margin-top:0.6rem"><label>Blocca IP</label><input type="text" data-f="fwip" placeholder="es. 192.168.0.10"><div class="err" data-fwerr></div></div>';
+        body += '<button class="ghost-btn" data-act="fwadd" type="button">＋ Aggiungi regola</button>';
+      } else {
+        body += '<p style="color:var(--ink-soft);font-size:0.82rem;line-height:1.5;margin:0.2rem 0 0.6rem">' + (d.role === "web" ? "Un <b>server Web/DNS</b> è un host con un indirizzo fisso: gli altri dispositivi lo raggiungono col ping (e nella realtà con HTTP o le query DNS)." : "Una <b>VPN</b> crea un «tunnel» cifrato per collegare in sicurezza reti o utenti remoti attraverso Internet. Qui è rappresentata come endpoint con un indirizzo: la simulazione del tunnel arriverà più avanti.") + "</p>";
+      }
     } else if (d.type === "switch") {
       body += '<p style="color:var(--ink-soft);font-size:0.85rem;margin-bottom:0.8rem">Lo switch lavora a livello 2: non ha IP e impara da solo quali MAC stanno su quale porta.</p>';
       body += field("Nome", "name", d.name);
@@ -341,6 +358,11 @@
     sideEl.querySelectorAll("[data-ipmode]").forEach((b) => b.addEventListener("click", () => { d.ipMode = b.dataset.ipmode; if (d.ipMode === "dhcp") { d.ports[0].ip = null; d.ports[0].mask = null; } render(); renderSide(); }));
     const dhcpBtn = sideEl.querySelector('[data-act="dhcp"]');
     if (dhcpBtn) dhcpBtn.addEventListener("click", () => startDhcp(d.id));
+    const roleSel = sideEl.querySelector('[data-f="role"]');
+    if (roleSel) roleSel.addEventListener("change", () => { d.role = roleSel.value; render(); renderSide(); });
+    const fwAdd = sideEl.querySelector('[data-act="fwadd"]');
+    if (fwAdd) fwAdd.addEventListener("click", () => { const ip = sideEl.querySelector('[data-f="fwip"]').value.trim(); if (ipToInt(ip) === null) { sideEl.querySelector("[data-fwerr]").textContent = "Inserisci un IP valido."; return; } d.fwBlock.push(ip); renderSide(); });
+    sideEl.querySelectorAll("[data-fwrm]").forEach((el) => el.addEventListener("click", () => { d.fwBlock.splice(parseInt(el.dataset.fwrm, 10), 1); renderSide(); }));
     const delBtn = sideEl.querySelector('[data-act="delete"]');
     if (delBtn) delBtn.addEventListener("click", () => deleteDevice(d.id));
   }
@@ -514,7 +536,7 @@
     const q = [[startDev.id, first.id]], seen = {}; seen[startDev.id] = 1; seen[first.id] = 1;
     while (q.length) {
       const path = q.shift(), last = device(path[path.length - 1]);
-      if (last.type !== "switch" && last.type !== "ap") { if (ownsIp(last, targetIp)) return path; continue; }
+      if (!isTransit(last)) { if (ownsIp(last, targetIp)) return path; continue; }
       neighbors(last.id).forEach((nb) => { if (seen[nb.dev.id]) return; seen[nb.dev.id] = 1; q.push(path.concat(nb.dev.id)); });
     }
     return null;
@@ -571,10 +593,22 @@
       exitPort = np; targetIp = ntip; senderMac = np.mac;
     }
 
-    // animazione del percorso completo
-    animating = true;
+    // percorso completo
     const fullIds = [];
     segs.forEach((s, i) => s.path.forEach((id, j) => { if (i > 0 && j === 0) return; fullIds.push(id); }));
+
+    // controllo FIREWALL: un server-firewall in linea può bloccare il traffico
+    const sIpStr = sp.ip, dIpStr = dstIpStr;
+    for (const id of fullIds) {
+      const dv = device(id);
+      if (dv.type === "server" && dv.role === "firewall" && dv.fwBlock && dv.fwBlock.length) {
+        const hit = dv.fwBlock.indexOf(sIpStr) !== -1 ? sIpStr : (dv.fwBlock.indexOf(dIpStr) !== -1 ? dIpStr : null);
+        if (hit) return fail("🔥 Il firewall <b>" + escapeHtml(dv.name) + "</b> ha <b>bloccato</b> il traffico: c'è una regola che blocca l'IP " + escapeHtml(hit) + ".");
+      }
+    }
+
+    // animazione del percorso completo
+    animating = true;
     const pts = fullIds.map((id) => center(device(id)));
     segs.forEach((s) => learnAlong(s.path, s.mac));
     highlightPath(fullIds, true);
@@ -594,7 +628,7 @@
   function fail(msg) { animating = false; banner("❌ " + msg, false); logStep(msg, "fail"); return null; }
 
   function learnAlong(path, mac) {
-    for (let i = 0; i < path.length; i++) { const d = device(path[i]); if (d.type !== "switch" && d.type !== "ap") continue; const prev = device(path[i - 1]); if (prev) d.macTable[mac] = prev.name; }
+    for (let i = 0; i < path.length; i++) { const d = device(path[i]); if (!isTransit(d) || !d.macTable) continue; const prev = device(path[i - 1]); if (prev) d.macTable[mac] = prev.name; }
   }
   function highlightPath(ids, on) {
     const set = new Set();
@@ -626,14 +660,14 @@
      DHCP — assegnazione automatica indirizzi (ciclo DORA)
      ============================================================ */
   // percorso L2 dalla porta fino al primo dispositivo del tipo dato (broadcast attraverso switch/AP)
-  function l2PathToType(startPort, type) {
+  function l2PathTo(startPort, matchFn) {
     const startDev = deviceOfPort(startPort.id); if (!startPort.linkId) return null;
     const first = otherEnd(startPort); if (!first) return null;
     const q = [[startDev.id, first.id]], seen = {}; seen[startDev.id] = 1; seen[first.id] = 1;
     while (q.length) {
       const path = q.shift(), last = device(path[path.length - 1]);
-      if (last.type === type) return path;
-      if (last.type !== "switch" && last.type !== "ap") continue;
+      if (matchFn(last)) return path;
+      if (!isTransit(last)) continue;
       neighbors(last.id).forEach((nb) => { if (seen[nb.dev.id]) return; seen[nb.dev.id] = 1; q.push(path.concat(nb.dev.id)); });
     }
     return null;
@@ -647,7 +681,7 @@
     if (animating) return;
     clearLog();
     const host = device(hostId), port = host.ports[0];
-    const path = l2PathToType(port, "dhcp");
+    const path = l2PathTo(port, (d) => d.type === "server" && d.role === "dhcp");
     if (!path) return fail("Nessun <b>server DHCP</b> raggiungibile da " + escapeHtml(host.name) + " su questa rete (controlla i collegamenti / l'associazione Wi-Fi).");
     const server = device(path[path.length - 1]);
     if (ipToInt(server.poolStart) === null || ipToInt(server.poolEnd) === null) return fail("Il server DHCP " + escapeHtml(server.name) + " non ha un pool di indirizzi valido.");
@@ -787,11 +821,18 @@
     } else if (name === "wifi") {
       const pc1 = spawn("pc", 40, 50); setIp(pc1, 0, "192.168.0.10", "255.255.255.0"); pc1.gateway = "192.168.0.1";
       const sw = spawn("switch", 250, 60);
-      const dhcp = spawn("dhcp", 40, 270); setIp(dhcp, 0, "192.168.0.2", "255.255.255.0"); dhcp.poolStart = "192.168.0.100"; dhcp.poolEnd = "192.168.0.150"; dhcp.gateway = "192.168.0.1";
-      const ap = spawn("ap", 270, 270);
-      const lap = spawn("wpc", 480, 270); lap.ipMode = "dhcp";
-      mkLink(pc1, sw); mkLink(dhcp, sw); mkLink(ap, sw);
-      // il Laptop si associa da solo all'AP (entro il raggio); poi: aprilo → «Richiedi indirizzo (DHCP)» → ping a 192.168.0.10
+      const srv = spawn("server", 40, 290); srv.role = "dhcp"; setIp(srv, 0, "192.168.0.2", "255.255.255.0"); srv.poolStart = "192.168.0.100"; srv.poolEnd = "192.168.0.150"; srv.gateway = "192.168.0.1";
+      const ap = spawn("ap", 280, 290);
+      const lap = spawn("wpc", 500, 290); lap.ipMode = "dhcp";
+      mkLink(pc1, sw); mkLink(srv, sw); mkLink(ap, sw);
+      // il Laptop si associa da solo all'AP; poi: aprilo → «Richiedi indirizzo (DHCP)» → ping a 192.168.0.10
+    } else if (name === "firewall") {
+      const pc1 = spawn("pc", 40, 120); setIp(pc1, 0, "192.168.5.10", "255.255.255.0");
+      const fw = spawn("server", 240, 120); fw.role = "firewall"; fw.fwBlock = ["192.168.5.20"];
+      const sw = spawn("switch", 440, 130);
+      const pc2 = spawn("pc", 640, 120); setIp(pc2, 0, "192.168.5.20", "255.255.255.0");
+      mkLink(pc1, fw); mkLink(fw, sw); mkLink(pc2, sw);
+      // il firewall è in linea e blocca 192.168.5.20: il ping PC1→PC2 fallisce. Apri il Firewall e togli la regola per farlo passare.
     }
     render(); renderSide();
   }
