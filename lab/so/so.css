@@ -3,6 +3,71 @@
    Layout compatto a due colonne. Primitive in lab.css.
    ============================================================ */
 
+/* ============================================================
+   Vista rilocazione: indirizzo logico → fisico
+   ============================================================ */
+.reloc-h2 { font-family: var(--font-display); font-weight: 500; font-size: clamp(1.2rem, 2.6vw, 1.55rem); line-height: 1.15; margin-bottom: 0.5rem; }
+.reloc-h2 .c-log { color: var(--accent); }
+.reloc-h2 .c-phys { color: #3fae6b; }
+.reloc-intro { color: var(--ink-soft); font-size: 0.92rem; line-height: 1.55; margin-bottom: 1.2rem; }
+.reloc-intro b { color: var(--ink); font-weight: 600; }
+.reloc-hint { min-height: 1.3rem; font-size: 0.85rem; line-height: 1.5; margin: 0.75rem 0 0; font-family: var(--font-mono); }
+.reloc-hint.ok { color: var(--ink); }
+.reloc-hint.err { color: #e0533d; }
+.reloc-hint b { color: var(--accent); }
+.reloc-hint .rh-dec { color: var(--ink-faint); font-size: 0.78rem; }
+
+/* Scatola MMU con la somma */
+.mmu-box { margin-top: 1.2rem; border: 1px solid var(--line); border-radius: 12px; background: var(--bg-sunk); padding: 0.6rem 1.1rem 1rem; display: grid; gap: 0.45rem; }
+.mmu-box.err { border-color: color-mix(in srgb, #e0533d 55%, var(--line)); }
+.mmu-cap { font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-soft); padding-bottom: 0.5rem; margin-bottom: 0.15rem; border-bottom: 1px solid var(--line-soft); }
+.mmu-row { display: flex; align-items: center; justify-content: space-between; gap: 1rem; }
+.mmu-tag { font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-soft); }
+.mmu-tag.log { color: var(--accent); }
+.mmu-tag.base { color: #c98a1b; }
+.mmu-tag.phys { color: #3fae6b; }
+.mmu-num { font-family: var(--font-mono); font-size: 1.15rem; font-weight: 600; color: var(--ink); }
+.mmu-op { font-family: var(--font-mono); color: var(--ink-faint); line-height: 0.6; }
+.mmu-line { height: 1px; background: var(--line); margin: 0.15rem 0; }
+.mmu-row.total .mmu-num { font-size: 1.45rem; color: #3fae6b; }
+.mmu-box.err .mmu-row.total .mmu-num { color: #e0533d; font-size: 1.05rem; }
+
+/* Colonne logico ↔ fisico */
+.reloc-viz .viz-cols { display: flex; align-items: stretch; gap: 0.7rem; }
+.logical-col { width: 33%; min-width: 92px; }
+.ram-col { flex: 1; }
+.vcol-label { display: block; font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-soft); margin-bottom: 0.5rem; text-align: center; }
+.vcol-label small { color: var(--ink-faint); }
+.viz-arrow { align-self: center; font-family: var(--font-mono); font-size: 0.74rem; color: #c98a1b; text-align: center; white-space: nowrap; padding-top: 1.6rem; }
+
+/* Colori dei programmi (regioni RAM + barra logica) */
+.ram-region.so, .lbar-track.so { background: color-mix(in srgb, #8a8f98 22%, transparent); border: 1px solid color-mix(in srgb, #8a8f98 55%, var(--line)); }
+.ram-region.a,  .lbar-track.a  { background: var(--accent-wash); border: 1px solid color-mix(in srgb, var(--accent) 55%, var(--line)); }
+.ram-region.b,  .lbar-track.b  { background: color-mix(in srgb, #3fae6b 16%, transparent); border: 1px solid color-mix(in srgb, #3fae6b 55%, var(--line)); }
+.ram-region.c,  .lbar-track.c  { background: color-mix(in srgb, #c98a1b 16%, transparent); border: 1px solid color-mix(in srgb, #c98a1b 55%, var(--line)); }
+
+/* Barra RAM (fisico) */
+.ram-track { position: relative; height: 430px; border: 1px solid var(--line); border-radius: 10px; background: var(--bg-sunk); overflow: hidden; }
+.ram-region { position: absolute; left: 0; right: 0; border-radius: 5px; padding: 0.2rem 0.5rem; display: flex; flex-direction: column; justify-content: center; gap: 0.1rem; overflow: hidden; }
+.ram-region.sel { box-shadow: inset 0 0 0 2px var(--accent); z-index: 2; }
+.rr-name { font-size: 0.76rem; font-weight: 600; color: var(--ink); line-height: 1.15; }
+.rr-range { font-family: var(--font-mono); font-size: 0.62rem; color: var(--ink-soft); }
+.ram-marker { position: absolute; left: -2px; right: -2px; height: 0; border-top: 2px dashed #3fae6b; z-index: 3; }
+.ram-marker .rm-lbl { position: absolute; right: 3px; top: -0.62rem; font-family: var(--font-mono); font-size: 0.62rem; background: #3fae6b; color: #fff; padding: 0.05rem 0.35rem; border-radius: 5px; }
+
+/* Barra logica (programma) */
+.lbar-track { position: relative; height: 430px; border-radius: 10px; }
+.lbar-edge { position: absolute; left: 0; right: 0; text-align: center; font-family: var(--font-mono); font-size: 0.62rem; color: var(--ink-soft); }
+.lbar-edge.top { top: 3px; }
+.lbar-edge.bot { bottom: 3px; }
+.lbar-marker { position: absolute; left: -2px; right: -2px; height: 0; border-top: 2px dashed var(--accent); }
+.lbar-marker span { position: absolute; left: 50%; transform: translateX(-50%); top: -0.62rem; font-family: var(--font-mono); font-size: 0.62rem; background: var(--accent); color: var(--accent-ink); padding: 0.05rem 0.35rem; border-radius: 5px; white-space: nowrap; }
+
+@media (max-width: 520px) {
+  .ram-track, .lbar-track { height: 340px; }
+  .rr-name { font-size: 0.66rem; }
+}
+
 .examples { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .example-chip {
   font-family: var(--font-mono); font-size: 0.74rem;

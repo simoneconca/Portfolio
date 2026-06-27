@@ -126,7 +126,57 @@
 
     <!-- =================== MEMORIA =================== -->
     <section class="section so-section" id="memMode" hidden>
-      <div class="container so-layout">
+      <div class="container" style="padding-bottom:1.1rem">
+        <div class="seg" id="memSubSeg" role="group" aria-label="Vista memoria">
+          <button type="button" data-memsub="reloc" class="seg-btn active">Indirizzi logici → fisici</button>
+          <button type="button" data-memsub="paging" class="seg-btn">Paginazione e page fault</button>
+        </div>
+      </div>
+
+      <!-- VISTA 1 — Rilocazione: indirizzo fisico = logico + base -->
+      <div class="container so-layout" id="memReloc">
+        <div class="panel">
+          <h2 class="reloc-h2">La CPU usa indirizzi <span class="c-log">logici</span>, la RAM indirizzi <span class="c-phys">fisici</span></h2>
+          <p class="reloc-intro">Ogni programma è scritto come se partisse dall'indirizzo <b>0</b> (è l'indirizzo <b>logico</b>). Quando il Sistema Operativo lo carica in RAM, lo mette a partire da un <b>indirizzo base</b>, che salva nel <b>Registro di rilocazione</b> della MMU. A ogni accesso la MMU fa una somma: <b>indirizzo fisico = indirizzo logico + base</b>.</p>
+
+          <div class="control-group">
+            <span class="control-label">Programma</span>
+            <div class="seg" id="progSeg" role="group" aria-label="Programma"></div>
+          </div>
+          <div class="control-group" style="margin-top:0.7rem">
+            <span class="control-label">Indirizzo logico</span>
+            <div class="field" style="max-width:7rem"><span class="field-prefix">0x</span><input id="relocLog" spellcheck="false" autocomplete="off" value="0A5"></div>
+            <button id="relocGo" class="run-btn" type="button">Traduci ▶</button>
+          </div>
+          <p class="reloc-hint" id="relocHint"></p>
+
+          <div class="mmu-box" id="mmuBox">
+            <div class="mmu-cap">🧠 MMU — Memory Management Unit</div>
+            <div class="mmu-row"><span class="mmu-tag log">Indirizzo logico (dalla CPU)</span><span class="mmu-num" id="mmuLog">—</span></div>
+            <div class="mmu-op">+</div>
+            <div class="mmu-row"><span class="mmu-tag base">Registro di rilocazione (Base)</span><span class="mmu-num" id="mmuBase">—</span></div>
+            <div class="mmu-line"></div>
+            <div class="mmu-row total"><span class="mmu-tag phys">Indirizzo fisico (nella RAM)</span><span class="mmu-num" id="mmuPhys">—</span></div>
+          </div>
+        </div>
+
+        <div class="panel reloc-viz">
+          <div class="viz-cols">
+            <div class="logical-col">
+              <span class="vcol-label">Programma<br><small>(indirizzi logici)</small></span>
+              <div class="lbar" id="lbar"></div>
+            </div>
+            <div class="viz-arrow" id="vizArrow">+ base<br>▶</div>
+            <div class="ram-col">
+              <span class="vcol-label">RAM<br><small>(indirizzi fisici)</small></span>
+              <div class="ram-bar" id="ramBar"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- VISTA 2 — Paginazione e page fault (avanzato) -->
+      <div class="container so-layout" id="memPaging" hidden>
 
         <!-- CONTROLLI + TRADUZIONE -->
         <div class="panel">
@@ -181,5 +231,6 @@
 
   <script src="../../js/core.js"></script>
   <script src="so.js"></script>
+  <script src="mem-reloc.js"></script>
 </body>
 </html>
