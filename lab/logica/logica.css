@@ -227,10 +227,16 @@ code { font-family: var(--font-mono); font-size: 0.92em; }
 .lg-del:hover { border-color: #e0533d; color: #e0533d; }
 
 /* fili */
-.lg-wires path.wire { fill: none; stroke: var(--ink-soft); stroke-width: 2.4; transition: stroke 0.2s var(--ease); }
-.lg-wires path.wire:hover { stroke: #e0533d; }
+.lg-wires path.lg-wire-hit { fill: none; stroke: transparent; stroke-width: 18; pointer-events: stroke; cursor: pointer; }
+.lg-wires path.wire { fill: none; stroke: var(--ink-soft); stroke-width: 2.4; pointer-events: stroke; cursor: pointer; transition: stroke 0.2s var(--ease); }
+.lg-wires path.wire:hover,
+.lg-wires path.lg-wire-hit:hover + path.wire { stroke: #e0533d; stroke-width: 3.2; }
 .lg-wires path.wire.on { stroke: var(--accent); }
 .lg-wires path.temp { fill: none; stroke: var(--accent); stroke-width: 2.4; stroke-dasharray: 5 5; }
+
+/* suggerimento sempre visibile sotto il banco */
+.lg-tip { margin-top: 0.7rem; font-family: var(--font-mono); font-size: 0.76rem; color: var(--ink-faint); line-height: 1.5; }
+.lg-tip b { color: #e0533d; font-weight: 600; }
 
 /* ---------- Esempi ---------- */
 .lg-examples { display: flex; align-items: center; gap: 0.8rem; flex-wrap: wrap; margin-top: 1rem; }

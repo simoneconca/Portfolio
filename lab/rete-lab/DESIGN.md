@@ -26,11 +26,16 @@ qui c'è il piano completo. (Nessun codice ancora.)
 - Categoria nel portale: **Sistemi e reti** (accanto a Subnetting e TCP/IP Voyager).
 
 ## 2. Decisioni di portata (confermate con l'utente)
-- **Dispositivi**: PC + Switch + Router.
+- **Dispositivi** (set chiuso, *e basta così*): **PC, Switch, Router, Access Point,
+  dispositivo wireless, server DHCP**.
 - **Routing**: Statico + **RIP** + **OSPF**.
 - **Realismo L2**: mostrare **MAC e ARP** (non solo IP).
 - **Modalità**: **scenari pronti + sandbox** libero.
-- **Costruzione**: a **milestone M1→M5** (vedi §10).
+- **Icone**: ogni componente ha un'**icona SVG dedicata** (stile del sito), come per le card
+  del portale.
+- **Cavi rimovibili**: si possono **togliere** i collegamenti (clic sul cavo → rimosso), con
+  area di click larga e invisibile come nel lab `logica/`.
+- **Costruzione**: a **milestone M1→M6** (vedi §10).
 - Principio guida: *tanta sostanza ma config a un clic e tutto spiegato* →
   **progressive disclosure** (default sensati, avanzato dietro toggle, il pannello
   spiegazione fa il lavoro pesante).
@@ -41,10 +46,16 @@ device = { id, type:'pc'|'switch'|'router', name, x, y, ports:[portId...] , extr
 port   = { id, deviceId, name, mac, ip?, mask?, linkId? }   // ip/mask solo su pc/router
 link   = { id, aPortId, bPortId }                            // cavo punto-punto
 ```
-- **PC**: 1 porta; sul device anche `gateway`. `arp = {ip->mac}`.
+- **PC**: 1 porta; sul device anche `gateway` e `ipMode:'manual'|'dhcp'`. `arp = {ip->mac}`.
 - **Switch**: N porte senza IP; `macTable = {mac -> portId}` (apprendimento).
 - **Router**: N porte con IP+mask; `arp`; `routingTable`; `routingMode:'static'|'rip'|'ospf'`;
-  per statico `staticRoutes:[{dest,mask,nextHop}]`.
+  per statico `staticRoutes:[{dest,mask,nextHop}]`. Può avere il ruolo di server DHCP.
+- **Access Point (AP)**: 1 porta cablata (verso switch/router) + una "cella" wireless; fa da
+  **bridge L2** tra lato cablato e client wireless associati. Nessun IP.
+- **Dispositivo wireless** (PC/portatile Wi-Fi): come un PC ma **senza cavo**; si **associa**
+  a un AP nel raggio. IP/mask/gateway manuali o via DHCP.
+- **Server DHCP**: assegna automaticamente IP+mask+gateway agli host che lo richiedono
+  (device dedicato oppure ruolo del router). Config: pool/intervallo, gateway, DNS opzionale.
 - **MAC** generati deterministicamente (es. `02:00:00:NN:NN:NN` da un contatore — **niente
   `Math.random`** per riproducibilità). IP **mai** auto-assegnati a caso: default vuoti o
   da scenario.
@@ -58,7 +69,18 @@ link   = { id, aPortId, bPortId }                            // cavo punto-punto
 - **Switch**: alla ricezione **impara** `MAC sorgente -> porta`; inoltra per MAC
   destinazione; **flood** se destinazione sconosciuta o broadcast. Tabella MAC visibile.
 - Astrazioni accettabili (per semplicità): un solo dominio di broadcast per switch
-  (niente VLAN in M1–M5), niente STP, frame Ethernet semplificato (src/dst MAC + payload IP).
+  (niente VLAN), niente STP, frame Ethernet semplificato (src/dst MAC + payload IP).
+
+## 4bis. Wireless e DHCP
+- **Wireless**: un **dispositivo wireless** si **associa** a un **AP** (comando «collega»
+  senza cavo, se nel raggio). Il link wireless è disegnato **tratteggiato**. A livello logico
+  l'AP è uno switch L2: ARP/MAC funzionano come sul cablato. *Semplificazioni*: niente
+  canali/potenza/SSID multipli, una sola "rete Wi-Fi" per AP, associazione automatica.
+- **DHCP (DORA)**: su un host si sceglie «IP manuale» o «**DHCP**». Con DHCP l'host esegue il
+  ciclo **Discover → Offer → Request → Ack** verso il server, **mostrato passo-passo nel log**,
+  e riceve IP+mask+gateway dal pool. È la chiave del "config senza configurazioni": accendi
+  DHCP e l'host si configura da solo (ottimo da affiancare alla config manuale per capire
+  *cosa* fa il DHCP).
 
 ## 5. Livello 3 — routing (Statico / RIP / OSPF)
 Su ogni router la **tabella di routing** = rotte **connesse** (le reti delle sue interfacce,
@@ -98,11 +120,17 @@ evidenziazione della riga/decisione pertinente e animazione del pacchetto sul ca
   mancante, porta non configurata.
 
 ## 7. Interfaccia
-- **Toolbar**: aggiungi PC / Switch / Router (poi clic sulla tela o drag); strumento «cavo»
-  (clic porta → clic porta); **«Invia ping»** (scegli sorgente e destinazione);
-  Play / Passo / Reset; velocità; selettore **scenari**.
-- **Tela SVG** centrale: device con icone, cavi, etichette IP sotto i device, **pallino
-  animato** del pacchetto, badge di stato.
+- **Toolbar**: aggiungi PC / Switch / Router / Access Point / dispositivo wireless / server
+  DHCP (poi clic sulla tela o drag); strumento «cavo» (clic porta → clic porta);
+  **«Invia ping»** (scegli sorgente e destinazione); Play / Passo / Reset; velocità;
+  selettore **scenari**.
+- **Icone**: ogni dispositivo ha un'**icona SVG** dedicata (PC, switch, router, AP con onde,
+  host wireless, server DHCP), coerente con lo stile del sito.
+- **Rimozione cavi**: clic su un cavo per **rimuoverlo**; usare un'**area di click larga e
+  invisibile** sopra il tratto (come `lg-wire-hit` in `logica/`) + hover rosso, così è facile
+  da centrare anche su mobile.
+- **Tela SVG** centrale: device con icone, cavi (tratteggiati se wireless), etichette IP sotto
+  i device, **pallino animato** del pacchetto, badge di stato.
 - **Pannello laterale contestuale** (a tab) sul device selezionato:
   *Config* · *Tabella routing* · *ARP / MAC*.
 - **Log** in basso: narrazione passo-passo + legenda colori.
@@ -139,8 +167,12 @@ lab/rete-lab/
 - **M4 — OSPF**: vicini, link-state DB, **Dijkstra**, percorsi più brevi.
   *Accettazione*: su topologia con percorso alternativo, OSPF sceglie il costo minimo; DB e
   calcolo visibili.
-- **M5 — Scenari + sfide + rifinitura**: libreria scenari, eventuali sfide a obiettivo
-  ("fai arrivare il ping di PC1 a PC2" con verifica), polish e **responsive** a 375/600px.
+- **M5 — Wireless + DHCP**: Access Point, dispositivo wireless (associazione, link
+  tratteggiato), server DHCP con ciclo **DORA** narrato. *Accettazione*: un host wireless si
+  associa all'AP e ottiene IP via DHCP, poi il ping funziona; i passi DORA sono mostrati.
+- **M6 — Scenari + sfide + rifinitura**: libreria scenari, eventuali sfide a obiettivo
+  ("fai arrivare il ping di PC1 a PC2" con verifica), polish e **responsive** a 375/600px
+  (incl. rimozione cavi facile da centrare su mobile).
 
 ## 11. Quando finito (checklist di chiusura, come gli altri lab)
 - Aggiungere la card in `lab/index.html` (categoria **Sistemi e reti**), stato `live`.

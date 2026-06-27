@@ -390,7 +390,11 @@
       const a = portPos(from, "out");
       const b = portPos(to, "in", w.toPort);
       const on = memo[w.from] === true;
-      svg += `<path class="wire${on ? " on" : ""}" data-wire="${w.id}" d="${curve(a, b)}"/>`;
+      const d = curve(a, b);
+      // area di click larga e invisibile (facile da centrare anche su mobile),
+      // seguita dal filo visibile: cliccando l'una o l'altro si rimuove il filo
+      svg += `<path class="lg-wire-hit" data-wire="${w.id}" d="${d}"/>`;
+      svg += `<path class="wire${on ? " on" : ""}" data-wire="${w.id}" d="${d}"/>`;
     });
     if (temp) svg += `<path class="temp" d="${curve(temp.a, temp.b)}"/>`;
     wiresSvg.innerHTML = svg;
@@ -538,7 +542,7 @@
   board.addEventListener("pointerdown", (e) => {
     const portEl = e.target.closest(".lg-port");
     const delEl = e.target.closest(".lg-del");
-    const wireEl = e.target.closest("path.wire");
+    const wireEl = e.target.closest("path.wire, path.lg-wire-hit");
     const nodeEl = e.target.closest(".lg-node");
 
     if (delEl) { e.preventDefault(); deleteNode(delEl.dataset.del); return; }
