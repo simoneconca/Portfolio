@@ -48,6 +48,8 @@
 /* ---------- Reset ---------- */
 *, *::before, *::after { box-sizing: border-box; }
 * { margin: 0; }
+/* l'attributo hidden deve sempre vincere, anche su display:grid/flex */
+[hidden] { display: none !important; }
 
 /* overflow-x: clip taglia lo sfondamento orizzontale senza creare un
    contenitore di scroll, così position: sticky continua a funzionare */
