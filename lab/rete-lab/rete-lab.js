@@ -194,12 +194,18 @@
       if (sideTab === "arp") sideTab = "config";
       body += tabsHtml([["config", "Interfacce"], ["routing", "Routing"]]);
       if (sideTab === "routing") {
-        const isRip = d.routingMode === "rip";
-        body += '<div class="rl-tabs" style="margin-bottom:0.8rem"><button class="rl-tab ' + (!isRip ? "active" : "") + '" data-mode="static">Statico</button><button class="rl-tab ' + (isRip ? "active" : "") + '" data-mode="rip">RIP (dinamico)</button></div>';
+        const mode = d.routingMode || "static";
+        body += '<div class="rl-tabs" style="margin-bottom:0.8rem">' +
+          '<button class="rl-tab ' + (mode === "static" ? "active" : "") + '" data-mode="static">Statico</button>' +
+          '<button class="rl-tab ' + (mode === "rip" ? "active" : "") + '" data-mode="rip">RIP</button>' +
+          '<button class="rl-tab ' + (mode === "ospf" ? "active" : "") + '" data-mode="ospf">OSPF</button></div>';
         body += '<p class="control-label" style="margin:0 0 0.4rem">Tabella di routing</p>' + routingTable(d);
-        if (isRip) {
+        if (mode === "rip") {
           body += '<button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:0.8rem" data-act="converge" type="button">▶ Fai convergere RIP</button>';
           body += '<p style="color:var(--ink-soft);font-size:0.82rem;line-height:1.5;margin-top:0.6rem">Con <b>RIP</b> i router si scambiano le tabelle e imparano le reti da soli (metrica = numero di <b>salti</b>). Premi il pulsante e guarda i round nel log.</p>';
+        } else if (mode === "ospf") {
+          body += '<button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:0.8rem" data-act="ospf" type="button">▶ Calcola OSPF (Dijkstra)</button>';
+          body += '<p style="color:var(--ink-soft);font-size:0.82rem;line-height:1.5;margin-top:0.6rem">Con <b>OSPF</b> ogni router conosce l\'intera mappa della rete (<b>database link-state</b>) e calcola i percorsi a <b>costo minimo</b> con Dijkstra (costo 1 per collegamento). Guarda il database e il calcolo nel log.</p>';
         } else {
           body += '<p class="control-label" style="margin:1rem 0 0.4rem">Aggiungi rotta statica</p>';
           body += '<div class="rl-route-form"><div class="rl-field-row"><div class="rl-field"><label>Rete dest.</label><input type="text" data-f="snet" placeholder="10.0.2.0"></div><div class="rl-field"><label>Mask</label><input type="text" data-f="smask" placeholder="/24"></div></div>' +
@@ -242,13 +248,14 @@
     return t + "</tbody></table>";
   }
   function routingTable(d) {
-    const routes = routesOf(d), showM = d.routingMode === "rip", cols = showM ? 4 : 3;
-    let t = '<table class="rl-table"><thead><tr><th>Destinazione</th><th>Tipo</th>' + (showM ? "<th>M</th>" : "") + "<th>Via</th></tr></thead><tbody>";
+    const routes = routesOf(d), showM = d.routingMode === "rip" || d.routingMode === "ospf", cols = showM ? 4 : 3;
+    const mh = d.routingMode === "ospf" ? "Costo" : "M";
+    let t = '<table class="rl-table"><thead><tr><th>Destinazione</th><th>Tipo</th>' + (showM ? "<th>" + mh + "</th>" : "") + "<th>Via</th></tr></thead><tbody>";
     if (!routes.length) t += '<tr><td class="empty" colspan="' + cols + '">Nessuna rotta — configura le interfacce.</td></tr>';
     else routes.forEach((r) => {
       const via = r.type === "connected" ? (r.port ? r.port.name : "—") : escapeHtml(r.nextHop);
       const rm = r.type === "static" ? ' <span data-rmroute="' + r.idx + '" style="color:#c0392b;cursor:pointer">×</span>' : "";
-      const typeLbl = r.type === "connected" ? "connessa" : r.type === "rip" ? "RIP" : "statica";
+      const typeLbl = r.type === "connected" ? "connessa" : r.type === "rip" ? "RIP" : r.type === "ospf" ? "OSPF" : "statica";
       t += "<tr><td>" + intToIp(r.net) + "/" + r.cidr + "</td><td>" + typeLbl + "</td>" + (showM ? "<td>" + (r.metric != null ? r.metric : "") + "</td>" : "") + "<td>" + via + rm + "</td></tr>";
     });
     return t + "</tbody></table>";
@@ -281,9 +288,11 @@
       d.staticRoutes.push({ net, mask, nextHop: nh }); renderSide();
     });
     sideEl.querySelectorAll("[data-rmroute]").forEach((el) => el.addEventListener("click", () => { d.staticRoutes.splice(parseInt(el.dataset.rmroute, 10), 1); renderSide(); }));
-    sideEl.querySelectorAll("[data-mode]").forEach((b) => b.addEventListener("click", () => { d.routingMode = b.dataset.mode; if (d.routingMode !== "rip") d.ripTable = null; renderSide(); }));
+    sideEl.querySelectorAll("[data-mode]").forEach((b) => b.addEventListener("click", () => { d.routingMode = b.dataset.mode; if (d.routingMode !== "rip") d.ripTable = null; if (d.routingMode !== "ospf") d.ospfTable = null; renderSide(); }));
     const conv = sideEl.querySelector('[data-act="converge"]');
     if (conv) conv.addEventListener("click", () => runRip(true));
+    const osp = sideEl.querySelector('[data-act="ospf"]');
+    if (osp) osp.addEventListener("click", () => runOspf(true));
     const delBtn = sideEl.querySelector('[data-act="delete"]');
     if (delBtn) delBtn.addEventListener("click", () => deleteDevice(d.id));
   }
@@ -313,6 +322,11 @@
       if (router.ripTable && router.ripTable.length)
         return router.ripTable.map((e) => ({ net: e.net, mask: e.mask, cidr: e.cidr, metric: e.metric, type: e.nextHop ? "rip" : "connected", nextHop: e.nextHop, port: portById(e.exitPortId) }));
       return connectedRoutes(router); // RIP non ancora convergiuto: solo connesse
+    }
+    if (router.routingMode === "ospf") {
+      if (router.ospfTable && router.ospfTable.length)
+        return router.ospfTable.map((e) => ({ net: e.net, mask: e.mask, cidr: e.cidr, metric: e.cost, type: e.nextHop ? "ospf" : "connected", nextHop: e.nextHop, port: portById(e.exitPortId) }));
+      return connectedRoutes(router);
     }
     const routes = connectedRoutes(router);
     (router.staticRoutes || []).forEach((r, i) => { const m = parseMask(r.mask), net = ipToInt(r.net); if (m === null || net === null) return; routes.push({ net: (net & m) >>> 0, mask: m, cidr: maskToCidr(m), type: "static", nextHop: r.nextHop, idx: i }); });
@@ -374,6 +388,69 @@
       if (verbose && learned.length) logStep('<span class="who">Round ' + round + '</span>: ' + learned.map(escapeHtml).join("; ") + ".");
     }
     if (verbose) logStep('<span class="who">RIP</span> ha <b>convergiuto</b> in ' + round + " round: ogni router ora conosce tutte le reti. Prova un ping!");
+    if (selectedId) renderSide();
+  }
+
+  /* ---------- OSPF (link-state + Dijkstra) ---------- */
+  function netKeyOfPort(p) { if (!p.ip || !p.mask) return null; const m = parseMask(p.mask); if (m === null) return null; return ((ipToInt(p.ip) & m) >>> 0) + "/" + maskToCidr(m); }
+  // costruisce il database link-state e calcola, per ogni router OSPF, le rotte a costo minimo (Dijkstra).
+  function runOspf(verbose) {
+    const routers = devices.filter((d) => d.type === "router" && d.routingMode === "ospf");
+    if (!routers.length) { if (verbose) { clearLog(); logStep("Nessun router in modalità OSPF: attiva OSPF su almeno un router.", "fail"); } return; }
+    const COST = 1;
+    // nodi-rete per COMPONENTI L2: stessa subnet E davvero raggiungibili a livello 2
+    // (così togliendo un cavo i router non risultano più adiacenti e il percorso si ricalcola).
+    const ifaces = [];
+    routers.forEach((r) => r.ports.forEach((p) => { if (p.ip && p.mask) ifaces.push({ router: r, port: p, key: netKeyOfPort(p) }); }));
+    const netNodes = [], usedI = {}, portNode = {};
+    ifaces.forEach((it, i) => {
+      if (usedI[i]) return; usedI[i] = 1;
+      const members = [{ router: it.router, port: it.port }];
+      for (let j = i + 1; j < ifaces.length; j++) {
+        if (usedI[j] || ifaces[j].key !== it.key) continue;
+        if (l2PathFromPort(it.port, ipToInt(ifaces[j].port.ip))) { usedI[j] = 1; members.push({ router: ifaces[j].router, port: ifaces[j].port }); }
+      }
+      const m = parseMask(it.port.mask), idx = netNodes.length;
+      members.forEach((mem) => { portNode[mem.port.id] = idx; });
+      netNodes.push({ net: (ipToInt(it.port.ip) & m) >>> 0, mask: m, cidr: maskToCidr(m), members });
+    });
+
+    if (verbose) {
+      clearLog();
+      logStep('<span class="who">OSPF</span> ogni router annuncia i suoi collegamenti (LSA): si forma il <b>database link-state</b> condiviso, uguale per tutti.');
+      routers.forEach((r) => { const list = r.ports.filter((p) => p.ip && p.mask).map((p) => { const m = parseMask(p.mask); return intToIp((ipToInt(p.ip) & m) >>> 0) + "/" + maskToCidr(m); }); logStep('<span class="who">' + escapeHtml(r.name) + "</span> annuncia le reti " + list.map(escapeHtml).join(", ") + " (costo " + COST + " per interfaccia)."); });
+    }
+
+    routers.forEach((src) => {
+      const dist = {}, prev = {}, start = "R" + src.id; dist[start] = 0;
+      const pq = [[0, start]];
+      while (pq.length) {
+        pq.sort((a, b) => a[0] - b[0]); const top = pq.shift(), d = top[0], u = top[1];
+        if (d > dist[u]) continue;
+        const edges = [];
+        if (u.charAt(0) === "R") { const rr = device(u.slice(1)); rr.ports.forEach((p) => { if (portNode[p.id] != null) edges.push(["N" + portNode[p.id], COST]); }); }
+        else { const nn = netNodes[+u.slice(1)]; if (nn) nn.members.forEach((mem) => edges.push(["R" + mem.router.id, 0])); }
+        edges.forEach((e) => { const nd = d + e[1]; if (dist[e[0]] == null || nd < dist[e[0]]) { dist[e[0]] = nd; prev[e[0]] = u; pq.push([nd, e[0]]); } });
+      }
+      src.ospfTable = [];
+      netNodes.forEach((nn, idx) => {
+        const nid = "N" + idx; if (dist[nid] == null) return;
+        const own = nn.members.find((mem) => mem.router === src);
+        if (own) { src.ospfTable.push({ net: nn.net, mask: nn.mask, cidr: nn.cidr, cost: COST, nextHop: null, exitPortId: own.port.id }); return; }
+        const path = []; let cur = nid; while (cur != null) { path.unshift(cur); cur = prev[cur]; }
+        const n1 = path[1], r2 = path[2]; if (!n1 || !r2) return;
+        const node1 = netNodes[+n1.slice(1)], r2dev = device(r2.slice(1));
+        const exitMem = node1.members.find((mem) => mem.router === src), nextMem = node1.members.find((mem) => mem.router === r2dev);
+        if (!exitMem || !nextMem) return;
+        src.ospfTable.push({ net: nn.net, mask: nn.mask, cidr: nn.cidr, cost: dist[nid], nextHop: nextMem.port.ip, exitPortId: exitMem.port.id });
+      });
+    });
+
+    if (verbose) {
+      logStep('<span class="who">Dijkstra</span> ogni router calcola le rotte a <b>costo minimo</b>. Rotte di ' + escapeHtml(routers[0].name) + ":");
+      (routers[0].ospfTable || []).forEach((e) => logStep("• " + intToIp(e.net) + "/" + e.cidr + " — costo " + e.cost + (e.nextHop ? " via " + escapeHtml(e.nextHop) : " (connessa)")));
+      logStep('<span class="who">OSPF</span> pronto: viene sempre scelto il percorso a costo minore. Prova un ping!');
+    }
     if (selectedId) renderSide();
   }
 
@@ -440,7 +517,7 @@
       if (!route) return fail("Il router <b>" + escapeHtml(arrived.name) + "</b> non ha una <b>rotta</b> verso " + escapeHtml(dstIpStr) + ". Aggiungi una rotta statica o controlla gli indirizzi.");
       let np, ntip, viaTxt;
       if (route.type === "connected") { np = route.port; ntip = dstIp; viaTxt = "rete connessa su " + np.name; }
-      else if (route.type === "rip") { np = route.port; if (!np) return fail("Rotta RIP senza interfaccia d'uscita valida su " + escapeHtml(arrived.name) + "."); ntip = ipToInt(route.nextHop); viaTxt = "RIP next hop " + route.nextHop + " (" + np.name + ", metric " + route.metric + ")"; }
+      else if (route.type === "rip" || route.type === "ospf") { np = route.port; if (!np) return fail("Rotta " + route.type.toUpperCase() + " senza interfaccia d'uscita valida su " + escapeHtml(arrived.name) + "."); ntip = ipToInt(route.nextHop); viaTxt = route.type.toUpperCase() + " next hop " + route.nextHop + " (" + np.name + ", costo " + route.metric + ")"; }
       else { np = portForNextHop(arrived, ipToInt(route.nextHop)); if (!np) return fail("Il router " + escapeHtml(arrived.name) + " ha una rotta con next hop " + escapeHtml(route.nextHop) + " non raggiungibile."); ntip = ipToInt(route.nextHop); viaTxt = "next hop " + route.nextHop + " (" + np.name + ")"; }
       logStep('<span class="who">' + escapeHtml(arrived.name) + "</span> consulta la tabella → rotta <b>" + intToIp(route.net) + "/" + route.cidr + "</b> via " + viaTxt + ". TTL=" + ttl + ".");
       exitPort = np; targetIp = ntip; senderMac = np.mac;
@@ -603,6 +680,15 @@
       const pc2 = spawn("pc", 640, 250); setIp(pc2, 0, "10.1.3.10", "255.255.255.0"); pc2.gateway = "10.1.3.1";
       mkLink(pc1, r1); mkLink(r1, r2); mkLink(r2, r3); mkLink(r3, pc2);
       runRip(false); // converge in silenzio: funziona subito. Apri un router → Routing per vedere le rotte RIP, o premi «Fai convergere RIP» per rivedere i round.
+    } else if (name === "ospf3") {
+      // triangolo R1-R2-R3 (percorso alternativo): OSPF sceglie il costo minimo
+      const pc1 = spawn("pc", 30, 60); setIp(pc1, 0, "10.2.1.10", "255.255.255.0"); pc1.gateway = "10.2.1.1";
+      const r1 = spawn("router", 210, 60); setIp(r1, 0, "10.2.1.1", "255.255.255.0"); setIp(r1, 1, "10.2.12.1", "255.255.255.0"); setIp(r1, 2, "10.2.13.1", "255.255.255.0"); r1.routingMode = "ospf";
+      const r2 = spawn("router", 430, 230); setIp(r2, 0, "10.2.12.2", "255.255.255.0"); setIp(r2, 1, "10.2.23.2", "255.255.255.0"); r2.routingMode = "ospf";
+      const r3 = spawn("router", 210, 380); setIp(r3, 0, "10.2.23.3", "255.255.255.0"); setIp(r3, 1, "10.2.13.3", "255.255.255.0"); setIp(r3, 2, "10.2.3.1", "255.255.255.0"); r3.routingMode = "ospf";
+      const pc2 = spawn("pc", 30, 380); setIp(pc2, 0, "10.2.3.10", "255.255.255.0"); pc2.gateway = "10.2.3.1";
+      mkLink(pc1, r1); mkLink(r1, r2); mkLink(r2, r3); mkLink(r1, r3); mkLink(r3, pc2);
+      runOspf(false); // calcola in silenzio: PC1↔PC2 passa per il percorso diretto R1-R3 (costo 2), non via R2 (costo 3).
     }
     render(); renderSide();
   }
