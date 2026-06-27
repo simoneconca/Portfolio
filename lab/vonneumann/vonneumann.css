@@ -24,7 +24,7 @@
 .vn-diagram {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-areas: "inp out" "bus bus" "cpu mem";
+  grid-template-areas: "inp out" "bus bus" "cpu mem" "sto sto";
   gap: 0.8rem;
   background: var(--bg-sunk); border: 1px solid var(--line); border-radius: 14px; padding: 1rem;
 }
@@ -37,7 +37,8 @@
 
 .vn-box.input { grid-area: inp; }
 .vn-box.output { grid-area: out; }
-.vn-box.input, .vn-box.output {
+.vn-box.storage { grid-area: sto; }
+.vn-box.input, .vn-box.output, .vn-box.storage {
   display: flex; align-items: center; justify-content: center; gap: 0.5rem; padding: 0.85rem;
   font-weight: 600;
 }

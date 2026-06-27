@@ -44,13 +44,15 @@
 
   /* ---------- Flusso dei dati (passo-passo) ---------- */
   const FLOW = [
-    { on: ["input", "bus"], t: "1. Con un dispositivo di <b>input</b> (la tastiera) inserisci i dati. Viaggiano sul <b>bus</b> verso la memoria." },
-    { on: ["ram", "bus"], t: "2. I dati e le istruzioni del programma vengono salvati nella <b>RAM</b>, la memoria di lavoro." },
-    { on: ["cu", "ram", "bus"], t: "3. La <b>CU</b> (unità di controllo) legge l'istruzione dalla RAM passando dal bus: capisce cosa fare." },
-    { on: ["reg"], t: "4. I dati da elaborare vengono caricati nei <b>Registri</b>, dentro la CPU." },
-    { on: ["alu"], t: "5. L'<b>ALU</b> esegue il calcolo richiesto (per esempio una somma)." },
-    { on: ["ram", "bus"], t: "6. Il <b>risultato</b> torna nella RAM, sempre attraverso il bus." },
-    { on: ["output", "bus"], t: "7. Infine un dispositivo di <b>output</b> (lo schermo) mostra il risultato all'utente. 🎉" },
+    { on: ["rom", "cu", "bus"], t: "1. <b>Accensione</b>: la CPU esegue le prime istruzioni che trova nella <b>ROM</b> (il BIOS/UEFI), che controlla l'hardware." },
+    { on: ["storage", "ram", "bus"], t: "2. <b>Bootstrap</b>: il <b>sistema operativo</b> viene caricato dalla <b>memoria secondaria</b> (HDD/SSD) nella <b>RAM</b>, passando dal bus. Ora il PC è pronto." },
+    { on: ["input", "bus"], t: "3. Apri un programma: con un dispositivo di <b>input</b> (la tastiera) inserisci dati e comandi, che viaggiano sul <b>bus</b>." },
+    { on: ["storage", "ram", "bus"], t: "4. Anche il <b>programma</b> che apri viene copiato dalla <b>memoria secondaria</b> alla <b>RAM</b>, pronto per essere eseguito." },
+    { on: ["cu", "ram", "bus"], t: "5. La <b>CU</b> (unità di controllo) legge l'istruzione dalla RAM passando dal bus: capisce cosa fare." },
+    { on: ["reg"], t: "6. I dati da elaborare vengono caricati nei <b>Registri</b>, dentro la CPU." },
+    { on: ["alu"], t: "7. L'<b>ALU</b> esegue il calcolo richiesto (per esempio una somma)." },
+    { on: ["ram", "bus"], t: "8. Il <b>risultato</b> torna nella RAM, sempre attraverso il bus." },
+    { on: ["output", "bus"], t: "9. Infine un dispositivo di <b>output</b> (lo schermo) mostra il risultato all'utente. 🎉" },
   ];
   let fstep = -1, ftimer = null;
 
