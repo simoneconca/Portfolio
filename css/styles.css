@@ -232,21 +232,13 @@
   overflow: hidden;
   isolation: isolate;
   border-radius: calc(var(--radius) + 12px);
-  background: var(--ink);
+  /* gradiente diagonale morbido: dallo scuro a un tono accentato, senza stacchi */
+  background: linear-gradient(125deg,
+    var(--ink) 0%,
+    color-mix(in srgb, var(--ink) 80%, var(--accent)) 50%,
+    color-mix(in srgb, var(--ink) 52%, var(--accent)) 100%);
   color: var(--bg);
   padding: clamp(2.25rem, 6vw, 4.75rem);
-}
-/* Bagliore decorativo dietro il contenuto */
-.lab-promo-glow {
-  position: absolute;
-  z-index: -1;
-  top: -50%;
-  right: -12%;
-  width: 62%;
-  height: 200%;
-  background: radial-gradient(circle, var(--accent), transparent 60%);
-  opacity: 0.4;
-  pointer-events: none;
 }
 .lab-promo-kicker {
   display: inline-flex;
