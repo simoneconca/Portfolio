@@ -10,7 +10,8 @@
 
   const SVGNS = "http://www.w3.org/2000/svg";
   const DW = 108, DH = 70;
-  const PORTS = { pc: 1, switch: 6, router: 4 };
+  const PORTS = { pc: 1, switch: 6, router: 4, ap: 8, wpc: 1, dhcp: 1 };
+  const WIFI_RANGE = 280; // raggio (px) entro cui un dispositivo wireless si associa a un AP
 
   /* ---------- Stato ---------- */
   let devices = [], links = [], idc = 0, macc = 0;
@@ -67,14 +68,15 @@
      ============================================================ */
   function makeDevice(type, x, y) {
     const n = PORTS[type], ports = [];
-    const base = type === "switch" ? "p" : "eth";
+    const base = type === "switch" || type === "ap" ? "p" : type === "wpc" ? "wlan" : "eth";
     for (let i = 0; i < n; i++) ports.push({ id: uid("port"), name: base + i, mac: nextMac(), ip: null, mask: null, linkId: null });
     const count = devices.filter((d) => d.type === type).length + 1;
-    const nm = { pc: "PC", switch: "Switch", router: "Router" }[type] + count;
+    const nm = { pc: "PC", switch: "Switch", router: "Router", ap: "AP", wpc: "Laptop", dhcp: "DHCP" }[type] + count;
     const dev = { id: uid("dev"), type, name: nm, x, y, ports };
-    if (type === "pc") { dev.gateway = ""; dev.arp = {}; }
-    if (type === "switch") dev.macTable = {};
+    if (type === "pc" || type === "wpc") { dev.gateway = ""; dev.arp = {}; dev.ipMode = "manual"; }
+    if (type === "switch" || type === "ap") dev.macTable = {};
     if (type === "router") { dev.arp = {}; dev.staticRoutes = []; dev.routingMode = "static"; }
+    if (type === "dhcp") { dev.arp = {}; dev.poolStart = ""; dev.poolEnd = ""; dev.gateway = ""; dev.leases = {}; }
     return dev;
   }
   const device = (id) => devices.find((d) => d.id === id);
@@ -90,7 +92,7 @@
   const ownsIp = (dev, ipInt) => dev.ports.some((p) => p.ip && ipToInt(p.ip) === ipInt);
   const portWithIpOn = (dev, ipInt) => dev.ports.find((p) => p.ip && ipToInt(p.ip) === ipInt);
   function hostPortWithIp(ip) {
-    for (const d of devices) { if (d.type === "switch") continue; for (const p of d.ports) if (p.ip && ipToInt(p.ip) === ip) return { dev: d, port: p }; }
+    for (const d of devices) { if (d.type === "switch" || d.type === "ap") continue; for (const p of d.ports) if (p.ip && ipToInt(p.ip) === ip) return { dev: d, port: p }; }
     return null;
   }
 
@@ -119,10 +121,26 @@
     setStatus("Collegati " + a.name + " (" + pa.name + ") ↔ " + b.name + " (" + pb.name + ").");
     render();
   }
-  function removeLink(id) {
+  function removeLinkRaw(id) {
     const l = links.find((x) => x.id === id); if (!l) return;
     const pa = portById(l.a), pb = portById(l.b); if (pa) pa.linkId = null; if (pb) pb.linkId = null;
-    links = links.filter((x) => x.id !== id); render();
+    links = links.filter((x) => x.id !== id);
+  }
+  function removeLink(id) { removeLinkRaw(id); render(); }
+
+  // i dispositivi wireless (Laptop) si associano automaticamente all'AP più vicino entro il raggio
+  function updateWireless() {
+    const aps = devices.filter((d) => d.type === "ap");
+    devices.filter((d) => d.type === "wpc").forEach((wpc) => {
+      const port = wpc.ports[0];
+      const curLink = links.find((l) => l.wireless && (l.a === port.id || l.b === port.id));
+      let best = null, bestD = Infinity; const wc = center(wpc);
+      aps.forEach((ap) => { const ac = center(ap), dd = Math.hypot(ac.x - wc.x, ac.y - wc.y); if (dd < bestD) { bestD = dd; best = ap; } });
+      if (!best || bestD > WIFI_RANGE) { if (curLink) removeLinkRaw(curLink.id); return; }
+      if (curLink) { const other = deviceOfPort(curLink.a === port.id ? curLink.b : curLink.a); if (other === best) return; removeLinkRaw(curLink.id); }
+      const apPort = freePort(best); if (!apPort) return;
+      const l = { id: uid("link"), a: port.id, b: apPort.id, wireless: true }; port.linkId = l.id; apPort.linkId = l.id; links.push(l);
+    });
   }
 
   /* ============================================================
@@ -132,22 +150,26 @@
   function pathD(l) { const a = center(deviceOfPort(l.a)), b = center(deviceOfPort(l.b)); return "M " + a.x + " " + a.y + " L " + b.x + " " + b.y; }
 
   function icon(type) {
-    const cx = DW / 2;
-    if (type === "pc") return '<g class="rl-dev-icon" transform="translate(' + (cx - 15) + ',8)"><rect x="0" y="0" width="30" height="20" rx="2"/><path d="M11 24h8M9 24h12"/></g>';
-    if (type === "switch") return '<g class="rl-dev-icon" transform="translate(' + (cx - 16) + ',10)"><rect x="0" y="4" width="32" height="14" rx="2"/><path d="M5 18v3M12 18v3M19 18v3M26 18v3M6 11h7M19 8l3 3-3 3"/></g>';
-    return '<g class="rl-dev-icon" transform="translate(' + (cx - 14) + ',8)"><circle cx="14" cy="12" r="11"/><path d="M14 3v6M14 21v-6M5 12h6M23 12h-6M9 7l3 3M19 17l-3-3"/></g>';
+    const cx = DW / 2, g = (inner, tx, ty) => '<g class="rl-dev-icon" transform="translate(' + (cx + tx) + "," + ty + ')">' + inner + "</g>";
+    if (type === "pc") return g('<rect x="0" y="0" width="30" height="20" rx="2"/><path d="M11 24h8M9 24h12"/>', -15, 8);
+    if (type === "switch") return g('<rect x="0" y="4" width="32" height="14" rx="2"/><path d="M5 18v3M12 18v3M19 18v3M26 18v3M6 11h7M19 8l3 3-3 3"/>', -16, 10);
+    if (type === "router") return g('<circle cx="14" cy="12" r="11"/><path d="M14 3v6M14 21v-6M5 12h6M23 12h-6M9 7l3 3M19 17l-3-3"/>', -14, 8);
+    if (type === "ap") return g('<rect x="6" y="15" width="16" height="9" rx="2"/><path d="M14 15V9M9 8.5a7 7 0 0 1 10 0M11.5 6a3.4 3.4 0 0 1 5 0"/>', -14, 3);
+    if (type === "wpc") return g('<rect x="2" y="11" width="24" height="13" rx="1.5"/><path d="M0 26h28M14 11V8M10.6 7a5 5 0 0 1 6.8 0M12.6 9a2.4 2.4 0 0 1 2.8 0"/>', -14, 5);
+    return g('<rect x="3" y="2" width="22" height="9" rx="1.5"/><rect x="3" y="13" width="22" height="9" rx="1.5"/><path d="M7 6.5h.01M7 17.5h.01M11 6.5h6M11 17.5h6"/>', -14, 8);
   }
 
   function render() {
+    updateWireless(); // i dispositivi wireless si (dis)associano all'AP più vicino nel raggio
     let lh = "";
-    links.forEach((l) => { const d = pathD(l); lh += '<path class="rl-link-hit" data-link="' + l.id + '" d="' + d + '"/><path class="rl-link" data-link="' + l.id + '" d="' + d + '"/>'; });
+    links.forEach((l) => { const d = pathD(l); const wc = l.wireless ? " wireless" : ""; lh += '<path class="rl-link-hit" data-link="' + l.id + '" d="' + d + '"/><path class="rl-link' + wc + '" data-link="' + l.id + '" d="' + d + '"/>'; });
     gLinks.innerHTML = lh;
 
     let dh = "";
     devices.forEach((d) => {
       const cls = "rl-dev" + (d.id === selectedId ? " sel" : "") + (d.id === pingSrc ? " pingsrc" : "");
       let ipLine = "";
-      if (d.type === "pc") {
+      if (d.type === "pc" || d.type === "wpc" || d.type === "dhcp") {
         const ip = d.ports[0].ip;
         ipLine = ip ? '<text class="rl-dev-ip" x="' + (DW / 2) + '" y="58">' + escapeHtml(ip) + "</text>" : '<text class="rl-dev-ip none" x="' + (DW / 2) + '" y="58">(senza IP)</text>';
       } else if (d.type === "router") {
@@ -174,18 +196,36 @@
     if (!d) { sideEl.innerHTML = '<div class="panel"><div class="rl-side-empty"><div class="ico">🖧</div><p>Seleziona un dispositivo per configurarlo, oppure aggiungine uno dalla barra qui sopra.</p></div></div>'; return; }
     let body = '<div class="panel"><div class="rl-panel-head"><h2>' + escapeHtml(d.name) + "</h2></div>";
 
-    if (d.type === "pc") {
+    if (d.type === "pc" || d.type === "wpc") {
       body += tabsHtml([["config", "Config"], ["arp", "ARP"]]);
       if (sideTab === "arp") body += arpTable(d);
       else {
         const p = d.ports[0];
         body += field("Nome", "name", d.name);
-        body += field("Indirizzo IP", "ip", p.ip || "", "es. 192.168.1.10");
-        body += field("Subnet mask", "mask", p.mask || "", "es. 255.255.255.0 o /24");
-        body += field("Gateway", "gateway", d.gateway || "", "es. 192.168.1.1");
+        body += '<div class="rl-tabs" style="margin-bottom:0.6rem"><button class="rl-tab ' + (d.ipMode !== "dhcp" ? "active" : "") + '" data-ipmode="manual">IP manuale</button><button class="rl-tab ' + (d.ipMode === "dhcp" ? "active" : "") + '" data-ipmode="dhcp">DHCP</button></div>';
+        if (d.ipMode === "dhcp") {
+          body += '<div class="rl-field"><label>Indirizzo IP (assegnato dal DHCP)</label><input type="text" value="' + escapeAttr(p.ip || "") + '" placeholder="non ancora assegnato" disabled><div class="err"></div></div>';
+          body += '<button class="btn btn-primary" style="width:100%;justify-content:center;margin-bottom:0.8rem" data-act="dhcp" type="button">📡 Richiedi indirizzo (DHCP)</button>';
+        } else {
+          body += field("Indirizzo IP", "ip", p.ip || "", "es. 192.168.1.10");
+          body += field("Subnet mask", "mask", p.mask || "", "es. 255.255.255.0 o /24");
+          body += field("Gateway", "gateway", d.gateway || "", "es. 192.168.1.1");
+        }
         body += '<div class="rl-field"><label>Ping verso</label><input type="text" data-f="pingto" placeholder="IP di destinazione"><div class="err"></div></div>';
         body += '<button class="btn btn-primary" style="width:100%;justify-content:center" data-act="pingfield" type="button">Invia ping ▶</button>';
       }
+    } else if (d.type === "ap") {
+      body += '<p style="color:var(--ink-soft);font-size:0.85rem;margin-bottom:0.8rem">L\'<b>Access Point</b> collega i dispositivi <b>wireless</b> alla rete cablata (lavora a livello 2). Avvicina un <b>Laptop</b> per associarlo: comparirà un collegamento tratteggiato.</p>';
+      body += field("Nome", "name", d.name);
+      body += '<p class="control-label" style="margin:0.6rem 0 0.4rem">Tabella MAC appresa</p>' + macTable(d);
+    } else if (d.type === "dhcp") {
+      const p = d.ports[0];
+      body += '<p style="color:var(--ink-soft);font-size:0.85rem;margin-bottom:0.8rem">Il <b>server DHCP</b> assegna automaticamente IP, maschera e gateway agli host che lo richiedono.</p>';
+      body += field("Nome", "name", d.name);
+      body += '<div class="rl-field-row"><div class="rl-field"><label>IP del server</label><input type="text" data-f="dip" value="' + escapeAttr(p.ip || "") + '"><div class="err"></div></div><div class="rl-field"><label>mask</label><input type="text" data-f="dmask" value="' + escapeAttr(p.mask || "") + '"></div></div>';
+      body += '<p class="control-label" style="margin:0.6rem 0 0.4rem">Pool di indirizzi</p>';
+      body += '<div class="rl-field-row"><div class="rl-field"><label>da</label><input type="text" data-f="dpoolstart" value="' + escapeAttr(d.poolStart || "") + '" placeholder="192.168.0.100"></div><div class="rl-field"><label>a</label><input type="text" data-f="dpoolend" value="' + escapeAttr(d.poolEnd || "") + '" placeholder="192.168.0.150"></div></div>';
+      body += field("Gateway da assegnare", "dgw", d.gateway || "", "es. 192.168.0.1");
     } else if (d.type === "switch") {
       body += '<p style="color:var(--ink-soft);font-size:0.85rem;margin-bottom:0.8rem">Lo switch lavora a livello 2: non ha IP e impara da solo quali MAC stanno su quale porta.</p>';
       body += field("Nome", "name", d.name);
@@ -274,6 +314,11 @@
         else if (f === "gateway") { d.gateway = v; }
         else if (f === "rip") { const p = portById(inp.dataset.port); if (v !== "" && ipToInt(v) === null) setErr("IP non valido"); else { okErr(); p.ip = v || null; render(); } }
         else if (f === "rmask") { const p = portById(inp.dataset.port); if (v !== "" && parseMask(v) === null) setErr("Maschera non valida"); else { okErr(); p.mask = v || null; } }
+        else if (f === "dip") { if (v !== "" && ipToInt(v) === null) setErr("IP non valido"); else { okErr(); d.ports[0].ip = v || null; render(); } }
+        else if (f === "dmask") { if (v !== "" && parseMask(v) === null) setErr("Maschera non valida"); else { okErr(); d.ports[0].mask = v || null; } }
+        else if (f === "dpoolstart") { d.poolStart = v; }
+        else if (f === "dpoolend") { d.poolEnd = v; }
+        else if (f === "dgw") { d.gateway = v; }
       });
     });
     const pingBtn = sideEl.querySelector('[data-act="pingfield"]');
@@ -293,6 +338,9 @@
     if (conv) conv.addEventListener("click", () => runRip(true));
     const osp = sideEl.querySelector('[data-act="ospf"]');
     if (osp) osp.addEventListener("click", () => runOspf(true));
+    sideEl.querySelectorAll("[data-ipmode]").forEach((b) => b.addEventListener("click", () => { d.ipMode = b.dataset.ipmode; if (d.ipMode === "dhcp") { d.ports[0].ip = null; d.ports[0].mask = null; } render(); renderSide(); }));
+    const dhcpBtn = sideEl.querySelector('[data-act="dhcp"]');
+    if (dhcpBtn) dhcpBtn.addEventListener("click", () => startDhcp(d.id));
     const delBtn = sideEl.querySelector('[data-act="delete"]');
     if (delBtn) delBtn.addEventListener("click", () => deleteDevice(d.id));
   }
@@ -466,7 +514,7 @@
     const q = [[startDev.id, first.id]], seen = {}; seen[startDev.id] = 1; seen[first.id] = 1;
     while (q.length) {
       const path = q.shift(), last = device(path[path.length - 1]);
-      if (last.type !== "switch") { if (ownsIp(last, targetIp)) return path; continue; }
+      if (last.type !== "switch" && last.type !== "ap") { if (ownsIp(last, targetIp)) return path; continue; }
       neighbors(last.id).forEach((nb) => { if (seen[nb.dev.id]) return; seen[nb.dev.id] = 1; q.push(path.concat(nb.dev.id)); });
     }
     return null;
@@ -546,7 +594,7 @@
   function fail(msg) { animating = false; banner("❌ " + msg, false); logStep(msg, "fail"); return null; }
 
   function learnAlong(path, mac) {
-    for (let i = 0; i < path.length; i++) { const d = device(path[i]); if (d.type !== "switch") continue; const prev = device(path[i - 1]); if (prev) d.macTable[mac] = prev.name; }
+    for (let i = 0; i < path.length; i++) { const d = device(path[i]); if (d.type !== "switch" && d.type !== "ap") continue; const prev = device(path[i - 1]); if (prev) d.macTable[mac] = prev.name; }
   }
   function highlightPath(ids, on) {
     const set = new Set();
@@ -572,6 +620,53 @@
       const a = pts[seg], b = pts[seg + 1], tt = Math.min(1, Math.max(0, p));
       dot.setAttribute("cx", a.x + (b.x - a.x) * tt); dot.setAttribute("cy", a.y + (b.y - a.y) * tt);
     }, 30);
+  }
+
+  /* ============================================================
+     DHCP — assegnazione automatica indirizzi (ciclo DORA)
+     ============================================================ */
+  // percorso L2 dalla porta fino al primo dispositivo del tipo dato (broadcast attraverso switch/AP)
+  function l2PathToType(startPort, type) {
+    const startDev = deviceOfPort(startPort.id); if (!startPort.linkId) return null;
+    const first = otherEnd(startPort); if (!first) return null;
+    const q = [[startDev.id, first.id]], seen = {}; seen[startDev.id] = 1; seen[first.id] = 1;
+    while (q.length) {
+      const path = q.shift(), last = device(path[path.length - 1]);
+      if (last.type === type) return path;
+      if (last.type !== "switch" && last.type !== "ap") continue;
+      neighbors(last.id).forEach((nb) => { if (seen[nb.dev.id]) return; seen[nb.dev.id] = 1; q.push(path.concat(nb.dev.id)); });
+    }
+    return null;
+  }
+  function dhcpOffer(server) {
+    const start = ipToInt(server.poolStart), end = ipToInt(server.poolEnd);
+    for (let n = start; n <= end; n++) { const ipStr = intToIp(n); if (devices.some((d) => d.ports.some((p) => p.ip === ipStr))) continue; if (server.leases && server.leases[ipStr]) continue; return ipStr; }
+    return null;
+  }
+  function startDhcp(hostId) {
+    if (animating) return;
+    clearLog();
+    const host = device(hostId), port = host.ports[0];
+    const path = l2PathToType(port, "dhcp");
+    if (!path) return fail("Nessun <b>server DHCP</b> raggiungibile da " + escapeHtml(host.name) + " su questa rete (controlla i collegamenti / l'associazione Wi-Fi).");
+    const server = device(path[path.length - 1]);
+    if (ipToInt(server.poolStart) === null || ipToInt(server.poolEnd) === null) return fail("Il server DHCP " + escapeHtml(server.name) + " non ha un pool di indirizzi valido.");
+    const offered = dhcpOffer(server);
+    if (!offered) return fail("Il pool del server DHCP è esaurito.");
+    const mask = server.ports[0].mask || "255.255.255.0";
+    logStep('<span class="who">' + escapeHtml(host.name) + "</span> non ha un IP → invia <b>DHCP Discover</b> in broadcast: «C'è un server DHCP in ascolto?»", "arp");
+    logStep('<span class="who">' + escapeHtml(server.name) + "</span> risponde con <b>DHCP Offer</b>: propone " + offered + " / " + mask + (server.gateway ? ", gateway " + escapeHtml(server.gateway) : "") + ".", "arp");
+    logStep('<span class="who">' + escapeHtml(host.name) + "</span> invia <b>DHCP Request</b>: «Accetto " + offered + "».", "arp");
+    logStep('<span class="who">' + escapeHtml(server.name) + "</span> conferma con <b>DHCP Ack</b>: indirizzo assegnato.", "arp");
+    server.leases[offered] = host.name;
+    port.ip = offered; port.mask = mask; if (server.gateway) host.gateway = server.gateway;
+    animating = true;
+    const pts = path.map((id) => center(device(id)));
+    animateAlong(pts, "", () => animateAlong(pts.slice().reverse(), "reply", () => {
+      animating = false;
+      banner("✅ <b>" + escapeHtml(host.name) + "</b> ha ricevuto via DHCP l'indirizzo <b>" + offered + "</b> / " + mask + (host.gateway ? " (gateway " + escapeHtml(host.gateway) + ")" : "") + ". Ora puoi pingare.", true);
+      render(); if (selectedId) renderSide();
+    }));
   }
 
   /* ============================================================
@@ -606,7 +701,7 @@
     const g = gDevices.querySelector('[data-dev="' + drag.id + '"]'); if (g) g.setAttribute("transform", "translate(" + d.x + "," + d.y + ")");
     updateLinkPaths();
   });
-  svg.addEventListener("pointerup", () => { if (drag) { const g = gDevices.querySelector('[data-dev="' + drag.id + '"]'); if (g) g.classList.remove("dragging"); drag = null; } });
+  svg.addEventListener("pointerup", () => { if (drag) { const moved = drag.moved; const g = gDevices.querySelector('[data-dev="' + drag.id + '"]'); if (g) g.classList.remove("dragging"); drag = null; if (moved) render(); } });
 
   function handleCableClick(id) {
     if (!cableFrom) { cableFrom = id; setStatus("Cavo: ora clicca il secondo dispositivo (" + device(id).name + " selezionato)."); render(); }
@@ -614,7 +709,7 @@
   }
   function handlePingClick(id) {
     const d = device(id);
-    if (d.type !== "pc") { setStatus("Il ping parte da un PC. Clicca un PC."); return; }
+    if (d.type !== "pc" && d.type !== "wpc") { setStatus("Il ping parte da un PC o un Laptop. Cliccane uno."); return; }
     if (!pingSrc) { pingSrc = id; setStatus("Ping: ora clicca il PC di destinazione."); render(); return; }
     if (id === pingSrc) { pingSrc = null; setStatus("Ping annullato."); render(); return; }
     const dst = device(id), dstIp = dst.ports[0].ip;
@@ -689,6 +784,14 @@
       const pc2 = spawn("pc", 30, 380); setIp(pc2, 0, "10.2.3.10", "255.255.255.0"); pc2.gateway = "10.2.3.1";
       mkLink(pc1, r1); mkLink(r1, r2); mkLink(r2, r3); mkLink(r1, r3); mkLink(r3, pc2);
       runOspf(false); // calcola in silenzio: PC1↔PC2 passa per il percorso diretto R1-R3 (costo 2), non via R2 (costo 3).
+    } else if (name === "wifi") {
+      const pc1 = spawn("pc", 40, 50); setIp(pc1, 0, "192.168.0.10", "255.255.255.0"); pc1.gateway = "192.168.0.1";
+      const sw = spawn("switch", 250, 60);
+      const dhcp = spawn("dhcp", 40, 270); setIp(dhcp, 0, "192.168.0.2", "255.255.255.0"); dhcp.poolStart = "192.168.0.100"; dhcp.poolEnd = "192.168.0.150"; dhcp.gateway = "192.168.0.1";
+      const ap = spawn("ap", 270, 270);
+      const lap = spawn("wpc", 480, 270); lap.ipMode = "dhcp";
+      mkLink(pc1, sw); mkLink(dhcp, sw); mkLink(ap, sw);
+      // il Laptop si associa da solo all'AP (entro il raggio); poi: aprilo → «Richiedi indirizzo (DHCP)» → ping a 192.168.0.10
     }
     render(); renderSide();
   }
