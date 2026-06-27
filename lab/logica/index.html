@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Logica booleana e circuiti — costruisci circuiti con porte AND, OR, NOT e XOR, leggi la tabella di verità e l'espressione (!A &amp;&amp; B), o scrivi l'espressione e guarda nascere il circuito.">
+  <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#100f0c" media="(prefers-color-scheme: dark)">
+  <title>Logica booleana &amp; circuiti — Lab · Simone Conca</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/base.css">
+  <link rel="stylesheet" href="../../css/lab.css">
+  <link rel="stylesheet" href="logica.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23100f0c'/><text x='50' y='71' text-anchor='middle' font-size='62' font-family='Georgia,serif' font-style='italic' font-weight='600' fill='%23f4f1ea'>S</text></svg>">
+  <script>
+    (function () { try { var s = localStorage.getItem("theme"); document.documentElement.setAttribute("data-theme", s || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")); } catch (e) {} })();
+  </script>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="../../" aria-label="Simone Conca — home">
+        <span class="brand-mark">SC</span>
+        <span class="brand-name">Simone Conca</span>
+        <span class="brand-lab">LAB</span>
+      </a>
+      <nav class="nav" aria-label="Navigazione">
+        <a href="../">← Lab</a>
+        <a href="../../">Portfolio</a>
+        <a href="../../#contatti">Contatti</a>
+      </nav>
+      <div class="header-actions">
+        <button class="theme-toggle" type="button" aria-label="Cambia tema chiaro/scuro" title="Cambia tema">
+          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        </button>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-mobile" aria-label="Apri menu"><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <nav id="nav-mobile" class="nav-mobile" aria-label="Navigazione mobile">
+    <a href="../">← Lab</a>
+    <a href="../../">Portfolio</a>
+    <a href="../../#contatti">Contatti</a>
+  </nav>
+
+  <main>
+    <section class="section tool-hero" style="padding-bottom:0">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Percorso">
+          <a href="../">Lab</a><span class="sep">/</span><span class="current">Logica booleana &amp; circuiti</span>
+        </nav>
+        <h1>Logica booleana &amp; circuiti</h1>
+        <p class="lead">Trascina le porte logiche, collegale a interruttori e lampadine e guarda comparire la <strong>tabella di verità</strong> e l'<strong>espressione</strong> — con i simboli della programmazione (<code>!</code>, <code>&amp;&amp;</code>, <code>||</code>, <code>^</code>). Funziona anche al contrario: scrivi un'espressione e il circuito si disegna da solo.</p>
+      </div>
+    </section>
+
+    <!-- ESPRESSIONE -->
+    <section class="section lg-sec" style="padding-top:clamp(1.5rem,4vw,2.5rem)">
+      <div class="container">
+        <div class="panel lg-expr-panel">
+          <div class="lg-expr-row">
+            <label class="control-label" for="exprInput">Espressione</label>
+            <div class="field lg-expr-field">
+              <span class="field-prefix">f =</span>
+              <input id="exprInput" type="text" spellcheck="false" autocomplete="off" autocapitalize="off"
+                     placeholder="es. !A &amp;&amp; B" aria-label="Espressione booleana">
+            </div>
+            <button id="drawBtn" class="run-btn" type="button">Disegna ▸</button>
+          </div>
+          <p class="lg-expr-err" id="exprErr" aria-live="polite"></p>
+          <p class="lg-expr-hint">
+            Variabili: <code>A</code>…<code>D</code> · Operatori: <code>!</code> (NOT) ·
+            <code>&amp;&amp;</code> (AND) · <code>||</code> (OR) · <code>^</code> (XOR) · parentesi <code>( )</code>.
+            Modificando il circuito qui sotto, l'espressione si aggiorna da sola.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- BANCO DI LAVORO -->
+    <section class="section lg-sec" style="padding-top:0">
+      <div class="container">
+        <div class="panel lg-board-panel">
+          <div class="lg-toolbar" role="toolbar" aria-label="Aggiungi componenti">
+            <span class="control-label">Aggiungi</span>
+            <button class="lg-add" type="button" data-add="in">＋ Interruttore</button>
+            <button class="lg-add" type="button" data-add="not">＋ NOT</button>
+            <button class="lg-add" type="button" data-add="and">＋ AND</button>
+            <button class="lg-add" type="button" data-add="or">＋ OR</button>
+            <button class="lg-add" type="button" data-add="xor">＋ XOR</button>
+            <span class="lg-toolbar-spacer"></span>
+            <button class="ghost-btn" type="button" id="clearBtn">Pulisci ↺</button>
+          </div>
+
+          <div class="lg-board" id="board">
+            <svg class="lg-wires" id="wires" aria-hidden="true"></svg>
+            <div class="lg-nodes" id="nodes"></div>
+            <p class="lg-board-hint" id="boardHint">
+              Clicca un pallino di <em>uscita</em> (a destra di un blocco), poi un pallino di
+              <em>ingresso</em> (a sinistra) per tirare un filo. Clicca un filo per cancellarlo.
+            </p>
+          </div>
+
+          <div class="lg-examples">
+            <span class="control-label">Esempi</span>
+            <div class="seg lg-ex-seg" id="exSeg" role="group" aria-label="Esempi"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TABELLA DI VERITÀ -->
+    <section class="section lg-sec" style="padding-top:0;padding-bottom:clamp(4rem,9vw,7rem)">
+      <div class="container lg-bottom">
+        <div class="panel lg-truth-panel">
+          <div class="panel-head">
+            <span class="panel-kicker">Tabella di verità</span>
+            <h2 class="panel-title">Tutti i casi possibili</h2>
+            <p class="panel-sub">Ogni riga è una combinazione degli interruttori. La riga evidenziata è quella attiva ora sul banco.</p>
+          </div>
+          <div class="lg-truth-wrap"><table class="lg-truth" id="truth"></table></div>
+        </div>
+
+        <aside class="panel lg-gates-panel">
+          <div class="panel-head">
+            <span class="panel-kicker">Promemoria</span>
+            <h2 class="panel-title">Le porte logiche</h2>
+          </div>
+          <ul class="lg-gates-legend" id="gatesLegend"></ul>
+        </aside>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <span class="footer-brand">Simone Conca · Lab</span>
+      <span class="footer-meta">© <span id="year"></span></span>
+      <a class="footer-top" href="../">← Tutti gli strumenti</a>
+    </div>
+  </footer>
+
+  <script src="../../js/core.js"></script>
+  <script src="logica.js"></script>
+</body>
+</html>
