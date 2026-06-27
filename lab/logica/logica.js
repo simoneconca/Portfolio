@@ -362,10 +362,24 @@
       nodesLayer.appendChild(el);
     });
 
+    fitCanvas();
     drawWires(memo);
     updateExprField();
     renderTruth();
     boardHint.style.opacity = nodes.length ? "0" : "1";
+  }
+
+  // Dimensiona il canvas virtuale (nodi + fili) per contenere tutti i blocchi,
+  // così il box può scorrere in orizzontale/verticale e mostrare l'intero circuito.
+  function fitCanvas() {
+    const pad = 30;
+    let maxX = 0, maxY = 0;
+    nodes.forEach((n) => { const s = nodeSize(n); maxX = Math.max(maxX, n.x + s.w); maxY = Math.max(maxY, n.y + s.h); });
+    const cw = Math.max(board.clientWidth, Math.ceil(maxX + pad));
+    const ch = Math.max(board.clientHeight, Math.ceil(maxY + pad));
+    nodesLayer.style.width = cw + "px"; nodesLayer.style.height = ch + "px";
+    wiresSvg.style.width = cw + "px"; wiresSvg.style.height = ch + "px";
+    wiresSvg.setAttribute("viewBox", "0 0 " + cw + " " + ch);
   }
 
   function drawWires(memo, temp) {
@@ -548,11 +562,11 @@
     if (!drag.moved && Math.hypot(dx, dy) < 4) return;
     drag.moved = true;
     const n = byId(drag.id);
-    const s = nodeSize(n);
-    n.x = clamp(drag.ox + dx, 0, board.clientWidth - s.w);
-    n.y = clamp(drag.oy + dy, 0, board.clientHeight - s.h);
+    n.x = Math.max(0, drag.ox + dx);
+    n.y = Math.max(0, drag.oy + dy);
     const el = nodesLayer.querySelector(`.lg-node[data-id="${n.id}"]`);
     if (el) { el.style.left = n.x + "px"; el.style.top = n.y + "px"; }
+    fitCanvas();
     drawWires(evaluate(null));
   });
 
@@ -587,6 +601,7 @@
       buildFromAst(ast);
       exprErr.textContent = "";
       render();
+      board.scrollLeft = 0; board.scrollTop = 0;
     } catch (err) {
       exprErr.textContent = err.message;
     }
@@ -632,6 +647,13 @@
     `<li><span class="lg-leg-name">${g.name}</span><span class="lg-leg-op"><code>${g.op}</code></span>
      <span class="lg-leg-desc">${g.desc}</span></li>`
   ).join("");
+
+  /* ---------- Adatta il canvas al ridimensionamento finestra ---------- */
+  let resizeT = null;
+  window.addEventListener("resize", () => {
+    clearTimeout(resizeT);
+    resizeT = setTimeout(fitCanvas, 150);
+  });
 
   /* ---------- Avvio: esempio !A && B ---------- */
   exprInput.value = "!A && B";
