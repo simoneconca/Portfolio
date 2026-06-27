@@ -3,14 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Lab — strumenti interattivi per imparare l'informatica alle superiori: terminale, SQL, binario, CPU e assemblaggio PC.">
+  <meta name="description" content="Lab — strumenti interattivi per imparare l'informatica: terminale, SQL, binario, CPU, reti, sistemi operativi, algoritmi e la macchina di von Neumann.">
   <meta name="author" content="Simone Conca">
   <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#100f0c" media="(prefers-color-scheme: dark)">
 
   <meta property="og:type" content="website">
   <meta property="og:title" content="Lab — Simone Conca">
-  <meta property="og:description" content="Strumenti interattivi per imparare l'informatica alle superiori.">
+  <meta property="og:description" content="Strumenti interattivi per imparare l'informatica.">
   <meta property="og:url" content="https://www.simoneconca.it/lab/">
 
   <title>Lab — Strumenti interattivi di informatica · Simone Conca</title>
@@ -73,10 +73,10 @@
     <!-- HERO -->
     <section class="lab-hero">
       <div class="container">
-        <p class="lab-kicker reveal"><span class="dot"></span> Lab — Informatica per le superiori · 1ª–5ª</p>
+        <p class="lab-kicker reveal"><span class="dot"></span> Lab — Informatica per le superiori</p>
         <h1 class="lab-title reveal">Strumenti per capire l'informatica, <em>davvero</em>.</h1>
         <p class="lab-intro reveal">
-          Cinque strumenti interattivi che girano <strong>direttamente nel browser</strong> — niente
+          Strumenti interattivi che girano <strong>direttamente nel browser</strong> — niente
           installazioni, niente account. Pensati per rendere concreti i concetti astratti:
           provi, sbagli, vedi cosa succede. Da affiancare alle lezioni e alle ripetizioni.
         </p>
@@ -86,162 +86,178 @@
     <!-- STRUMENTI -->
     <section id="strumenti" class="section" style="padding-top: clamp(1.5rem, 4vw, 3rem)">
       <div class="container">
-        <div class="tools-grid">
 
-          <!-- 01 Terminale -->
-          <article class="tool-card reveal">
-            <a class="tool-link" href="terminale/" aria-label="Apri Virtual Terminal">
-              <svg class="tool-arrow" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M5 13L13 5M13 5H6M13 5v7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <div class="tool-card-head">
-                <span class="tool-num">01</span>
-                <span class="tool-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4" width="19" height="16" rx="2"/><path d="M6 9l3 3-3 3M12 15h5"/></svg></span>
-              </div>
-              <h2 class="tool-title">Virtual Terminal</h2>
-              <p class="tool-desc">Una shell Linux simulata nel browser: comandi, filesystem virtuale e output reale. Per prendere confidenza con la riga di comando senza paura di rompere nulla.</p>
-              <div class="tool-meta">
-                <span class="tool-levels">Linux · CLI — 3ª–5ª</span>
-                <span class="tool-status live">Attivo</span>
-              </div>
-            </a>
-          </article>
+        <!-- Categoria 1 -->
+        <div class="lab-cat">
+          <div class="lab-cat-head">
+            <span class="lab-cat-num">01</span>
+            <h2 class="lab-cat-title">Introduzione all'informatica</h2>
+            <span class="lab-cat-desc">Come funziona e com'è fatto un computer.</span>
+          </div>
+          <div class="tools-grid">
 
-          <!-- 02 SQL -->
-          <article class="tool-card reveal">
-            <a class="tool-link" href="sql/" aria-label="Apri Live SQL Sandbox">
-              <svg class="tool-arrow" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M5 13L13 5M13 5H6M13 5v7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <div class="tool-card-head">
-                <span class="tool-num">02</span>
-                <span class="tool-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5.5" rx="8" ry="3"/><path d="M4 5.5v13c0 1.7 3.6 3 8 3s8-1.3 8-3v-13M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></span>
-              </div>
-              <h2 class="tool-title">Live SQL Sandbox</h2>
-              <p class="tool-desc">Scrivi query SQL su un database vero che gira nel browser e vedi subito i risultati. Schema d'esempio già pronto per esercitarsi con SELECT, JOIN e GROUP BY.</p>
-              <div class="tool-meta">
-                <span class="tool-levels">Database — 3ª–5ª</span>
-                <span class="tool-status live">Attivo</span>
-              </div>
-            </a>
-          </article>
+            <article class="tool-card reveal">
+              <a class="tool-link" href="vonneumann/" aria-label="Apri Macchina di von Neumann">
+                <svg class="tool-arrow" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M5 13L13 5M13 5H6M13 5v7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div class="tool-card-head">
+                  <span class="tool-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="7" height="8" rx="1"/><rect x="14" y="8" width="7" height="8" rx="1"/><path d="M10 12h4M7 8V5M17 8V5M7 16v3M17 16v3"/></svg></span>
+                </div>
+                <h2 class="tool-title">Macchina di von Neumann</h2>
+                <p class="tool-desc">Scopri a cosa serve ogni componente del computer e guarda come i dati lo attraversano, dall'accensione all'output. Con la codifica di testo, immagini e suoni.</p>
+                <div class="tool-meta">
+                  <span class="tool-levels">Le basi del computer</span>
+                  <span class="tool-status live">Attivo</span>
+                </div>
+              </a>
+            </article>
 
-          <!-- 03 Binario -->
-          <article class="tool-card reveal">
-            <a class="tool-link" href="binario/" aria-label="Apri Binary & Base Analyzer">
-              <svg class="tool-arrow" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M5 13L13 5M13 5H6M13 5v7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <div class="tool-card-head">
-                <span class="tool-num">03</span>
-                <span class="tool-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h3v8H6zM6 12h3v8H6z" opacity="0.55"/><rect x="5.5" y="3.5" width="4" height="7" rx="1"/><path d="M14 3.5h2.5v7M14 20.5h4M16 13.5v7" /></svg></span>
-              </div>
-              <h2 class="tool-title">Binary &amp; Base Analyzer</h2>
-              <p class="tool-desc">Converti al volo tra binario, decimale, ottale ed esadecimale, con la visualizzazione bit per bit e il complemento a due. Il punto di partenza per capire come "ragiona" il computer.</p>
-              <div class="tool-meta">
-                <span class="tool-levels">Numerazione — 1ª–3ª</span>
-                <span class="tool-status live">Attivo</span>
-              </div>
-            </a>
-          </article>
+            <article class="tool-card reveal">
+              <a class="tool-link" href="binario/" aria-label="Apri Binary & Base Analyzer">
+                <svg class="tool-arrow" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M5 13L13 5M13 5H6M13 5v7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div class="tool-card-head">
+                  <span class="tool-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h3v8H6zM6 12h3v8H6z" opacity="0.55"/><rect x="5.5" y="3.5" width="4" height="7" rx="1"/><path d="M14 3.5h2.5v7M14 20.5h4M16 13.5v7" /></svg></span>
+                </div>
+                <h2 class="tool-title">Binary &amp; Base Analyzer</h2>
+                <p class="tool-desc">Converti al volo tra binario, decimale, ottale ed esadecimale, con la visualizzazione bit per bit e il complemento a due. Il punto di partenza per capire come "ragiona" il computer.</p>
+                <div class="tool-meta">
+                  <span class="tool-levels">Rappresentazione dei numeri</span>
+                  <span class="tool-status live">Attivo</span>
+                </div>
+              </a>
+            </article>
 
-          <!-- 04 CPU -->
-          <article class="tool-card reveal">
-            <a class="tool-link" href="cpu/" aria-label="Apri CPU & Assembly Visualizer">
-              <svg class="tool-arrow" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M5 13L13 5M13 5H6M13 5v7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <div class="tool-card-head">
-                <span class="tool-num">04</span>
-                <span class="tool-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="6.5" width="11" height="11" rx="1.5"/><path d="M9.5 9.5h5v5h-5z" opacity="0.6"/><path d="M9 3v2.5M12 3v2.5M15 3v2.5M9 18.5V21M12 18.5V21M15 18.5V21M3 9h2.5M3 12h2.5M3 15h2.5M18.5 9H21M18.5 12H21M18.5 15H21"/></svg></span>
-              </div>
-              <h2 class="tool-title">CPU &amp; Assembly Visualizer</h2>
-              <p class="tool-desc">Esegui un piccolo programma in assembly passo dopo passo e osserva registri, ALU e memoria cambiare in tempo reale. L'architettura del computer smette di essere una scatola nera.</p>
-              <div class="tool-meta">
-                <span class="tool-levels">Architettura — 4ª–5ª</span>
-                <span class="tool-status live">Attivo</span>
-              </div>
-            </a>
-          </article>
+            <article class="tool-card reveal">
+              <a class="tool-link" href="hardware/" aria-label="Apri PC Assembly Lab">
+                <svg class="tool-arrow" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M5 13L13 5M13 5H6M13 5v7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div class="tool-card-head">
+                  <span class="tool-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="6.5" y="6.5" width="6" height="6" rx="1"/><path d="M15.5 7h2M15.5 10h2M6.5 16h11"/></svg></span>
+                </div>
+                <h2 class="tool-title">PC Assembly Lab</h2>
+                <p class="tool-desc">Un percorso guidato per assemblare il tuo primo PC: un componente alla volta, scopri a cosa serve e impari come i pezzi si incastrano. Semplice, per chi inizia.</p>
+                <div class="tool-meta">
+                  <span class="tool-levels">Componenti del PC</span>
+                  <span class="tool-status live">Attivo</span>
+                </div>
+              </a>
+            </article>
 
-          <!-- 05 Hardware -->
-          <article class="tool-card reveal">
-            <a class="tool-link" href="hardware/" aria-label="Apri PC Assembly Lab">
-              <svg class="tool-arrow" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M5 13L13 5M13 5H6M13 5v7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <div class="tool-card-head">
-                <span class="tool-num">05</span>
-                <span class="tool-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><rect x="6.5" y="6.5" width="6" height="6" rx="1"/><path d="M15.5 7h2M15.5 10h2M6.5 16h11"/></svg></span>
-              </div>
-              <h2 class="tool-title">PC Assembly Lab</h2>
-              <p class="tool-desc">Un percorso guidato per assemblare il tuo primo PC: un componente alla volta, scopri a cosa serve e impari come i pezzi si incastrano. Semplice, per chi inizia.</p>
-              <div class="tool-meta">
-                <span class="tool-levels">Hardware — 1ª–2ª</span>
-                <span class="tool-status live">Attivo</span>
-              </div>
-            </a>
-          </article>
+            <article class="tool-card reveal">
+              <a class="tool-link" href="cpu/" aria-label="Apri CPU & Assembly Visualizer">
+                <svg class="tool-arrow" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M5 13L13 5M13 5H6M13 5v7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div class="tool-card-head">
+                  <span class="tool-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6.5" y="6.5" width="11" height="11" rx="1.5"/><path d="M9.5 9.5h5v5h-5z" opacity="0.6"/><path d="M9 3v2.5M12 3v2.5M15 3v2.5M9 18.5V21M12 18.5V21M15 18.5V21M3 9h2.5M3 12h2.5M3 15h2.5M18.5 9H21M18.5 12H21M18.5 15H21"/></svg></span>
+                </div>
+                <h2 class="tool-title">CPU &amp; Assembly Visualizer</h2>
+                <p class="tool-desc">Esegui un piccolo programma in assembly passo dopo passo e osserva registri, ALU e memoria cambiare in tempo reale. L'architettura del computer smette di essere una scatola nera.</p>
+                <div class="tool-meta">
+                  <span class="tool-levels">Architettura · assembly</span>
+                  <span class="tool-status live">Attivo</span>
+                </div>
+              </a>
+            </article>
 
-          <!-- 06 Reti / TCP-IP -->
-          <article class="tool-card reveal">
-            <a class="tool-link" href="rete/" aria-label="Apri TCP/IP Packet Voyager">
-              <svg class="tool-arrow" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M5 13L13 5M13 5H6M13 5v7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <div class="tool-card-head">
-                <span class="tool-num">06</span>
-                <span class="tool-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="7" height="5" rx="1"/><rect x="14" y="4" width="7" height="5" rx="1"/><rect x="8.5" y="15" width="7" height="5" rx="1"/><path d="M6.5 9v3h11V9M12 12v3"/></svg></span>
-              </div>
-              <h2 class="tool-title">TCP/IP Packet Voyager</h2>
-              <p class="tool-desc">Guarda un messaggio incapsularsi livello per livello (TCP, IP, Ethernet), viaggiare sul cavo e decapsularsi al server. Con il confronto OSI ↔ TCP/IP e i protocolli reali.</p>
-              <div class="tool-meta">
-                <span class="tool-levels">Reti — 3ª–5ª</span>
-                <span class="tool-status live">Attivo</span>
-              </div>
-            </a>
-          </article>
-
-          <!-- 07 Sistemi Operativi -->
-          <article class="tool-card reveal">
-            <a class="tool-link" href="so/" aria-label="Apri Sistemi Operativi">
-              <svg class="tool-arrow" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M5 13L13 5M13 5H6M13 5v7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <div class="tool-card-head">
-                <span class="tool-num">07</span>
-                <span class="tool-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><path d="M6.5 7h.01M6.5 17h.01"/></svg></span>
-              </div>
-              <h2 class="tool-title">Sistemi Operativi</h2>
-              <p class="tool-desc">Due simulatori dai concetti di TPSI: lo scheduling dei processi (Round-Robin, FIFO) e la memoria virtuale con MMU, paginazione e page fault.</p>
-              <div class="tool-meta">
-                <span class="tool-levels">Sistemi — 4ª–5ª</span>
-                <span class="tool-status live">Attivo</span>
-              </div>
-            </a>
-          </article>
-
-          <!-- 08 Algoritmi di ordinamento -->
-          <article class="tool-card reveal">
-            <a class="tool-link" href="sort/" aria-label="Apri Algoritmi di ordinamento">
-              <svg class="tool-arrow" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M5 13L13 5M13 5H6M13 5v7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <div class="tool-card-head">
-                <span class="tool-num">08</span>
-                <span class="tool-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="13" width="4" height="8" rx="1"/><rect x="10" y="8" width="4" height="13" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg></span>
-              </div>
-              <h2 class="tool-title">Algoritmi di ordinamento</h2>
-              <p class="tool-desc">Bubble, Selection, Insertion, Merge e Quick Sort passo per passo sulle barre, con il codice in C, C++, Java e Python e la riga in esecuzione evidenziata.</p>
-              <div class="tool-meta">
-                <span class="tool-levels">Algoritmi — 3ª–5ª</span>
-                <span class="tool-status live">Attivo</span>
-              </div>
-            </a>
-          </article>
-
-          <!-- 09 Macchina di Von Neumann -->
-          <article class="tool-card reveal">
-            <a class="tool-link" href="vonneumann/" aria-label="Apri Macchina di Von Neumann">
-              <svg class="tool-arrow" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M5 13L13 5M13 5H6M13 5v7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-              <div class="tool-card-head">
-                <span class="tool-num">09</span>
-                <span class="tool-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="8" width="7" height="8" rx="1"/><rect x="14" y="8" width="7" height="8" rx="1"/><path d="M10 12h4M7 8V5M17 8V5M7 16v3M17 16v3"/></svg></span>
-              </div>
-              <h2 class="tool-title">Macchina di Von Neumann</h2>
-              <p class="tool-desc">Segui il percorso dei dati dall'input all'output: CPU, memoria, ALU, registri e bus, con il ciclo fetch-decode-execute animato passo per passo.</p>
-              <div class="tool-meta">
-                <span class="tool-levels">Architettura — 3ª–5ª</span>
-                <span class="tool-status live">Attivo</span>
-              </div>
-            </a>
-          </article>
-
+          </div>
         </div>
+
+        <!-- Categoria 2 -->
+        <div class="lab-cat">
+          <div class="lab-cat-head">
+            <span class="lab-cat-num">02</span>
+            <h2 class="lab-cat-title">Sistemi e reti</h2>
+            <span class="lab-cat-desc">Dal sistema operativo alla rete.</span>
+          </div>
+          <div class="tools-grid">
+
+            <article class="tool-card reveal">
+              <a class="tool-link" href="terminale/" aria-label="Apri Virtual Terminal">
+                <svg class="tool-arrow" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M5 13L13 5M13 5H6M13 5v7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div class="tool-card-head">
+                  <span class="tool-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="4" width="19" height="16" rx="2"/><path d="M6 9l3 3-3 3M12 15h5"/></svg></span>
+                </div>
+                <h2 class="tool-title">Virtual Terminal</h2>
+                <p class="tool-desc">Una shell Linux simulata nel browser: comandi, filesystem virtuale e output reale. Per prendere confidenza con la riga di comando senza paura di rompere nulla.</p>
+                <div class="tool-meta">
+                  <span class="tool-levels">Linux · riga di comando</span>
+                  <span class="tool-status live">Attivo</span>
+                </div>
+              </a>
+            </article>
+
+            <article class="tool-card reveal">
+              <a class="tool-link" href="so/" aria-label="Apri Sistemi Operativi">
+                <svg class="tool-arrow" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M5 13L13 5M13 5H6M13 5v7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div class="tool-card-head">
+                  <span class="tool-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="6" rx="1.5"/><rect x="3" y="14" width="18" height="6" rx="1.5"/><path d="M6.5 7h.01M6.5 17h.01"/></svg></span>
+                </div>
+                <h2 class="tool-title">Sistemi Operativi</h2>
+                <p class="tool-desc">Due simulatori: lo scheduling dei processi (Round-Robin, FIFO) e la gestione della memoria, dagli indirizzi logici e fisici fino alla paginazione e ai page fault.</p>
+                <div class="tool-meta">
+                  <span class="tool-levels">Processi e memoria</span>
+                  <span class="tool-status live">Attivo</span>
+                </div>
+              </a>
+            </article>
+
+            <article class="tool-card reveal">
+              <a class="tool-link" href="rete/" aria-label="Apri TCP/IP Packet Voyager">
+                <svg class="tool-arrow" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M5 13L13 5M13 5H6M13 5v7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div class="tool-card-head">
+                  <span class="tool-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="7" height="5" rx="1"/><rect x="14" y="4" width="7" height="5" rx="1"/><rect x="8.5" y="15" width="7" height="5" rx="1"/><path d="M6.5 9v3h11V9M12 12v3"/></svg></span>
+                </div>
+                <h2 class="tool-title">TCP/IP Packet Voyager</h2>
+                <p class="tool-desc">Guarda un messaggio incapsularsi livello per livello (TCP, IP, Ethernet), viaggiare sul cavo e decapsularsi al server. Con il confronto OSI ↔ TCP/IP e i protocolli reali.</p>
+                <div class="tool-meta">
+                  <span class="tool-levels">Reti · TCP/IP</span>
+                  <span class="tool-status live">Attivo</span>
+                </div>
+              </a>
+            </article>
+
+          </div>
+        </div>
+
+        <!-- Categoria 3 -->
+        <div class="lab-cat">
+          <div class="lab-cat-head">
+            <span class="lab-cat-num">03</span>
+            <h2 class="lab-cat-title">Programmazione e dati</h2>
+            <span class="lab-cat-desc">Scrivere codice e gestire i dati.</span>
+          </div>
+          <div class="tools-grid">
+
+            <article class="tool-card reveal">
+              <a class="tool-link" href="sort/" aria-label="Apri Algoritmi di ordinamento">
+                <svg class="tool-arrow" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M5 13L13 5M13 5H6M13 5v7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div class="tool-card-head">
+                  <span class="tool-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="13" width="4" height="8" rx="1"/><rect x="10" y="8" width="4" height="13" rx="1"/><rect x="17" y="3" width="4" height="18" rx="1"/></svg></span>
+                </div>
+                <h2 class="tool-title">Algoritmi di ordinamento</h2>
+                <p class="tool-desc">Bubble, Selection, Insertion, Merge e Quick Sort passo per passo sulle barre, con il codice in C, C++, Java e Python e la riga in esecuzione evidenziata.</p>
+                <div class="tool-meta">
+                  <span class="tool-levels">Algoritmi</span>
+                  <span class="tool-status live">Attivo</span>
+                </div>
+              </a>
+            </article>
+
+            <article class="tool-card reveal">
+              <a class="tool-link" href="sql/" aria-label="Apri Live SQL Sandbox">
+                <svg class="tool-arrow" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M5 13L13 5M13 5H6M13 5v7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <div class="tool-card-head">
+                  <span class="tool-icon" aria-hidden="true"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5.5" rx="8" ry="3"/><path d="M4 5.5v13c0 1.7 3.6 3 8 3s8-1.3 8-3v-13M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></span>
+                </div>
+                <h2 class="tool-title">Live SQL Sandbox</h2>
+                <p class="tool-desc">Scrivi query SQL su un database vero che gira nel browser e vedi subito i risultati. Schema d'esempio già pronto per esercitarsi con SELECT, JOIN e GROUP BY.</p>
+                <div class="tool-meta">
+                  <span class="tool-levels">Database · SQL</span>
+                  <span class="tool-status live">Attivo</span>
+                </div>
+              </a>
+            </article>
+
+          </div>
+        </div>
+
       </div>
     </section>
   </main>

@@ -55,6 +55,20 @@
 .lab-intro strong { color: var(--ink); font-weight: 600; }
 
 /* ---------- Griglia strumenti ---------- */
+/* Categorie di laboratori */
+.lab-cat + .lab-cat { margin-top: clamp(2.5rem, 6vw, 4.25rem); }
+.lab-cat-head {
+  display: flex; align-items: baseline; gap: 0.9rem; flex-wrap: wrap;
+  margin-bottom: 1.4rem; padding-bottom: 0.75rem; border-bottom: 1px solid var(--line);
+}
+.lab-cat-num { font-family: var(--font-mono); font-size: 0.78rem; color: var(--accent); letter-spacing: 0.06em; }
+.lab-cat-title {
+  font-family: var(--font-display); font-weight: 500;
+  font-size: clamp(1.4rem, 3.5vw, 2.05rem); letter-spacing: -0.02em; line-height: 1.1;
+}
+.lab-cat-desc { font-size: 0.9rem; color: var(--ink-soft); margin-left: auto; }
+@media (max-width: 620px) { .lab-cat-desc { margin-left: 0; flex-basis: 100%; } }
+
 .tools-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(min(100%, 330px), 1fr));
