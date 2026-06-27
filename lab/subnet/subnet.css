@@ -16,9 +16,9 @@
 }
 .sn-ip:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-wash); }
 .sn-oct {
-  width: 3ch; border: 0; background: transparent; color: var(--ink);
-  font-family: var(--font-mono); font-size: 1.05rem; font-weight: 600;
-  text-align: center; padding: 0.35rem 0.1rem; outline: none;
+  width: 2.7rem; border: 0; background: transparent; color: var(--ink);
+  font-family: var(--font-mono); font-size: 1.02rem; font-weight: 600;
+  text-align: center; padding: 0.35rem 0.15rem; outline: none;
   -moz-appearance: textfield;
 }
 .sn-oct::-webkit-outer-spin-button, .sn-oct::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
@@ -91,7 +91,7 @@
 @media (max-width: 560px) { .sn-res.span2 { grid-column: span 1; } }
 .sn-res-label { display: block; font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.45rem; }
 .sn-res-val { font-family: var(--font-mono); font-size: 1.12rem; font-weight: 600; color: var(--ink); word-break: break-word; }
-.sn-res-sub { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-faint); margin-top: 0.3rem; }
+.sn-res-sub { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-faint); margin-top: 0.3rem; overflow-wrap: anywhere; }
 .sn-badges { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.4rem; }
 .sn-badge {
   font-family: var(--font-mono); font-size: 0.72rem; padding: 0.25rem 0.6rem; border-radius: 100px;

@@ -239,19 +239,25 @@ a { color: inherit; text-decoration: none; }
 .nav-toggle[aria-expanded="true"] span:nth-child(2) { transform: translateY(-3.5px) rotate(-45deg); }
 
 /* ---------- Mobile nav ---------- */
+/* overlay a tutta altezza sotto l'header (che resta sempre visibile e cliccabile) */
 .nav-mobile {
   position: fixed;
-  inset: 68px 0 auto 0;
+  inset: 68px 0 0 0;
   z-index: 49;
-  display: grid;
+  display: flex;
+  flex-direction: column;
   gap: 0.25rem;
-  padding: 1rem var(--pad) 1.75rem;
+  padding: 1.25rem var(--pad) 2rem;
   background: var(--bg-elev);
   border-bottom: 1px solid var(--line);
-  transform: translateY(-120%);
-  transition: transform 0.4s var(--ease);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.25s var(--ease), visibility 0.25s var(--ease);
 }
-.nav-mobile.open { transform: translateY(0); }
+.nav-mobile.open { opacity: 1; visibility: visible; pointer-events: auto; }
 .nav-mobile a {
   font-family: var(--font-display);
   font-size: 1.6rem;
