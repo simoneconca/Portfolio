@@ -125,6 +125,32 @@
 .tc-bin { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-soft); letter-spacing: 0.02em; }
 .txt-cell.over .tc-bin { color: #c98a1b; }
 
+/* Tabella ASCII completa */
+.ascii-toggle-wrap { margin-top: 1.4rem; }
+.ascii-legend { margin-top: 1rem; font-size: 0.86rem; line-height: 1.5; color: var(--ink-soft); max-width: 72ch; }
+.ascii-legend b { color: var(--ink); font-weight: 600; }
+.ascii-table {
+  margin-top: 0.9rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(74px, 1fr));
+  gap: 0.4rem;
+}
+.ascii-cell {
+  display: flex; flex-direction: column; align-items: center; gap: 0.15rem;
+  padding: 0.45rem 0.25rem; border: 1px solid var(--line); border-radius: 9px; background: var(--bg-sunk);
+  min-width: 0;
+}
+.ascii-cell.ctrl { background: var(--bg); border-style: dashed; }
+.ac-dec { font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent); }
+.ac-char { font-family: var(--font-display); font-size: 1.3rem; font-weight: 600; line-height: 1; }
+.ascii-cell.ctrl .ac-char, .ascii-cell.space .ac-char { font-family: var(--font-mono); font-size: 0.82rem; font-weight: 500; color: var(--ink-soft); }
+.ac-bin { font-family: var(--font-mono); font-size: 0.58rem; color: var(--ink-faint); letter-spacing: 0.01em; }
+
+@media (max-width: 480px) {
+  .ascii-table { grid-template-columns: repeat(auto-fill, minmax(58px, 1fr)); gap: 0.3rem; }
+  .ac-bin { display: none; }
+}
+
 /* Immagini → RGB */
 .rgb-lab { display: flex; gap: 1.2rem; flex-wrap: wrap; align-items: stretch; }
 .rgb-swatch { flex: 0 0 200px; min-height: 200px; border-radius: 14px; border: 1px solid var(--line); display: grid; place-items: center; font-family: var(--font-mono); font-size: 0.85rem; font-weight: 600; }

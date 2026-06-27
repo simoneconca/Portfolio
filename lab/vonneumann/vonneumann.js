@@ -102,6 +102,34 @@
   }
   $("txtIn").addEventListener("input", renderText);
 
+  // Tabella ASCII completa (0–127)
+  const CTRL = ["NUL","SOH","STX","ETX","EOT","ENQ","ACK","BEL","BS","TAB","LF","VT","FF","CR","SO","SI",
+                "DLE","DC1","DC2","DC3","DC4","NAK","SYN","ETB","CAN","EM","SUB","ESC","FS","GS","RS","US"];
+  function buildAscii() {
+    let html = "";
+    for (let i = 0; i < 128; i++) {
+      const ctrl = i < 32 || i === 127;
+      let label;
+      if (i < 32) label = CTRL[i];
+      else if (i === 32) label = "␣";
+      else if (i === 127) label = "DEL";
+      else label = esc(String.fromCharCode(i));
+      html += `<div class="ascii-cell${ctrl ? " ctrl" : ""}${i === 32 ? " space" : ""}">` +
+        `<span class="ac-dec">${i}</span>` +
+        `<span class="ac-char">${label}</span>` +
+        `<span class="ac-bin">${bin(i, 8)}</span></div>`;
+    }
+    $("asciiTable").innerHTML = html;
+  }
+  $("asciiToggle").addEventListener("click", () => {
+    const t = $("asciiTable"), btn = $("asciiToggle"), leg = $("asciiLegend");
+    const opening = t.hidden;
+    if (opening && !t.dataset.built) { buildAscii(); t.dataset.built = "1"; }
+    t.hidden = !opening; leg.hidden = !opening;
+    btn.setAttribute("aria-expanded", String(opening));
+    btn.textContent = opening ? "✕ Nascondi la tabella ASCII completa" : "📋 Mostra la tabella ASCII completa (0–127)";
+  });
+
   /* ---------- Immagini → RGB ---------- */
   function renderRGB() {
     const r = +$("rR").value, g = +$("rG").value, b = +$("rB").value;

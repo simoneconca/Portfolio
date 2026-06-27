@@ -151,6 +151,13 @@
           <p class="cod-intro">A ogni <b>carattere</b> il computer associa un numero, e quel numero lo scrive in <b>binario</b> (0 e 1). La tabella di base si chiama <b>ASCII</b>: usa <b>7 bit</b> per carattere, cioè 128 caratteri possibili. Scrivi qualcosa e guarda come diventa binario:</p>
           <div class="field cod-field"><input id="txtIn" maxlength="20" spellcheck="false" autocomplete="off" value="Ciao"></div>
           <div id="txtOut" class="txt-out"></div>
+
+          <div class="ascii-toggle-wrap">
+            <button id="asciiToggle" class="ghost-btn" type="button" aria-expanded="false" aria-controls="asciiTable">📋 Mostra la tabella ASCII completa (0–127)</button>
+          </div>
+          <p class="ascii-legend" id="asciiLegend" hidden>I primi 32 codici (0–31) e il 127 sono <b>caratteri di controllo</b> (non si stampano: invio, tabulazione…), il 32 è lo <b>spazio</b>, dal 33 al 126 ci sono lettere, cifre e simboli.</p>
+          <div id="asciiTable" class="ascii-table" hidden></div>
+
           <div class="cod-note">
             <b>E le lettere accentate, gli emoji, il cinese?</b> Con soli 128 caratteri ASCII non bastano. Per questo è nato <b>Unicode</b>, che usa più bit: <b>UTF-8</b> (8 bit), <b>UTF-16</b> (16 bit), <b>UTF-32</b> (32 bit). Più bit = più caratteri rappresentabili.
           </div>
