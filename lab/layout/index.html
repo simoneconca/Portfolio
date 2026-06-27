@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="light">
+<!--
+============================================================
+ ISTRUZIONI PER CLAUDE (sessione futura) — PLACEHOLDER
+ Questo strumento è ancora DA COSTRUIRE. Sostituisci il contenuto
+ di <main> con il lab vero, crea layout.js e layout.css in questa
+ cartella e linkali qui (come fanno gli altri lab).
+============================================================
+
+ CONTESTO
+ - Sito statico (GitHub Pages, simoneconca.it), ZERO backend, niente
+   framework, niente build. Tutto in italiano. Portale didattico /lab/
+   per le superiori (1ª–5ª). Autore: Simone Conca, insegnante A041.
+ - Tono didattico: "provi, sbagli, vedi cosa succede".
+
+ DESIGN SYSTEM (riusa, non reinventare)
+ - css/base.css: token tema (--bg,--ink,--accent,--font-*…), header,
+   footer, bottoni, .reveal, dark mode automatica.
+ - css/lab.css: primitive .panel, .seg/.seg-btn, .ghost-btn, .field,
+   .controls-panel, .control-group/-label, .breadcrumb, .tool-hero, .wip.
+ - js/core.js: tema, nav, reveal, escapeHtml(), prefersReducedMotion.
+ - Pattern lab: cartella lab/<nome>/ con index.html + <nome>.js + <nome>.css,
+   prefisso CSS dedicato (qui .ly-). Copia header/footer/breadcrumb da
+   lab/logica/ o lab/cicli/. Rispetta prefers-reduced-motion.
+ - Riferimenti utili: lab/sort/ e lab/cicli/ per il pattern a "modalità"
+   (segmented control) + pannello spiegazione + codice generato.
+
+ QUANDO FINITO
+ - lab/index.html: cambia la card di questo tool da
+   <span class="tool-status soon">In sviluppo</span> a
+   <span class="tool-status live">Attivo</span>.
+ - index.html (home): aggiorna testo lab-promo, chips e il numero in
+   "<strong>N</strong> strumenti pronti all'uso".
+ - Verifica nel browser (preview), zero errori console, responsive +
+   dark mode, poi commit + push su main. Piano: memory/lab-portal-plan.md.
+
+============================================================
+ SPECIFICA — HTML/CSS: Box Model, Flexbox & Grid Playground
+ Categoria: Sviluppo Web. Pubblico: 3º anno che inizia a fare web.
+ Obiettivo: rendere visibile e immediato ciò che di solito è astratto.
+
+ Tre modalità (segmented control .seg, come lab/sort):
+ 1) BOX MODEL
+    - Un box centrale che mostra a strati e con colori distinti
+      content / padding / border / margin (stile DevTools).
+    - Slider/campi per: width, height, padding, border, margin
+      (anche per-lato sarebbe ottimo), box-sizing (content-box vs
+      border-box) con effetto visibile sulla dimensione totale.
+    - Mostra la dimensione totale calcolata (es. "occupa 320×140").
+ 2) FLEXBOX
+    - Un container con N item (aggiungi/rimuovi).
+    - Controlli: flex-direction, justify-content, align-items,
+      flex-wrap, gap; opzionale per-item flex-grow/shrink/basis.
+    - Anteprima dal vivo che riflette le scelte.
+ 3) GRID
+    - Controlli: grid-template-columns/rows (es. repeat(3, 1fr)),
+      gap, justify-items/align-items; opzionale posizionare un item
+      con grid-column/row span.
+    - Anteprima dal vivo.
+
+ In tutte le modalità: mostra il CSS GENERATO dal vivo (pannello codice,
+ monospaziato, eventualmente "copia"). Pannello spiegazione breve per
+ ogni modalità (cos'è, quando si usa). Tutto client-side: applica gli
+ stili agli elementi di anteprima via JS (style inline o classi).
+
+ Acceptance: le tre modalità funzionano, l'anteprima cambia in tempo
+ reale, il CSS mostrato corrisponde all'anteprima, responsive, dark mode.
+============================================================
+-->
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Box Model, Flexbox e Grid: un sandbox visivo per capire il layout CSS. Strumento in sviluppo.">
+  <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#100f0c" media="(prefers-color-scheme: dark)">
+  <title>Box Model, Flexbox &amp; Grid (in sviluppo) — Lab · Simone Conca</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/base.css">
+  <link rel="stylesheet" href="../../css/lab.css">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23100f0c'/><text x='50' y='71' text-anchor='middle' font-size='62' font-family='Georgia,serif' font-style='italic' font-weight='600' fill='%23f4f1ea'>S</text></svg>">
+  <script>
+    (function () { try { var s = localStorage.getItem("theme"); document.documentElement.setAttribute("data-theme", s || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")); } catch (e) {} })();
+  </script>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="../../" aria-label="Simone Conca — home">
+        <span class="brand-mark">SC</span>
+        <span class="brand-name">Simone Conca</span>
+        <span class="brand-lab">LAB</span>
+      </a>
+      <nav class="nav" aria-label="Navigazione">
+        <a href="../">← Lab</a>
+        <a href="../../">Portfolio</a>
+        <a href="../../#contatti">Contatti</a>
+      </nav>
+      <div class="header-actions">
+        <button class="theme-toggle" type="button" aria-label="Cambia tema chiaro/scuro" title="Cambia tema">
+          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        </button>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-mobile" aria-label="Apri menu"><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <nav id="nav-mobile" class="nav-mobile" aria-label="Navigazione mobile">
+    <a href="../">← Lab</a>
+    <a href="../../">Portfolio</a>
+    <a href="../../#contatti">Contatti</a>
+  </nav>
+
+  <main>
+    <section class="section tool-hero">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Percorso">
+          <a href="../">Lab</a><span class="sep">/</span><span class="current">Box Model, Flexbox &amp; Grid</span>
+        </nav>
+        <h1>Box Model, Flexbox &amp; Grid</h1>
+        <p class="lead">Un sandbox visivo per capire <strong>margin</strong>, <strong>border</strong> e <strong>padding</strong> e come si comportano <strong>Flexbox</strong> e <strong>Grid</strong>, con il CSS generato dal vivo.</p>
+
+        <div class="wip">
+          <span class="wip-badge"><span class="kicker-dot" style="display:inline-block;width:7px;height:7px;border-radius:50%;background:currentColor"></span> In sviluppo</span>
+          <h2>Questo strumento sta arrivando</h2>
+          <p>Lo sto ancora costruendo. Tornerà presto, con il box model a strati e i playground di Flexbox e Grid in tempo reale. Intanto dai un'occhiata agli altri strumenti del Lab.</p>
+          <div class="wip-actions">
+            <a class="btn btn-primary" href="../">← Tutti gli strumenti</a>
+            <a class="btn btn-ghost" href="../../#contatti">Suggerisci un'idea</a>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <span class="footer-brand">Simone Conca · Lab</span>
+      <span class="footer-meta">© <span id="year"></span></span>
+      <a class="footer-top" href="../">← Tutti gli strumenti</a>
+    </div>
+  </footer>
+
+  <script src="../../js/core.js"></script>
+</body>
+</html>
