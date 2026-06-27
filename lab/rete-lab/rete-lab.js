@@ -9,7 +9,7 @@
   "use strict";
 
   const SVGNS = "http://www.w3.org/2000/svg";
-  const DW = 108, DH = 70;
+  const DW = 108, DH = 70, CANVAS_W = 1100, CANVAS_H = 700;
   const PORTS = { pc: 1, switch: 6, router: 4, ap: 8, wpc: 1, server: 2 };
   const ROLE_LABEL = { dhcp: "DHCP", firewall: "Firewall", web: "Web/DNS", vpn: "VPN" };
   const WIFI_RANGE = 280; // raggio (px) entro cui un dispositivo wireless si associa a un AP
@@ -28,6 +28,7 @@
 
   /* ---------- DOM ---------- */
   const svg = document.getElementById("rlStage");
+  const stageWrap = svg.parentElement; // contenitore scrollabile (per il pan)
   const gLinks = document.getElementById("rlLinks");
   const gDevices = document.getElementById("rlDevices");
   const gAnim = document.getElementById("rlAnim");
@@ -100,8 +101,11 @@
   }
 
   function addDevice(type) {
-    const w = svg.clientWidth || 600, h = svg.clientHeight || 460, k = devices.length;
-    const d = makeDevice(type, Math.min(w - DW - 10, 40 + (k % 4) * 150), Math.min(h - DH - 10, 40 + Math.floor(k / 4) * 110));
+    const k = devices.length, vx = stageWrap.scrollLeft, vy = stageWrap.scrollTop;
+    // nuovo dispositivo vicino all'angolo in alto a sinistra della vista corrente (a cascata)
+    const x = Math.max(0, Math.min(CANVAS_W - DW, vx + 30 + (k % 6) * 34));
+    const y = Math.max(0, Math.min(CANVAS_H - DH, vy + 30 + (k % 6) * 30));
+    const d = makeDevice(type, x, y);
     devices.push(d); selectedId = d.id; sideTab = "config"; render(); renderSide();
   }
   function deleteDevice(id) {
@@ -706,7 +710,7 @@
   /* ============================================================
      INTERAZIONE TELA
      ============================================================ */
-  let drag = null;
+  let drag = null, pan = null;
   svg.addEventListener("pointerdown", (e) => {
     const delEl = e.target.closest(".rl-del"), linkEl = e.target.closest(".rl-link-hit, .rl-link"), devEl = e.target.closest(".rl-dev");
     if (delEl) { e.preventDefault(); deleteDevice(delEl.dataset.del); return; }
@@ -722,20 +726,28 @@
       return;
     }
     if (linkEl) { e.preventDefault(); removeLink(linkEl.dataset.link); return; }
+    // sfondo vuoto: deseleziona e avvia il PAN (trascina lo sfondo per spostare la vista)
     if (tool === "cable" && cableFrom) { cableFrom = null; setStatus("Cavo annullato."); render(); }
     if (selectedId) { selectedId = null; renderSide(); render(); }
+    pan = { sx: e.clientX, sy: e.clientY, sl: stageWrap.scrollLeft, st: stageWrap.scrollTop };
+    svg.classList.add("panning");
+    try { svg.setPointerCapture(e.pointerId); } catch (err) {}
   });
   svg.addEventListener("pointermove", (e) => {
+    if (pan) { stageWrap.scrollLeft = pan.sl - (e.clientX - pan.sx); stageWrap.scrollTop = pan.st - (e.clientY - pan.sy); return; }
     if (!drag) return;
     const dx = e.clientX - drag.sx, dy = e.clientY - drag.sy;
     if (!drag.moved && Math.hypot(dx, dy) < 4) return;
     drag.moved = true;
-    const d = device(drag.id), w = svg.clientWidth, h = svg.clientHeight;
-    d.x = Math.max(0, Math.min(w - DW, drag.ox + dx)); d.y = Math.max(0, Math.min(h - DH, drag.oy + dy));
+    const d = device(drag.id);
+    d.x = Math.max(0, Math.min(CANVAS_W - DW, drag.ox + dx)); d.y = Math.max(0, Math.min(CANVAS_H - DH, drag.oy + dy));
     const g = gDevices.querySelector('[data-dev="' + drag.id + '"]'); if (g) g.setAttribute("transform", "translate(" + d.x + "," + d.y + ")");
     updateLinkPaths();
   });
-  svg.addEventListener("pointerup", () => { if (drag) { const moved = drag.moved; const g = gDevices.querySelector('[data-dev="' + drag.id + '"]'); if (g) g.classList.remove("dragging"); drag = null; if (moved) render(); } });
+  svg.addEventListener("pointerup", () => {
+    if (pan) { pan = null; svg.classList.remove("panning"); }
+    if (drag) { const moved = drag.moved; const g = gDevices.querySelector('[data-dev="' + drag.id + '"]'); if (g) g.classList.remove("dragging"); drag = null; if (moved) render(); }
+  });
 
   function handleCableClick(id) {
     if (!cableFrom) { cableFrom = id; setStatus("Cavo: ora clicca il secondo dispositivo (" + device(id).name + " selezionato)."); render(); }

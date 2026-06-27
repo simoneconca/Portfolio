@@ -67,33 +67,39 @@
         <!-- TOOLBAR -->
         <div class="panel">
           <div class="rl-toolbar">
-            <span class="rl-tool-label">Aggiungi</span>
-            <button class="rl-tool" type="button" data-add="pc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M9 16v4M15 16v4"/></svg>PC</button>
-            <button class="rl-tool" type="button" data-add="switch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="7" width="19" height="9" rx="1.5"/><path d="M6 16v3M10 16v3M14 16v3M18 16v3"/></svg>Switch</button>
-            <button class="rl-tool" type="button" data-add="router"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v6M12 21v-6M3 12h6M21 12h-6M7 7l4 4M17 17l-4-4"/></svg>Router</button>
-            <button class="rl-tool" type="button" data-add="ap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="14" width="10" height="7" rx="1.5"/><path d="M12 14V8M7.5 7a6 6 0 0 1 9 0M9.7 4.8a9 9 0 0 1 4.6 0"/></svg>Access Point</button>
-            <button class="rl-tool" type="button" data-add="wpc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="6" width="16" height="10" rx="1.5"/><path d="M2 19h20M12 6V3.5M9.5 3a4 4 0 0 1 5 0"/></svg>Laptop</button>
-            <button class="rl-tool" type="button" data-add="server"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M7.5 7.5h.01M7.5 16.5h.01M11 7.5h6M11 16.5h6"/></svg>Server</button>
-            <span class="rl-tool-sep"></span>
-            <span class="rl-tool-label">Strumenti</span>
-            <button class="rl-tool on" type="button" data-tool="select"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l15 9-7 1.5L9 21z"/></svg>Sposta</button>
-            <button class="rl-tool" type="button" data-tool="cable"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a3 3 0 0 1 3-3h2v6H7a3 3 0 0 1-3-3zM20 16a3 3 0 0 1-3 3h-2v-6h2a3 3 0 0 1 3 3zM9 8h6v8"/></svg>Cavo</button>
-            <button class="rl-tool" type="button" data-tool="ping"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h5l2-7 4 14 2-7h7"/></svg>Ping</button>
-            <span class="rl-spacer"></span>
-            <span class="rl-tool-label">Scenario</span>
-            <select class="rl-select" id="rlScenario">
-              <option value="switch2pc">Due PC + switch</option>
-              <option value="direct">Due PC collegati diretti</option>
-              <option value="router1">Due reti, un router</option>
-              <option value="router2">Due router (rotte statiche)</option>
-              <option value="rip3">Tre router (RIP dinamico)</option>
-              <option value="ospf3">Triangolo (OSPF, percorso minimo)</option>
-              <option value="wifi">Wi-Fi + DHCP</option>
-              <option value="firewall">Firewall in linea</option>
-              <option value="empty">Tela vuota</option>
-            </select>
-            <button class="rl-tool" type="button" id="rlReset">↺ Reset</button>
-            <label class="rl-tool-label" style="margin-left:0.4rem">Velocità <input type="range" id="rlSpeed" min="1" max="10" value="6" style="vertical-align:middle;accent-color:var(--accent);max-width:5rem"></label>
+            <div class="rl-tgroup">
+              <span class="rl-tool-label">Aggiungi</span>
+              <button class="rl-tool" type="button" data-add="pc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="12" rx="1.5"/><path d="M8 20h8M9 16v4M15 16v4"/></svg>PC</button>
+              <button class="rl-tool" type="button" data-add="switch"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="7" width="19" height="9" rx="1.5"/><path d="M6 16v3M10 16v3M14 16v3M18 16v3"/></svg>Switch</button>
+              <button class="rl-tool" type="button" data-add="router"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3v6M12 21v-6M3 12h6M21 12h-6M7 7l4 4M17 17l-4-4"/></svg>Router</button>
+              <button class="rl-tool" type="button" data-add="ap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="7" y="14" width="10" height="7" rx="1.5"/><path d="M12 14V8M7.5 7a6 6 0 0 1 9 0M9.7 4.8a9 9 0 0 1 4.6 0"/></svg>AP</button>
+              <button class="rl-tool" type="button" data-add="wpc"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="6" width="16" height="10" rx="1.5"/><path d="M2 19h20M12 6V3.5M9.5 3a4 4 0 0 1 5 0"/></svg>Laptop</button>
+              <button class="rl-tool" type="button" data-add="server"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="7" rx="1.5"/><rect x="4" y="13" width="16" height="7" rx="1.5"/><path d="M7.5 7.5h.01M7.5 16.5h.01M11 7.5h6M11 16.5h6"/></svg>Server</button>
+            </div>
+            <div class="rl-tgroup">
+              <span class="rl-tool-label">Strumenti</span>
+              <button class="rl-tool on" type="button" data-tool="select"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5 3l15 9-7 1.5L9 21z"/></svg>Sposta</button>
+              <button class="rl-tool" type="button" data-tool="cable"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8a3 3 0 0 1 3-3h2v6H7a3 3 0 0 1-3-3zM20 16a3 3 0 0 1-3 3h-2v-6h2a3 3 0 0 1 3 3zM9 8h6v8"/></svg>Cavo</button>
+              <button class="rl-tool" type="button" data-tool="ping"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12h5l2-7 4 14 2-7h7"/></svg>Ping</button>
+            </div>
+            <div class="rl-tgroup">
+              <span class="rl-tool-label">Scenario</span>
+              <select class="rl-select" id="rlScenario">
+                <option value="switch2pc">Due PC + switch</option>
+                <option value="direct">Due PC collegati diretti</option>
+                <option value="router1">Due reti, un router</option>
+                <option value="router2">Due router (rotte statiche)</option>
+                <option value="rip3">Tre router (RIP dinamico)</option>
+                <option value="ospf3">Triangolo (OSPF, percorso minimo)</option>
+                <option value="wifi">Wi-Fi + DHCP</option>
+                <option value="firewall">Firewall in linea</option>
+                <option value="empty">Tela vuota</option>
+              </select>
+              <button class="rl-tool" type="button" id="rlReset">↺ Reset</button>
+            </div>
+            <div class="rl-tgroup">
+              <label class="rl-tool-label rl-speed">Velocità <input type="range" id="rlSpeed" min="1" max="10" value="6"></label>
+            </div>
             <div class="rl-status" id="rlStatus"></div>
           </div>
         </div>
