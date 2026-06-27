@@ -1,0 +1,213 @@
+/* ============================================================
+   strutture.css — Visualizzatore di strutture dati
+   Pila (LIFO) · Coda (FIFO) · Albero Binario di Ricerca.
+   Usa base.css + lab.css.
+   ============================================================ */
+
+.sd-sec { position: relative; z-index: 2; }
+
+/* ---------- Pulsanti ---------- */
+.run-btn {
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+  padding: 0.5rem 1rem;
+  border: 1px solid var(--accent);
+  border-radius: 100px;
+  background: var(--accent);
+  color: var(--accent-ink);
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.15s var(--ease), opacity 0.2s var(--ease);
+}
+.run-btn:hover { transform: translateY(-1px); }
+.run-btn:active { transform: translateY(1px); }
+.run-btn:disabled, .ghost-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+
+/* ---------- Controlli ---------- */
+.sd-controls { gap: 1.25rem 2rem; }
+.sd-val-field { width: 130px; }
+.sd-val-field input { text-align: left; }
+.sd-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+@media (max-width: 620px) { .sd-actions { width: 100%; } }
+
+/* ---------- Pannello spiegazione ---------- */
+.explain-panel { padding: clamp(1.4rem, 3vw, 1.9rem); }
+.explain-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.6rem; }
+.explain-head h2 { font-family: var(--font-display); font-weight: 500; font-size: clamp(1.4rem, 3vw, 1.9rem); letter-spacing: -0.02em; }
+.explain-big {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.1em;
+  color: var(--accent-ink);
+  background: var(--accent);
+  padding: 0.25rem 0.6rem;
+  border-radius: 100px;
+}
+.explain-idea { color: var(--ink); font-size: 1.02rem; max-width: 70ch; margin-bottom: 1.3rem; }
+.explain-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1.25rem; }
+@media (max-width: 760px) { .explain-grid { grid-template-columns: 1fr; gap: 1rem; } }
+.explain-item { border-top: 1px solid var(--line); padding-top: 0.8rem; }
+.explain-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.4rem;
+}
+.explain-item p { color: var(--ink-soft); font-size: 0.92rem; }
+
+/* ---------- Layout viz + codice ---------- */
+.sd-layout { display: grid; grid-template-columns: 1.35fr 1fr; gap: 1.25rem; align-items: start; }
+@media (max-width: 880px) { .sd-layout { grid-template-columns: 1fr; } }
+
+.sd-viz { display: flex; flex-direction: column; }
+.sd-viz-stage {
+  position: relative;
+  min-height: 340px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 1px 1px, var(--line-soft) 1px, transparent 0) 0 0 / 22px 22px,
+    var(--bg-sunk);
+  overflow: auto;
+  padding: 1rem;
+}
+
+.sd-status {
+  margin-top: 0.9rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  min-height: 1.2rem;
+}
+.sd-status strong { color: var(--accent); font-weight: 600; }
+
+.sd-log-wrap { margin-top: 0.9rem; }
+.sd-log {
+  margin-top: 0.4rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  max-height: 84px;
+  overflow-y: auto;
+}
+.sd-log span {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  padding: 0.2rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  color: var(--ink-soft);
+  background: var(--bg);
+  white-space: nowrap;
+}
+.sd-log span.ins { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); color: var(--accent); }
+.sd-log span.rem { border-color: color-mix(in srgb, #e0533d 45%, var(--line)); color: #e0533d; }
+.sd-log-empty { color: var(--ink-faint); }
+
+/* ============================================================
+   PILA (stack) — colonna verticale, ultimo in alto
+   ============================================================ */
+.sd-stack { display: flex; flex-direction: column-reverse; align-items: center; gap: 0.5rem; min-height: 300px; justify-content: flex-start; padding-top: 2.2rem; }
+.sd-stack-base {
+  width: clamp(120px, 60%, 200px);
+  border-bottom: 3px solid var(--ink);
+  text-align: center;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  color: var(--ink-faint);
+  padding-bottom: 0.25rem;
+}
+.sd-cell {
+  width: clamp(120px, 60%, 200px);
+  padding: 0.7rem 1rem;
+  border: 1.5px solid var(--ink);
+  border-radius: 8px;
+  background: var(--bg-elev);
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  font-weight: 500;
+  text-align: center;
+  position: relative;
+}
+.sd-cell.top, .sd-cell.front, .sd-cell.rear { border-color: var(--accent); }
+.sd-ptr {
+  position: absolute;
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.04em;
+  color: var(--accent);
+  white-space: nowrap;
+}
+.sd-stack .sd-ptr { right: calc(100% + 0.6rem); top: 50%; transform: translateY(-50%); }
+
+/* animazioni inserimento/rimozione */
+@keyframes sd-in-top { from { opacity: 0; transform: translateY(-22px); } to { opacity: 1; transform: none; } }
+@keyframes sd-out-top { to { opacity: 0; transform: translateY(-22px); } }
+@keyframes sd-in-right { from { opacity: 0; transform: translateX(22px); } to { opacity: 1; transform: none; } }
+@keyframes sd-out-left { to { opacity: 0; transform: translateX(-22px); } }
+@keyframes sd-pop { 0% { transform: scale(0.6); opacity: 0; } 60% { transform: scale(1.08); } 100% { transform: scale(1); opacity: 1; } }
+.sd-cell.enter-top { animation: sd-in-top 0.32s var(--ease); }
+.sd-cell.leave-top { animation: sd-out-top 0.3s var(--ease) forwards; }
+.sd-cell.enter-right { animation: sd-in-right 0.32s var(--ease); }
+.sd-cell.leave-left { animation: sd-out-left 0.3s var(--ease) forwards; }
+
+/* ============================================================
+   CODA (queue) — riga orizzontale, front a sinistra
+   ============================================================ */
+.sd-queue { display: flex; align-items: center; gap: 0.5rem; min-height: 300px; padding: 1rem 0.5rem; flex-wrap: nowrap; }
+.sd-queue .sd-cell { min-width: 64px; padding: 0.9rem 0.6rem; }
+.sd-queue .sd-ptr { left: 50%; transform: translateX(-50%); top: calc(100% + 0.4rem); }
+.sd-queue .sd-cell.front .sd-ptr.front { color: var(--accent); }
+.sd-queue-empty, .sd-stack-empty, .sd-bst-empty {
+  margin: auto;
+  color: var(--ink-faint);
+  font-size: 0.92rem;
+  text-align: center;
+  align-self: center;
+}
+
+/* ============================================================
+   ALBERO BINARIO DI RICERCA (BST)
+   ============================================================ */
+.sd-bst { min-height: 320px; }
+.sd-bst svg { display: block; }
+.sd-edge { stroke: var(--ink-soft); stroke-width: 2; }
+.sd-node-circle {
+  fill: var(--bg-elev);
+  stroke: var(--ink);
+  stroke-width: 1.8;
+  transition: fill 0.2s var(--ease), stroke 0.2s var(--ease);
+}
+.sd-node-text { fill: var(--ink); font-family: var(--font-mono); font-size: 0.92rem; font-weight: 500; text-anchor: middle; dominant-baseline: central; }
+.sd-node.visiting .sd-node-circle { fill: color-mix(in srgb, var(--accent) 22%, var(--bg-elev)); stroke: var(--accent); }
+.sd-node.found .sd-node-circle { fill: var(--accent); stroke: var(--accent); }
+.sd-node.found .sd-node-text { fill: var(--accent-ink); }
+.sd-node.justadded .sd-node-circle { animation: sd-pop 0.4s var(--ease); }
+.sd-node.target .sd-node-circle { stroke: #e0533d; fill: color-mix(in srgb, #e0533d 18%, var(--bg-elev)); }
+
+/* ---------- Codice ---------- */
+.sd-code { min-width: 0; }
+.lang-bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+.code-view {
+  margin: 0;
+  padding: 1rem;
+  background: var(--bg-sunk);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  line-height: 1.65;
+  color: var(--ink);
+  overflow-x: auto;
+  white-space: pre;
+  tab-size: 2;
+}
+.code-view .cmt { color: var(--ink-faint); font-style: italic; }
+.code-view .kw { color: var(--accent); }
+
+@media (prefers-reduced-motion: reduce) {
+  .sd-cell, .sd-node-circle { animation: none !important; }
+}
