@@ -194,11 +194,18 @@
       if (sideTab === "arp") sideTab = "config";
       body += tabsHtml([["config", "Interfacce"], ["routing", "Routing"]]);
       if (sideTab === "routing") {
+        const isRip = d.routingMode === "rip";
+        body += '<div class="rl-tabs" style="margin-bottom:0.8rem"><button class="rl-tab ' + (!isRip ? "active" : "") + '" data-mode="static">Statico</button><button class="rl-tab ' + (isRip ? "active" : "") + '" data-mode="rip">RIP (dinamico)</button></div>';
         body += '<p class="control-label" style="margin:0 0 0.4rem">Tabella di routing</p>' + routingTable(d);
-        body += '<p class="control-label" style="margin:1rem 0 0.4rem">Aggiungi rotta statica</p>';
-        body += '<div class="rl-route-form"><div class="rl-field-row"><div class="rl-field"><label>Rete dest.</label><input type="text" data-f="snet" placeholder="10.0.2.0"></div><div class="rl-field"><label>Mask</label><input type="text" data-f="smask" placeholder="/24"></div></div>' +
-          '<div class="rl-field"><label>Next hop</label><input type="text" data-f="snh" placeholder="10.0.1.2"></div>' +
-          '<button class="ghost-btn" data-act="addroute" type="button">＋ Aggiungi rotta</button><div class="err" data-routeerr></div></div>';
+        if (isRip) {
+          body += '<button class="btn btn-primary" style="width:100%;justify-content:center;margin-top:0.8rem" data-act="converge" type="button">▶ Fai convergere RIP</button>';
+          body += '<p style="color:var(--ink-soft);font-size:0.82rem;line-height:1.5;margin-top:0.6rem">Con <b>RIP</b> i router si scambiano le tabelle e imparano le reti da soli (metrica = numero di <b>salti</b>). Premi il pulsante e guarda i round nel log.</p>';
+        } else {
+          body += '<p class="control-label" style="margin:1rem 0 0.4rem">Aggiungi rotta statica</p>';
+          body += '<div class="rl-route-form"><div class="rl-field-row"><div class="rl-field"><label>Rete dest.</label><input type="text" data-f="snet" placeholder="10.0.2.0"></div><div class="rl-field"><label>Mask</label><input type="text" data-f="smask" placeholder="/24"></div></div>' +
+            '<div class="rl-field"><label>Next hop</label><input type="text" data-f="snh" placeholder="10.0.1.2"></div>' +
+            '<button class="ghost-btn" data-act="addroute" type="button">＋ Aggiungi rotta</button><div class="err" data-routeerr></div></div>';
+        }
       } else {
         body += field("Nome", "name", d.name);
         body += '<p class="control-label" style="margin:0.6rem 0 0.4rem">Interfacce</p>';
@@ -235,13 +242,14 @@
     return t + "</tbody></table>";
   }
   function routingTable(d) {
-    const routes = routesOf(d);
-    let t = '<table class="rl-table"><thead><tr><th>Destinazione</th><th>Tipo</th><th>Via</th></tr></thead><tbody>';
-    if (!routes.length) t += '<tr><td class="empty" colspan="3">Nessuna rotta — configura le interfacce.</td></tr>';
-    else routes.forEach((r, i) => {
-      const via = r.type === "connected" ? r.port.name : escapeHtml(r.nextHop);
+    const routes = routesOf(d), showM = d.routingMode === "rip", cols = showM ? 4 : 3;
+    let t = '<table class="rl-table"><thead><tr><th>Destinazione</th><th>Tipo</th>' + (showM ? "<th>M</th>" : "") + "<th>Via</th></tr></thead><tbody>";
+    if (!routes.length) t += '<tr><td class="empty" colspan="' + cols + '">Nessuna rotta — configura le interfacce.</td></tr>';
+    else routes.forEach((r) => {
+      const via = r.type === "connected" ? (r.port ? r.port.name : "—") : escapeHtml(r.nextHop);
       const rm = r.type === "static" ? ' <span data-rmroute="' + r.idx + '" style="color:#c0392b;cursor:pointer">×</span>' : "";
-      t += "<tr><td>" + intToIp(r.net) + "/" + r.cidr + "</td><td>" + (r.type === "connected" ? "connessa" : "statica") + "</td><td>" + via + rm + "</td></tr>";
+      const typeLbl = r.type === "connected" ? "connessa" : r.type === "rip" ? "RIP" : "statica";
+      t += "<tr><td>" + intToIp(r.net) + "/" + r.cidr + "</td><td>" + typeLbl + "</td>" + (showM ? "<td>" + (r.metric != null ? r.metric : "") + "</td>" : "") + "<td>" + via + rm + "</td></tr>";
     });
     return t + "</tbody></table>";
   }
@@ -273,6 +281,9 @@
       d.staticRoutes.push({ net, mask, nextHop: nh }); renderSide();
     });
     sideEl.querySelectorAll("[data-rmroute]").forEach((el) => el.addEventListener("click", () => { d.staticRoutes.splice(parseInt(el.dataset.rmroute, 10), 1); renderSide(); }));
+    sideEl.querySelectorAll("[data-mode]").forEach((b) => b.addEventListener("click", () => { d.routingMode = b.dataset.mode; if (d.routingMode !== "rip") d.ripTable = null; renderSide(); }));
+    const conv = sideEl.querySelector('[data-act="converge"]');
+    if (conv) conv.addEventListener("click", () => runRip(true));
     const delBtn = sideEl.querySelector('[data-act="delete"]');
     if (delBtn) delBtn.addEventListener("click", () => deleteDevice(d.id));
   }
@@ -292,9 +303,18 @@
   /* ============================================================
      ROUTING — tabella e match
      ============================================================ */
-  function routesOf(router) {
+  function connectedRoutes(router) {
     const routes = [];
-    router.ports.forEach((p) => { if (p.ip && p.mask) { const m = parseMask(p.mask); routes.push({ net: (ipToInt(p.ip) & m) >>> 0, mask: m, cidr: maskToCidr(m), type: "connected", port: p }); } });
+    router.ports.forEach((p) => { if (p.ip && p.mask) { const m = parseMask(p.mask); routes.push({ net: (ipToInt(p.ip) & m) >>> 0, mask: m, cidr: maskToCidr(m), metric: 0, type: "connected", port: p }); } });
+    return routes;
+  }
+  function routesOf(router) {
+    if (router.routingMode === "rip") {
+      if (router.ripTable && router.ripTable.length)
+        return router.ripTable.map((e) => ({ net: e.net, mask: e.mask, cidr: e.cidr, metric: e.metric, type: e.nextHop ? "rip" : "connected", nextHop: e.nextHop, port: portById(e.exitPortId) }));
+      return connectedRoutes(router); // RIP non ancora convergiuto: solo connesse
+    }
+    const routes = connectedRoutes(router);
     (router.staticRoutes || []).forEach((r, i) => { const m = parseMask(r.mask), net = ipToInt(r.net); if (m === null || net === null) return; routes.push({ net: (net & m) >>> 0, mask: m, cidr: maskToCidr(m), type: "static", nextHop: r.nextHop, idx: i }); });
     return routes;
   }
@@ -304,6 +324,58 @@
     return best;
   }
   function portForNextHop(router, nhIp) { return router.ports.find((p) => p.ip && p.mask && sameSubnet(ipToInt(p.ip), nhIp, parseMask(p.mask))); }
+
+  /* ---------- RIP (distance-vector) ---------- */
+  // vicini RIP: router che condividono una subnet con una nostra interfaccia (raggiungibili a L2)
+  function ripNeighbors(router) {
+    const out = [];
+    router.ports.forEach((portR) => {
+      if (!portR.ip || !portR.mask) return;
+      const m = parseMask(portR.mask), netR = (ipToInt(portR.ip) & m) >>> 0;
+      devices.forEach((nb) => {
+        if (nb === router || nb.type !== "router") return;
+        nb.ports.forEach((portN) => {
+          if (!portN.ip || !portN.mask) return;
+          const mN = parseMask(portN.mask);
+          if (mN !== m || ((ipToInt(portN.ip) & mN) >>> 0) !== netR) return;
+          if (l2PathFromPort(portR, ipToInt(portN.ip))) out.push({ neighbor: nb, portR, portN });
+        });
+      });
+    });
+    return out;
+  }
+  // fa convergere il RIP su tutti i router in modalità rip (round discreti, split-horizon).
+  function runRip(verbose) {
+    const rips = devices.filter((d) => d.type === "router" && d.routingMode === "rip");
+    if (!rips.length) { if (verbose) { clearLog(); logStep("Nessun router in modalità RIP: attiva RIP su almeno un router.", "fail"); } return; }
+    rips.forEach((r) => {
+      r.ripTable = [];
+      r.ports.forEach((p) => { if (p.ip && p.mask) { const m = parseMask(p.mask); r.ripTable.push({ net: (ipToInt(p.ip) & m) >>> 0, mask: m, cidr: maskToCidr(m), metric: 0, nextHop: null, exitPortId: p.id }); } });
+    });
+    if (verbose) { clearLog(); logStep('<span class="who">RIP</span> parte: ogni router conosce solo le sue reti <b>connesse</b> (metric 0). Ora si scambiano le tabelle, un salto per round.'); }
+    let round = 0, changed = true;
+    while (changed && round < 16) {
+      changed = false; round++;
+      const snap = rips.map((r) => ({ r, table: r.ripTable.map((x) => Object.assign({}, x)) }));
+      const learned = [];
+      rips.forEach((r) => {
+        ripNeighbors(r).forEach(({ neighbor, portR, portN }) => {
+          if (neighbor.routingMode !== "rip") return;
+          const nTable = (snap.find((s) => s.r === neighbor) || {}).table || [];
+          nTable.forEach((adv) => {
+            if (adv.exitPortId === portN.id) return;        // split-horizon
+            const cm = adv.metric + 1; if (cm >= 16) return; // 16 = infinito
+            const ex = r.ripTable.find((x) => x.net === adv.net && x.mask === adv.mask);
+            if (!ex) { r.ripTable.push({ net: adv.net, mask: adv.mask, cidr: adv.cidr, metric: cm, nextHop: portN.ip, exitPortId: portR.id }); changed = true; learned.push(r.name + " impara " + intToIp(adv.net) + "/" + adv.cidr + " da " + neighbor.name + " (metric " + cm + ")"); }
+            else if (ex.metric > cm) { ex.metric = cm; ex.nextHop = portN.ip; ex.exitPortId = portR.id; changed = true; learned.push(r.name + " migliora " + intToIp(adv.net) + "/" + adv.cidr + " via " + neighbor.name + " (metric " + cm + ")"); }
+          });
+        });
+      });
+      if (verbose && learned.length) logStep('<span class="who">Round ' + round + '</span>: ' + learned.map(escapeHtml).join("; ") + ".");
+    }
+    if (verbose) logStep('<span class="who">RIP</span> ha <b>convergiuto</b> in ' + round + " round: ogni router ora conosce tutte le reti. Prova un ping!");
+    if (selectedId) renderSide();
+  }
 
   /* ============================================================
      LIVELLO 2 — consegna del frame su un segmento
@@ -368,6 +440,7 @@
       if (!route) return fail("Il router <b>" + escapeHtml(arrived.name) + "</b> non ha una <b>rotta</b> verso " + escapeHtml(dstIpStr) + ". Aggiungi una rotta statica o controlla gli indirizzi.");
       let np, ntip, viaTxt;
       if (route.type === "connected") { np = route.port; ntip = dstIp; viaTxt = "rete connessa su " + np.name; }
+      else if (route.type === "rip") { np = route.port; if (!np) return fail("Rotta RIP senza interfaccia d'uscita valida su " + escapeHtml(arrived.name) + "."); ntip = ipToInt(route.nextHop); viaTxt = "RIP next hop " + route.nextHop + " (" + np.name + ", metric " + route.metric + ")"; }
       else { np = portForNextHop(arrived, ipToInt(route.nextHop)); if (!np) return fail("Il router " + escapeHtml(arrived.name) + " ha una rotta con next hop " + escapeHtml(route.nextHop) + " non raggiungibile."); ntip = ipToInt(route.nextHop); viaTxt = "next hop " + route.nextHop + " (" + np.name + ")"; }
       logStep('<span class="who">' + escapeHtml(arrived.name) + "</span> consulta la tabella → rotta <b>" + intToIp(route.net) + "/" + route.cidr + "</b> via " + viaTxt + ". TTL=" + ttl + ".");
       exitPort = np; targetIp = ntip; senderMac = np.mac;
@@ -522,6 +595,14 @@
       r2.staticRoutes = [{ net: "10.0.0.0", mask: "255.255.255.0", nextHop: "10.0.1.1" }];
       const pc2 = spawn("pc", 580, 150); setIp(pc2, 0, "10.0.2.10", "255.255.255.0"); pc2.gateway = "10.0.2.1";
       mkLink(pc1, r1); mkLink(r1, r2); mkLink(r2, pc2);
+    } else if (name === "rip3") {
+      const pc1 = spawn("pc", 20, 250); setIp(pc1, 0, "10.1.0.10", "255.255.255.0"); pc1.gateway = "10.1.0.1";
+      const r1 = spawn("router", 170, 140); setIp(r1, 0, "10.1.0.1", "255.255.255.0"); setIp(r1, 1, "10.1.12.1", "255.255.255.0"); r1.routingMode = "rip";
+      const r2 = spawn("router", 330, 140); setIp(r2, 0, "10.1.12.2", "255.255.255.0"); setIp(r2, 1, "10.1.23.2", "255.255.255.0"); r2.routingMode = "rip";
+      const r3 = spawn("router", 490, 140); setIp(r3, 0, "10.1.23.3", "255.255.255.0"); setIp(r3, 1, "10.1.3.1", "255.255.255.0"); r3.routingMode = "rip";
+      const pc2 = spawn("pc", 640, 250); setIp(pc2, 0, "10.1.3.10", "255.255.255.0"); pc2.gateway = "10.1.3.1";
+      mkLink(pc1, r1); mkLink(r1, r2); mkLink(r2, r3); mkLink(r3, pc2);
+      runRip(false); // converge in silenzio: funziona subito. Apri un router → Routing per vedere le rotte RIP, o premi «Fai convergere RIP» per rivedere i round.
     }
     render(); renderSide();
   }
