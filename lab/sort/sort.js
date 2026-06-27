@@ -23,7 +23,7 @@
     c.snap([], sorted, null, "Array di partenza");
     for (let i = 0; i < n - 1; i++) {
       for (let j = 0; j < n - 1 - i; j++) {
-        c.cmp(); c.snap([j, j + 1], sorted, "compare", `Confronto a[${j}]=${a[j]} e a[${j + 1}]=${a[j + 1]}`);
+        c.cmp(); c.snap([j, j + 1], sorted, "compare", `Confronto numeri[${j}]=${a[j]} e numeri[${j + 1}]=${a[j + 1]}`);
         if (a[j] > a[j + 1]) { const t = a[j]; a[j] = a[j + 1]; a[j + 1] = t; c.move(); c.snap([j, j + 1], sorted, "swap", `${a[j + 1]} > ${a[j]}: li scambio`); }
       }
       sorted.push(n - 1 - i);
@@ -37,8 +37,8 @@
     for (let i = 0; i < n; i++) {
       let mi = i; c.snap([i], sorted, "min", `Cerco il minimo a partire da ${i}`);
       for (let j = i + 1; j < n; j++) {
-        c.cmp(); c.snap([mi, j], sorted, "compare", `a[${j}]=${a[j]} < minimo (${a[mi]})?`);
-        if (a[j] < a[mi]) { mi = j; c.snap([mi], sorted, "min", `Nuovo minimo: a[${mi}]=${a[mi]}`); }
+        c.cmp(); c.snap([mi, j], sorted, "compare", `numeri[${j}]=${a[j]} < minimo (${a[mi]})?`);
+        if (a[j] < a[mi]) { mi = j; c.snap([mi], sorted, "min", `Nuovo minimo: numeri[${mi}]=${a[mi]}`); }
       }
       if (mi !== i) { const t = a[i]; a[i] = a[mi]; a[mi] = t; c.move(); c.snap([i, mi], sorted, "swap", `Porto il minimo in posizione ${i}`); }
       sorted.push(i);
@@ -51,13 +51,13 @@
     c.snap([], sorted, null, "Array di partenza");
     for (let i = 1; i < n; i++) {
       const key = a[i]; let j = i - 1;
-      c.snap([i], sorted, "key", `Estraggo a[${i}]=${key}`);
+      c.snap([i], sorted, "key", `Estraggo numeri[${i}]=${key}`);
       while (j >= 0 && a[j] > key) {
-        c.cmp(); c.snap([j, j + 1], sorted, "compare", `a[${j}]=${a[j]} > ${key}`);
+        c.cmp(); c.snap([j, j + 1], sorted, "compare", `numeri[${j}]=${a[j]} > ${key}`);
         a[j + 1] = a[j]; c.move(); c.snap([j, j + 1], sorted, "shift", `Sposto ${a[j]} a destra`);
         j--;
       }
-      if (j >= 0) { c.cmp(); c.snap([j, j + 1], sorted, "compare", `a[${j}]=${a[j]} ≤ ${key}: mi fermo`); }
+      if (j >= 0) { c.cmp(); c.snap([j, j + 1], sorted, "compare", `numeri[${j}]=${a[j]} ≤ ${key}: mi fermo`); }
       a[j + 1] = key; c.move();
       sorted = []; for (let k = 0; k <= i; k++) sorted.push(k);
       c.snap([j + 1], sorted, "insert", `Inserisco ${key} in posizione ${j + 1}`);
@@ -72,12 +72,13 @@
       const L = a.slice(l, m + 1), R = a.slice(m + 1, r + 1);
       let i = 0, j = 0, k = l;
       while (i < L.length && j < R.length) {
-        c.cmp(); c.snap([l + i, m + 1 + j], [], "compare", `Confronto ${L[i]} e ${R[j]}`);
-        if (L[i] <= R[j]) a[k] = L[i++]; else a[k] = R[j++];
-        c.move(); c.snap([k], [], "copy", `Scrivo ${a[k]} in posizione ${k}`); k++;
+        c.cmp(); c.snap([l + i, m + 1 + j], [], "compare", `Confronto sinistra=${L[i]} e destra=${R[j]}`);
+        if (L[i] <= R[j]) { a[k] = L[i++]; c.move(); c.snap([k], [], "copyL", `${a[k]} viene da sinistra → posizione ${k}`); }
+        else              { a[k] = R[j++]; c.move(); c.snap([k], [], "copyR", `${a[k]} viene da destra → posizione ${k}`); }
+        k++;
       }
-      while (i < L.length) { a[k] = L[i++]; c.move(); c.snap([k], [], "copy", `Copio ${a[k]} in ${k}`); k++; }
-      while (j < R.length) { a[k] = R[j++]; c.move(); c.snap([k], [], "copy", `Copio ${a[k]} in ${k}`); k++; }
+      while (i < L.length) { a[k] = L[i++]; c.move(); c.snap([k], [], "tailL", `Resto di sinistra: copio ${a[k]} in ${k}`); k++; }
+      while (j < R.length) { a[k] = R[j++]; c.move(); c.snap([k], [], "tailR", `Resto di destra: copio ${a[k]} in ${k}`); k++; }
     }
     (function ms(l, r) { if (l >= r) return; const m = (l + r) >> 1; ms(l, m); ms(m + 1, r); mrg(l, m, r); })(0, n - 1);
     const all = []; for (let k = 0; k < n; k++) all.push(k);
@@ -91,10 +92,10 @@
       if (lo > hi) return;
       if (lo === hi) { sorted.push(lo); return; }
       const pivot = a[hi];
-      c.snap([hi], sorted, "pivot", `Scelgo il pivot: a[${hi}]=${pivot}`, hi);
+      c.snap([hi], sorted, "pivot", `Scelgo il pivot: numeri[${hi}]=${pivot}`, hi);
       let i = lo;
       for (let j = lo; j < hi; j++) {
-        c.cmp(); c.snap([j], sorted, "compare", `a[${j}]=${a[j]} < pivot ${pivot}?`, hi);
+        c.cmp(); c.snap([j], sorted, "compare", `numeri[${j}]=${a[j]} < pivot ${pivot}?`, hi);
         if (a[j] < pivot) { if (i !== j) { const t = a[i]; a[i] = a[j]; a[j] = t; c.move(); c.snap([i, j], sorted, "swap", `Sposto ${a[i]} a sinistra`, hi); } i++; }
       }
       if (i !== hi) { const t = a[i]; a[i] = a[hi]; a[hi] = t; c.move(); }
@@ -116,38 +117,38 @@
         note: "È il più facile da capire e da scrivere, ma anche il più lento: con tanti elementi fa moltissimi confronti."
       },
       code: {
-      c: `void bubbleSort(int a[], int n) {
-  for (int i = 0; i < n - 1; i++)
-    for (int j = 0; j < n - 1 - i; j++)
-      if (a[j] > a[j + 1]) {        //@compare
-        int t = a[j];               //@swap
-        a[j] = a[j + 1];
-        a[j + 1] = t;
+      c: `void bubbleSort(int numeri[], int lunghezza) {
+  for (int i = 0; i < lunghezza - 1; i++)
+    for (int j = 0; j < lunghezza - 1 - i; j++)
+      if (numeri[j] > numeri[j + 1]) {        //@compare
+        int temp = numeri[j];                 //@swap
+        numeri[j] = numeri[j + 1];
+        numeri[j + 1] = temp;
       }
 }`,
-      cpp: `void bubbleSort(vector<int>& a) {
-  int n = a.size();
-  for (int i = 0; i < n - 1; i++)
-    for (int j = 0; j < n - 1 - i; j++)
-      if (a[j] > a[j + 1])          //@compare
-        swap(a[j], a[j + 1]);       //@swap
+      cpp: `void bubbleSort(vector<int>& numeri) {
+  int lunghezza = numeri.size();
+  for (int i = 0; i < lunghezza - 1; i++)
+    for (int j = 0; j < lunghezza - 1 - i; j++)
+      if (numeri[j] > numeri[j + 1])          //@compare
+        swap(numeri[j], numeri[j + 1]);       //@swap
 }`,
-      java: `void bubbleSort(int[] a) {
-  int n = a.length;
-  for (int i = 0; i < n - 1; i++)
-    for (int j = 0; j < n - 1 - i; j++)
-      if (a[j] > a[j + 1]) {        //@compare
-        int t = a[j];               //@swap
-        a[j] = a[j + 1];
-        a[j + 1] = t;
+      java: `void bubbleSort(int[] numeri) {
+  int lunghezza = numeri.length;
+  for (int i = 0; i < lunghezza - 1; i++)
+    for (int j = 0; j < lunghezza - 1 - i; j++)
+      if (numeri[j] > numeri[j + 1]) {        //@compare
+        int temp = numeri[j];                 //@swap
+        numeri[j] = numeri[j + 1];
+        numeri[j + 1] = temp;
       }
 }`,
-      python: `def bubble_sort(a):
-    n = len(a)
-    for i in range(n - 1):
-        for j in range(n - 1 - i):
-            if a[j] > a[j + 1]:           #@compare
-                a[j], a[j+1] = a[j+1], a[j]   #@swap` } },
+      python: `def bubble_sort(numeri):
+    lunghezza = len(numeri)
+    for i in range(lunghezza - 1):
+        for j in range(lunghezza - 1 - i):
+            if numeri[j] > numeri[j + 1]:                      #@compare
+                numeri[j], numeri[j + 1] = numeri[j + 1], numeri[j]   #@swap` } },
 
     selection: { name: "Selection Sort", big: "O(n²)", gen: selection,
       explain: {
@@ -157,41 +158,45 @@
         note: "Fa pochissimi scambi (utile quando spostare gli elementi costa), ma controlla comunque sempre tanti elementi."
       },
       code: {
-      c: `void selectionSort(int a[], int n) {
-  for (int i = 0; i < n; i++) {
-    int min = i;                    //@min
-    for (int j = i + 1; j < n; j++)
-      if (a[j] < a[min])            //@compare
-        min = j;                    //@min
-    int t = a[i]; a[i] = a[min]; a[min] = t;  //@swap
+      c: `void selectionSort(int numeri[], int lunghezza) {
+  for (int i = 0; i < lunghezza; i++) {
+    int indiceMinimo = i;                       //@min
+    for (int j = i + 1; j < lunghezza; j++)
+      if (numeri[j] < numeri[indiceMinimo])     //@compare
+        indiceMinimo = j;                       //@min
+    int temp = numeri[i];                       //@swap
+    numeri[i] = numeri[indiceMinimo];
+    numeri[indiceMinimo] = temp;
   }
 }`,
-      cpp: `void selectionSort(vector<int>& a) {
-  int n = a.size();
-  for (int i = 0; i < n; i++) {
-    int mn = i;                     //@min
-    for (int j = i + 1; j < n; j++)
-      if (a[j] < a[mn])             //@compare
-        mn = j;                     //@min
-    swap(a[i], a[mn]);              //@swap
+      cpp: `void selectionSort(vector<int>& numeri) {
+  int lunghezza = numeri.size();
+  for (int i = 0; i < lunghezza; i++) {
+    int indiceMinimo = i;                       //@min
+    for (int j = i + 1; j < lunghezza; j++)
+      if (numeri[j] < numeri[indiceMinimo])     //@compare
+        indiceMinimo = j;                       //@min
+    swap(numeri[i], numeri[indiceMinimo]);      //@swap
   }
 }`,
-      java: `void selectionSort(int[] a) {
-  for (int i = 0; i < a.length; i++) {
-    int min = i;                    //@min
-    for (int j = i + 1; j < a.length; j++)
-      if (a[j] < a[min])            //@compare
-        min = j;                    //@min
-    int t = a[i]; a[i] = a[min]; a[min] = t;  //@swap
+      java: `void selectionSort(int[] numeri) {
+  for (int i = 0; i < numeri.length; i++) {
+    int indiceMinimo = i;                       //@min
+    for (int j = i + 1; j < numeri.length; j++)
+      if (numeri[j] < numeri[indiceMinimo])     //@compare
+        indiceMinimo = j;                       //@min
+    int temp = numeri[i];                       //@swap
+    numeri[i] = numeri[indiceMinimo];
+    numeri[indiceMinimo] = temp;
   }
 }`,
-      python: `def selection_sort(a):
-    for i in range(len(a)):
-        mn = i                       #@min
-        for j in range(i + 1, len(a)):
-            if a[j] < a[mn]:         #@compare
-                mn = j               #@min
-        a[i], a[mn] = a[mn], a[i]    #@swap` } },
+      python: `def selection_sort(numeri):
+    for i in range(len(numeri)):
+        indice_minimo = i                        #@min
+        for j in range(i + 1, len(numeri)):
+            if numeri[j] < numeri[indice_minimo]:#@compare
+                indice_minimo = j                #@min
+        numeri[i], numeri[indice_minimo] = numeri[indice_minimo], numeri[i]  #@swap` } },
 
     insertion: { name: "Insertion Sort", big: "O(n²)", gen: insertion,
       explain: {
@@ -201,43 +206,47 @@
         note: "Velocissimo se la lista è già quasi ordinata ed efficiente sulle liste piccole. Rallenta nel caso peggiore."
       },
       code: {
-      c: `void insertionSort(int a[], int n) {
-  for (int i = 1; i < n; i++) {
-    int key = a[i], j = i - 1;      //@key
-    while (j >= 0 && a[j] > key) {  //@compare
-      a[j + 1] = a[j];              //@shift
+      c: `void insertionSort(int numeri[], int lunghezza) {
+  for (int i = 1; i < lunghezza; i++) {
+    int corrente = numeri[i];                   //@key
+    int j = i - 1;
+    while (j >= 0 && numeri[j] > corrente) {    //@compare
+      numeri[j + 1] = numeri[j];                //@shift
       j--;
     }
-    a[j + 1] = key;                 //@insert
+    numeri[j + 1] = corrente;                   //@insert
   }
 }`,
-      cpp: `void insertionSort(vector<int>& a) {
-  for (int i = 1; i < a.size(); i++) {
-    int key = a[i], j = i - 1;      //@key
-    while (j >= 0 && a[j] > key) {  //@compare
-      a[j + 1] = a[j];              //@shift
+      cpp: `void insertionSort(vector<int>& numeri) {
+  for (int i = 1; i < numeri.size(); i++) {
+    int corrente = numeri[i];                   //@key
+    int j = i - 1;
+    while (j >= 0 && numeri[j] > corrente) {    //@compare
+      numeri[j + 1] = numeri[j];                //@shift
       j--;
     }
-    a[j + 1] = key;                 //@insert
+    numeri[j + 1] = corrente;                   //@insert
   }
 }`,
-      java: `void insertionSort(int[] a) {
-  for (int i = 1; i < a.length; i++) {
-    int key = a[i], j = i - 1;      //@key
-    while (j >= 0 && a[j] > key) {  //@compare
-      a[j + 1] = a[j];              //@shift
+      java: `void insertionSort(int[] numeri) {
+  for (int i = 1; i < numeri.length; i++) {
+    int corrente = numeri[i];                   //@key
+    int j = i - 1;
+    while (j >= 0 && numeri[j] > corrente) {    //@compare
+      numeri[j + 1] = numeri[j];                //@shift
       j--;
     }
-    a[j + 1] = key;                 //@insert
+    numeri[j + 1] = corrente;                   //@insert
   }
 }`,
-      python: `def insertion_sort(a):
-    for i in range(1, len(a)):
-        key, j = a[i], i - 1         #@key
-        while j >= 0 and a[j] > key: #@compare
-            a[j + 1] = a[j]          #@shift
+      python: `def insertion_sort(numeri):
+    for i in range(1, len(numeri)):
+        corrente = numeri[i]                     #@key
+        j = i - 1
+        while j >= 0 and numeri[j] > corrente:   #@compare
+            numeri[j + 1] = numeri[j]            #@shift
             j -= 1
-        a[j + 1] = key               #@insert` } },
+        numeri[j + 1] = corrente                 #@insert` } },
 
     merge: { name: "Merge Sort", big: "O(n log n)", gen: merge,
       explain: {
@@ -247,47 +256,62 @@
         note: "Veloce e affidabile anche con molti dati. In cambio usa un po' di memoria in più per fondere le parti."
       },
       code: {
-      c: `void merge(int a[], int l, int m, int r) {
-  /* fonde a[l..m] e a[m+1..r] ordinati */
-  int i = l, j = m + 1, k = 0, tmp[r - l + 1];
-  while (i <= m && j <= r)
-    if (a[i] <= a[j]) tmp[k++] = a[i++];  //@compare
-    else              tmp[k++] = a[j++];  //@copy
-  while (i <= m) tmp[k++] = a[i++];
-  while (j <= r) tmp[k++] = a[j++];
-  for (k = 0; k < r - l + 1; k++) a[l + k] = tmp[k];
+      c: `void merge(int numeri[], int inizio, int meta, int fine) {
+  int nSin = meta - inizio + 1, nDes = fine - meta;
+  int sinistra[nSin], destra[nDes];
+  for (int x = 0; x < nSin; x++) sinistra[x] = numeri[inizio + x];
+  for (int x = 0; x < nDes; x++) destra[x]   = numeri[meta + 1 + x];
+  int i = 0, j = 0, k = inizio;
+  while (i < nSin && j < nDes) {
+    if (sinistra[i] <= destra[j])               //@compare
+      numeri[k++] = sinistra[i++];              //@copyL
+    else
+      numeri[k++] = destra[j++];                //@copyR
+  }
+  while (i < nSin) numeri[k++] = sinistra[i++]; //@tailL
+  while (j < nDes) numeri[k++] = destra[j++];   //@tailR
 }`,
-      cpp: `void merge(vector<int>& a, int l, int m, int r) {
-  vector<int> L(a.begin()+l, a.begin()+m+1);
-  vector<int> R(a.begin()+m+1, a.begin()+r+1);
-  int i = 0, j = 0, k = l;
-  while (i < L.size() && j < R.size())
-    if (L[i] <= R[j]) a[k++] = L[i++];    //@compare
-    else              a[k++] = R[j++];    //@copy
-  while (i < L.size()) a[k++] = L[i++];
-  while (j < R.size()) a[k++] = R[j++];
+      cpp: `void merge(vector<int>& numeri, int inizio, int meta, int fine) {
+  vector<int> sinistra(numeri.begin()+inizio, numeri.begin()+meta+1);
+  vector<int> destra(numeri.begin()+meta+1,   numeri.begin()+fine+1);
+  int i = 0, j = 0, k = inizio;
+  while (i < sinistra.size() && j < destra.size()) {
+    if (sinistra[i] <= destra[j])               //@compare
+      numeri[k++] = sinistra[i++];              //@copyL
+    else
+      numeri[k++] = destra[j++];                //@copyR
+  }
+  while (i < sinistra.size()) numeri[k++] = sinistra[i++]; //@tailL
+  while (j < destra.size())   numeri[k++] = destra[j++];   //@tailR
 }`,
-      java: `void merge(int[] a, int l, int m, int r) {
-  int[] L = Arrays.copyOfRange(a, l, m + 1);
-  int[] R = Arrays.copyOfRange(a, m + 1, r + 1);
-  int i = 0, j = 0, k = l;
-  while (i < L.length && j < R.length)
-    if (L[i] <= R[j]) a[k++] = L[i++];    //@compare
-    else              a[k++] = R[j++];    //@copy
-  while (i < L.length) a[k++] = L[i++];
-  while (j < R.length) a[k++] = R[j++];
+      java: `void merge(int[] numeri, int inizio, int meta, int fine) {
+  int[] sinistra = Arrays.copyOfRange(numeri, inizio, meta + 1);
+  int[] destra   = Arrays.copyOfRange(numeri, meta + 1, fine + 1);
+  int i = 0, j = 0, k = inizio;
+  while (i < sinistra.length && j < destra.length) {
+    if (sinistra[i] <= destra[j])               //@compare
+      numeri[k++] = sinistra[i++];              //@copyL
+    else
+      numeri[k++] = destra[j++];                //@copyR
+  }
+  while (i < sinistra.length) numeri[k++] = sinistra[i++]; //@tailL
+  while (j < destra.length)   numeri[k++] = destra[j++];   //@tailR
 }`,
-      python: `def merge(a, l, m, r):
-    L, R = a[l:m+1], a[m+1:r+1]
-    i = j = 0; k = l
-    while i < len(L) and j < len(R):
-        if L[i] <= R[j]:          #@compare
-            a[k] = L[i]; i += 1
+      python: `def merge(numeri, inizio, meta, fine):
+    sinistra = numeri[inizio:meta + 1]
+    destra   = numeri[meta + 1:fine + 1]
+    i = j = 0
+    k = inizio
+    while i < len(sinistra) and j < len(destra):
+        if sinistra[i] <= destra[j]:            #@compare
+            numeri[k] = sinistra[i]; i += 1     #@copyL
         else:
-            a[k] = R[j]; j += 1   #@copy
+            numeri[k] = destra[j]; j += 1       #@copyR
         k += 1
-    while i < len(L): a[k] = L[i]; i += 1; k += 1
-    while j < len(R): a[k] = R[j]; j += 1; k += 1` } },
+    while i < len(sinistra):
+        numeri[k] = sinistra[i]; i += 1; k += 1 #@tailL
+    while j < len(destra):
+        numeri[k] = destra[j]; j += 1; k += 1   #@tailR` } },
 
     quick: { name: "Quick Sort", big: "O(n log n)", gen: quick,
       explain: {
@@ -297,42 +321,54 @@
         note: "In media molto veloce e ordina sul posto, senza liste extra. Può rallentare se il pivot viene scelto male."
       },
       code: {
-      c: `int partition(int a[], int lo, int hi) {
-  int pivot = a[hi], i = lo;        //@pivot
-  for (int j = lo; j < hi; j++)
-    if (a[j] < pivot) {             //@compare
-      int t = a[i]; a[i] = a[j]; a[j] = t;  //@swap
-      i++;
+      c: `int partition(int numeri[], int inizio, int fine) {
+  int pivot = numeri[fine];                     //@pivot
+  int confine = inizio;
+  for (int j = inizio; j < fine; j++)
+    if (numeri[j] < pivot) {                     //@compare
+      int temp = numeri[confine];               //@swap
+      numeri[confine] = numeri[j];
+      numeri[j] = temp;
+      confine++;
     }
-  int t = a[i]; a[i] = a[hi]; a[hi] = t;    //@swap
-  return i;
+  int temp = numeri[confine];                   //@swap
+  numeri[confine] = numeri[fine];
+  numeri[fine] = temp;
+  return confine;
 }`,
-      cpp: `int partition(vector<int>& a, int lo, int hi) {
-  int pivot = a[hi], i = lo;        //@pivot
-  for (int j = lo; j < hi; j++)
-    if (a[j] < pivot)               //@compare
-      swap(a[i++], a[j]);           //@swap
-  swap(a[i], a[hi]);                //@swap
-  return i;
+      cpp: `int partition(vector<int>& numeri, int inizio, int fine) {
+  int pivot = numeri[fine];                     //@pivot
+  int confine = inizio;
+  for (int j = inizio; j < fine; j++)
+    if (numeri[j] < pivot)                       //@compare
+      swap(numeri[confine++], numeri[j]);       //@swap
+  swap(numeri[confine], numeri[fine]);          //@swap
+  return confine;
 }`,
-      java: `int partition(int[] a, int lo, int hi) {
-  int pivot = a[hi], i = lo;        //@pivot
-  for (int j = lo; j < hi; j++)
-    if (a[j] < pivot) {             //@compare
-      int t = a[i]; a[i] = a[j]; a[j] = t;  //@swap
-      i++;
+      java: `int partition(int[] numeri, int inizio, int fine) {
+  int pivot = numeri[fine];                     //@pivot
+  int confine = inizio;
+  for (int j = inizio; j < fine; j++)
+    if (numeri[j] < pivot) {                     //@compare
+      int temp = numeri[confine];               //@swap
+      numeri[confine] = numeri[j];
+      numeri[j] = temp;
+      confine++;
     }
-  int t = a[i]; a[i] = a[hi]; a[hi] = t;    //@swap
-  return i;
+  int temp = numeri[confine];                   //@swap
+  numeri[confine] = numeri[fine];
+  numeri[fine] = temp;
+  return confine;
 }`,
-      python: `def partition(a, lo, hi):
-    pivot, i = a[hi], lo             #@pivot
-    for j in range(lo, hi):
-        if a[j] < pivot:             #@compare
-            a[i], a[j] = a[j], a[i]  #@swap
-            i += 1
-    a[i], a[hi] = a[hi], a[i]        #@swap
-    return i` } },
+      python: `def partition(numeri, inizio, fine):
+    pivot = numeri[fine]                         #@pivot
+    confine = inizio
+    for j in range(inizio, fine):
+        if numeri[j] < pivot:                    #@compare
+            numeri[confine], numeri[j] = numeri[j], numeri[confine]  #@swap
+            confine += 1
+    numeri[confine], numeri[fine] = numeri[fine], numeri[confine]    #@swap
+    return confine` } },
   };
 
   /* ---------- Stato ---------- */
@@ -387,7 +423,7 @@
     $("bars").innerHTML = f.a.map((v, i) => {
       let cls = "bar";
       if (i === f.pivot) cls += " pivot";
-      else if (f.active.indexOf(i) >= 0) cls += (f.line === "swap" || f.line === "shift" || f.line === "copy") ? " swap" : " compare";
+      else if (f.active.indexOf(i) >= 0) cls += (["swap", "shift", "copy", "copyL", "copyR", "tailL", "tailR"].indexOf(f.line) >= 0) ? " swap" : " compare";
       else if (f.sorted.indexOf(i) >= 0) cls += " sorted";
       return `<div class="${cls}" style="height:${(v / max) * 100}%">${size <= 16 ? v : ""}</div>`;
     }).join("");
