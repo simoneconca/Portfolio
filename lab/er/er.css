@@ -1,0 +1,179 @@
+/* ============================================================
+   er.css — Modello E-R, editor concettuale
+   Entità / Attributi / Associazioni + schema logico.
+   Usa base.css + lab.css.
+   ============================================================ */
+
+.er-sec { position: relative; z-index: 2; }
+
+/* ---------- Toolbar ---------- */
+.er-board-panel { padding: clamp(1rem, 2.5vw, 1.4rem); }
+.er-toolbar { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; margin-bottom: 0.8rem; }
+.er-toolbar .control-label { margin-right: 0.2rem; }
+.er-toolbar-spacer { flex: 1 1 auto; }
+.er-add {
+  font-family: var(--font-mono); font-size: 0.8rem; padding: 0.42rem 0.8rem;
+  border: 1px solid var(--line); border-radius: 100px; background: var(--bg);
+  color: var(--ink); cursor: pointer; white-space: nowrap;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease);
+}
+.er-add:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ---------- Messaggi (regole) ---------- */
+.er-msg {
+  min-height: 1.4rem; margin-bottom: 0.6rem;
+  font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.4;
+  transition: color 0.2s var(--ease);
+}
+.er-msg.error { color: #e0533d; }
+.er-msg.ok { color: #3fae6b; }
+.er-msg.info { color: var(--ink-soft); }
+
+/* ---------- Banco scorrevole ---------- */
+.er-board {
+  position: relative;
+  width: 100%;
+  height: clamp(380px, 60vh, 560px);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background:
+    radial-gradient(circle at 1px 1px, var(--line-soft) 1px, transparent 0) 0 0 / 22px 22px,
+    var(--bg-sunk);
+  background-attachment: local;
+  overflow: auto;
+  overscroll-behavior: contain;
+}
+.er-links { position: absolute; top: 0; left: 0; pointer-events: none; }
+.er-links line.link { stroke: var(--ink-soft); stroke-width: 2; pointer-events: stroke; cursor: pointer; }
+.er-links line.link:hover { stroke: #e0533d; }
+.er-links line.flash { stroke: #e0533d; stroke-width: 3; }
+.er-nodes, .er-labels { position: absolute; top: 0; left: 0; }
+.er-labels { pointer-events: none; }
+
+.er-board-hint {
+  position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%);
+  max-width: 92%; text-align: center; font-size: 0.8rem; color: var(--ink-faint);
+  pointer-events: none; transition: opacity 0.3s var(--ease);
+}
+.er-board-hint em { font-style: normal; color: var(--accent); }
+
+/* ---------- Nodi ---------- */
+.er-node { position: absolute; user-select: none; touch-action: none; }
+.er-shape {
+  display: grid; place-items: center; text-align: center;
+  font-family: var(--font-mono); font-size: 0.86rem; font-weight: 500;
+  color: var(--ink); background: var(--bg-elev);
+  border: 1.6px solid var(--ink); cursor: grab;
+  padding: 0.4rem 0.6rem;
+  box-shadow: 0 4px 14px -10px rgba(0,0,0,0.5);
+  transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+.er-node.dragging .er-shape { cursor: grabbing; }
+.er-node .er-label { outline: none; min-width: 1ch; }
+.er-node .er-label[contenteditable="true"] { cursor: text; border-bottom: 1px dashed var(--accent); }
+
+/* entità: rettangolo */
+.er-node.t-entity .er-shape { width: 128px; min-height: 52px; border-radius: 7px; }
+/* associazione: rombo */
+.er-node.t-assoc .er-shape {
+  width: 138px; min-height: 76px;
+  clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  border: 0; background: transparent;
+}
+.er-node.t-assoc { filter: drop-shadow(0 4px 10px rgba(0,0,0,0.18)); }
+.er-node.t-assoc .er-rhombus {
+  position: absolute; inset: 0; clip-path: polygon(50% 0, 100% 50%, 50% 100%, 0 50%);
+  background: var(--bg-elev); border: 1.6px solid var(--ink); z-index: -1;
+}
+.er-node.t-assoc .er-shape { position: relative; padding: 0.4rem 1.5rem; }
+/* attributo: ellisse */
+.er-node.t-attr .er-shape { width: 110px; min-height: 46px; border-radius: 50%; font-size: 0.8rem; }
+.er-node.t-attr.is-key .er-label { text-decoration: underline; }
+
+.er-node.selected .er-shape,
+.er-node.selected .er-rhombus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-wash); }
+.er-node.pending .er-shape,
+.er-node.pending .er-rhombus { border-color: var(--accent); border-style: dashed; }
+
+/* maniglia di collegamento */
+.er-port {
+  position: absolute; top: -9px; right: -9px;
+  width: 18px; height: 18px; border-radius: 50%;
+  background: var(--bg-elev); border: 2px solid var(--accent);
+  color: var(--accent); display: grid; place-items: center;
+  font-size: 11px; line-height: 1; cursor: crosshair; z-index: 3;
+}
+.er-port:hover { background: var(--accent); color: var(--accent-ink); }
+.er-node.pending .er-port { background: var(--accent); color: var(--accent-ink); }
+/* badge chiave (solo attributi) */
+.er-key {
+  position: absolute; top: -9px; left: -9px;
+  width: 20px; height: 18px; border-radius: 6px;
+  background: var(--bg-elev); border: 1px solid var(--line);
+  color: var(--ink-faint); display: grid; place-items: center;
+  font-size: 9px; font-family: var(--font-mono); cursor: pointer; z-index: 3;
+}
+.er-node.is-key .er-key { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+/* elimina */
+.er-del {
+  position: absolute; bottom: -9px; right: -9px;
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 1px solid var(--line); background: var(--bg-elev); color: var(--ink-soft);
+  font-size: 0.75rem; line-height: 1; display: none; place-items: center; cursor: pointer; z-index: 3;
+}
+.er-node:hover .er-del { display: grid; }
+.er-del:hover { border-color: #e0533d; color: #e0533d; }
+
+/* ---------- Etichette cardinalità ---------- */
+.er-card {
+  position: absolute; transform: translate(-50%, -50%);
+  font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600;
+  padding: 0.1rem 0.4rem; border-radius: 6px;
+  background: var(--bg-elev); border: 1px solid var(--accent); color: var(--accent);
+  cursor: pointer; pointer-events: auto; white-space: nowrap;
+}
+.er-card:hover { background: var(--accent); color: var(--accent-ink); }
+
+/* menu cardinalità */
+.er-menu {
+  position: absolute; z-index: 10;
+  background: var(--bg-elev); border: 1px solid var(--line); border-radius: 10px;
+  padding: 4px; box-shadow: 0 14px 30px -16px rgba(0,0,0,0.5);
+  display: grid; gap: 2px;
+}
+.er-menu button {
+  font-family: var(--font-mono); font-size: 0.8rem; padding: 0.35rem 0.8rem;
+  border: 0; border-radius: 6px; background: transparent; color: var(--ink);
+  cursor: pointer; text-align: left;
+}
+.er-menu button:hover, .er-menu button.active { background: var(--accent); color: var(--accent-ink); }
+
+/* ---------- Layout parte bassa ---------- */
+.er-bottom { display: grid; grid-template-columns: 1.4fr 1fr; gap: 1.25rem; align-items: start; }
+@media (max-width: 880px) { .er-bottom { grid-template-columns: 1fr; } }
+
+/* ---------- Schema logico ---------- */
+.er-schema { display: grid; gap: 0.7rem; }
+.er-table {
+  font-family: var(--font-mono); font-size: 0.9rem; line-height: 1.5;
+  border: 1px solid var(--line); border-radius: 9px; padding: 0.6rem 0.8rem; background: var(--bg);
+}
+.er-table.bridge { border-style: dashed; }
+.er-table .tname { color: var(--ink); font-weight: 600; }
+.er-table .pk { text-decoration: underline; }
+.er-table .fk { font-style: italic; color: var(--accent); }
+.er-table .tnote { display: block; margin-top: 0.25rem; font-size: 0.72rem; color: #e0533d; }
+.er-schema-empty { color: var(--ink-faint); font-size: 0.9rem; padding: 1rem 0; }
+
+.er-legend { margin-top: 1rem; display: flex; gap: 1.2rem; flex-wrap: wrap; font-size: 0.78rem; color: var(--ink-soft); font-family: var(--font-mono); }
+.er-legend u { color: var(--ink); }
+.er-legend i { color: var(--accent); }
+
+/* ---------- Regole ---------- */
+.er-rules { list-style: none; display: grid; gap: 0.7rem; }
+.er-rules li { display: grid; grid-template-columns: auto 1fr; gap: 0.55rem; font-size: 0.88rem; color: var(--ink-soft); line-height: 1.45; }
+.er-rules .ic { color: var(--accent); font-family: var(--font-mono); }
+
+@media (max-width: 560px) {
+  .er-add { flex: 1 1 auto; text-align: center; }
+}
