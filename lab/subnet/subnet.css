@@ -51,14 +51,14 @@
 .sw-host { background: #d98a2b; }
 
 .sn-bitgrid { overflow-x: auto; padding-bottom: 0.4rem; }
-.sn-bitline { display: flex; gap: 0.85rem; min-width: max-content; }
+.sn-bitline { display: flex; flex-wrap: wrap; gap: 1.1rem 0.55rem; justify-content: center; }
 .sn-octet {
   display: flex; flex-direction: column; align-items: center; gap: 0.5rem;
   position: relative;
 }
 .sn-octbits { display: flex; gap: 3px; }
 .sn-bit {
-  width: clamp(20px, 3.4vw, 30px); height: clamp(28px, 4.6vw, 38px);
+  width: clamp(18px, 5vw, 24px); height: clamp(26px, 7vw, 32px);
   display: grid; place-items: center;
   font-family: var(--font-mono); font-size: 0.92rem; font-weight: 600;
   border-radius: 5px; border: 1px solid transparent;
@@ -72,6 +72,7 @@
   font-family: var(--font-mono); font-size: 0.95rem; font-weight: 600; color: var(--ink);
 }
 .sn-octdot { align-self: center; font-family: var(--font-mono); font-size: 1.4rem; color: var(--ink-faint); padding: 0 0.1rem; margin-top: -1.4rem; }
+@media (max-width: 600px) { .sn-octdot { display: none; } }
 
 .sn-masktitle { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint); margin: 1.4rem 0 0.6rem; }
 .sn-maskline .sn-bit {

@@ -62,8 +62,9 @@
 
 /* ---------- Guida + vittoria ---------- */
 .ck-guide { margin-top: 1.25rem; }
-.ck-steps { counter-reset: step; margin-top: 0.8rem; display: grid; gap: 0.6rem; }
-.ck-step { display: flex; gap: 0.8rem; align-items: flex-start; font-size: 0.9rem; color: var(--ink-soft); opacity: 0.45; transition: opacity 0.3s var(--ease); }
+.ck-steps { counter-reset: step; margin-top: 0.8rem; display: grid; grid-template-columns: minmax(0, 1fr); gap: 0.6rem; }
+.ck-step { display: flex; gap: 0.8rem; align-items: flex-start; min-width: 0; font-size: 0.9rem; color: var(--ink-soft); opacity: 0.45; transition: opacity 0.3s var(--ease); }
+.ck-step > * { min-width: 0; }
 .ck-step.on { opacity: 1; color: var(--ink); }
 .ck-step::before { counter-increment: step; content: counter(step); flex: 0 0 auto; width: 22px; height: 22px; display: grid; place-items: center; border-radius: 50%; background: var(--bg-sunk); color: var(--ink-soft); font-family: var(--font-mono); font-size: 0.72rem; border: 1px solid var(--line); }
 .ck-step.on::before { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }

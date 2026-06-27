@@ -249,9 +249,13 @@
     menuLink = linkId;
     cardMenu.innerHTML = CARDS.map((c) =>
       `<button type="button" data-card="${c}" class="${l.card === c ? "active" : ""}">${c}</button>`).join("");
-    cardMenu.style.left = x + "px";
-    cardMenu.style.top = y + "px";
+    // fuori dal banco (che ha overflow:auto e taglierebbe il menu vicino ai bordi)
+    if (cardMenu.parentElement !== document.body) document.body.appendChild(cardMenu);
     cardMenu.hidden = false;
+    // coordinate viewport, mantenute dentro la finestra
+    const mw = cardMenu.offsetWidth, mh = cardMenu.offsetHeight;
+    cardMenu.style.left = Math.max(8, Math.min(x, window.innerWidth - mw - 8)) + "px";
+    cardMenu.style.top = Math.max(8, Math.min(y, window.innerHeight - mh - 8)) + "px";
   }
   function closeMenu() { cardMenu.hidden = true; menuLink = null; }
 
@@ -284,8 +288,8 @@
     if (keyEl && nodeEl) { e.preventDefault(); toggleKey(nodeEl.dataset.id); return; }
     if (cardEl) {
       e.preventDefault();
-      const r = cardEl.getBoundingClientRect(), br = board.getBoundingClientRect();
-      openMenu(cardEl.dataset.link, cardEl.offsetLeft, cardEl.offsetTop + 18);
+      const r = cardEl.getBoundingClientRect();
+      openMenu(cardEl.dataset.link, r.left, r.bottom + 4);
       return;
     }
     if (portEl && nodeEl) {
