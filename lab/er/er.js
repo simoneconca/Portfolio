@@ -76,7 +76,9 @@
       const a = byId(l.a), b = byId(l.b);
       if (!a || !b) return "";
       const ca = center(a), cb = center(b);
-      return `<line class="link${l._flash ? " flash" : ""}" data-link="${l.id}" x1="${ca.x}" y1="${ca.y}" x2="${cb.x}" y2="${cb.y}"/>`;
+      const co = `x1="${ca.x}" y1="${ca.y}" x2="${cb.x}" y2="${cb.y}"`;
+      // linea «hit» trasparente e larga (facile da cliccare) + linea visibile sottile
+      return `<line class="hit" data-link="${l.id}" ${co}/><line class="link${l._flash ? " flash" : ""}" ${co}/>`;
     }).join("");
   }
 
@@ -277,7 +279,7 @@
     const keyEl = e.target.closest(".er-key");
     const delEl = e.target.closest(".er-del");
     const cardEl = e.target.closest(".er-card");
-    const lineEl = e.target.closest("line.link");
+    const lineEl = e.target.closest("line.hit");
     const nodeEl = e.target.closest(".er-node");
     const inMenu = e.target.closest(".er-menu");
 

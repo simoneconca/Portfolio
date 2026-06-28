@@ -92,14 +92,20 @@
         </div>
 
         <div class="gv-suggests">
-          <button class="gv-chip" type="button" data-cmd='git commit -m "primo"'>git commit -m "primo"</button>
-          <button class="gv-chip" type="button" data-cmd="git checkout -b feature">git checkout -b feature</button>
-          <button class="gv-chip" type="button" data-cmd='git commit -m "lavoro sul ramo"'>git commit -m "lavoro sul ramo"</button>
-          <button class="gv-chip" type="button" data-cmd="git checkout main">git checkout main</button>
-          <button class="gv-chip" type="button" data-cmd="git merge feature">git merge feature</button>
-          <button class="gv-chip" type="button" data-cmd="git log">git log</button>
-          <button class="gv-chip" type="button" data-cmd="git status">git status</button>
-          <button class="gv-chip" type="button" data-cmd="help">help</button>
+          <span class="gv-suggests-label">Prova questa sequenza, <strong>in ordine</strong> (ogni comando si appoggia ai precedenti):</span>
+          <div class="gv-seq">
+            <button class="gv-chip" type="button" data-cmd='git commit -m "primo"'><span class="gv-step">1</span>git commit -m "primo"</button>
+            <button class="gv-chip" type="button" data-cmd="git checkout -b feature"><span class="gv-step">2</span>git checkout -b feature</button>
+            <button class="gv-chip" type="button" data-cmd='git commit -m "lavoro sul ramo"'><span class="gv-step">3</span>git commit -m "lavoro sul ramo"</button>
+            <button class="gv-chip" type="button" data-cmd="git checkout main"><span class="gv-step">4</span>git checkout main</button>
+            <button class="gv-chip" type="button" data-cmd="git merge feature"><span class="gv-step">5</span>git merge feature</button>
+          </div>
+          <span class="gv-suggests-label">Oppure, in qualsiasi momento:</span>
+          <div class="gv-seq">
+            <button class="gv-chip" type="button" data-cmd="git log">git log</button>
+            <button class="gv-chip" type="button" data-cmd="git status">git status</button>
+            <button class="gv-chip" type="button" data-cmd="help">help</button>
+          </div>
         </div>
 
       </div>

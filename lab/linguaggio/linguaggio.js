@@ -85,7 +85,7 @@
   const answers = new Array(QUESTIONS.length).fill(-1);
   let qi = 0, done = false;
   const root = document.getElementById("qlRoot");
-  const KEYS = ["A", "B", "C", "D", "E", "F", "G"];
+  const KEYS = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J"];
 
   function render() {
     if (done) return renderResult();

@@ -44,11 +44,14 @@
   overscroll-behavior: contain;
 }
 .er-links { position: absolute; top: 0; left: 0; pointer-events: none; }
-.er-links line.link { stroke: var(--ink-soft); stroke-width: 2; pointer-events: stroke; cursor: pointer; }
-.er-links line.link:hover { stroke: #e0533d; }
+.er-links line.link { stroke: var(--ink-soft); stroke-width: 2; pointer-events: none; }
+.er-links line.hit { stroke: transparent; stroke-width: 14; pointer-events: stroke; cursor: pointer; }
+.er-links line.hit:hover + .link, .er-links line.link.hovered { stroke: #e0533d; }
 .er-links line.flash { stroke: #e0533d; stroke-width: 3; }
-.er-nodes, .er-labels { position: absolute; top: 0; left: 0; }
-.er-labels { pointer-events: none; }
+/* i contenitori-layer occupano tutto il canvas: NON devono intercettare i click
+   (se no fanno da overlay sopra linee e cardinalità). Riabilito solo i nodi. */
+.er-nodes, .er-labels { position: absolute; top: 0; left: 0; pointer-events: none; }
+.er-node { pointer-events: auto; }
 
 .er-board-hint {
   position: absolute; left: 50%; bottom: 12px; transform: translateX(-50%);

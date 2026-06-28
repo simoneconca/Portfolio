@@ -97,14 +97,15 @@
 .rl-field { margin-bottom: 0.8rem; }
 .rl-field label { display: block; font-family: var(--font-mono); font-size: 0.7rem; letter-spacing: 0.04em; text-transform: uppercase; color: var(--ink-soft); margin-bottom: 0.35rem; }
 .rl-field input {
-  width: 100%; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink);
+  width: 100%; min-width: 0; box-sizing: border-box; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink);
   font-family: var(--font-mono); font-size: 0.92rem; padding: 0.5rem 0.65rem; outline: none;
   transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
 }
 .rl-field input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-wash); }
 .rl-field input.invalid { border-color: #e0533d; }
 .rl-field .err { font-family: var(--font-mono); font-size: 0.68rem; color: #e0533d; min-height: 0.85rem; margin-top: 0.2rem; }
-.rl-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+.rl-field-row { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 0.6rem; }
+.rl-field-row > .rl-field { min-width: 0; }
 
 .rl-table { width: 100%; border-collapse: collapse; font-family: var(--font-mono); font-size: 0.76rem; }
 .rl-table th, .rl-table td { text-align: left; padding: 0.4rem 0.5rem; border-bottom: 1px solid var(--line-soft); }
