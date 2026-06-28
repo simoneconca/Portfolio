@@ -25,8 +25,11 @@
 
 /* ---------- Controlli ---------- */
 .sd-controls { gap: 1.25rem 2rem; }
+.sd-modegroup { align-items: flex-start; }
+.sd-modeseg { flex-wrap: wrap; border-radius: 14px; max-width: 100%; }
 .sd-val-field { width: 130px; }
-.sd-val-field input { text-align: left; }
+.sd-aux-field { width: 110px; }
+.sd-val-field input, .sd-aux-field input { text-align: left; }
 .sd-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
 @media (max-width: 620px) { .sd-actions { width: 100%; } }
 
@@ -133,6 +136,58 @@
   position: relative;
 }
 .sd-cell.top, .sd-cell.front, .sd-cell.rear { border-color: var(--accent); }
+/* stati di evidenziazione condivisi (array/tupla/lista/dict/set) */
+.sd-cell.visiting { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 16%, var(--bg-elev)); }
+.sd-cell.found { border-color: var(--accent); background: var(--accent); color: var(--accent-ink); }
+.sd-cell.fresh { animation: sd-pop 0.4s var(--ease); }
+.sd-cell.ro { background: var(--bg-sunk); border-style: dashed; }
+
+/* ============================================================
+   ARRAY · TUPLA — celle indicizzate
+   ============================================================ */
+.sd-array, .sd-tuple { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; min-height: 300px; padding: 1rem 0.5rem; align-content: center; }
+.sd-acell { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.sd-idx { font-family: var(--font-mono); font-size: 0.66rem; color: var(--ink-faint); }
+.sd-array .sd-cell, .sd-tuple .sd-cell { min-width: 50px; padding: 0.7rem 0.6rem; }
+.sd-tuple .sd-paren { font-family: var(--font-display); font-size: 2.4rem; color: var(--ink-faint); line-height: 1; align-self: flex-end; padding-bottom: 0.3rem; }
+.sd-lock { align-self: flex-start; font-size: 0.95rem; margin-left: 0.3rem; }
+
+/* ============================================================
+   LISTA CONCATENATA — nodi con frecce
+   ============================================================ */
+.sd-list { display: flex; align-items: center; flex-wrap: wrap; gap: 0; min-height: 300px; padding: 1rem 0.5rem; align-content: center; }
+.sd-llabel { font-family: var(--font-mono); font-size: 0.7rem; color: var(--accent); }
+.sd-lnode { display: flex; border: 1.5px solid var(--ink); border-radius: 8px; overflow: hidden; background: var(--bg-elev); font-family: var(--font-mono); }
+.sd-lval { padding: 0.7rem 0.8rem; font-size: 1.02rem; font-weight: 500; }
+.sd-lnext { padding: 0 0.5rem; border-left: 1.5px solid var(--ink); color: var(--ink-faint); display: grid; place-items: center; background: var(--bg-sunk); font-size: 0.7rem; }
+.sd-arrow { color: var(--ink-soft); padding: 0 6px; font-size: 1.1rem; }
+.sd-null { font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-faint); border: 1px dashed var(--line); border-radius: 6px; padding: 0.5rem 0.55rem; }
+.sd-lnode.visiting { border-color: var(--accent); } .sd-lnode.visiting .sd-lnext { border-color: var(--accent); }
+.sd-lnode.found { border-color: var(--accent); background: var(--accent); color: var(--accent-ink); }
+.sd-lnode.found .sd-lnext { border-color: var(--accent-ink); color: var(--accent-ink); background: transparent; }
+.sd-lnode.fresh { animation: sd-pop 0.4s var(--ease); }
+
+/* ============================================================
+   DIZIONARIO — coppie chiave : valore
+   ============================================================ */
+.sd-dict { display: flex; flex-direction: column; gap: 0.45rem; min-height: 300px; padding: 1rem; align-content: start; justify-content: center; }
+.sd-pair { display: flex; align-items: center; gap: 0.55rem; border: 1.5px solid var(--ink); border-radius: 8px; padding: 0.5rem 0.85rem; background: var(--bg-elev); font-family: var(--font-mono); width: fit-content; min-width: 200px; }
+.sd-key { color: var(--accent); font-weight: 600; }
+.sd-colon { color: var(--ink-faint); }
+.sd-dval { margin-left: auto; font-weight: 500; }
+.sd-pair.visiting, .sd-pair.found { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, var(--bg-elev)); }
+.sd-pair.fresh { animation: sd-pop 0.4s var(--ease); }
+
+/* ============================================================
+   SET — chip in un insieme
+   ============================================================ */
+.sd-set { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; min-height: 300px; padding: 1rem; align-content: center; font-family: var(--font-mono); }
+.sd-brace { font-family: var(--font-display); font-size: 2.2rem; color: var(--ink-faint); line-height: 1; }
+.sd-chip { border: 1.5px solid var(--ink); border-radius: 100px; padding: 0.5rem 0.9rem; background: var(--bg-elev); font-size: 1.02rem; font-weight: 500; }
+.sd-chip.found { border-color: var(--accent); background: var(--accent); color: var(--accent-ink); }
+.sd-chip.fresh { animation: sd-pop 0.4s var(--ease); }
+.sd-chip.dup { border-color: #e0533d; color: #e0533d; animation: sd-shake 0.4s var(--ease); }
+@keyframes sd-shake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-4px); } 75% { transform: translateX(4px); } }
 .sd-ptr {
   position: absolute;
   font-family: var(--font-mono);
@@ -209,5 +264,5 @@
 .code-view .kw { color: var(--accent); }
 
 @media (prefers-reduced-motion: reduce) {
-  .sd-cell, .sd-node-circle { animation: none !important; }
+  .sd-cell, .sd-node-circle, .sd-lnode, .sd-pair, .sd-chip { animation: none !important; }
 }
