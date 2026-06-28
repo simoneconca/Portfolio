@@ -67,6 +67,16 @@ body {
   transition: background-color 0.4s var(--ease), color 0.4s var(--ease);
 }
 
+/* JetBrains Mono ha le "legature da codice" (es. != reso come ≠, <= come ≤,
+   -> come →): negli operatori confondono e non sono copiabili come si scrivono.
+   Le disattiviamo dove appaiono: codice, campi di testo ed editor. */
+pre, code, kbd, samp,
+input, textarea, select,
+[contenteditable], svg text {
+  font-variant-ligatures: none;
+  font-feature-settings: "liga" 0, "calt" 0;
+}
+
 img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
 
