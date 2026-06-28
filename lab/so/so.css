@@ -250,6 +250,27 @@
 .frame-cell.filled { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
 .frame-cell.changed { border-color: var(--accent); background: var(--accent-wash); }
 
+/* ---------- Paginazione: tabella a 3 colonne + mappa RAM per processo ---------- */
+#pgTable .pt-head, #pgTable .pt-row { grid-template-columns: 1.2fr 1fr 1.4fr; }
+.pg-ram { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.45rem; }
+@media (max-width: 560px) { .pg-ram { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+.pg-frame {
+  border: 1px solid var(--line); border-radius: 9px; padding: 0.5rem 0.55rem; background: var(--bg); min-height: 3rem;
+  transition: box-shadow 0.2s var(--ease), transform 0.12s var(--ease);
+}
+.pg-frame .pf-addr { font-family: var(--font-mono); font-size: 0.6rem; color: var(--ink-faint); }
+.pg-frame .pf-who { font-family: var(--font-mono); font-size: 0.8rem; font-weight: 600; color: var(--ink); margin-top: 0.15rem; }
+.pg-frame.empty .pf-who { color: var(--ink-faint); font-weight: 400; }
+.pg-frame.pf-so { background: color-mix(in srgb, #8a8f98 18%, transparent); border-color: color-mix(in srgb, #8a8f98 50%, var(--line)); }
+.pg-frame.pf-a  { background: var(--accent-wash); border-color: color-mix(in srgb, var(--accent) 50%, var(--line)); }
+.pg-frame.pf-b  { background: color-mix(in srgb, #3fae6b 16%, transparent); border-color: color-mix(in srgb, #3fae6b 50%, var(--line)); }
+.pg-frame.hit { box-shadow: 0 0 0 2px var(--accent); transform: translateY(-2px); }
+
+/* su schermi stretti i segmented control con etichette lunghe vanno a capo, niente overflow */
+@media (max-width: 600px) {
+  .so-mode .seg, #memSubSeg { flex-wrap: wrap; }
+}
+
 .swap-area { display: flex; flex-wrap: wrap; gap: 0.4rem; }
 .swap-page { font-family: var(--font-mono); font-size: 0.76rem; padding: 0.35rem 0.65rem; border: 1px solid var(--line); border-radius: 7px; background: var(--bg); color: var(--ink-soft); }
 .swap-page.changed { border-color: #c98a1b; color: #c98a1b; background: rgba(201,138,27,0.08); }

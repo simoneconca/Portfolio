@@ -15,8 +15,10 @@
     subSeg.addEventListener("click", (e) => {
       const b = e.target.closest("[data-memsub]"); if (!b) return;
       subSeg.querySelectorAll(".seg-btn").forEach((x) => x.classList.toggle("active", x === b));
-      $("memReloc").hidden = b.dataset.memsub !== "reloc";
-      $("memPaging").hidden = b.dataset.memsub !== "paging";
+      const v = b.dataset.memsub;
+      $("memReloc").hidden = v !== "reloc";
+      $("memPagingStatic").hidden = v !== "paging";
+      $("memPaging").hidden = v !== "virtual";
     });
   }
 

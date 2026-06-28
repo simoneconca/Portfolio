@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Sistemi Operativi — simulatore di scheduling dei processi (Round-Robin, FIFO) e di memoria virtuale con MMU, paginazione e page fault.">
+  <meta name="description" content="Sistemi Operativi — simulatore di scheduling dei processi (Round-Robin, FIFO) e di gestione della memoria con MMU: rilocazione, paginazione (frame non contigui) e memoria virtuale con page fault.">
   <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)">
   <meta name="theme-color" content="#100f0c" media="(prefers-color-scheme: dark)">
   <title>Sistemi Operativi · Processi &amp; Memoria — Lab · Simone Conca</title>
@@ -61,7 +61,7 @@
         <div class="so-mode">
           <div class="seg" id="modeSeg" role="group" aria-label="Argomento">
             <button type="button" data-mode="proc" class="seg-btn active">Scheduling processi</button>
-            <button type="button" data-mode="mem" class="seg-btn">Memoria virtuale</button>
+            <button type="button" data-mode="mem" class="seg-btn">Gestione della memoria</button>
           </div>
         </div>
       </div>
@@ -128,8 +128,9 @@
     <section class="section so-section" id="memMode" hidden>
       <div class="container" style="padding-bottom:1.1rem">
         <div class="seg" id="memSubSeg" role="group" aria-label="Vista memoria">
-          <button type="button" data-memsub="reloc" class="seg-btn active">Indirizzi logici → fisici</button>
-          <button type="button" data-memsub="paging" class="seg-btn">Paginazione e page fault</button>
+          <button type="button" data-memsub="reloc" class="seg-btn active">Settori contigui</button>
+          <button type="button" data-memsub="paging" class="seg-btn">Paginazione</button>
+          <button type="button" data-memsub="virtual" class="seg-btn">Memoria virtuale</button>
         </div>
       </div>
 
@@ -175,7 +176,42 @@
         </div>
       </div>
 
-      <!-- VISTA 2 — Paginazione e page fault (avanzato) -->
+      <!-- VISTA 2 — Paginazione: processi in frame NON contigui + traduzione -->
+      <div class="container so-layout" id="memPagingStatic" hidden>
+        <!-- CONTROLLI + TRADUZIONE -->
+        <div class="panel">
+          <p class="reloc-intro">La RAM è divisa in <b>frame</b> tutti della stessa dimensione. Ogni processo è spezzato in <b>pagine</b> che il sistema sistema in frame liberi qualsiasi — <b>non per forza vicini</b>. La <b>tabella delle pagine</b> del processo dice in quale frame fisico si trova ogni sua pagina logica.</p>
+          <div class="proc-controls">
+            <div class="control-group">
+              <span class="control-label">Processo</span>
+              <div class="seg" id="pgProcSeg" role="group" aria-label="Processo"></div>
+            </div>
+            <div class="control-group">
+              <span class="control-label">Indirizzo logico</span>
+              <div class="field" style="max-width:7rem"><span class="field-prefix">0x</span><input id="pgLog" spellcheck="false" autocomplete="off" value="1110"></div>
+              <button id="pgGo" class="run-btn" type="button">Traduci ▶</button>
+            </div>
+          </div>
+          <div class="control-group" style="margin-top:0.4rem">
+            <span class="control-label">Esempi</span>
+            <div id="pgExamples" class="examples"></div>
+          </div>
+          <p class="mem-note">Dimensione di pagina e frame: <b>0x1000</b> (4096 byte). Pagina = indirizzo ÷ dimensione · offset = resto.</p>
+          <div id="pgBreak" class="addr-break"></div>
+          <div id="pgSteps" class="trans-steps"></div>
+          <div id="pgResult" class="mem-result"></div>
+        </div>
+
+        <!-- TABELLA PAGINE + MAPPA RAM -->
+        <div class="panel">
+          <span class="state-label" id="pgTableLabel">Tabella delle pagine</span>
+          <div id="pgTable" class="page-table"></div>
+          <span class="state-label" style="margin-top:1.1rem">RAM — frame fisici <small style="color:var(--ink-faint);font-weight:400">(colorati per processo · le pagine di un processo non sono contigue)</small></span>
+          <div id="pgRam" class="pg-ram"></div>
+        </div>
+      </div>
+
+      <!-- VISTA 3 — Memoria virtuale: page fault e swap -->
       <div class="container so-layout" id="memPaging" hidden>
 
         <!-- CONTROLLI + TRADUZIONE -->
@@ -232,5 +268,6 @@
   <script src="../../js/core.js"></script>
   <script src="so.js"></script>
   <script src="mem-reloc.js"></script>
+  <script src="mem-paging.js"></script>
 </body>
 </html>
