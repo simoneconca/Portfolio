@@ -211,7 +211,8 @@
   let gen = null, scope = null, auto = false, timer = null, steps = 0, awaiting = false, done = false;
   const LIMIT = 8000;
 
-  function setClean() { $("fcCanvas").innerHTML = window.FC.renderAST(window.FC.program); }
+  // tela sempre in modalità modifica (con i «+»): si può editare anche dopo l'esecuzione
+  function setClean() { $("fcCanvas").innerHTML = window.FC.renderAST(window.FC.program, { edit: true }); }
   function highlight(id, cond) {
     $("fcCanvas").querySelectorAll(".fc-node").forEach((g) => {
       const on = g.dataset.id === id;
