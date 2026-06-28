@@ -144,8 +144,8 @@
       }
       case "assign": {
         const raw = evalExpr(n.expr, scope);
-        let slot = scope.v[n.target];
-        if (!slot) { slot = scope.v[n.target] = { type: inferType(raw), value: null, init: false }; }
+        const slot = scope.v[n.target];
+        if (!slot) throw new Error("La variabile «" + n.target + "» non è stata dichiarata: aggiungi prima un blocco Dichiarazione.");
         slot.value = coerceAssign(raw, slot.type); slot.init = true;
         yield { node: n.id, changed: n.target, desc: n.target + " = " + toStr(slot.value) + "." };
         break;
@@ -157,7 +157,7 @@
         break;
       }
       case "input": {
-        if (!scope.v[n.name]) scope.v[n.name] = { type: "Stringa", value: null, init: false };
+        if (!scope.v[n.name]) throw new Error("La variabile «" + n.name + "» non è stata dichiarata: aggiungi prima un blocco Dichiarazione.");
         const type = scope.v[n.name].type;
         const raw = yield { node: n.id, needInput: { name: n.name, type } };
         const val = coerceInput(raw, type);
@@ -190,8 +190,8 @@
         break;
       }
       case "for": {
+        if (!scope.v[n.var]) throw new Error("Il contatore «" + n.var + "» non è stato dichiarato: aggiungi prima un blocco Dichiarazione (tipo Intero).");
         const from = Math.trunc(num(evalExpr(n.from, scope))), to = Math.trunc(num(evalExpr(n.to, scope)));
-        if (!scope.v[n.var]) scope.v[n.var] = { type: "Intero", value: null, init: false };
         scope.v[n.var].value = from; scope.v[n.var].init = true;
         while (true) {
           const cur = scope.v[n.var].value, c = cur <= to;

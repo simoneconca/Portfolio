@@ -175,9 +175,9 @@
 
   const EXAMPLES = {
     doppio: () => [START, dec("numero, risultato", "Intero"), inp("numero"), asg("risultato", "numero * 2"), out('"Il doppio è " & risultato'), END],
-    tabellina: () => [START, dec("numero", "Intero"), inp("numero"),
+    tabellina: () => [START, dec("numero, i", "Intero"), inp("numero"),
       { type: "for", id: nid(), var: "i", from: "1", to: "10", body: [out('numero & " x " & i & " = " & (numero * i)')] }, END],
-    maggiore: () => [START, dec("n, numero, maggiore", "Intero"), inp("n"), asg("maggiore", "0"),
+    maggiore: () => [START, dec("n, numero, maggiore, i", "Intero"), inp("n"), asg("maggiore", "0"),
       { type: "for", id: nid(), var: "i", from: "1", to: "n", body: [
         inp("numero"),
         { type: "if", id: nid(), cond: "numero > maggiore", tBody: [asg("maggiore", "numero")], fBody: [] },
