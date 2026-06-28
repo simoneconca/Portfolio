@@ -83,31 +83,47 @@
   /* ============================================================
      2) ANALIZZATORE (euristico)
      ============================================================ */
-  const VERBS = ["riassum", "scriv", "genera", "crea", "elenc", "spieg", "traduc", "corregg", "analizz", "confront", "classific", "calcol", "progett", "descriv", "trasform", "miglior", "suggeris", "inventa", "racconta", "pianifica"];
-  const VAGUE = ["qualcosa", "un po'", "un po", "carino", "bello", "buono", "interessante", "roba", "cose", "generico", "ottimo", "fico", "decente"];
+  // verbi d'azione (radici): se compaiono nel testo, c'è un compito chiaro
+  const VERBS = ["riassum", "scriv", "genera", "crea", "elenc", "spieg", "traduc", "corregg", "analizz", "confront",
+    "classific", "calcol", "progett", "descriv", "trasform", "miglior", "suggeris", "inventa", "racconta", "pianifica",
+    "rispondi", "fornisci", "proponi", "indica", "mostra", "aiutami", "dammi", "redigi", "stila", "compon", "verifica",
+    "ordina", "estrai", "riscriv", "semplific", "amplia", "continua", "completa", "valuta", "commenta", "schematizza",
+    "risolvi", "trova", "cerca", "scegli", "organizza", "convert", "adatta", "sintetizza"];
+  const vagueRe = /\b(qualcosa|carino|bello|buono|interessante|roba|cose|generico|ottimo|fico|decente|un po')\b/g;
+
+  // niente confine finale \b: così le radici (principiant, elenc, destinat…) matchano anche le forme flesse
+  const RE = {
+    ruolo: /\b(sei (un|uno|una|un')|agisci (come|da)|comportati come|nei panni di|fai finta di|immagina di essere|rispondi come|parla come|in qualità di|assumi il ruolo|vesti i panni|come un esperto)/,
+    formato: /\b(elenc|punti|punto|lista|tabell|schema|colonn|json|yaml|csv|markdown|html|codice|paragraf|riga|righe|frase|frasi|parole|caratter|battute|formato|titolo|grassetto|in italiano|in inglese|in francese|in spagnolo|in tedesco|passo per passo|passagg|in \d|massimo \d|max \d|al massimo \d|almeno \d|\d+\s*(punti|parole|righe|frasi|passi|paragraf))/,
+    contesto: /\b(per (un|una|uno|il|lo|la|i|gli|le|chi|dei|delle|degli|gente)|rivolto a|destinat|pubblico|target|lettor|studenti|aliev|principiant|bambin|ragazz|adult|espert|client|utent|azienda|scuola|classe|\d+\s*anni|terza|quarta|quinta|prima|seconda|superiore|medie|elementar|contesto|scopo|obiettivo|mi serve|ho bisogno|si tratta|sto (scrivendo|preparando|creando|facendo))/,
+    vincoli: /\b(non |senza |solo |soltanto|evita|includ|escludi|deve |devono|vietat|limit|entro|al massimo|massimo|minimo|almeno|tono|stile|registro|formale|informale|professional|amichevole|semplice|tecnic|concis|dettagliat|breve|sintetic|neutro|chiar)/,
+    esempi: /\b(esempi|esempio|ad esempio|per esempio|tipo:|modello:|schema:|come segue|ecco un esempio|input\s*:|output\s*:|few.?shot)/,
+  };
 
   function analyze(text) {
-    const t = text.trim(), low = t.toLowerCase();
+    const t = text.trim();
+    const low = " " + t.toLowerCase().replace(/\s+/g, " ") + " ";
     const has = (re) => re.test(low);
-    const foundVague = VAGUE.filter((w) => low.indexOf(w) !== -1);
+    const foundVague = low.match(vagueRe) || [];
+    // peso: gli essenziali bastano per un voto alto; ruolo ed esempi sono bonus
     const checks = [
-      { ok: VERBS.some((v) => low.indexOf(v) !== -1), label: "Compito chiaro (un verbo d'azione preciso)",
-        sugg: "Inizia con un verbo concreto: «Riassumi…», «Scrivi…», «Elenca…»." },
-      { ok: has(/\b(sei un|sei una|agisci come|comportati come|nei panni di|fai finta di|come un esperto|come un)\b/), label: "Ruolo assegnato all'IA",
-        sugg: "Dai un ruolo: «Sei un insegnante di…», «Agisci come un esperto di…»." },
-      { ok: has(/\b(elenco|punti|tabella|json|markdown|paragraf|riga|righe|formato|massimo \d|al massimo \d|in \d|in italiano|in inglese|parole|frasi)\b/), label: "Formato o lunghezza specificati",
+      { w: 20, core: true, ok: VERBS.some((v) => low.indexOf(v) !== -1), label: "Compito chiaro (un verbo d'azione)",
+        sugg: "Inizia con un verbo concreto: «Riassumi…», «Scrivi…», «Spiega…», «Elenca…»." },
+      { w: 18, core: true, ok: t.length >= 35 && foundVague.length === 0, label: "Specifico (niente parole vaghe)",
+        sugg: foundVague.length ? "Evita parole vaghe come «" + foundVague[0].trim() + "»: di' esattamente cosa vuoi." : "Aggiungi dettagli concreti: numeri, nomi, criteri precisi." },
+      { w: 16, core: true, ok: has(RE.formato), label: "Formato o lunghezza specificati",
         sugg: "Di' come vuoi la risposta: «in 5 punti», «in una tabella», «max 100 parole», «in italiano»." },
-      { ok: has(/\b(per |destinat|pubblico|studenti|principianti|bambin|serve a|scopo|contesto|cliente|14 anni|superiore)\b/), label: "Contesto o pubblico indicato",
+      { w: 16, core: true, ok: has(RE.contesto), label: "Contesto o pubblico indicato",
         sugg: "Spiega per chi/perché serve: «per studenti di prima superiore», «per un volantino»." },
-      { ok: has(/\b(esempio|esempi|ad esempio|per esempio|come questo|sul modello|nel formato)\b/), label: "Esempi forniti (few-shot)",
+      { w: 15, core: true, ok: has(RE.vincoli), label: "Vincoli (cosa fare o evitare, tono)",
+        sugg: "Aggiungi limiti: «in italiano semplice», «senza tecnicismi», «tono formale», «max 3 frasi»." },
+      { w: 10, core: false, ok: has(RE.ruolo), label: "Ruolo assegnato all'IA",
+        sugg: "Dai un ruolo: «Sei un insegnante di…», «Agisci come un esperto di…»." },
+      { w: 5, core: false, ok: has(RE.esempi), label: "Esempi forniti (few-shot)",
         sugg: "Mostra 1-2 esempi del risultato che vuoi: guidano molto lo stile dell'output." },
-      { ok: has(/\b(non |senza |solo |evita|massimo|minimo|almeno|tono|formale|informale|semplice|breve|conciso)\b/), label: "Vincoli chiari (cosa fare o evitare)",
-        sugg: "Aggiungi limiti: «in italiano semplice», «senza tecnicismi», «massimo 3 frasi»." },
-      { ok: t.length >= 40 && foundVague.length === 0, label: "Specifico (niente parole vaghe)",
-        sugg: foundVague.length ? "Evita parole vaghe come «" + foundVague[0] + "»: di' esattamente cosa vuoi." : "Aggiungi dettagli concreti: numeri, nomi, criteri precisi." },
     ];
-    const okN = checks.filter((c) => c.ok).length;
-    return { checks, score: Math.round(okN / checks.length * 100), okN, n: checks.length };
+    const score = checks.filter((c) => c.ok).reduce((a, c) => a + c.w, 0);
+    return { checks, score: Math.min(100, score) };
   }
 
   function renderReport() {
@@ -117,13 +133,15 @@
       return;
     }
     const r = analyze(text);
-    const lvl = r.score < 45 ? "lv0" : r.score < 75 ? "lv1" : "lv2";
+    const lvl = r.score < 50 ? "lv0" : r.score < 80 ? "lv1" : "lv2";
+    const word = r.score < 50 ? "Da rinforzare" : r.score < 80 ? "Discreto" : "Forte";
     let h = '<div class="pe-score ' + lvl + '"><span class="pe-score-n">' + r.score + '</span><span class="pe-score-u">/100</span>' +
-      '<span class="pe-score-t">' + (r.score < 45 ? "Da rinforzare" : r.score < 75 ? "Discreto" : "Forte") + " · " + r.okN + "/" + r.n + " ingredienti</span></div>";
+      '<span class="pe-score-t">' + word + "</span></div>";
     h += '<ul class="pe-checks">';
     r.checks.forEach((c) => {
       h += '<li class="pe-check ' + (c.ok ? "ok" : "no") + '"><span class="mk">' + (c.ok ? "✓" : "+") + "</span>" +
-        "<span><b>" + esc(c.label) + "</b>" + (c.ok ? "" : '<small>' + esc(c.sugg) + "</small>") + "</span></li>";
+        "<span><b>" + esc(c.label) + "</b>" + (c.core ? "" : ' <em class="pe-bonus">bonus</em>') +
+        (c.ok ? "" : '<small>' + esc(c.sugg) + "</small>") + "</span></li>";
     });
     h += "</ul>";
     $("peReport").innerHTML = h;

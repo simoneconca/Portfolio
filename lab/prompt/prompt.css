@@ -57,6 +57,7 @@
 .pe-check b { color: var(--ink); font-weight: 600; }
 .pe-check.ok b { color: var(--ink-soft); font-weight: 500; }
 .pe-check small { display: block; color: var(--ink-soft); font-size: 0.82rem; line-height: 1.45; margin-top: 0.1rem; }
+.pe-bonus { font-style: normal; font-family: var(--font-mono); font-size: 0.62rem; color: var(--ink-faint); border: 1px solid var(--line); border-radius: 100px; padding: 0.02rem 0.35rem; vertical-align: middle; }
 
 /* ---------- 3) Debole → Forte ---------- */
 .pe-examples { display: grid; gap: 1rem; }
