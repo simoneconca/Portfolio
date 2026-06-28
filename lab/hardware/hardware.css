@@ -121,3 +121,16 @@
 .build-total { display: flex; justify-content: space-between; align-items: baseline; margin-top: 1rem; padding-top: 0.9rem; border-top: 1px solid var(--line); }
 .build-total .bt-lbl { font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-soft); }
 .build-total .bt-val { font-family: var(--font-display); font-size: 1.5rem; font-weight: 500; color: var(--ink); }
+
+/* ---------- Modalità (selettore) ---------- */
+.hw-mode { margin-bottom: 0.4rem; }
+
+/* ---------- Montaggio: guida passo per passo ---------- */
+.asm-panel { max-width: 760px; margin: 0 auto; }
+.asm-prog { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 1rem; }
+.asm-prog span { font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-soft); flex-shrink: 0; }
+.asm-bar { flex: 1; height: 8px; border-radius: 100px; background: var(--bg-sunk); border: 1px solid var(--line-soft); overflow: hidden; }
+.asm-bar i { display: block; height: 100%; background: var(--accent); border-radius: 100px; transition: width 0.3s var(--ease); }
+.asm-body { font-size: 0.98rem; line-height: 1.7; color: var(--ink-soft); margin-bottom: 1rem; }
+.asm-body b { color: var(--ink); font-weight: 600; }
+.asm-note { font-size: 0.78rem; color: var(--ink-faint); margin-top: 0.9rem; text-align: center; }

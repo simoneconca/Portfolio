@@ -61,20 +61,37 @@
       </div>
     </section>
 
-    <section class="section so-section" style="padding-top:0">
+    <section class="section so-section" style="padding-top:0;padding-bottom:0">
       <div class="container">
-        <div class="steps-bar" id="stepsBar"></div>
+        <div class="seg hw-mode" id="hwMode" role="group" aria-label="Modalità">
+          <button type="button" class="seg-btn active" data-mode="config">① Scegli i componenti</button>
+          <button type="button" class="seg-btn" data-mode="asm">② Monta il PC</button>
+        </div>
       </div>
     </section>
 
-    <section class="section so-section" style="padding-top:0">
-      <div class="container so-layout">
-        <div class="panel wizard-panel" id="wizard"></div>
-        <div class="panel build-panel">
-          <header class="panel-head"><span class="panel-kicker">Il tuo PC</span><h2 class="panel-title">Pezzi scelti</h2></header>
-          <div id="buildList" class="build-list"></div>
-          <div id="buildTotal" class="build-total"></div>
+    <div id="configMode">
+      <section class="section so-section" style="padding-top:0">
+        <div class="container">
+          <div class="steps-bar" id="stepsBar"></div>
         </div>
+      </section>
+
+      <section class="section so-section" style="padding-top:0">
+        <div class="container so-layout">
+          <div class="panel wizard-panel" id="wizard"></div>
+          <div class="panel build-panel">
+            <header class="panel-head"><span class="panel-kicker">Il tuo PC</span><h2 class="panel-title">Pezzi scelti</h2></header>
+            <div id="buildList" class="build-list"></div>
+            <div id="buildTotal" class="build-total"></div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <section class="section so-section" id="montaggioMode" style="padding-top:0" hidden>
+      <div class="container">
+        <div class="panel asm-panel" id="asm"></div>
       </div>
     </section>
   </main>

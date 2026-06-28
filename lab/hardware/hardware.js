@@ -304,6 +304,86 @@
 
   function renderAll() { renderSteps(); renderWizard(); renderBuild(); }
 
+  /* ============================================================
+     MONTAGGIO — guida al montaggio fisico, passo per passo
+     (si adatta ai pezzi scelti nella sezione 1)
+     ============================================================ */
+  const hasK = (k) => !!build[k];
+  const cpuTxt = () => hasK("cpu") ? "la tua CPU <b>" + build.cpu.name + "</b> (socket <b>" + build.cpu.socket + "</b>)" : "la CPU";
+  const coolTxt = () => hasK("cooler") ? "il dissipatore <b>" + build.cooler.name + "</b>" : "il dissipatore";
+  const ramTxt = () => hasK("ram") ? " La tua RAM è di tipo <b>" + build.ram.type + "</b>." : "";
+  const moboForm = () => hasK("mobo") ? "<b>" + build.mobo.form + "</b>" : "della scheda madre";
+  const psuTxt = () => hasK("psu") ? "l'alimentatore <b>" + build.psu.watt + " W</b>" : "l'alimentatore";
+  const isNvme = () => hasK("storage") && /NVMe/i.test(build.storage.name);
+  const hasGpu = () => hasK("gpu") && !build.gpu.integrated;
+  const gpuTxt = () => hasK("gpu") ? "<b>" + build.gpu.name + "</b>" : "la scheda video";
+
+  const ASM = [
+    { emoji: "🧰", title: "Preparazione e sicurezza",
+      body: () => "Lavora su un piano <b>ampio, pulito e ben illuminato</b>. Prima di toccare i componenti <b>scarica l'elettricità statica</b> toccando una parte metallica non verniciata (o usa un bracciale antistatico): una scarica invisibile può danneggiarli. Tieni a portata un <b>cacciavite a croce</b> e il <b>manuale della scheda madre</b>, e apri il case togliendo i due pannelli laterali.",
+      tip: "Conviene montare CPU, dissipatore e RAM sulla scheda madre <b>fuori</b> dal case, appoggiata sulla sua scatola: si lavora molto meglio." },
+    { emoji: "🧠", title: "1 · La CPU nel socket",
+      body: () => "Sulla scheda madre, alza la <b>leva</b> del socket. " + cpuTxt() + " ha un piccolo <b>triangolo</b> in un angolo: allinealo a quello stampato sul socket. <b>Posa</b> la CPU delicatamente: deve scendere <b>da sola</b>, senza spingere. Poi riabbassa la leva (fa un po' di resistenza: è normale).",
+      warn: "Non toccare i contatti dorati e non forzare mai: un solo pin piegato può rovinare la CPU o la scheda madre." },
+    { emoji: "❄️", title: "2 · Pasta termica e dissipatore",
+      body: () => "La <b>pasta termica</b> fa passare il calore dalla CPU al dissipatore. Molti dissipatori ce l'hanno già spalmata; se no, metti una piccola goccia (come un chicco di riso) al centro della CPU. Appoggia " + coolTxt() + ", avvita <b>a croce</b> (poco per volta, alternando le viti opposte) e collega il cavetto della ventola al connettore <b>CPU_FAN</b> della scheda madre." },
+    { emoji: "💾", title: "3 · La RAM",
+      body: () => "Apri le <b>levette</b> ai lati degli slot. Con due banchi, per attivare il <b>dual channel</b> (più veloce) usa gli slot <b>alternati</b> (di solito il 2° e il 4°: controlla il manuale). Allinea la <b>tacca</b> del banco con quella dello slot e premi con decisione ai due lati finché le levette si chiudono con un <b>click</b>." + ramTxt() },
+    { emoji: "🗄️", title: "4 · L'SSD",
+      body: () => isNvme()
+        ? "Il tuo <b>SSD NVMe</b> va nello slot <b>M.2</b>: infilalo in diagonale, poi abbassalo e fissalo con la <b>vitina</b> (o il fermo a scatto). È sottilissimo ed è la memoria più veloce."
+        : "Fissa l'<b>SSD</b> nel suo alloggio del case e collegalo con un <b>cavo SATA dati</b> alla scheda madre (più avanti un cavo SATA dell'alimentatore gli darà corrente). Se invece è un <b>NVMe</b>, va nello slot <b>M.2</b> fissato con una vitina." },
+    { emoji: "🛠️", title: "5 · La scheda madre nel case",
+      body: () => "Incastra la <b>mascherina I/O</b> (in dotazione) nel retro del case. Avvita i <b>distanziali</b> (standoff) nei fori del formato " + moboForm() + ", così la scheda non tocca il metallo e non va in corto. Appoggia la scheda madre allineando le porte alla mascherina e avvitala in tutti i punti, <b>senza stringere troppo</b>." },
+    { emoji: "🔌", title: "6 · L'alimentatore",
+      body: () => "Monta " + psuTxt() + " nel suo vano (di solito in basso), con la <b>ventola</b> rivolta verso una griglia d'aria. Se è <b>modulare</b> collega solo i cavi che userai: meno cavi = più ordine e aria migliore." },
+    { emoji: "🎮", title: "7 · La scheda video",
+      body: () => hasGpu()
+        ? "Togli le <b>staffe</b> sul retro del case in corrispondenza dello slot <b>PCIe x16</b> (il più lungo, vicino alla CPU). Inserisci " + gpuTxt() + " finché la <b>levetta</b> dello slot scatta, avvitala al case e collega i <b>cavi di alimentazione PCIe</b> dall'alimentatore."
+        : "Hai scelto la <b>grafica integrata</b> nella CPU: nessuna scheda video da montare. Più avanti collegherai il monitor direttamente alle uscite della <b>scheda madre</b>." },
+    { emoji: "⚡", title: "8 · I cavi di alimentazione",
+      body: () => "Dall'alimentatore collega: il grande connettore <b>24 pin</b> alla scheda madre, il connettore <b>8 pin (EPS)</b> in alto vicino alla CPU, i cavi <b>SATA</b> a SSD/HDD" + (hasGpu() ? ", e i <b>PCIe</b> alla scheda video" : "") + ". Spingi ogni connettore finché <b>scatta</b>: i mezzi contatti causano mancate accensioni." },
+    { emoji: "🔘", title: "9 · I cavetti del frontale",
+      body: () => "Collega i sottili cavetti del frontale del case ai <b>pin</b> sulla scheda madre (fatti guidare dal manuale): <b>Power Switch</b> (accensione), Reset, i <b>LED</b> di accensione e del disco, e le porte <b>USB</b> e <b>audio</b> frontali. Collega anche le <b>ventole del case</b> ai connettori <b>SYS_FAN</b>.",
+      tip: "Il <b>Power Switch</b> (spesso «PWR_SW») è quello che fa partire il PC: se l'accensione non funziona, di solito è invertito o sui pin sbagliati." },
+    { emoji: "🖥️", title: "10 · Primo avvio e BIOS",
+      body: () => "Prima di chiudere tutto, fai una <b>prova</b>: collega il monitor " + (hasGpu() ? "alla <b>scheda video</b>" : "alle uscite della <b>scheda madre</b>") + ", attacca tastiera e corrente, e accendi. Dovresti entrare nel <b>BIOS/UEFI</b>: lì attiva il profilo <b>XMP/EXPO</b> per far girare la RAM alla velocità giusta e controlla che le <b>temperature</b> siano normali." },
+    { emoji: "🎉", title: "11 · Sistema operativo",
+      body: () => "Prepara una <b>chiavetta USB</b> con Windows o Linux, avvia da lì e <b>installa il sistema operativo</b> sull'SSD. Poi installa i <b>driver</b> (soprattutto quelli della scheda video). Chiudi i pannelli del case e sistema i cavi dietro: il tuo PC è pronto e funzionante!" },
+  ];
+
+  let asmStep = 0;
+  function renderAsm() {
+    const n = ASM.length, s = ASM[asmStep], pct = Math.round((asmStep + 1) / n * 100);
+    $("asm").innerHTML =
+      '<div class="asm-prog"><span>Passo ' + (asmStep + 1) + " / " + n + '</span><div class="asm-bar"><i style="width:' + pct + '%"></i></div></div>' +
+      '<div class="wiz-head"><span class="wiz-emoji">' + s.emoji + '</span><h2 class="wiz-title">' + s.title + "</h2></div>" +
+      '<div class="asm-body">' + s.body() + "</div>" +
+      (s.tip ? '<div class="callout"><span class="co-ico">💡</span><div>' + s.tip + "</div></div>" : "") +
+      (s.warn ? '<div class="callout warn"><span class="co-ico">⚠️</span><div>' + s.warn + "</div></div>" : "") +
+      '<div class="wiz-nav">' +
+        (asmStep > 0 ? '<button type="button" class="back" id="asmBack">← Indietro</button>' : "") +
+        (asmStep < n - 1 ? '<button type="button" class="run-btn next" id="asmNext">Avanti →</button>'
+          : '<button type="button" class="run-btn next" id="asmDone">Torna alla scelta dei pezzi</button>') +
+      "</div>" +
+      '<p class="asm-note">La guida si adatta ai componenti scelti nella sezione «Scegli i componenti».</p>';
+  }
+  $("asm").addEventListener("click", (e) => {
+    if (e.target.closest("#asmNext")) { asmStep = Math.min(ASM.length - 1, asmStep + 1); renderAsm(); window.scrollTo({ top: 0, behavior: "smooth" }); }
+    else if (e.target.closest("#asmBack")) { asmStep = Math.max(0, asmStep - 1); renderAsm(); window.scrollTo({ top: 0, behavior: "smooth" }); }
+    else if (e.target.closest("#asmDone")) { asmStep = 0; setMode("config"); }
+  });
+
+  /* ---------- Modalità ---------- */
+  function setMode(m) {
+    $("hwMode").querySelectorAll(".seg-btn").forEach((b) => b.classList.toggle("active", b.dataset.mode === m));
+    $("configMode").hidden = m !== "config";
+    $("montaggioMode").hidden = m !== "asm";
+    if (m === "asm") renderAsm();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  $("hwMode").addEventListener("click", (e) => { const b = e.target.closest("[data-mode]"); if (b) setMode(b.dataset.mode); });
+
   /* ---------- Eventi ---------- */
   $("wizard").addEventListener("click", (e) => {
     const card = e.target.closest(".opt-card");
