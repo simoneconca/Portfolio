@@ -171,8 +171,25 @@
 .rgb-row > span { font-weight: 700; }
 .rgb-row.r > span { color: #e0533d; } .rgb-row.g > span { color: #3fae6b; } .rgb-row.b > span { color: #2c6fe0; }
 .rgb-row > b { text-align: right; color: var(--ink); }
-.rgb-row .slider { width: 100%; max-width: none; accent-color: var(--accent); }
-.rgb-row.r .slider { accent-color: #e0533d; } .rgb-row.g .slider { accent-color: #3fae6b; } .rgb-row.b .slider { accent-color: #2c6fe0; }
+/* slider uniformi su tutti i browser/temi: track neutro + pollice colorato.
+   (accent-color rendeva il verde incoerente — nero — sul tema scuro) */
+.rgb-row .slider, .snd-row .slider {
+  -webkit-appearance: none; appearance: none;
+  width: 100%; max-width: none; height: 6px; margin: 0; padding: 0;
+  background: var(--line); border-radius: 999px; outline: none; cursor: pointer;
+}
+.rgb-row .slider::-webkit-slider-thumb, .snd-row .slider::-webkit-slider-thumb {
+  -webkit-appearance: none; appearance: none;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--sl, var(--accent)); border: 2px solid var(--bg-elev);
+  box-shadow: 0 0 0 1px var(--line); cursor: pointer;
+}
+.rgb-row .slider::-moz-range-thumb, .snd-row .slider::-moz-range-thumb {
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--sl, var(--accent)); border: 2px solid var(--bg-elev); cursor: pointer;
+}
+.rgb-row .slider:focus-visible, .snd-row .slider:focus-visible { box-shadow: 0 0 0 3px var(--accent-wash); }
+.rgb-row.r { --sl: #e0533d; } .rgb-row.g { --sl: #3fae6b; } .rgb-row.b { --sl: #2c6fe0; }
 .rgb-bits { margin-top: 0.4rem; display: grid; gap: 0.3rem; }
 .rb { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; font-family: var(--font-mono); font-size: 0.76rem; }
 .rb span { color: var(--ink-soft); } .rb code { color: var(--ink); }
