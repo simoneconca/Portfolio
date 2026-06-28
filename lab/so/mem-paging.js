@@ -2,7 +2,9 @@
    mem-paging.js — Paginazione: processi in frame NON contigui
    La RAM è divisa in frame uguali; ogni processo è spezzato in
    pagine sparse in frame qualsiasi. La tabella delle pagine mappa
-   pagina logica → frame fisico. Traduzione: fisico = frame*dim + offset.
+   pagina logica → frame fisico.
+   Traduzione (formula della lezione): indirizzo fisico =
+     indirizzo logico − base logica della pagina + base fisica del frame.
    ============================================================ */
 (function () {
   "use strict";
@@ -13,9 +15,9 @@
 
   // processi: pagina logica -> frame fisico (volutamente sparse, non contigue)
   const PROCS = [
-    { id: "so", name: "Sistema Operativo", cls: "so", table: [0, 1] },        // p0→f0, p1→f1
-    { id: "a",  name: "Programma A",       cls: "a",  table: [3, 6, 2, 7] },  // p0→f3, p1→f6, p2→f2, p3→f7
-    { id: "b",  name: "Programma B",       cls: "b",  table: [5, 4] }         // p0→f5, p1→f4
+    { id: "so", name: "Sistema Operativo", cls: "so", table: [0, 4] },        // p0→f0, p1→f4 (sparse)
+    { id: "a",  name: "Programma A",       cls: "a",  table: [1, 6, 3, 7] },  // p0→f1, p1→f6, p2→f3, p3→f7
+    { id: "b",  name: "Programma B",       cls: "b",  table: [5, 2] }         // p0→f5, p1→f2
   ];
   const shortName = (p) => (p.id === "so" ? "S.O." : "Prog. " + p.id.toUpperCase());
   // proprietario di ogni frame fisico (per la mappa della RAM)
@@ -33,9 +35,9 @@
   function renderTable(hitPage) {
     $("pgTableLabel").innerHTML = "Tabella delle pagine — <b>" + cur.name + "</b>";
     $("pgTable").innerHTML =
-      '<div class="pt-head"><span>Pagina logica</span><span>Frame fisico</span><span>Base del frame</span></div>' +
+      '<div class="pt-head"><span>Pagina</span><span>Base logica</span><span>Frame</span><span>Base fisica</span></div>' +
       cur.table.map((f, p) =>
-        `<div class="pt-row present${hitPage === p ? " hit" : ""}"><span>${p}</span><span class="frame">${f}</span><span>${hex(f << PAGE_BITS, 4)}</span></div>`
+        `<div class="pt-row present${hitPage === p ? " hit" : ""}"><span>${p}</span><span>${hex(p * PAGE_SIZE, 4)}</span><span class="frame">${f}</span><span>${hex(f * PAGE_SIZE, 4)}</span></div>`
       ).join("");
   }
   function renderRam(hitFrame) {
@@ -58,7 +60,7 @@
       setSteps([{ t: "Inserisci un indirizzo esadecimale valido (es. <b>1110</b>).", fault: true }]);
       renderTable(); renderRam(); return;
     }
-    const addr = parseInt(raw, 16), page = addr >> PAGE_BITS, offset = addr & (PAGE_SIZE - 1);
+    const addr = parseInt(raw, 16), page = Math.floor(addr / PAGE_SIZE), offset = addr % PAGE_SIZE;
 
     $("pgBreak").innerHTML =
       `<div class="addr-part"><div class="ap-label">Indirizzo logico</div><div class="ap-val">${hex(addr, 4)}</div><div class="ap-sub">${addr} dec</div></div>` +
@@ -69,7 +71,7 @@
       '<div class="addr-op">resto</div>' +
       `<div class="addr-part offset"><div class="ap-label">Offset</div><div class="ap-val">${hex(offset, 3)}</div><div class="ap-sub">${offset} dec</div></div>`;
 
-    const steps = [{ t: `Numero pagina = ${hex(addr, 4)} ÷ ${hex(PAGE_SIZE, 4)} = <b>${page}</b> · offset = resto = <b>${hex(offset, 3)}</b>.` }];
+    const steps = [{ t: `Numero pagina = indirizzo ÷ dimensione = ${hex(addr, 4)} ÷ ${hex(PAGE_SIZE, 4)} = <b>${page}</b> (offset = resto = ${hex(offset, 3)}).` }];
 
     if (page >= cur.table.length) {
       steps.push({ t: `<b>${cur.name}</b> ha solo ${cur.table.length} pagine (0…${cur.table.length - 1}): la pagina ${page} <b>non esiste</b>. La MMU blocca l'accesso (errore di protezione).`, fault: true });
@@ -77,9 +79,11 @@
       setResult('<span class="mr-lbl">Errore di protezione</span><div class="mr-big">indirizzo non valido</div>', "fault");
       renderTable(); renderRam(); return;
     }
-    const frame = cur.table[page], phys = (frame << PAGE_BITS) | offset;
-    steps.push({ t: `Tabella delle pagine di ${cur.name}: pagina <b>${page}</b> → <b>frame ${frame}</b> (base ${hex(frame << PAGE_BITS, 4)}).` });
-    steps.push({ t: `Indirizzo fisico = frame × dimensione + offset = ${frame} × ${hex(PAGE_SIZE, 4)} + ${hex(offset, 3)} = <b>${hex(phys, 4)}</b>.` });
+    const frame = cur.table[page], baseLog = page * PAGE_SIZE, baseFis = frame * PAGE_SIZE;
+    const phys = addr - baseLog + baseFis;
+    steps.push({ t: `Base logica della pagina ${page} = pagina × dimensione = ${page} × ${hex(PAGE_SIZE, 4)} = <b>${hex(baseLog, 4)}</b>.` });
+    steps.push({ t: `Dalla tabella delle pagine di ${cur.name}: pagina <b>${page}</b> → <b>frame ${frame}</b> → base fisica = ${frame} × ${hex(PAGE_SIZE, 4)} = <b>${hex(baseFis, 4)}</b>.` });
+    steps.push({ t: `Indirizzo fisico = logico − base logica + base fisica = ${hex(addr, 4)} − ${hex(baseLog, 4)} + ${hex(baseFis, 4)} = <b>${hex(phys, 4)}</b>.` });
     setSteps(steps);
     setResult('<span class="mr-lbl">Indirizzo fisico nella RAM</span><div class="mr-big">' + hex(phys, 4) + "</div>", "ok");
     renderTable(page); renderRam(frame);

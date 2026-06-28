@@ -250,8 +250,9 @@
 .frame-cell.filled { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
 .frame-cell.changed { border-color: var(--accent); background: var(--accent-wash); }
 
-/* ---------- Paginazione: tabella a 3 colonne + mappa RAM per processo ---------- */
-#pgTable .pt-head, #pgTable .pt-row { grid-template-columns: 1.2fr 1fr 1.4fr; }
+/* ---------- Paginazione: tabella pagine (4 col.) + mappa RAM per processo ---------- */
+#pgTable .pt-head, #pgTable .pt-row { grid-template-columns: 0.7fr 1.1fr 0.7fr 1.1fr; }
+#pgTable .pt-head span, #pgTable .pt-row span { padding: 0.4rem 0.5rem; }
 .pg-ram { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0.45rem; }
 @media (max-width: 560px) { .pg-ram { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 .pg-frame {
