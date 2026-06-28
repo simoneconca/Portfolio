@@ -1,0 +1,104 @@
+/* ============================================================
+   puntatori.css — Puntatori & memoria (C / C++)
+   Diagramma della memoria + codice passo-passo. Usa base.css + lab.css.
+   ============================================================ */
+
+.pt-sec { position: relative; z-index: 2; }
+
+/* ---------- Pulsanti / controlli ---------- */
+.run-btn {
+  display: inline-flex; align-items: center; gap: 0.4rem;
+  font-family: var(--font-sans); font-size: 0.88rem; font-weight: 500;
+  padding: 0.5rem 0.95rem; border: 1px solid var(--accent); border-radius: 100px;
+  background: var(--accent); color: var(--accent-ink); cursor: pointer;
+  transition: transform 0.15s var(--ease);
+}
+.run-btn:hover:not(:disabled) { transform: translateY(-1px); }
+.run-btn:disabled { opacity: 0.5; cursor: default; }
+.slider { accent-color: var(--accent); cursor: pointer; max-width: 8rem; }
+.pt-scenseg { flex-wrap: wrap; border-radius: 14px; max-width: 100%; }
+.pt-scengroup { align-items: flex-start; }
+
+/* ---------- Spiegazione ---------- */
+.explain-panel { margin-bottom: 0; }
+.explain-head { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.65rem; }
+.explain-head h2 { font-family: var(--font-display); font-weight: 500; font-size: clamp(1.3rem, 3vw, 1.85rem); letter-spacing: -0.015em; line-height: 1.1; }
+.explain-big { font-family: var(--font-mono); font-size: 0.72rem; color: var(--accent-ink); background: var(--accent); border-radius: 100px; padding: 0.28rem 0.7rem; white-space: nowrap; }
+.explain-idea { font-size: 1.02rem; color: var(--ink); max-width: 80ch; }
+.pt-key {
+  margin-top: 0.9rem; padding: 0.6rem 0.85rem;
+  border-left: 3px solid var(--accent); background: var(--accent-wash);
+  border-radius: 0 8px 8px 0;
+  font-family: var(--font-mono); font-size: 0.86rem; color: var(--ink);
+}
+
+/* ---------- Layout ---------- */
+.pt-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 1.25rem; align-items: start; margin-top: 1.25rem; }
+@media (max-width: 880px) { .pt-layout { grid-template-columns: 1fr; } }
+
+.exec-bar { display: flex; align-items: center; gap: 0.55rem; flex-wrap: wrap; margin-bottom: 1.1rem; padding-bottom: 0.9rem; border-bottom: 1px solid var(--line-soft); }
+.speed { display: inline-flex; align-items: center; gap: 0.5rem; margin-left: auto; font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-soft); }
+.speed .slider { max-width: 5.5rem; }
+
+/* ---------- Memoria ---------- */
+.pt-mem-title { display: block; margin-bottom: 0.6rem; }
+.pt-mem {
+  position: relative;
+  min-height: 300px;
+  padding: 0.8rem 48px 0.8rem 0.8rem;   /* gutter a destra per le frecce */
+  border: 1px solid var(--line); border-radius: 12px;
+  background:
+    radial-gradient(circle at 1px 1px, var(--line-soft) 1px, transparent 0) 0 0 / 22px 22px,
+    var(--bg-sunk);
+  overflow: hidden;
+}
+.pt-arrows { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.pt-arrows path { fill: none; stroke: var(--accent); stroke-width: 2; }
+.pt-rows { position: relative; display: flex; flex-direction: column; gap: 0.5rem; }
+
+.pt-row { display: flex; align-items: center; gap: 0.6rem; }
+.pt-addr { font-family: var(--font-mono); font-size: 0.66rem; color: var(--ink-faint); width: 3.4rem; text-align: right; flex: 0 0 auto; }
+.pt-box {
+  flex: 1 1 auto; min-width: 0;
+  display: flex; align-items: center; justify-content: space-between; gap: 0.8rem;
+  border: 1.6px solid var(--ink); border-radius: 8px;
+  background: var(--bg-elev); padding: 0.5rem 0.75rem;
+  transition: border-color 0.2s var(--ease), background-color 0.2s var(--ease);
+}
+.pt-box.ptr { border-style: dashed; }
+.pt-vname { font-family: var(--font-mono); font-size: 0.92rem; font-weight: 600; color: var(--ink); }
+.pt-vname i { font-style: normal; font-weight: 400; font-size: 0.7rem; color: var(--ink-faint); margin-left: 0.35rem; }
+.pt-val { font-family: var(--font-mono); font-size: 1rem; font-weight: 600; color: var(--accent); white-space: nowrap; }
+.pt-val.nul { color: var(--ink-faint); font-weight: 400; }
+
+.pt-row.hot .pt-box { border-color: var(--accent); background: color-mix(in srgb, var(--accent) 14%, var(--bg-elev)); }
+.pt-row.hot .pt-box { animation: pt-pop 0.4s var(--ease); }
+@keyframes pt-pop { 0% { transform: scale(0.96); } 60% { transform: scale(1.03); } 100% { transform: scale(1); } }
+.pt-mem-empty { color: var(--ink-faint); font-size: 0.9rem; padding: 1.5rem 0.5rem; text-align: center; }
+
+.pt-desc { font-family: var(--font-mono); font-size: 0.84rem; color: var(--ink); min-height: 1.4rem; margin-top: 1rem; line-height: 1.5; }
+.pt-desc strong { color: var(--accent); }
+
+.pt-out-wrap { margin-top: 0.9rem; }
+.pt-out { margin: 0.3rem 0 0; padding: 0.6rem 0.8rem; background: var(--bg-sunk); border: 1px solid var(--line); border-radius: 8px; font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink); white-space: pre-wrap; }
+
+/* ---------- Codice ---------- */
+.pt-code-panel { min-width: 0; }
+.lang-bar { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.9rem; }
+.code-view {
+  margin: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--bg-sunk);
+  font-family: var(--font-mono); font-size: 0.84rem; line-height: 1.7; overflow: auto; padding: 0.3rem 0;
+}
+.code-view .ln { display: grid; grid-template-columns: 2.2rem 1fr; gap: 0.6rem; padding: 0 0.7rem; white-space: pre; }
+.code-view .ln .num { color: var(--ink-faint); text-align: right; user-select: none; font-size: 0.74rem; }
+.code-view .ln .src { color: var(--ink); }
+.code-view .ln.current { background: var(--accent); border-radius: 4px; }
+.code-view .ln.current .num, .code-view .ln.current .src { color: var(--accent-ink); }
+.code-view .kw { color: var(--accent); }
+.code-view .current .kw { color: var(--accent-ink); }
+.code-view .cm { color: var(--ink-faint); font-style: italic; }
+.code-view .current .cm { color: var(--accent-ink); opacity: 0.85; }
+
+.pt-codenote { margin-top: 0.9rem; font-size: 0.86rem; color: var(--ink-soft); line-height: 1.6; }
+
+@media (prefers-reduced-motion: reduce) { .pt-row.hot .pt-box { animation: none; } }
