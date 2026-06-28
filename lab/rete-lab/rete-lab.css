@@ -116,7 +116,7 @@
 .rl-del-btn { margin-top: 0.6rem; }
 
 /* ---------- Log ---------- */
-.rl-log-panel { margin-top: 0; }
+.rl-log-panel { margin-top: 1rem; }
 .rl-log-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: 0.7rem; }
 .rl-log-head h2 { font-family: var(--font-display); font-weight: 500; font-size: 1.15rem; }
 .rl-banner { padding: 0.7rem 0.9rem; border-radius: 10px; font-family: var(--font-mono); font-size: 0.86rem; margin-bottom: 0.8rem; display: none; }
@@ -137,3 +137,33 @@
 /* ---------- Aiuto sotto la tela ---------- */
 .rl-hint { margin-top: 0.7rem; font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-faint); line-height: 1.5; }
 .rl-hint b { color: #e0533d; }
+
+/* ---------- Popup di configurazione del dispositivo ---------- */
+.rl-modal-overlay {
+  position: fixed; inset: 0; z-index: 80;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex; align-items: center; justify-content: center;
+  padding: 1rem;
+}
+.rl-modal { position: relative; width: min(30rem, 100%); max-height: 88vh; overflow: auto; }
+.rl-modal .panel { margin: 0; }
+.rl-modal-close {
+  position: absolute; top: 0.7rem; right: 0.7rem; z-index: 3;
+  width: 30px; height: 30px; border-radius: 50%;
+  border: 1px solid var(--line); background: var(--bg); color: var(--ink-soft);
+  font-size: 1.15rem; line-height: 1; cursor: pointer; display: grid; place-items: center;
+}
+.rl-modal-close:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ---------- Etichette delle interfacce sui cavi ---------- */
+.rl-port-lbl rect { fill: var(--bg); stroke: var(--line); stroke-width: 1; }
+.rl-port-lbl text {
+  font-family: var(--font-mono); font-size: 9px; fill: var(--ink-soft);
+  text-anchor: middle; dominant-baseline: central;
+}
+
+/* riga «porta → vicino» nelle interfacce del router */
+.rl-iflabel { font-family: var(--font-mono); font-size: 0.78rem; margin: 0.6rem 0 0.2rem; color: var(--ink-soft); }
+.rl-iflabel b { color: var(--ink); }
+.rl-if-ok { color: #2f9e57; }
+.rl-if-off { color: var(--ink-faint); }

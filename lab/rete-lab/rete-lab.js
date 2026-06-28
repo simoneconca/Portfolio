@@ -33,6 +33,7 @@
   const gDevices = document.getElementById("rlDevices");
   const gAnim = document.getElementById("rlAnim");
   const sideEl = document.getElementById("rlSide");
+  const modalEl = document.getElementById("rlModal");
   const logEl = document.getElementById("rlLog");
   const bannerEl = document.getElementById("rlBanner");
   const statusEl = document.getElementById("rlStatus");
@@ -86,6 +87,12 @@
   const deviceOfPort = (id) => devices.find((d) => d.ports.some((p) => p.id === id));
   const freePort = (dev) => dev.ports.find((p) => !p.linkId);
   function otherEnd(port) { const l = links.find((x) => x.id === port.linkId); if (!l) return null; return deviceOfPort(l.a === port.id ? l.b : l.a); }
+  // l'estremità remota di un cavo: dispositivo + porta dall'altra parte
+  function remoteEnd(port) {
+    const l = links.find((x) => x.id === port.linkId); if (!l) return null;
+    const otherId = l.a === port.id ? l.b : l.a;
+    return { dev: deviceOfPort(otherId), port: portById(otherId), wireless: !!l.wireless };
+  }
   function neighbors(devId) {
     const out = [];
     links.forEach((l) => { const da = deviceOfPort(l.a), db = deviceOfPort(l.b); if (da.id === devId) out.push({ dev: db }); else if (db.id === devId) out.push({ dev: da }); });
@@ -106,7 +113,7 @@
     const x = Math.max(0, Math.min(CANVAS_W - DW, vx + 30 + (k % 6) * 34));
     const y = Math.max(0, Math.min(CANVAS_H - DH, vy + 30 + (k % 6) * 30));
     const d = makeDevice(type, x, y);
-    devices.push(d); selectedId = d.id; sideTab = "config"; render(); renderSide();
+    devices.push(d); selectedId = d.id; sideTab = "config"; render(); closeModal();
   }
   function deleteDevice(id) {
     links = links.filter((l) => {
@@ -156,6 +163,17 @@
   const center = (d) => ({ x: d.x + DW / 2, y: d.y + DH / 2 });
   function pathD(l) { const a = center(deviceOfPort(l.a)), b = center(deviceOfPort(l.b)); return "M " + a.x + " " + a.y + " L " + b.x + " " + b.y; }
 
+  // etichetta col nome della porta, vicino al dispositivo, sul cavo (solo per device con >1 interfaccia)
+  function portLabel(from, to, dev, port) {
+    if (!dev || dev.ports.length < 2 || !port) return "";
+    const dx = to.x - from.x, dy = to.y - from.y, len = Math.hypot(dx, dy) || 1;
+    const off = Math.min(60, len * 0.42);
+    const x = from.x + dx / len * off, y = from.y + dy / len * off;
+    const w = port.name.length * 6.4 + 10;
+    return '<g class="rl-port-lbl"><rect x="' + (x - w / 2).toFixed(1) + '" y="' + (y - 8) + '" width="' + w.toFixed(1) + '" height="16" rx="4"/>' +
+      '<text x="' + x.toFixed(1) + '" y="' + y + '">' + escapeHtml(port.name) + "</text></g>";
+  }
+
   function icon(type) {
     const cx = DW / 2, g = (inner, tx, ty) => '<g class="rl-dev-icon" transform="translate(' + (cx + tx) + "," + ty + ')">' + inner + "</g>";
     if (type === "pc") return g('<rect x="0" y="0" width="30" height="20" rx="2"/><path d="M11 24h8M9 24h12"/>', -15, 8);
@@ -191,6 +209,14 @@
         '<text class="rl-dev-name" x="' + (DW / 2) + '" y="44">' + escapeHtml(d.name) + "</text>" + ipLine +
         (d.id === selectedId ? '<g class="rl-del" data-del="' + d.id + '" transform="translate(' + (DW - 4) + ',4)"><circle cx="0" cy="0" r="9"/><text x="0" y="0">×</text></g>' : "") + "</g>";
     });
+    // etichette delle interfacce sui cavi (sopra i dispositivi, per chi ha più porte)
+    links.forEach((l) => {
+      if (l.wireless) return;
+      const da = deviceOfPort(l.a), db = deviceOfPort(l.b);
+      if (!da || !db) return;
+      const ca = center(da), cb = center(db);
+      dh += portLabel(ca, cb, da, portById(l.a)) + portLabel(cb, ca, db, portById(l.b));
+    });
     gDevices.innerHTML = dh;
   }
   function updateLinkPaths() { gLinks.querySelectorAll("[data-link]").forEach((p) => { const l = links.find((x) => x.id === p.dataset.link); if (l) p.setAttribute("d", pathD(l)); }); }
@@ -201,9 +227,12 @@
   function setSideTab(t) { sideTab = t; renderSide(); }
   window.__rlSetTab = setSideTab;
 
+  function closeModal() { if (modalEl) modalEl.hidden = true; }
+
   function renderSide() {
     const d = device(selectedId);
-    if (!d) { sideEl.innerHTML = '<div class="panel"><div class="rl-side-empty"><svg class="rl-empty-ico" width="46" height="46" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="5" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="8.5" y="16" width="7" height="5" rx="1"/><path d="M6.5 8v3h11V8M12 11v5"/></svg><p>Seleziona un dispositivo per configurarlo, oppure aggiungine uno dalla barra qui sopra.</p></div></div>'; return; }
+    if (!d) { closeModal(); return; }
+    if (modalEl) modalEl.hidden = false;
     let body = '<div class="panel"><div class="rl-panel-head"><h2>' + escapeHtml(d.name) + "</h2></div>";
 
     if (d.type === "pc" || d.type === "wpc") {
@@ -227,10 +256,12 @@
     } else if (d.type === "ap") {
       body += '<p style="color:var(--ink-soft);font-size:0.85rem;margin-bottom:0.8rem">L\'<b>Access Point</b> collega i dispositivi <b>wireless</b> alla rete cablata (lavora a livello 2). Avvicina un <b>Laptop</b> per associarlo: comparirà un collegamento tratteggiato.</p>';
       body += field("Nome", "name", d.name);
-      body += '<p class="control-label" style="margin:0.6rem 0 0.4rem">Tabella MAC appresa</p>' + macTable(d);
+      body += '<p class="control-label" style="margin:0.6rem 0 0.4rem">Collegamenti (porta → dispositivo)</p>' + connList(d);
+      body += '<p class="control-label" style="margin:0.8rem 0 0.4rem">Tabella MAC appresa</p>' + macTable(d);
     } else if (d.type === "server") {
       const p = d.ports[0];
       body += field("Nome", "name", d.name);
+      body += '<p class="control-label" style="margin:0.2rem 0 0.4rem">Collegamenti (porta → dispositivo)</p>' + connList(d);
       body += '<div class="rl-field"><label>Funzione del server</label><select class="rl-select" data-f="role" style="width:100%"><option value="dhcp"' + (d.role === "dhcp" ? " selected" : "") + ">DHCP</option><option value=\"firewall\"" + (d.role === "firewall" ? " selected" : "") + ">Firewall</option><option value=\"web\"" + (d.role === "web" ? " selected" : "") + ">Web / DNS</option><option value=\"vpn\"" + (d.role === "vpn" ? " selected" : "") + ">VPN</option></select></div>";
       if (d.role !== "firewall") body += '<div class="rl-field-row"><div class="rl-field"><label>IP del server</label><input type="text" data-f="dip" value="' + escapeAttr(p.ip || "") + '"><div class="err"></div></div><div class="rl-field"><label>mask</label><input type="text" data-f="dmask" value="' + escapeAttr(p.mask || "") + '"></div></div>';
       if (d.role === "dhcp") {
@@ -250,7 +281,8 @@
     } else if (d.type === "switch") {
       body += '<p style="color:var(--ink-soft);font-size:0.85rem;margin-bottom:0.8rem">Lo switch lavora a livello 2: non ha IP e impara da solo quali MAC stanno su quale porta.</p>';
       body += field("Nome", "name", d.name);
-      body += '<p class="control-label" style="margin:0.6rem 0 0.4rem">Tabella MAC appresa</p>' + macTable(d);
+      body += '<p class="control-label" style="margin:0.6rem 0 0.4rem">Collegamenti (porta → dispositivo)</p>' + connList(d);
+      body += '<p class="control-label" style="margin:0.8rem 0 0.4rem">Tabella MAC appresa</p>' + macTable(d);
     } else if (d.type === "router") {
       if (sideTab === "arp") sideTab = "config";
       body += tabsHtml([["config", "Interfacce"], ["routing", "Routing"]]);
@@ -277,8 +309,12 @@
         body += field("Nome", "name", d.name);
         body += '<p class="control-label" style="margin:0.6rem 0 0.4rem">Interfacce</p>';
         d.ports.forEach((p) => {
-          const connected = p.linkId ? "" : " (scollegata)";
-          body += '<div class="rl-field-row"><div class="rl-field"><label>' + p.name + " — IP" + connected + '</label><input type="text" data-f="rip" data-port="' + p.id + '" value="' + escapeAttr(p.ip || "") + '"><div class="err"></div></div>' +
+          const r = p.linkId ? remoteEnd(p) : null;
+          const conn = r
+            ? '<span class="rl-if-ok">→ ' + escapeHtml(r.dev.name) + (r.port ? " · " + escapeHtml(r.port.name) : "") + "</span>"
+            : '<span class="rl-if-off">scollegata</span>';
+          body += '<div class="rl-iflabel"><b>' + escapeHtml(p.name) + "</b> " + conn + "</div>";
+          body += '<div class="rl-field-row"><div class="rl-field"><label>IP</label><input type="text" data-f="rip" data-port="' + p.id + '" value="' + escapeAttr(p.ip || "") + '"><div class="err"></div></div>' +
             '<div class="rl-field"><label>mask</label><input type="text" data-f="rmask" data-port="' + p.id + '" value="' + escapeAttr(p.mask || "") + '"></div></div>';
         });
       }
@@ -299,6 +335,18 @@
     let t = '<table class="rl-table"><thead><tr><th>IP</th><th>MAC</th></tr></thead><tbody>';
     if (!rows.length) t += '<tr><td class="empty" colspan="2">Vuota — fai un ping per popolarla.</td></tr>';
     else rows.forEach((ip) => { t += "<tr><td>" + escapeHtml(ip) + "</td><td>" + escapeHtml(d.arp[ip]) + "</td></tr>"; });
+    return t + "</tbody></table>";
+  }
+  // tabella «quale cavo su quale porta» per i dispositivi con più interfacce
+  function connList(d) {
+    const conn = d.ports.filter((p) => p.linkId);
+    let t = '<table class="rl-table"><thead><tr><th>Porta</th><th>Collegata a</th></tr></thead><tbody>';
+    if (!conn.length) t += '<tr><td class="empty" colspan="2">Nessun cavo collegato.</td></tr>';
+    else conn.forEach((p) => {
+      const r = remoteEnd(p);
+      const dest = r ? escapeHtml(r.dev.name) + (r.port ? " · " + escapeHtml(r.port.name) : "") + (r.wireless ? " (Wi-Fi)" : "") : "—";
+      t += "<tr><td>" + escapeHtml(p.name) + "</td><td>" + dest + "</td></tr>";
+    });
     return t + "</tbody></table>";
   }
   function macTable(d) {
@@ -718,7 +766,7 @@
       const id = devEl.dataset.dev;
       if (tool === "cable") { e.preventDefault(); handleCableClick(id); return; }
       if (tool === "ping") { e.preventDefault(); handlePingClick(id); return; }
-      selectedId = id; sideTab = (sideTab === "arp" || sideTab === "routing") ? sideTab : "config"; renderSide(); render();
+      selectedId = id; sideTab = (sideTab === "arp" || sideTab === "routing") ? sideTab : "config"; render();
       const d = device(id);
       drag = { id, moved: false, sx: e.clientX, sy: e.clientY, ox: d.x, oy: d.y };
       const g = gDevices.querySelector('[data-dev="' + id + '"]'); if (g) g.classList.add("dragging");
@@ -746,7 +794,7 @@
   });
   svg.addEventListener("pointerup", () => {
     if (pan) { pan = null; svg.classList.remove("panning"); }
-    if (drag) { const moved = drag.moved; const g = gDevices.querySelector('[data-dev="' + drag.id + '"]'); if (g) g.classList.remove("dragging"); drag = null; if (moved) render(); }
+    if (drag) { const moved = drag.moved; const g = gDevices.querySelector('[data-dev="' + drag.id + '"]'); if (g) g.classList.remove("dragging"); drag = null; if (moved) render(); else renderSide(); }
   });
 
   function handleCableClick(id) {
@@ -774,6 +822,12 @@
   }
   document.querySelectorAll("[data-add]").forEach((b) => b.addEventListener("click", () => addDevice(b.dataset.add)));
   document.querySelectorAll("[data-tool]").forEach((b) => b.addEventListener("click", () => setTool(b.dataset.tool)));
+  // chiusura del popup di configurazione
+  function dismissConfig() { selectedId = null; render(); renderSide(); }
+  document.getElementById("rlModalClose").addEventListener("click", dismissConfig);
+  modalEl.addEventListener("pointerdown", (e) => { if (e.target === modalEl) dismissConfig(); });
+  document.addEventListener("keydown", (e) => { if (e.key === "Escape" && !modalEl.hidden) dismissConfig(); });
+
   document.getElementById("rlReset").addEventListener("click", () => loadScenario(document.getElementById("rlScenario").value));
   document.getElementById("rlScenario").addEventListener("change", (e) => loadScenario(e.target.value));
 

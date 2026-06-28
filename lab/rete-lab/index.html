@@ -112,15 +112,20 @@
             <g id="rlAnim"></g>
           </svg>
         </div>
-        <p class="rl-hint">Trascina i dispositivi per spostarli · usa <b style="color:var(--ink-soft)">Cavo</b> per collegarli · <b>clicca un cavo per rimuoverlo</b> · seleziona un dispositivo per configurarlo qui sotto.</p>
+        <p class="rl-hint">Trascina i dispositivi per spostarli · usa <b style="color:var(--ink-soft)">Cavo</b> per collegarli · <b>clicca un cavo per rimuoverlo</b> · <b>clicca un dispositivo per configurarlo</b>.</p>
 
-        <!-- IMPOSTAZIONI + SPIEGAZIONE (sotto la tela) -->
-        <div class="rl-bottom">
-          <div class="rl-side" id="rlSide"></div>
-          <div class="panel rl-log-panel">
-            <div class="rl-log-head"><h2>Cosa succede</h2></div>
-            <div class="rl-banner" id="rlBanner"></div>
-            <div class="rl-log" id="rlLog"></div>
+        <!-- SPIEGAZIONE (sotto la tela, a tutta larghezza) -->
+        <div class="panel rl-log-panel">
+          <div class="rl-log-head"><h2>Cosa succede</h2></div>
+          <div class="rl-banner" id="rlBanner"></div>
+          <div class="rl-log" id="rlLog"></div>
+        </div>
+
+        <!-- POPUP di configurazione (si apre cliccando un dispositivo) -->
+        <div class="rl-modal-overlay" id="rlModal" hidden>
+          <div class="rl-modal" role="dialog" aria-modal="true">
+            <button class="rl-modal-close" id="rlModalClose" type="button" aria-label="Chiudi">×</button>
+            <div class="rl-side" id="rlSide"></div>
           </div>
         </div>
 
