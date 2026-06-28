@@ -32,8 +32,18 @@
     ["a", "1110"], ["a", "2ABC"], ["b", "004F"], ["a", "4000"]
   ].map(([pid, addr]) => `<button type="button" class="example-chip" data-pgex="${pid}:${addr}">${pid === "so" ? "S.O." : "Prog. " + pid.toUpperCase()} · 0x${addr}</button>`).join("");
 
+  // riquadro visivo: il processo spezzato in pagine -> pagine fisiche (frame) sparse
+  function renderMap(hitPage) {
+    $("pgMap").innerHTML = cur.table.map((f, p) =>
+      `<div class="pg-map-row${hitPage === p ? " hit" : ""}">` +
+        `<span class="pg-chip log">pag. logica <b>${p}</b></span>` +
+        '<span class="pg-map-arrow">▶</span>' +
+        `<span class="pg-chip phys pf-${cur.cls}">pag. fisica <b>${f}</b><small> · frame ${f}</small></span>` +
+      "</div>"
+    ).join("");
+  }
   function renderTable(hitPage) {
-    $("pgTableLabel").innerHTML = "Tabella delle pagine — <b>" + cur.name + "</b>";
+    $("pgTableProc").textContent = "— " + cur.name;
     $("pgTable").innerHTML =
       '<div class="pt-head"><span>Pagina</span><span>Base logica</span><span>Frame</span><span>Base fisica</span></div>' +
       cur.table.map((f, p) =>
@@ -58,7 +68,7 @@
     if (!/^[0-9a-f]+$/i.test(raw)) {
       $("pgBreak").innerHTML = ""; setResult("", "");
       setSteps([{ t: "Inserisci un indirizzo esadecimale valido (es. <b>1110</b>).", fault: true }]);
-      renderTable(); renderRam(); return;
+      renderMap(); renderTable(); renderRam(); return;
     }
     const addr = parseInt(raw, 16), page = Math.floor(addr / PAGE_SIZE), offset = addr % PAGE_SIZE;
 
@@ -77,7 +87,7 @@
       steps.push({ t: `<b>${cur.name}</b> ha solo ${cur.table.length} pagine (0…${cur.table.length - 1}): la pagina ${page} <b>non esiste</b>. La MMU blocca l'accesso (errore di protezione).`, fault: true });
       setSteps(steps);
       setResult('<span class="mr-lbl">Errore di protezione</span><div class="mr-big">indirizzo non valido</div>', "fault");
-      renderTable(); renderRam(); return;
+      renderMap(); renderTable(); renderRam(); return;
     }
     const frame = cur.table[page], baseLog = page * PAGE_SIZE, baseFis = frame * PAGE_SIZE;
     const phys = addr - baseLog + baseFis;
@@ -86,7 +96,7 @@
     steps.push({ t: `Indirizzo fisico = logico − base logica + base fisica = ${hex(addr, 4)} − ${hex(baseLog, 4)} + ${hex(baseFis, 4)} = <b>${hex(phys, 4)}</b>.` });
     setSteps(steps);
     setResult('<span class="mr-lbl">Indirizzo fisico nella RAM</span><div class="mr-big">' + hex(phys, 4) + "</div>", "ok");
-    renderTable(page); renderRam(frame);
+    renderMap(page); renderTable(page); renderRam(frame);
   }
 
   $("pgProcSeg").addEventListener("click", (e) => {

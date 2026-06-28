@@ -202,11 +202,13 @@
           <div id="pgResult" class="mem-result"></div>
         </div>
 
-        <!-- TABELLA PAGINE + MAPPA RAM -->
+        <!-- SPEZZETTAMENTO + TABELLA PAGINE + MAPPA RAM -->
         <div class="panel">
-          <span class="state-label" id="pgTableLabel">Tabella delle pagine</span>
+          <span class="state-label" id="pgMapLabel">Come viene spezzettato il processo</span>
+          <div id="pgMap" class="pg-map"></div>
+          <span class="state-label" style="margin-top:1.1rem">Tabella delle pagine <small id="pgTableProc" style="color:var(--ink-faint);font-weight:400"></small></span>
           <div id="pgTable" class="page-table"></div>
-          <span class="state-label" style="margin-top:1.1rem">RAM — frame fisici <small style="color:var(--ink-faint);font-weight:400">(colorati per processo · le pagine di un processo non sono contigue)</small></span>
+          <span class="state-label" style="margin-top:1.1rem">RAM — frame fisici <small style="color:var(--ink-faint);font-weight:400">(tutti i processi insieme · ogni processo è sparso)</small></span>
           <div id="pgRam" class="pg-ram"></div>
         </div>
       </div>
