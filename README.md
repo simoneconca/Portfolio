@@ -26,3 +26,11 @@ python -m http.server 5050
 
 …poi vai su `http://localhost:5050`. (In alternativa `npx serve .` se hai Node.)
 
+## Laboratori didattici (`lab/`)
+
+Il sito include una raccolta di **laboratori interattivi** (statici, vanilla JS) in
+`lab/`. Per lo **stato del progetto**, l'**elenco completo dei lab per sezione**, il
+**registro degli aggiornamenti** e le **convenzioni** da seguire quando se ne aggiunge o
+modifica uno, vedi **[`docs/AGGIORNAMENTI.md`](docs/AGGIORNAMENTI.md)** — è il file di
+passaggio di consegne, va tenuto aggiornato a ogni modifica rilevante.
+
