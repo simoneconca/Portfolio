@@ -101,10 +101,11 @@
   function measureDo(n) {
     const dW = Math.max(120, label(n).length * CH + 62), dH = DH;
     const mb = measureSeq(n.body);
-    const ch = Math.max(mb.rw, dW / 2) + 28;   // canale del back-edge a destra
-    const h = mb.h + GAP + dH + 26;            // corpo + freccia + rombo + uscita
+    const bodyH = n.body.length ? mb.h : 30;   // stub se il corpo è vuoto
+    const ch = Math.max(mb.lw, dW / 2) + 30;   // canale del back-edge a SINISTRA
+    const h = GAP + bodyH + GAP + dH + 26;      // ingresso + corpo + freccia + rombo + uscita
     n._lay = { dW, dH, mb, ch };
-    return (n._m = { lw: Math.max(mb.lw, dW / 2) + 30, rw: ch + 18, h });
+    return (n._m = { lw: ch + 20, rw: Math.max(mb.rw, dW / 2) + 24, h });
   }
 
   /* ============================================================
@@ -212,22 +213,31 @@
     return exitY;
   }
 
-  // do-while (post-test): corpo prima, rombo in fondo, back-edge che risale a destra
+  // do-while (post-test): il corpo viene PRIMA (sul filo centrale), il rombo è in FONDO.
+  // «vero» (ripeti) risale a sinistra fino a sopra il corpo; «falso» (esci) prosegue dritto in basso.
   function placeDo(n, cx, top, out) {
     const L = n._lay, dW = L.dW, dH = L.dH;
-    const bb = placeSeq(n.body, cx, top, out, { owner: n.id, slot: "body", full: true });   // il corpo viene per primo
+    const bodyTop = top + GAP;
+    out.push(vArr(cx, top, bodyTop));                       // ingresso nel corpo
+    let bb;
+    if (!n.body.length) {                                   // corpo vuoto: stub con un «+» ben dentro il ciclo
+      bb = bodyTop + 30;
+      out.push(pathArr(`M${cx} ${bodyTop} V${bb}`, false));
+      if (EDIT) out.push(plus(cx, bodyTop + 15, { owner: n.id, slot: "body", full: true }, 0));
+    } else {
+      bb = placeSeq(n.body, cx, bodyTop, out, { owner: n.id, slot: "body", full: true });
+    }
     const decTop = bb + GAP;
     out.push(vArr(cx, bb, decTop));
     const cy = decTop + dH / 2;
-    const channelX = cx + L.ch;
-    // Vero: vertice destro → destra → su → rientra in cima al corpo
-    out.push(pathArr(`M${cx + dW / 2} ${cy} H${channelX} V${top - 16} H${cx} V${top}`));
-    out.push(edgeLbl(cx + dW / 2 + 6, cy - 6, "vero"));
-    // Falso: vertice sinistro → sinistra → giù → rientro al centro
-    const leftX = cx - dW / 2 - 24, exitY = decTop + dH + 26;
-    out.push(pathArr(`M${cx - dW / 2} ${cy} H${leftX} V${exitY} H${cx}`, false));
-    out.push(edgeLbl(cx - dW / 2 - 52, cy + 14, "falso"));
-    out.push(`<circle cx="${cx}" cy="${exitY}" r="4" class="fc-join"/>`);
+    const chX = cx - L.ch;
+    // Vero (ripeti): vertice sinistro → sinistra → su → rientra in cima al corpo
+    out.push(pathArr(`M${cx - dW / 2} ${cy} H${chX} V${bodyTop - 6} H${cx} V${bodyTop}`));
+    out.push(edgeLbl(cx - dW / 2 - 30, cy - 6, "vero"));
+    // Falso (esci): vertice basso → dritto in basso
+    const exitY = decTop + dH + 26;
+    out.push(pathArr(`M${cx} ${decTop + dH} V${exitY}`, false));
+    out.push(edgeLbl(cx + 8, decTop + dH + 16, "falso"));
     out.push(shapeSVG("dec", cx, cy, dW, dH, label(n), n.id));
     return exitY;
   }
