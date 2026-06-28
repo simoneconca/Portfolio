@@ -36,14 +36,20 @@
   };
   function layerOn(l) { return step >= LAYERS[l].add && step <= LAYERS[l].strip; }
 
-  // livello "attivo" (in lavorazione) per ciascun passo → chiave app/tcp/ip/eth
-  const ACTIVE = ["app", "tcp", "ip", "eth", null, "eth", "ip", "tcp", "app"];
+  // livello "attivo" (in lavorazione) per ciascun passo → chiave app/tcp/ip/eth/phy
+  const ACTIVE = ["app", "tcp", "ip", "eth", "phy", "eth", "ip", "tcp", "app"];
 
   /* ---------- Elementi ---------- */
   const els = {};
   ["f-macd","f-macs","f-ips","f-ipd","f-ports","f-portd","f-payload","dataTag",
    "clientMsg","serverMsg","lblClientIp","lblServerIp","travel","dossier","progress",
-   "btnPrev","btnNext","packet"].forEach((id) => els[id] = $(id));
+   "btnPrev","btnNext","packet","bits"].forEach((id) => els[id] = $(id));
+
+  // converte una stringa nei suoi bit ASCII (per il livello fisico)
+  function toBits(s) {
+    return (s || "").slice(0, 4).split("").map((ch) =>
+      ch.charCodeAt(0).toString(2).padStart(8, "0")).join(" ");
+  }
 
   /* ---------- Riempi i valori statici ---------- */
   function fillValues() {
@@ -85,11 +91,11 @@
            fields: [["MAC destinazione", NET.macDst], ["MAC sorgente", NET.macSrc], ["EtherType", "0x0800 (IPv4)"], ["Coda", "FCS (checksum)"]],
            proto: "Ethernet · Wi-Fi 802.11 · PPP",
            note: "Il <b>frame Ethernet</b> aggiunge gli <b>indirizzi fisici (MAC)</b> per il primo salto, più una coda di controllo (FCS). Il pacchetto è pronto: premi <b>Invia</b>." },
-      4: { layer: null, phase: "Transito",
-           title: "In viaggio sul cavo",
-           fields: [["Da", NET.ipSrc], ["A", NET.ipDst], ["Forma", "sequenza di bit"]],
-           proto: "Livello Fisico: cavo / RJ45 / segnali",
-           note: "Il frame attraversa la rete come <b>sequenza di bit</b> fino al server. Premi <b>Step Su</b> per aprirlo." },
+      4: { layer: "phy", phase: "Transito · Livello Fisico (OSI 1)",
+           title: "Dal frame ai bit: la trasmissione",
+           fields: [["Unità (PDU)", "bit"], ["Mezzo", "rame (UTP) · fibra · radio"], ["Segnale", "tensione · luce · onde"], ["«" + (msg || "?")[0] + "» in ASCII", toBits((msg || "?")[0])]],
+           proto: "Livello Fisico: cavo UTP/RJ45 · fibra ottica · Wi-Fi · segnali",
+           note: "Qui non si aggiunge nessun header: il <b>livello fisico</b> prende il frame e lo trasforma in una <b>sequenza di bit</b> (0 e 1), poi in <b>segnali</b> fisici — impulsi di tensione sul rame, lampi di luce nella fibra, onde radio nel Wi-Fi — che viaggiano sul mezzo fino al server. Definisce cavi, connettori, voltaggi e velocità (es. 1 Gbps). Premi <b>Step Su</b> per farlo ricomporre in frame al server." },
       5: { layer: "eth", phase: "Salita · Accesso alla rete",
            title: "Il server apre Ethernet",
            fields: [["MAC destinazione", NET.macDst], ["È il mio MAC?", "Sì ✓"]],
@@ -132,9 +138,9 @@
       node.classList.toggle("active", act === key && layerOn(l));
     });
 
-    // evidenzia rail + tabella di confronto
+    // evidenzia rail + tabella di confronto (data-also: l'Accesso copre L2 + L1)
     document.querySelectorAll(".rail-row, .osi, .proto, .tcp-box").forEach((e) => {
-      e.classList.toggle("active", e.dataset.layer === act);
+      e.classList.toggle("active", e.dataset.layer === act || e.dataset.also === act);
     });
 
     // scena: PC attivi + transito
@@ -150,6 +156,12 @@
     els.travel.style.left = step <= 3 ? "8%" : "92%";
     els.travel.classList.toggle("moving", step === 4);
 
+    // livello fisico: bit che scorrono sul cavo
+    if (els.bits) {
+      els.bits.textContent = toBits(msg) || "0 1 0 1";
+      els.bits.classList.toggle("show", step === 4);
+    }
+
     // dossier + progresso + controlli
     dossier();
     renderProgress();
@@ -157,7 +169,7 @@
   }
 
   function renderProgress() {
-    const phase = step <= 3 ? "Incapsulamento (discesa)" : step === 4 ? "Transito" : "Decapsulamento (salita)";
+    const phase = step <= 3 ? "Incapsulamento (discesa)" : step === 4 ? "Transito · Livello Fisico" : "Decapsulamento (salita)";
     let bars = "";
     for (let i = 1; i <= N; i++) bars += `<i class="${i <= step ? "done" : ""}"></i>`;
     els.progress.innerHTML = `Passo <b>${step}</b> / ${N} — ${phase}<div class="bar">${bars}</div>`;

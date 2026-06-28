@@ -96,6 +96,7 @@
 
             <div class="wire" id="wire">
               <span class="wire-line"></span>
+              <span class="bits" id="bits" aria-hidden="true"></span>
               <span class="travel" id="travel" aria-hidden="true"></span>
             </div>
 
@@ -122,7 +123,7 @@
                 <span class="rail-osi">3</span>
                 <span class="rail-tcp"><span class="dot"></span>Rete</span>
               </div>
-              <div class="rail-row" data-layer="eth">
+              <div class="rail-row" data-layer="eth" data-also="phy">
                 <span class="rail-osi">2·1</span>
                 <span class="rail-tcp"><span class="dot"></span>Accesso</span>
               </div>
@@ -228,11 +229,25 @@
 
             <div class="osi" data-layer="eth"><span class="osi-n">2</span><b>Collegamento dati</b></div>
             <div class="proto" data-layer="eth">Ethernet · Wi-Fi 802.11 · PPP · switch (MAC)</div>
-            <div class="tcp-box" data-layer="eth" style="grid-column:3;grid-row:span 2"><b>Accesso alla rete</b><span class="pdu">PDU: Frame (liv. 2) · Bit (liv. 1)</span></div>
+            <div class="tcp-box" data-layer="eth" data-also="phy" style="grid-column:3;grid-row:span 2"><b>Accesso alla rete</b><span class="pdu">PDU: Frame (liv. 2) · Bit (liv. 1)</span></div>
 
-            <div class="osi" data-layer="eth"><span class="osi-n">1</span><b>Fisico</b></div>
-            <div class="proto" data-layer="eth">Cavi · RJ45 · Fibra ottica · segnali elettrici</div>
+            <div class="osi" data-layer="phy"><span class="osi-n">1</span><b>Fisico</b></div>
+            <div class="proto" data-layer="phy">Cavi · RJ45 · Fibra ottica · segnali elettrici</div>
           </div>
+        </div>
+
+        <div class="panel guide-panel">
+          <header class="panel-head">
+            <span class="panel-kicker">Approfondimento</span>
+            <h2 class="panel-title">I livelli e i protocolli, spiegati</h2>
+            <p class="panel-sub">A cosa serve ogni livello e cosa fa ogni protocollo. Clicca per espandere; usa la ricerca per trovare un termine.</p>
+          </header>
+          <div class="guide-search field">
+            <span class="field-prefix">⌕</span>
+            <input id="guideSearch" type="text" autocomplete="off" spellcheck="false" placeholder="Cerca un livello o un protocollo (es. porte, DNS, MAC, fibra)…" aria-label="Cerca">
+          </div>
+          <p class="guide-empty" id="guideEmpty" hidden>Nessuna voce corrisponde alla ricerca.</p>
+          <div id="netGuide"></div>
         </div>
       </div>
     </section>
@@ -248,5 +263,6 @@
 
   <script src="../../js/core.js"></script>
   <script src="rete.js"></script>
+  <script src="guida.js"></script>
 </body>
 </html>

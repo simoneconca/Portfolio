@@ -8,11 +8,13 @@
   --c-tcp: #1f9e8a;
   --c-ip:  #c98a1b;
   --c-eth: #8a5cf0;
+  --c-phy: #b5468f;
 }
 [data-theme="dark"] {
   --c-tcp: #4fd1bb;
   --c-ip:  #e0b24a;
   --c-eth: #b39bff;
+  --c-phy: #e89fd0;
 }
 
 /* colore per livello (sia data-l del pacchetto, sia data-layer di rail/confronto) */
@@ -20,6 +22,7 @@
 [data-l="tcp"],  [data-layer="tcp"] { --lc: var(--c-tcp); }
 [data-l="ip"],   [data-layer="ip"]  { --lc: var(--c-ip); }
 [data-l="eth"],  [data-layer="eth"] { --lc: var(--c-eth); }
+[data-layer="phy"] { --lc: var(--c-phy); }
 
 /* ============================================================
    Scrollytelling: wrapper alto + stage fissato
@@ -406,3 +409,51 @@
   .osi, .proto, .tcp-box { font-size: 0.82rem; padding: 0.5rem 0.6rem; }
   .proto { font-size: 0.68rem; }
 }
+
+/* ---------- Livello fisico: bit che scorrono sul cavo ---------- */
+.bits {
+  position: absolute;
+  top: 50%; left: 0; right: 0;
+  transform: translateY(-50%);
+  text-align: center;
+  font-family: var(--font-mono); font-size: 0.78rem; letter-spacing: 0.12em;
+  color: var(--c-phy); font-weight: 600;
+  background: var(--bg);
+  padding: 0.1rem 0;
+  opacity: 0; transition: opacity 0.3s var(--ease);
+}
+.bits.show { opacity: 1; animation: bitsflow 0.6s steps(4) infinite; }
+@keyframes bitsflow { 50% { opacity: 0.55; } }
+
+/* ---------- Approfondimento: accordion livelli/protocolli ---------- */
+.guide-panel { margin-top: 1.25rem; }
+.guide-search { max-width: 30rem; margin-bottom: 1.5rem; }
+.guide-cat { margin-bottom: 1.75rem; }
+.guide-cat:last-child { margin-bottom: 0; }
+.guide-cat-title {
+  font-family: var(--font-display); font-weight: 500; font-size: 1.2rem;
+  padding-bottom: 0.5rem; border-bottom: 1px solid var(--line); margin-bottom: 0.35rem;
+}
+.guide-cat-intro { color: var(--ink-soft); font-size: 0.9rem; margin-bottom: 1rem; }
+.guide-cmd {
+  border: 1px solid var(--line); border-left: 3px solid var(--lc, var(--line));
+  border-radius: 10px; background: var(--bg); margin-bottom: 0.6rem; overflow: hidden;
+  transition: border-color 0.2s var(--ease);
+}
+.guide-cmd[open] { border-color: color-mix(in srgb, var(--lc, var(--accent)) 45%, var(--line)); }
+.guide-cmd summary {
+  display: flex; align-items: baseline; gap: 0.85rem; flex-wrap: wrap;
+  padding: 0.8rem 1.1rem; cursor: pointer; list-style: none;
+}
+.guide-cmd summary::-webkit-details-marker { display: none; }
+.guide-cmd summary::before { content: "+"; font-family: var(--font-mono); color: var(--ink-faint); }
+.guide-cmd[open] summary::before { content: "−"; color: var(--lc, var(--accent)); }
+.g-name { font-family: var(--font-mono); font-size: 0.95rem; font-weight: 600; color: var(--lc, var(--accent)); }
+.g-syntax { font-family: var(--font-mono); font-size: 0.76rem; color: var(--ink-faint); }
+.g-body { padding: 0 1.1rem 1.1rem; }
+.g-desc { color: var(--ink-soft); font-size: 0.92rem; line-height: 1.65; }
+.g-desc b { color: var(--ink); font-weight: 600; }
+.g-desc code { font-family: var(--font-mono); font-size: 0.85em; background: var(--bg-sunk);
+  border: 1px solid var(--line-soft); border-radius: 5px; padding: 0.05rem 0.35rem; color: var(--ink); }
+.guide-empty { color: var(--ink-soft); font-family: var(--font-mono); font-size: 0.9rem; }
+@media (max-width: 560px) { .g-syntax { flex-basis: 100%; } }
