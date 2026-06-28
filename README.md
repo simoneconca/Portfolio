@@ -29,8 +29,5 @@ python -m http.server 5050
 ## Laboratori didattici (`lab/`)
 
 Il sito include una raccolta di **laboratori interattivi** (statici, vanilla JS) in
-`lab/`. Per lo **stato del progetto**, l'**elenco completo dei lab per sezione**, il
-**registro degli aggiornamenti** e le **convenzioni** da seguire quando se ne aggiunge o
-modifica uno, vedi **[`docs/AGGIORNAMENTI.md`](docs/AGGIORNAMENTI.md)** — è il file di
-passaggio di consegne, va tenuto aggiornato a ogni modifica rilevante.
+`lab/`, organizzati per sezione nel portale `lab/index.html`.
 
