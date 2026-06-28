@@ -44,7 +44,17 @@
     return false;
   }
   function hasRepeat(p) { return /(.)\1\1/.test(p); } // 3+ caratteri uguali di fila
-  function isCommon(p) { const low = p.toLowerCase(); return COMMON.some((c) => low === c || (low.length >= 4 && low.indexOf(c) !== -1 && c.length >= 5)); }
+  // "notissima" SOLO se la password È una password comune (match esatto, o parola comune
+  // + poche cifre finali su una password corta). NON se la contiene soltanto: una frase
+  // lunga che contiene "amore" resta fortissima.
+  function isCommon(p) {
+    const low = p.toLowerCase().trim();
+    if (COMMON.indexOf(low) !== -1) return true;
+    const base = low.replace(/[0-9!?.\-_]+$/g, "");
+    return low.length <= 12 && base.length >= 3 && COMMON.indexOf(base) !== -1;
+  }
+  // restituisce una parola comune contenuta (solo per un avviso, non declassa)
+  function commonWordIn(p) { const low = p.toLowerCase(); return COMMON.find((c) => c.length >= 5 && low.indexOf(c) !== -1) || null; }
 
   function u(n, sing, plur) { return n + " " + (n === 1 ? sing : plur); }
   function fmtTime(seconds) {
@@ -118,7 +128,8 @@
 
     // avvisi
     const w = [];
-    if (common) w.push("È una <b>password notissima</b> (o la contiene): è tra le prime che un attaccante prova.");
+    if (common) w.push("È una <b>password notissima</b>: è tra le prime che un attaccante prova.");
+    else if (len > 0 && len < 16 && commonWordIn(p)) w.push("Contiene la parola comune «<b>" + commonWordIn(p) + "</b>»: da sola indebolisce. In una frase lunga conta meno, ma evita parole troppo prevedibili.");
     if (len > 0 && hasSequence(p)) w.push("Contiene una <b>sequenza</b> (tipo <code>1234</code> o <code>abcd</code>): facile da indovinare.");
     if (len > 0 && hasRepeat(p)) w.push("Ha <b>caratteri ripetuti</b> di fila (tipo <code>aaaa</code>): aggiungono poca sicurezza.");
     if (len > 0 && len < 8) w.push("È <b>troppo corta</b>: ogni carattere in più rende la ricerca esponenzialmente più difficile.");
