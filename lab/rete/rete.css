@@ -238,6 +238,9 @@
   background: var(--bg-elev);
   padding: 1.1rem;
   min-height: 220px;
+  /* tetto: se la spiegazione è lunga, scorre dentro senza spingere giù i controlli */
+  max-height: 46vh;
+  overflow-y: auto;
 }
 .dossier-phase {
   font-family: var(--font-mono);
@@ -377,7 +380,7 @@
   .stage-grid { grid-template-columns: minmax(0, 1fr); gap: 0.9rem; }
   .packet-area { order: 1; min-height: 0; }
   .rail { order: 2; }
-  .dossier { order: 3; min-height: 0; }
+  .dossier { order: 3; min-height: 0; max-height: none; overflow-y: visible; }
 
   /* confronto OSI: colonna singola, le intestazioni non servono */
   .cmp { grid-template-columns: minmax(0, 1fr); gap: 0.4rem; }
