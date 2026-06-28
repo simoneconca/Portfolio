@@ -171,7 +171,7 @@
       callout: (c) => `Hai scelto una CPU con socket <b>${c.socket}</b> e consumo <b>${c.tdp} W</b>${c.igpu ? "" : ", <b>senza</b> grafica integrata (servirà una scheda video)"}. Ricorda il socket: la scheda madre dovrà avere lo stesso!` },
 
     { key: "mobo", emoji: "🛠️", title: "La scheda madre — la base", type: "Scheda madre",
-      intro: (b) => `La <b>scheda madre</b> collega tutto. Il <b>socket</b> deve combaciare con la CPU (la tua è <b>${b.cpu.socket}</b>). Il <b>chipset</b> decide le funzioni disponibili; supporta un solo tipo di RAM (<b>DDR4</b> o <b>DDR5</b>); gli slot <b>M.2</b> ospitano gli SSD veloci; il <b>formato</b> (ATX, mATX) è la dimensione, che dovrà entrare nel case. Le schede col socket sbagliato sono segnate come <b>non compatibili</b>.`,
+      intro: (b) => `La <b>scheda madre</b> collega tutto. Il <b>socket</b> deve combaciare con la CPU (la tua è <b>${b.cpu.socket}</b>). Il <b>chipset</b> decide le funzioni disponibili; supporta un solo tipo di RAM (<b>DDR4</b> o <b>DDR5</b>); gli slot <b>M.2</b> ospitano gli SSD veloci; il <b>formato</b> (ATX, mATX) è la dimensione, che dovrà entrare nel case. <b>Attenzione al socket</b>: deve essere lo stesso della CPU, o non si incastrano.`,
       options: () => MOBO,
       compat: (m, b) => m.socket === b.cpu.socket ? null : `il socket di questa scheda è <b>${m.socket}</b>, ma la tua CPU usa il socket <b>${b.cpu.socket}</b>: la CPU non ci entra fisicamente.`,
       callout: (c) => `Questa scheda usa memorie <b>${c.ram}</b> ed è formato <b>${c.form}</b>: la RAM dovrà essere ${c.ram} e il case dovrà accettare una ${c.form}.` },
@@ -195,19 +195,19 @@
       callout: (c) => c.integrated ? "Userai la grafica già dentro la CPU: risparmi e consumi pochissimo." : `Con <b>${c.specs[0][1]}</b> di memoria video giochi bene. Attenzione: consuma <b>${c.tdp} W</b>, ne terremo conto per l'alimentatore.` },
 
     { key: "cooler", emoji: "❄️", title: "Il dissipatore — il raffreddamento", type: "Dissipatore",
-      intro: (b) => `La CPU scalda: il <b>dissipatore</b> la tiene fresca, altrimenti rallenta o si spegne. Deve smaltire il calore della CPU (il suo <b>TDP</b>, qui <b>${b.cpu.tdp} W</b>). Ad <b>aria</b> (una ventola) o a <b>liquido</b> (AIO) per le CPU più calde. Quelli che non bastano per la tua CPU sono segnati come <b>non compatibili</b>.`,
+      intro: (b) => `La CPU scalda: il <b>dissipatore</b> la tiene fresca, altrimenti rallenta o si spegne. Deve smaltire il calore della CPU (il suo <b>TDP</b>, qui <b>${b.cpu.tdp} W</b>). Ad <b>aria</b> (una ventola) o a <b>liquido</b> (AIO) per le CPU più calde. <b>Controlla</b> che regga almeno il calore (TDP) della tua CPU.`,
       options: () => COOLER,
       compat: (c, b) => c.maxTdp >= b.cpu.tdp ? null : `raffredda fino a <b>${c.maxTdp} W</b>, ma la tua CPU ne produce <b>${b.cpu.tdp} W</b>: non riuscirebbe a smaltire il calore e la CPU si surriscalderebbe.`,
       callout: (c) => `Bene: questo dissipatore smaltisce fino a <b>${c.maxTdp} W</b>, sufficiente per la tua CPU.` },
 
     { key: "psu", emoji: "🔌", title: "L'alimentatore — l'energia", type: "Alimentatore",
-      intro: (b) => `L'<b>alimentatore</b> dà energia a tutto. Contano la <b>potenza</b> in W (deve bastare per tutti i componenti) e l'<b>efficienza</b> (80+ Bronze, Gold…): più alta, meno energia sprecata. Il tuo PC consuma circa <b>${power(b)} W</b>, quindi serve almeno <b>${suggestedW(b)} W</b> (un margine è sempre utile). Quelli sottodimensionati sono segnati come <b>non compatibili</b>.`,
+      intro: (b) => `L'<b>alimentatore</b> dà energia a tutto. Contano la <b>potenza</b> in W (deve bastare per tutti i componenti) e l'<b>efficienza</b> (80+ Bronze, Gold…): più alta, meno energia sprecata. Il tuo PC consuma circa <b>${power(b)} W</b>, quindi serve almeno <b>${suggestedW(b)} W</b> (un margine è sempre utile). <b>Scegli abbastanza Watt</b>: se è troppo debole il PC diventa instabile.`,
       options: () => PSU,
       compat: (p, b) => p.watt >= suggestedW(b) ? null : `dà solo <b>${p.watt} W</b>, ma il tuo PC consuma circa <b>${power(b)} W</b> e servono almeno <b>${suggestedW(b)} W</b> di margine: rischi spegnimenti o instabilità.`,
       callout: (c) => `<b>${c.watt} W</b> con efficienza ${c.specs[1][1]}: energia sufficiente e con margine.` },
 
     { key: "case", emoji: "📦", title: "Il case — la scatola", type: "Case",
-      intro: (b) => `Il <b>case</b> contiene e protegge tutto, e fa circolare l'aria. Deve accettare il formato della scheda madre (<b>${b.mobo.form}</b>), essere lungo abbastanza per la scheda video (${b.gpu.integrated ? "qui nessun problema" : "<b>" + b.gpu.length + " mm</b>"}) e alto per il dissipatore (<b>${b.cooler.height} mm</b>). Quelli troppo piccoli sono segnati come <b>non compatibili</b>.`,
+      intro: (b) => `Il <b>case</b> contiene e protegge tutto, e fa circolare l'aria. Deve accettare il formato della scheda madre (<b>${b.mobo.form}</b>), essere lungo abbastanza per la scheda video (${b.gpu.integrated ? "qui nessun problema" : "<b>" + b.gpu.length + " mm</b>"}) e alto per il dissipatore (<b>${b.cooler.height} mm</b>). <b>Controlla</b> che scheda madre, scheda video e dissipatore ci stiano dentro.`,
       options: () => CASE,
       compat: (c, b) => {
         if (c.forms.indexOf(b.mobo.form) < 0) return `non accetta schede madri formato <b>${b.mobo.form}</b> (solo ${c.forms.join(", ")}): la scheda madre non ci sta.`;
@@ -237,14 +237,15 @@
   function renderWizard() {
     if (finished) return renderFinale();
     const s = STEPS[step];
-    const opts = s.options(build);
+    const opts = s.options(build);               // mostriamo TUTTE le opzioni
     const chosen = build[s.key];
     const compatOf = (o) => (s.compat ? s.compat(o, build) : null);
     const chosenReason = chosen ? compatOf(chosen) : null;
 
+    // nessun «marchio» anticipato sulle card: il motivo si scopre SOLO scegliendo
     let calloutHtml = "";
     if (chosen && chosenReason) {
-      calloutHtml = `<div class="callout warn"><span class="co-ico">⚠️</span><div><b>Scelta non compatibile:</b> ${chosenReason}<br>Scegline uno compatibile per andare avanti.</div></div>`;
+      calloutHtml = `<div class="callout warn"><span class="co-ico">⚠️</span><div><b>Questa scelta non funziona:</b> ${chosenReason}<br>Prova a sceglierne un'altra per andare avanti.</div></div>`;
     } else if (chosen) {
       calloutHtml = `<div class="callout"><span class="co-ico">💡</span><div>${s.callout(chosen)}</div></div>`;
     }
@@ -252,17 +253,15 @@
     $("wizard").innerHTML =
       `<div class="wiz-head"><span class="wiz-emoji">${s.emoji}</span><h2 class="wiz-title">${step + 1}. ${s.title}</h2></div>` +
       `<p class="wiz-intro">${s.intro(build)}</p>` +
-      `<div class="opt-grid">` + opts.map((o) => {
-        const bad = compatOf(o);
-        return `<button type="button" class="opt-card ${chosen && chosen.id === o.id ? "selected" : ""}${bad ? " incompatible" : ""}" data-id="${o.id}">` +
+      `<div class="opt-grid">` + opts.map((o) =>
+        `<button type="button" class="opt-card ${chosen && chosen.id === o.id ? "selected" : ""}" data-id="${o.id}">` +
           `<div class="opt-top"><span class="opt-emoji">${o.emoji}</span><span class="opt-name">${o.name}</span>` +
           (o.tag ? `<span class="opt-tag ${o.tag.toLowerCase().replace(/\s/g, "")}">${o.tag}</span>` : "") + `</div>` +
           `<div class="opt-desc">${o.desc}</div>` +
           specsHtml(o) +
           `<div class="opt-price">${o.price === 0 ? "incluso / gratis" : o.price + " €"}</div>` +
-          (bad ? `<span class="opt-warn-badge">✗ non compatibile</span>` : "") +
-        `</button>`;
-      }).join("") + `</div>` +
+        `</button>`
+      ).join("") + `</div>` +
       calloutHtml +
       `<div class="wiz-nav">` +
         (step > 0 ? `<button type="button" class="back" id="wizBack">← Indietro</button>` : "") +
