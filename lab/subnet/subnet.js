@@ -182,6 +182,7 @@
   function renderSplit(network, cidr) {
     // popola le opzioni possibili (sottoprefissi fino a +6 bit, max /30)
     const maxExtra = Math.min(6, 30 - cidr);
+    const prev = splitSelect.value;            // ricorda la scelta dell'utente
     splitSelect.innerHTML = "";
     if (maxExtra < 1) {
       subnetsBox.innerHTML = "";
@@ -194,6 +195,7 @@
       opt.textContent = Math.pow(2, e) + " sottoreti (/" + (cidr + e) + ")";
       splitSelect.appendChild(opt);
     }
+    if (prev && +prev >= 1 && +prev <= maxExtra) splitSelect.value = prev;   // ripristina se ancora valida
     drawSubnets(network, cidr);
   }
 
