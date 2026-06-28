@@ -1,0 +1,70 @@
+/* ============================================================
+   generativa.css — Come funziona l'IA generativa · prefisso .ga-
+   Usa base.css + lab.css.
+   ============================================================ */
+
+.ga-sec { position: relative; z-index: 2; }
+.ga-head { margin-bottom: 1.1rem; }
+
+/* ---------- 1) Tokenizzazione ---------- */
+.ga-tokinput {
+  width: 100%; box-sizing: border-box; border: 1px solid var(--line); border-radius: 9px;
+  background: var(--bg); color: var(--ink); font-family: var(--font-sans); font-size: 1rem;
+  padding: 0.6rem 0.75rem; outline: none; transition: border-color 0.15s var(--ease), box-shadow 0.15s var(--ease);
+}
+.ga-tokinput:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-wash); }
+.ga-tokens { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.9rem; }
+.ga-tok { display: inline-flex; flex-direction: column; align-items: center; gap: 1px;
+  border: 1px solid color-mix(in srgb, var(--accent) 35%, var(--line)); border-radius: 8px; overflow: hidden; background: var(--bg-elev); }
+.ga-tok-w { padding: 0.25rem 0.5rem 0.1rem; font-family: var(--font-mono); font-size: 0.85rem; color: var(--ink); }
+.ga-tok-id { width: 100%; text-align: center; padding: 0.05rem 0.4rem 0.2rem; font-family: var(--font-mono); font-size: 0.62rem; color: var(--accent); background: var(--accent-wash); }
+.ga-empty { color: var(--ink-faint); font-family: var(--font-mono); font-size: 0.85rem; }
+.ga-tokcount { margin-top: 0.7rem; font-size: 0.86rem; color: var(--ink-soft); line-height: 1.5; }
+.ga-tokcount b { color: var(--ink); }
+
+/* ---------- 2) Generatore ---------- */
+.ga-gen { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr); gap: 1.1rem; align-items: start; }
+@media (max-width: 820px) { .ga-gen { grid-template-columns: 1fr; } }
+
+.ga-seed-row { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+.ga-seed-lbl { font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-soft); }
+.ga-seeds { display: inline-flex; flex-wrap: wrap; gap: 0.4rem; }
+.ga-seed { font-family: var(--font-mono); font-size: 0.76rem; padding: 0.3rem 0.65rem; border: 1px solid var(--line);
+  border-radius: 100px; background: var(--bg); color: var(--ink-soft); cursor: pointer; transition: border-color 0.15s var(--ease), color 0.15s var(--ease); }
+.ga-seed:hover { border-color: var(--accent); color: var(--accent); }
+
+.ga-output {
+  margin-top: 0.5rem; padding: 0.9rem 1rem; min-height: 5.5rem; background: var(--bg-sunk);
+  border: 1px solid var(--line); border-radius: 10px; font-family: var(--font-mono); font-size: 1rem; line-height: 1.7; color: var(--ink);
+}
+.ga-w.fresh { background: var(--accent); color: var(--accent-ink); border-radius: 4px; padding: 0 2px; }
+
+.ga-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; margin-top: 0.9rem; }
+.ga-temp { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-soft); margin-left: auto; }
+.ga-temp b { color: var(--accent); min-width: 2.4rem; text-align: right; }
+.ga-temp input { accent-color: var(--accent); width: 7rem; max-width: 40vw; }
+
+.ga-ctx { font-family: var(--font-mono); font-size: 0.76rem; color: var(--ink-soft); margin: 0.4rem 0 0.7rem; line-height: 1.5; }
+.ga-ctx b { color: var(--ink); }
+.ga-cands { display: flex; flex-direction: column; gap: 0.4rem; }
+.ga-cand { position: relative; display: flex; align-items: center; gap: 0.6rem; width: 100%;
+  padding: 0.45rem 0.6rem; border: 1px solid var(--line); border-radius: 8px; background: var(--bg);
+  cursor: pointer; overflow: hidden; text-align: left; transition: border-color 0.15s var(--ease); }
+.ga-cand:hover { border-color: var(--accent); }
+.ga-cand-bar { position: absolute; left: 0; top: 0; bottom: 0; background: var(--accent-wash); z-index: 0; transition: width 0.3s var(--ease); }
+.ga-cand-tok { position: relative; z-index: 1; font-family: var(--font-mono); font-size: 0.9rem; color: var(--ink); }
+.ga-cand-p { position: relative; z-index: 1; margin-left: auto; font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-soft); }
+
+/* ---------- 3) Accordion (come negli altri lab) ---------- */
+.guide-cmd { border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 10px; background: var(--bg); margin-bottom: 0.6rem; overflow: hidden; transition: border-color 0.2s var(--ease); }
+.guide-cmd[open] { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }
+.guide-cmd summary { display: flex; align-items: baseline; gap: 0.85rem; flex-wrap: wrap; padding: 0.8rem 1.1rem; cursor: pointer; list-style: none; }
+.guide-cmd summary::-webkit-details-marker { display: none; }
+.guide-cmd summary::before { content: "+"; font-family: var(--font-mono); color: var(--ink-faint); }
+.guide-cmd[open] summary::before { content: "−"; color: var(--accent); }
+.g-name { font-family: var(--font-display); font-size: 1rem; font-weight: 500; color: var(--ink); }
+.g-syntax { font-family: var(--font-mono); font-size: 0.74rem; color: var(--accent); }
+.g-body { padding: 0 1.1rem 1.1rem; }
+.g-desc { color: var(--ink-soft); font-size: 0.92rem; line-height: 1.65; }
+.g-desc b { color: var(--ink); font-weight: 600; }
+@media (max-width: 560px) { .g-syntax { flex-basis: 100%; } }
