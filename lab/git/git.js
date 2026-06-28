@@ -496,6 +496,9 @@
     ].forEach(run);
   });
 
+  // ---- API per la guida (guida.js): scrive un comando nell'input ----
+  window.GV = { type: function (cmd) { inputEl.value = cmd; inputEl.focus(); } };
+
   // ---- Avvio ----
   history = []; histPos = 0;
   reset(true);
