@@ -1,0 +1,201 @@
+/* ============================================================
+   flowchart.css — Diagrammi di flusso (stile Flowgorithm)
+   Forme/struttura come Flowgorithm; colori a tema coi lab.
+   Prefisso .fc-  ·  usa base.css + lab.css.
+   ============================================================ */
+
+.fc-sec { position: relative; z-index: 2; }
+
+/* ---------- Toolbar ---------- */
+.fc-toolbar {
+  display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem; align-items: center;
+  justify-content: space-between; margin-bottom: 1.1rem;
+}
+.fc-run-group { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.fc-example-wrap { display: inline-flex; align-items: center; gap: 0.5rem; }
+.fc-select {
+  font-family: var(--font-mono); font-size: 0.82rem; padding: 0.4rem 0.6rem;
+  border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink);
+  max-width: 14rem;
+}
+
+/* ---------- Layout ---------- */
+.fc-layout { display: grid; grid-template-columns: minmax(0, 1fr) 19rem; gap: 1.25rem; align-items: start; }
+@media (max-width: 860px) { .fc-layout { grid-template-columns: 1fr; } }
+
+.fc-canvas-panel { padding: 0; overflow: hidden; }
+.fc-canvas-scroll { overflow: auto; max-height: 74vh; padding: 1rem; background: var(--bg-sunk); border-radius: inherit; }
+.fc-canvas { display: inline-block; min-width: 100%; }
+.fc-svg { display: block; margin: 0 auto; }
+
+/* ---------- Forme dei blocchi ---------- */
+.fc-shape { stroke-width: 1.7; transition: fill 0.18s var(--ease), stroke 0.18s var(--ease); }
+.fc-proc { fill: var(--bg-elev); stroke: var(--accent); }
+.fc-io   { fill: var(--bg-elev); stroke: #2f9e57; }
+.fc-dec  { fill: var(--bg-elev); stroke: #c98a1b; }
+.fc-for  { fill: var(--bg-elev); stroke: #b5468f; }
+.fc-term { fill: var(--accent); stroke: var(--accent); }
+
+.fc-label {
+  font-family: var(--font-mono); font-size: 13px; fill: var(--ink);
+  text-anchor: middle; dominant-baseline: central; pointer-events: none;
+}
+.fc-term + .fc-label { fill: var(--accent-ink); font-weight: 600; }
+
+/* archi */
+.fc-arrow { fill: none; stroke: var(--ink-soft); stroke-width: 1.6; }
+.fc-arrowhead { fill: var(--ink-soft); }
+.fc-join { fill: var(--ink-soft); }
+.fc-elabel { font-family: var(--font-mono); font-size: 11px; }
+.fc-elabel.t { fill: #2f9e57; }
+.fc-elabel.f { fill: #d2553c; }
+
+/* editor: punti di inserimento «+» e blocchi cliccabili */
+.fc-plus { cursor: pointer; }
+.fc-plus circle { fill: var(--bg); stroke: var(--accent); stroke-width: 1.4; opacity: 0.45; transition: opacity 0.15s var(--ease), fill 0.15s var(--ease); }
+.fc-plus path { stroke: var(--accent); stroke-width: 1.7; fill: none; }
+.fc-plus:hover circle { opacity: 1; fill: var(--accent-wash); }
+#fcCanvas .fc-node { cursor: pointer; }
+#fcCanvas .fc-node:hover .fc-shape { stroke-width: 2.4; }
+
+/* menu «scegli blocco» */
+.fc-menu { position: fixed; z-index: 60; background: var(--bg-elev); border: 1px solid var(--line);
+  border-radius: 10px; box-shadow: 0 12px 32px rgba(0,0,0,0.18); padding: 0.35rem; min-width: 12rem; }
+.fc-menu-head { font-size: 0.68rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--ink-faint);
+  padding: 0.35rem 0.6rem 0.45rem; }
+.fc-menu-item { display: block; width: 100%; text-align: left; font-family: var(--font-mono); font-size: 0.82rem;
+  padding: 0.45rem 0.6rem; border: 0; border-radius: 7px; background: transparent; color: var(--ink); cursor: pointer; }
+.fc-menu-item:hover { background: var(--accent-wash); color: var(--accent); }
+
+/* dialog di modifica */
+.fc-modal-overlay { position: fixed; inset: 0; z-index: 70; background: rgba(0,0,0,0.4);
+  display: flex; align-items: center; justify-content: center; padding: 1rem; }
+.fc-modal { width: min(26rem, 100%); background: var(--bg-elev); border: 1px solid var(--line);
+  border-radius: 14px; box-shadow: 0 18px 50px rgba(0,0,0,0.25); overflow: hidden; }
+.fc-modal-head { font-family: var(--font-display); font-weight: 500; font-size: 1.05rem; padding: 1rem 1.2rem;
+  border-bottom: 1px solid var(--line); }
+.fc-modal-body { padding: 1.1rem 1.2rem; display: flex; flex-direction: column; gap: 0.85rem; }
+.fc-fld { display: flex; flex-direction: column; gap: 0.3rem; }
+.fc-fld span { font-size: 0.8rem; color: var(--ink-soft); }
+.fc-fld input, .fc-fld select { font-family: var(--font-mono); font-size: 0.9rem; padding: 0.5rem 0.6rem;
+  border: 1px solid var(--line); border-radius: 8px; background: var(--bg); color: var(--ink); }
+.fc-fld input:focus, .fc-fld select:focus { outline: none; border-color: var(--accent); }
+.fc-modal-foot { display: flex; align-items: center; gap: 0.6rem; padding: 0.9rem 1.2rem; border-top: 1px solid var(--line); background: var(--bg-sunk); }
+.fc-foot-sp { flex: 1; }
+.fc-ok { font-family: var(--font-mono); font-size: 0.82rem; padding: 0.45rem 1rem; border: 1px solid var(--accent);
+  border-radius: 100px; background: var(--accent); color: var(--accent-ink); cursor: pointer; }
+.fc-del { font-family: var(--font-mono); font-size: 0.82rem; padding: 0.45rem 0.9rem; border: 1px solid var(--line);
+  border-radius: 100px; background: var(--bg); color: #d2553c; cursor: pointer; }
+.fc-del:hover { border-color: #d2553c; }
+
+/* stato di esecuzione (M3) */
+.fc-node.active .fc-shape { fill: var(--accent); stroke: var(--accent); }
+.fc-node.active .fc-label { fill: var(--accent-ink); }
+.fc-node.active.cond-true .fc-shape { fill: #2f9e57; stroke: #2f9e57; }
+.fc-node.active.cond-false .fc-shape { fill: #d2553c; stroke: #d2553c; }
+.fc-node.active.cond-true .fc-label,
+.fc-node.active.cond-false .fc-label { fill: #fff; }
+
+/* ---------- Pannello esecuzione ---------- */
+.fc-exec-panel .state-label:first-child { margin-top: 0; }
+.fc-step-desc { font-size: 0.9rem; color: var(--ink-soft); line-height: 1.6; margin: 0.5rem 0 0; min-height: 2.4em; }
+.fc-step-desc b { color: var(--ink); }
+.fc-vars { display: flex; flex-direction: column; gap: 0.3rem; margin-top: 0.5rem; }
+.fc-var { display: flex; justify-content: space-between; gap: 0.6rem; font-family: var(--font-mono); font-size: 0.82rem;
+  padding: 0.35rem 0.55rem; border: 1px solid var(--line); border-radius: 7px; background: var(--bg); }
+.fc-var .vn { color: var(--ink-soft); }
+.fc-var .vv { color: var(--ink); font-weight: 600; }
+.fc-var.changed { border-color: var(--accent); background: var(--accent-wash); }
+.fc-out { margin-top: 0.5rem; font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.6;
+  background: var(--bg-sunk); border: 1px solid var(--line); border-radius: 8px; padding: 0.6rem 0.7rem;
+  min-height: 3rem; white-space: pre-wrap; word-break: break-word; }
+.fc-out .fresh { background: var(--accent-wash); }
+.fc-inputrow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
+.fc-inputrow small { color: var(--ink-faint); }
+.fc-inputrow input { font-family: var(--font-mono); font-size: 0.85rem; padding: 0.35rem 0.5rem; width: 7rem;
+  border: 1px solid var(--accent); border-radius: 7px; background: var(--bg); color: var(--ink); }
+.fc-inputrow input:focus { outline: none; }
+.fc-empty { color: var(--ink-faint); font-family: var(--font-mono); font-size: 0.8rem; }
+
+/* ---------- Legenda ---------- */
+.fc-legend { display: flex; flex-wrap: wrap; gap: 0.5rem 1.2rem; margin-top: 1.25rem;
+  font-size: 0.82rem; color: var(--ink-soft); }
+.fc-leg { display: inline-flex; align-items: center; gap: 0.45rem; }
+.fc-leg i { width: 22px; height: 14px; display: inline-block; border: 1.6px solid; background: var(--bg-elev); }
+.fc-leg i.lg-term { border-color: var(--accent); background: var(--accent); border-radius: 7px; }
+.fc-leg i.lg-proc { border-color: var(--accent); border-radius: 2px; }
+.fc-leg i.lg-io { border-color: #2f9e57; transform: skewX(-16deg); }
+.fc-leg i.lg-dec { border-color: #c98a1b; transform: rotate(45deg) scale(0.8); }
+.fc-leg i.lg-for { border-color: #b5468f; clip-path: polygon(14% 0, 86% 0, 100% 50%, 86% 100%, 14% 100%, 0 50%); }
+
+@media (max-width: 560px) {
+  .fc-canvas-scroll { max-height: 64vh; padding: 0.6rem; }
+  .fc-toolbar { gap: 0.6rem; }
+}
+
+/* ============================================================
+   «Impara i blocchi» — spiegazione animata
+   ============================================================ */
+.fc-learn-head { margin-bottom: 1.1rem; }
+.fc-learn-seg { flex-wrap: wrap; margin-bottom: 1.1rem; }
+.fc-learn-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.1fr); gap: 1.1rem; align-items: stretch; }
+@media (max-width: 760px) { .fc-learn-grid { grid-template-columns: 1fr; } }
+
+.fc-learn-flow { display: flex; flex-direction: column; }
+.fc-learn-canvas { flex: 1; overflow: auto; display: flex; align-items: flex-start; justify-content: center; padding: 0.6rem 0; min-height: 14rem; }
+.fc-learn-canvas .fc-svg { margin: 0 auto; }
+.fc-soon { color: var(--ink-faint); font-family: var(--font-mono); font-size: 0.85rem; margin: auto; padding: 2rem; }
+
+.fc-learn-viz { display: flex; flex-direction: column; }
+.fc-learn-viz .state-label:first-child { margin-top: 0; }
+
+/* RAM come tabella */
+.ram-table { border: 1px solid var(--line); border-radius: 9px; overflow: hidden; margin-top: 0.5rem; font-family: var(--font-mono); font-size: 0.8rem; }
+.ram-head, .ram-row { display: grid; grid-template-columns: 1.1fr 1fr 0.9fr 1.1fr; }
+.ram-head { background: var(--bg-sunk); color: var(--ink-faint); font-size: 0.68rem; letter-spacing: 0.04em; text-transform: uppercase; }
+.ram-head span, .ram-row span { padding: 0.42rem 0.55rem; }
+.ram-row { border-top: 1px solid var(--line-soft); align-items: center; transition: background-color 0.25s var(--ease); }
+.ram-addr { color: var(--ink-faint); }
+.ram-name { color: var(--accent); font-weight: 600; }
+.ram-type { color: var(--ink-soft); }
+.ram-val { color: var(--ink); font-weight: 600; }
+.ram-void { color: var(--ink-faint); font-style: italic; }
+.ram-row.changed { background: var(--accent-wash); box-shadow: inset 3px 0 0 var(--accent); }
+.ram-empty { margin-top: 0.5rem; color: var(--ink-faint); font-family: var(--font-mono); font-size: 0.8rem;
+  border: 1px dashed var(--line); border-radius: 9px; padding: 1rem; text-align: center; }
+
+/* tastiera (input) */
+.kbd-box { margin-top: 0.9rem; display: flex; align-items: center; gap: 0.7rem; padding: 0.6rem 0.75rem;
+  border: 1px solid var(--line); border-radius: 9px; background: var(--bg-sunk); font-family: var(--font-mono); }
+.kbd-cap { font-size: 0.74rem; color: var(--ink-soft); }
+.kbd-val { margin-left: auto; font-size: 1.05rem; font-weight: 600; color: var(--accent); background: var(--bg);
+  border: 1px solid var(--accent); border-radius: 6px; padding: 0.1rem 0.6rem; }
+.kbd-box.wait { border-style: dashed; }
+.kbd-cursor { margin-left: auto; color: var(--accent); animation: kbdblink 1s steps(1) infinite; }
+@keyframes kbdblink { 50% { opacity: 0; } }
+
+/* schermo (output) */
+.screen-box { margin-top: 0.5rem; background: #14150f; color: #d7f0c8; border-radius: 9px; padding: 0.7rem 0.85rem;
+  font-family: var(--font-mono); font-size: 0.84rem; line-height: 1.6; min-height: 3rem; }
+.screen-line { white-space: pre-wrap; word-break: break-word; }
+.screen-line.fresh { color: #fff; background: rgba(255,255,255,0.08); border-radius: 4px; }
+.screen-empty { color: #6f7466; }
+
+/* chip varianti (vero/falso · while/for/do) */
+.fc-variants { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+.fc-variants:empty { display: none; }
+.fc-variant { font-family: var(--font-mono); font-size: 0.78rem; padding: 0.4rem 0.75rem;
+  border: 1px solid var(--line); border-radius: 100px; background: var(--bg); color: var(--ink-soft); cursor: pointer;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease), background-color 0.2s var(--ease); }
+.fc-variant:hover { border-color: var(--accent); color: var(--accent); }
+.fc-variant.active { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
+/* barra controlli + descrizione */
+.fc-learn-bar { display: flex; flex-wrap: wrap; align-items: center; gap: 0.8rem 1.2rem; margin-top: 1rem; }
+.fc-learn-desc { flex: 1; min-width: 14rem; margin: 0; font-size: 0.9rem; color: var(--ink-soft); line-height: 1.55; min-height: 2.6em; }
+.fc-learn-desc b { color: var(--accent); }
+.fc-learn-note { margin-top: 1rem; padding: 0.9rem 1.1rem; border: 1px solid var(--line); border-left: 3px solid var(--accent);
+  border-radius: 8px; background: var(--bg-elev); font-size: 0.9rem; color: var(--ink-soft); line-height: 1.65; }
+.fc-learn-note b { color: var(--ink); }
+.fc-learn-note code { font-family: var(--font-mono); font-size: 0.85em; background: var(--bg-sunk); border: 1px solid var(--line-soft);
+  border-radius: 5px; padding: 0.05rem 0.35rem; color: var(--ink); }
