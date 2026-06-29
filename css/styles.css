@@ -204,11 +204,28 @@
 
 /* ---------- About ---------- */
 .about-grid {
+  position: relative;
+  overflow: hidden;
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: clamp(1.5rem, 5vw, 4rem);
   align-items: start;
+  padding: clamp(1.75rem, 4vw, 3rem);
+  border: 1px solid var(--line);
+  border-radius: calc(var(--radius) + 6px);
+  background: linear-gradient(135deg, var(--bg-elev) 0%, color-mix(in srgb, var(--accent) 8%, var(--bg-elev)) 100%);
 }
+.about-grid > .about-lead, .about-grid > .about-body { position: relative; z-index: 1; }
+.about-deco {
+  position: absolute;
+  top: -24px;
+  right: -14px;
+  width: clamp(160px, 22vw, 230px);
+  z-index: 0;
+  pointer-events: none;
+}
+.about-deco svg { width: 100%; height: auto; display: block; }
+@media (max-width: 720px) { .about-deco { display: none; } }
 .about-lead {
   font-family: var(--font-display);
   font-size: clamp(1.5rem, 3.5vw, 2.4rem);
@@ -217,13 +234,6 @@
   letter-spacing: -0.02em;
   border-left: 3px solid var(--accent);
   padding-left: clamp(1rem, 2.5vw, 1.6rem);
-}
-.about-sign {
-  margin-top: 0.6rem;
-  font-family: var(--font-display);
-  font-style: italic;
-  font-size: 1.2rem;
-  color: var(--accent);
 }
 .about-body { display: grid; gap: 1.1rem; color: var(--ink-soft); }
 .about-body strong { color: var(--ink); font-weight: 600; }
@@ -570,17 +580,11 @@
   position: relative;
   overflow: hidden;
   padding: clamp(1.75rem, 5vw, 3.25rem);
-  background: var(--bg-elev);
+  background: linear-gradient(135deg,
+    var(--bg-elev) 0%,
+    color-mix(in srgb, var(--accent) 13%, var(--bg-elev)) 100%);
   border: 1px solid var(--line);
   border-radius: calc(var(--radius) + 8px);
-}
-.contact-card::before {
-  content: "";
-  position: absolute;
-  top: -30%; right: -10%;
-  width: min(50%, 360px); height: 140%;
-  background: radial-gradient(circle, var(--accent-wash), transparent 70%);
-  pointer-events: none;
 }
 .contact-card > * { position: relative; }
 .contact-invite {
