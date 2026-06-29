@@ -346,6 +346,29 @@
   border-radius: 100px;
 }
 
+/* ---------- Approccio ---------- */
+.approach-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.25rem;
+}
+@media (max-width: 760px) { .approach-grid { grid-template-columns: 1fr; } }
+.approach-item {
+  padding: 1.7rem;
+  background: var(--bg-elev);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+.approach-num { font-family: var(--font-mono); font-size: 0.74rem; color: var(--accent); }
+.approach-item h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.4rem;
+  letter-spacing: -0.015em;
+  margin: 0.55rem 0 0.6rem;
+}
+.approach-item p { color: var(--ink-soft); font-size: 0.96rem; }
+
 /* ---------- CTA / Ripetizioni ---------- */
 .cta-block {
   display: grid;
