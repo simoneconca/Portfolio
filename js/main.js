@@ -84,6 +84,27 @@ function renderContacts() {
   if (emailEl && SITE.email) {
     emailEl.textContent = SITE.email;
     emailEl.href = `mailto:${SITE.email}`;
+    emailEl.title = "Clicca per copiare l'indirizzo";
+
+    // Oltre al mailto (che apre il client di posta, se presente),
+    // copia l'indirizzo negli appunti con una conferma: così il click
+    // fa sempre qualcosa, anche senza un programma di posta predefinito.
+    let copied = null;
+    emailEl.addEventListener("click", () => {
+      if (!navigator.clipboard) return;
+      navigator.clipboard.writeText(SITE.email).then(() => {
+        if (!copied) {
+          copied = document.createElement("span");
+          copied.className = "contact-copied";
+          copied.setAttribute("role", "status");
+          emailEl.insertAdjacentElement("afterend", copied);
+        }
+        copied.textContent = "Indirizzo copiato ✓";
+        copied.classList.add("show");
+        clearTimeout(copied._t);
+        copied._t = setTimeout(() => copied.classList.remove("show"), 1900);
+      }).catch(() => {});
+    });
   }
 
   const container = document.getElementById("contact-links");

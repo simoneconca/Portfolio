@@ -617,6 +617,17 @@
   word-break: break-word;
 }
 .contact-email:hover { border-bottom-color: var(--accent); }
+.contact-copied {
+  display: block;
+  margin-top: 0.6rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--accent);
+  opacity: 0;
+  transform: translateY(4px);
+  transition: opacity 0.2s var(--ease), transform 0.2s var(--ease);
+}
+.contact-copied.show { opacity: 1; transform: none; }
 .contact-links {
   display: flex;
   flex-wrap: wrap;
