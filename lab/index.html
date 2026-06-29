@@ -86,9 +86,62 @@
     <!-- STRUMENTI -->
     <section id="strumenti" class="section" style="padding-top: clamp(1.5rem, 4vw, 3rem)">
       <div class="container">
+        <div class="lab-layout">
+
+          <aside class="lab-index" aria-label="Indice dei laboratori">
+            <p class="lab-index-title">Indice</p>
+            <nav class="lab-index-nav">
+              <div class="lab-index-group">
+                <a class="lab-index-cat" href="#cat-01">Introduzione all'informatica</a>
+                <a href="vonneumann/">Macchina di von Neumann</a>
+                <a href="binario/">Binary &amp; Base Analyzer</a>
+                <a href="hardware/">PC Assembly Lab</a>
+                <a href="logica/">Logica booleana &amp; circuiti</a>
+              </div>
+              <div class="lab-index-group">
+                <a class="lab-index-cat" href="#cat-02">Programmazione e dati</a>
+                <a href="flowchart/">Diagrammi di flusso</a>
+                <a href="linguaggio/">Quale linguaggio?</a>
+                <a href="puntatori/">Puntatori &amp; memoria</a>
+                <a href="cpu/">CPU &amp; Assembly Visualizer</a>
+                <a href="strutture/">Strutture dati</a>
+                <a href="sort/">Algoritmi di ordinamento</a>
+                <a href="er/">Modello E-R</a>
+                <a href="sql/">Live SQL Sandbox</a>
+              </div>
+              <div class="lab-index-group">
+                <a class="lab-index-cat" href="#cat-03">Sistemi e reti</a>
+                <a href="rete-lab/">Costruisci la tua rete</a>
+                <a href="terminale/">Virtual Terminal</a>
+                <a href="so/">Sistemi Operativi</a>
+                <a href="rete/">TCP/IP Packet Voyager</a>
+                <a href="subnet/">Subnetting &amp; IP Calculator</a>
+                <a href="git/">Git Visual Sandbox</a>
+              </div>
+              <div class="lab-index-group">
+                <a class="lab-index-cat" href="#cat-04">Sviluppo Web</a>
+                <a href="editor/">Editor HTML/CSS dal vivo</a>
+                <a href="layout/">Box Model, Flexbox &amp; Grid</a>
+              </div>
+              <div class="lab-index-group">
+                <a class="lab-index-cat" href="#cat-05">Sicurezza &amp; Hacking</a>
+                <a href="password/">Quanto è forte la tua password?</a>
+                <a href="crittografia/">Crittografia di base</a>
+                <a href="sqli/">SQL Injection Sandbox</a>
+                <a href="cookie/">Cookie &amp; Privilege Escalation</a>
+              </div>
+              <div class="lab-index-group">
+                <a class="lab-index-cat" href="#cat-06">Intelligenza Artificiale</a>
+                <a href="generativa/">Come funziona l'IA generativa</a>
+                <a href="prompt/">Prompt Engineering</a>
+              </div>
+            </nav>
+          </aside>
+
+          <div class="lab-cats">
 
         <!-- Categoria 1 -->
-        <div class="lab-cat">
+        <div class="lab-cat" id="cat-01">
           <div class="lab-cat-head">
             <span class="lab-cat-num">01</span>
             <h2 class="lab-cat-title">Introduzione all'informatica</h2>
@@ -160,7 +213,7 @@
         </div>
 
         <!-- Categoria 2 -->
-        <div class="lab-cat">
+        <div class="lab-cat" id="cat-02">
           <div class="lab-cat-head">
             <span class="lab-cat-num">02</span>
             <h2 class="lab-cat-title">Programmazione e dati</h2>
@@ -292,7 +345,7 @@
         </div>
 
         <!-- Categoria 3 -->
-        <div class="lab-cat">
+        <div class="lab-cat" id="cat-03">
           <div class="lab-cat-head">
             <span class="lab-cat-num">03</span>
             <h2 class="lab-cat-title">Sistemi e reti</h2>
@@ -394,7 +447,7 @@
         </div>
 
         <!-- Categoria 4 -->
-        <div class="lab-cat">
+        <div class="lab-cat" id="cat-04">
           <div class="lab-cat-head">
             <span class="lab-cat-num">04</span>
             <h2 class="lab-cat-title">Sviluppo Web</h2>
@@ -436,7 +489,7 @@
         </div>
 
         <!-- Categoria 5 -->
-        <div class="lab-cat">
+        <div class="lab-cat" id="cat-05">
           <div class="lab-cat-head">
             <span class="lab-cat-num">05</span>
             <h2 class="lab-cat-title">Sicurezza &amp; Hacking</h2>
@@ -508,7 +561,7 @@
         </div>
 
         <!-- Categoria 6 -->
-        <div class="lab-cat">
+        <div class="lab-cat" id="cat-06">
           <div class="lab-cat-head">
             <span class="lab-cat-num">06</span>
             <h2 class="lab-cat-title">Intelligenza Artificiale</h2>
@@ -545,6 +598,9 @@
                 </div>
               </a>
             </article>
+
+          </div>
+        </div>
 
           </div>
         </div>
