@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 340" role="img" aria-label="GestForm — gestione formazione e sicurezza">
+  <defs>
+    <linearGradient id="gfBg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#1c3c6e"/>
+      <stop offset="0.55" stop-color="#28548f"/>
+      <stop offset="1" stop-color="#4d8ae0"/>
+    </linearGradient>
+    <pattern id="gfGrid" width="34" height="34" patternUnits="userSpaceOnUse">
+      <path d="M34 0H0V34" fill="none" stroke="#ffffff" stroke-opacity="0.06" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="640" height="340" rx="20" fill="url(#gfBg)"/>
+  <rect width="640" height="340" rx="20" fill="url(#gfGrid)"/>
+  <circle cx="320" cy="142" r="86" fill="#ffffff" fill-opacity="0.05" stroke="#ffffff" stroke-opacity="0.18" stroke-width="1.5"/>
+  <text x="320" y="142" text-anchor="middle" dominant-baseline="central"
+        font-family="'Inter','Segoe UI',Arial,sans-serif" font-weight="800" font-size="86"
+        fill="#ffffff">GF</text>
+  <text x="320" y="262" text-anchor="middle"
+        font-family="'Inter','Segoe UI',Arial,sans-serif" font-weight="800" font-size="44"
+        fill="#ffffff">GestForm</text>
+  <text x="320" y="298" text-anchor="middle"
+        font-family="'Inter','Segoe UI',Arial,sans-serif" font-weight="600" font-size="15"
+        letter-spacing="6" fill="#ffffff" fill-opacity="0.62">GESTIONE FORMAZIONE E SICUREZZA</text>
+</svg>

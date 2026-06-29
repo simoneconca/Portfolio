@@ -21,7 +21,7 @@ const PROJECTS = [
     title: "AURA",
     description: "App personale (Flutter) per tenere insieme la vita di tutti i giorni: calendario ed eventi, abitudini, obiettivi, diario, spese, galleria e documenti. Funziona offline, con un database locale crittografato.",
     tags: ["Flutter", "Dart", "App mobile"],
-    image: "progetti/aura/aura-logo.svg",
+    image: "progetti/aura/aura-cover.svg",
     page: "progetti/aura/",
     demo: "",
     repo: ""
@@ -30,7 +30,7 @@ const PROJECTS = [
     title: "GestForm",
     description: "Gestionale web (PHP + MySQL) per dipendenti, corsi di formazione, visite mediche e relative scadenze. È uno dei miei primi progetti, realizzato durante le superiori.",
     tags: ["PHP", "MySQL", "Progetto scolastico"],
-    image: "progetti/gestionale/gestform-logo.svg",
+    image: "progetti/gestionale/gestform-cover.svg",
     page: "progetti/gestionale/",
     demo: "",
     repo: ""

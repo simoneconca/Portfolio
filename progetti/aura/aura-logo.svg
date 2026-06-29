@@ -1,9 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 200" role="img" aria-label="AURA">
-  <rect width="320" height="200" fill="#efe7d8"/>
-  <g transform="translate(160 100)" fill="none">
-    <circle r="60" stroke="#2c45ff" stroke-width="2" opacity="0.20"/>
-    <circle r="44" stroke="#2c45ff" stroke-width="2.4" opacity="0.42"/>
-    <circle r="28" stroke="#2c45ff" stroke-width="3" opacity="0.72"/>
-    <circle r="9" fill="#181712"/>
-  </g>
-</svg>
