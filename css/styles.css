@@ -22,6 +22,41 @@
   padding-top: clamp(3.5rem, 9vw, 7rem);
   padding-bottom: clamp(2.5rem, 6vw, 4.5rem);
 }
+/* alone morbido d'accento, decorativo */
+.hero::before {
+  content: "";
+  position: absolute;
+  top: -12%;
+  right: -6%;
+  width: min(48vw, 540px);
+  height: min(48vw, 540px);
+  background: radial-gradient(circle, var(--accent-wash), transparent 70%);
+  pointer-events: none;
+  z-index: 0;
+}
+.hero .container { position: relative; z-index: 1; }
+
+/* saluto sopra al nome */
+.hero-hi {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.5rem, 4.5vw, 2.4rem);
+  line-height: 1;
+  color: var(--ink-soft);
+  margin-bottom: 0.45rem;
+  letter-spacing: -0.01em;
+}
+
+/* riga-accento decorativa sotto al nome */
+.hero-rule {
+  display: block;
+  width: 72px;
+  height: 4px;
+  border-radius: 2px;
+  background: var(--accent);
+  margin-top: clamp(1.1rem, 3vw, 1.6rem);
+}
 
 .kicker {
   display: inline-flex;
