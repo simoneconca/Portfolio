@@ -51,9 +51,10 @@
 /* composizione decorativa (anelli, nodi, scintilla) */
 .hero-deco {
   position: absolute;
-  top: clamp(0.5rem, 3vw, 2.5rem);
-  right: clamp(-2.5rem, -1vw, 1rem);
-  width: clamp(260px, 36vw, 420px);
+  top: clamp(2rem, 7vw, 5.5rem);
+  /* ancorata al bordo destro del contenuto (container), non del viewport */
+  right: max(var(--pad), calc((100% - var(--container)) / 2));
+  width: clamp(230px, 28vw, 360px);
   z-index: 0;
   pointer-events: none;
 }
