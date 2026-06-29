@@ -12,15 +12,16 @@ const SITE = {
 };
 
 /* --- Progetti ---
-   Campi: title, description, tags[], page (pagina di presentazione interna),
-          demo (URL app/live o ""), repo (URL codice o "").
-   "page" apre nella stessa scheda; "demo"/"repo" in una nuova.
-   Aggiungi "placeholder: true" alle card ancora da riempire. */
+   Campi: title, description, tags[], image (anteprima opzionale),
+          page (pagina di presentazione interna), demo (URL app/live o ""),
+          repo (URL codice o ""). "page" apre nella stessa scheda;
+          "demo"/"repo" in una nuova. Aggiungi "placeholder: true" alle card vuote. */
 const PROJECTS = [
   {
     title: "AURA",
     description: "App personale (Flutter) per tenere insieme la vita di tutti i giorni: calendario ed eventi, abitudini, obiettivi, diario, spese, galleria e documenti. Funziona offline, con un database locale crittografato.",
     tags: ["Flutter", "Dart", "App mobile"],
+    image: "progetti/aura/img/aura-oggi.png",
     page: "progetti/aura/",
     demo: "",
     repo: ""
@@ -29,6 +30,7 @@ const PROJECTS = [
     title: "GestForm",
     description: "Gestionale web (PHP + MySQL) per dipendenti, corsi di formazione, visite mediche e relative scadenze. È uno dei miei primi progetti, realizzato durante le superiori.",
     tags: ["PHP", "MySQL", "Progetto scolastico"],
+    image: "progetti/gestionale/img/gest-home.png",
     page: "progetti/gestionale/",
     demo: "",
     repo: ""

@@ -30,8 +30,13 @@ function renderProjects() {
 
     const num = String(i + 1).padStart(2, "0");
 
+    const media = project.image
+      ? `<a class="card-media" href="${escapeAttr(href || "#")}" tabindex="-1" aria-hidden="true"><img src="${escapeAttr(project.image)}" alt="" loading="lazy"></a>`
+      : "";
+
     return `
-      <article class="card reveal${project.placeholder ? " card-placeholder" : ""}">
+      <article class="card reveal${project.placeholder ? " card-placeholder" : ""}${project.image ? " has-media" : ""}">
+        ${media}
         <div class="card-top">
           <span class="card-index">P/${num}</span>
           <svg class="card-arrow" width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true"><path d="M5 13L13 5M13 5H6M13 5v7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
