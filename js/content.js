@@ -7,8 +7,7 @@
 const SITE = {
   email: "simone.conca2006@gmail.com",
   links: [
-    { label: "Instagram", url: "https://instagram.com/simoneconca_" },
-    { label: "YouTube", url: "https://www.youtube.com/@SimoneConca" }
+    { label: "Instagram", url: "https://instagram.com/simoneconca_" }
   ]
 };
 
