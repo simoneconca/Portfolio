@@ -93,6 +93,19 @@
   border-color: var(--line);
 }
 .btn.is-soon:hover { transform: none; }
+.proj-dl-note {
+  margin-top: 0.9rem;
+  max-width: 48ch;
+  font-size: 0.85rem;
+  color: var(--ink-faint);
+}
+.proj-dl-note code {
+  font-family: var(--font-mono);
+  font-size: 0.82em;
+  background: var(--bg-sunk);
+  padding: 0.05em 0.35em;
+  border-radius: 4px;
+}
 
 /* ---------- Sezioni di contenuto ---------- */
 .proj-section { padding-block: clamp(2.5rem, 6vw, 4.5rem); }
