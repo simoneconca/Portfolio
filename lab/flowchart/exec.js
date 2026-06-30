@@ -192,13 +192,16 @@
       case "for": {
         if (!scope.v[n.var]) throw new Error("Il contatore «" + n.var + "» non è stato dichiarato: aggiungi prima un blocco Dichiarazione (tipo Intero).");
         const from = Math.trunc(num(evalExpr(n.from, scope))), to = Math.trunc(num(evalExpr(n.to, scope)));
+        const step = (n.step == null || String(n.step).trim() === "") ? 1 : Math.trunc(num(evalExpr(n.step, scope)));
+        if (step === 0) throw new Error("Il passo del «per» non può essere 0: il ciclo non finirebbe mai.");
+        const up = step > 0;   // passo positivo = in avanti; negativo = all'indietro
         scope.v[n.var].value = from; scope.v[n.var].init = true;
         while (true) {
-          const cur = scope.v[n.var].value, c = cur <= to;
-          yield { node: n.id, cond: c, changed: n.var, desc: "Contatore " + n.var + " = " + cur + " ≤ " + to + ": " + (c ? "Ripeti." : "Termina.") };
+          const cur = scope.v[n.var].value, c = up ? cur <= to : cur >= to;
+          yield { node: n.id, cond: c, changed: n.var, desc: "Contatore " + n.var + " = " + cur + (up ? " ≤ " : " ≥ ") + to + ": " + (c ? "Ripeti." : "Termina.") };
           if (!c) break;
           yield* execSeq(n.body, scope);
-          scope.v[n.var].value = scope.v[n.var].value + 1;
+          scope.v[n.var].value = scope.v[n.var].value + step;
         }
         break;
       }

@@ -23,7 +23,7 @@
     if: { label: "Se · selezione", make: () => ({ type: "if", id: nid(), cond: "numero > 0", tBody: [], fBody: [] }) },
     while: { label: "Mentre · while", make: () => ({ type: "while", id: nid(), cond: "numero > 0", body: [] }) },
     do: { label: "Do-while", make: () => ({ type: "do", id: nid(), cond: "numero > 0", body: [] }) },
-    for: { label: "Per · for", make: () => ({ type: "for", id: nid(), var: "i", from: "1", to: "10", body: [] }) },
+    for: { label: "Per · for", make: () => ({ type: "for", id: nid(), var: "i", from: "1", to: "10", step: "1", body: [] }) },
   };
   const MENU_ORDER = ["declare", "assign", "input", "output", "if", "while", "do", "for"];
 
@@ -34,7 +34,7 @@
       case "input": return [{ k: "name", label: "Variabile in cui salvare" }];
       case "output": return [{ k: "expr", label: "Cosa scrivere", ph: '"Ciao " & nome' }];
       case "if": case "while": case "do": return [{ k: "cond", label: "Condizione (vera/falsa)", ph: "numero > 10" }];
-      case "for": return [{ k: "var", label: "Contatore" }, { k: "from", label: "Da" }, { k: "to", label: "A" }];
+      case "for": return [{ k: "var", label: "Contatore" }, { k: "from", label: "Da" }, { k: "to", label: "A" }, { k: "step", label: "Passo (+1 avanti, -1 indietro, +2…)", ph: "1" }];
     }
     return [];
   }
@@ -192,6 +192,9 @@
         { type: "if", id: nid(), cond: "numero > maggiore", tBody: [asg("maggiore", "numero")], fBody: [] },
       ] },
       out('"Il maggiore è " & maggiore'), END],
+    rovescia: () => [START, dec("i", "Intero"),
+      { type: "for", id: nid(), var: "i", from: "5", to: "1", step: "-1", body: [out('i & "..."')] },
+      out('"Partenza!"'), END],
   };
 
   $("fcClear").addEventListener("click", () => { FC.program = [{ type: "start", id: "s" }, { type: "end", id: "e" }]; afterChange(); });

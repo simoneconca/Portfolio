@@ -40,7 +40,7 @@
       case "if": return n.cond;
       case "while": return n.cond;
       case "do": return n.cond;
-      case "for": return n.var + " = " + n.from + " a " + n.to;
+      case "for": { const st = n.step == null ? "" : String(n.step).trim(); return n.var + " = " + n.from + " a " + n.to + (st !== "" && st !== "1" ? " passo " + st : ""); }
     }
     return "?";
   }
