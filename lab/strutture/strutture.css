@@ -32,6 +32,15 @@
 .sd-val-field input, .sd-aux-field input { text-align: left; }
 .sd-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
 @media (max-width: 620px) { .sd-actions { width: 100%; } }
+.sd-ops .sd-ops-label {
+  width: 100%;
+  margin-bottom: 0.2rem;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+}
 
 /* ---------- Pannello spiegazione ---------- */
 .explain-panel { padding: clamp(1.4rem, 3vw, 1.9rem); }
@@ -148,7 +157,7 @@
 .sd-array, .sd-tuple { display: flex; align-items: center; flex-wrap: wrap; gap: 6px; min-height: 300px; padding: 1rem 0.5rem; align-content: center; }
 .sd-acell { display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .sd-idx { font-family: var(--font-mono); font-size: 0.66rem; color: var(--ink-faint); }
-.sd-array .sd-cell, .sd-tuple .sd-cell { min-width: 50px; padding: 0.7rem 0.6rem; }
+.sd-array .sd-cell, .sd-tuple .sd-cell { width: auto; min-width: 50px; padding: 0.7rem 0.6rem; }
 .sd-tuple .sd-paren { font-family: var(--font-display); font-size: 2.4rem; color: var(--ink-faint); line-height: 1; align-self: flex-end; padding-bottom: 0.3rem; }
 .sd-lock { align-self: flex-start; font-size: 0.95rem; margin-left: 0.3rem; }
 

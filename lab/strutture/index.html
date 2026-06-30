@@ -61,7 +61,7 @@
       </div>
     </section>
 
-    <!-- CONTROLLI -->
+    <!-- SELEZIONE STRUTTURA -->
     <section class="section sd-sec" style="padding-top:clamp(1.5rem,4vw,2.5rem)">
       <div class="container">
         <div class="panel controls-panel sd-controls">
@@ -77,25 +77,6 @@
               <button type="button" data-mode="set" class="seg-btn">Set</button>
               <button type="button" data-mode="bst" class="seg-btn">Albero (BST)</button>
             </div>
-          </div>
-          <div class="control-group" id="auxGroup" hidden>
-            <span class="control-label" id="auxLabel">Indice</span>
-            <div class="field sd-aux-field">
-              <input id="auxInput" type="text" autocomplete="off" placeholder="es. 0" aria-label="Indice o chiave">
-            </div>
-          </div>
-          <div class="control-group">
-            <span class="control-label" id="valLabel">Valore</span>
-            <div class="field sd-val-field">
-              <input id="valInput" type="text" autocomplete="off" placeholder="es. 42" aria-label="Valore da inserire">
-            </div>
-          </div>
-          <div class="sd-actions">
-            <button id="btnInsert" class="run-btn" type="button">Inserisci</button>
-            <button id="btnRemove" class="ghost-btn" type="button">Rimuovi</button>
-            <button id="btnSearch" class="ghost-btn" type="button" hidden>Cerca</button>
-            <button id="btnRandom" class="ghost-btn" type="button">✦ Casuale</button>
-            <button id="btnClear" class="ghost-btn" type="button">✕ Svuota</button>
           </div>
         </div>
       </div>
@@ -128,6 +109,34 @@
       </div>
     </section>
 
+    <!-- OPERAZIONI -->
+    <section class="section sd-sec" style="padding-top:0">
+      <div class="container">
+        <div class="panel controls-panel sd-controls sd-ops">
+          <span class="sd-ops-label">Operazioni</span>
+          <div class="control-group" id="auxGroup" hidden>
+            <span class="control-label" id="auxLabel">Indice</span>
+            <div class="field sd-aux-field">
+              <input id="auxInput" type="text" autocomplete="off" placeholder="es. 0" aria-label="Indice o chiave">
+            </div>
+          </div>
+          <div class="control-group">
+            <span class="control-label" id="valLabel">Valore</span>
+            <div class="field sd-val-field">
+              <input id="valInput" type="text" autocomplete="off" placeholder="es. 42" aria-label="Valore da inserire">
+            </div>
+          </div>
+          <div class="sd-actions">
+            <button id="btnInsert" class="run-btn" type="button">Inserisci</button>
+            <button id="btnRemove" class="ghost-btn" type="button">Rimuovi</button>
+            <button id="btnSearch" class="ghost-btn" type="button" hidden>Cerca</button>
+            <button id="btnRandom" class="ghost-btn" type="button">✦ Casuale</button>
+            <button id="btnClear" class="ghost-btn" type="button">✕ Svuota</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
     <!-- VISUALIZZAZIONE + CODICE -->
     <section class="section sd-sec" style="padding-top:0;padding-bottom:clamp(4rem,9vw,7rem)">
       <div class="container sd-layout">
@@ -137,7 +146,7 @@
           </div>
           <p class="sd-status" id="status" aria-live="polite">Inserisci un valore per iniziare.</p>
           <div class="sd-log-wrap">
-            <span class="control-label">Operazioni</span>
+            <span class="control-label">Cronologia</span>
             <div class="sd-log" id="log" aria-live="polite"></div>
           </div>
         </div>
