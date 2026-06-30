@@ -102,12 +102,16 @@
       '<div class="fc-modal-head">' + (isNew ? "Nuovo blocco · " : "Modifica · ") + TITLES[node.type] + "</div>" +
       '<div class="fc-modal-body">' +
       fields.map((f) => {
-        const val = node[f.k] == null ? "" : node[f.k];
+        const cur = node[f.k] == null ? "" : node[f.k];
         if (f.sel) {
           return '<label class="fc-fld"><span>' + f.label + "</span><select data-k=\"" + f.k + "\">" +
-            f.sel.map((o) => '<option' + (o === val ? " selected" : "") + ">" + o + "</option>").join("") + "</select></label>";
+            f.sel.map((o) => '<option' + (o === cur ? " selected" : "") + ">" + o + "</option>").join("") + "</select></label>";
         }
-        return '<label class="fc-fld"><span>' + f.label + '</span><input type="text" data-k="' + f.k + '" value="' + esc(val) + '" placeholder="' + (f.ph || "") + '" autocomplete="off" spellcheck="false"></label>';
+        // Nuovo blocco: campo vuoto, con il valore di default mostrato come suggerimento (placeholder).
+        const suggest = f.ph || cur;
+        const value = isNew ? "" : cur;
+        const ph = isNew ? suggest : (f.ph || "");
+        return '<label class="fc-fld"><span>' + f.label + '</span><input type="text" data-k="' + f.k + '" value="' + esc(value) + '" placeholder="' + esc(ph) + '" autocomplete="off" spellcheck="false"></label>';
       }).join("") +
       "</div>" +
       '<div class="fc-modal-foot">' +
@@ -132,7 +136,12 @@
       closeDialog(); afterChange(); return;
     }
     if (a === "ok") {
-      overlay.querySelectorAll("[data-k]").forEach((el) => { dlgState.node[el.dataset.k] = el.value.trim(); });
+      // Se un campo resta vuoto, usa il suggerimento (placeholder) come valore: niente blocchi a metà.
+      overlay.querySelectorAll("[data-k]").forEach((el) => {
+        let v = (el.value || "").trim();
+        if (v === "" && el.placeholder) v = el.placeholder;
+        dlgState.node[el.dataset.k] = v;
+      });
       if (dlgState.isNew) {
         const body = findBody(dlgState.loc.owner, dlgState.loc.slot);
         if (body) body.splice(dlgState.loc.index, 0, dlgState.node);

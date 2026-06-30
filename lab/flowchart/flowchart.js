@@ -276,7 +276,7 @@
   function demo() {
     return [
       { type: "start", id: "s" },
-      { type: "declare", id: "d1", vars: "numero, risultato", vtype: "Intero" },
+      { type: "declare", id: "d1", vars: "numero, risultato, contatore", vtype: "Intero" },
       { type: "input", id: "i1", name: "numero" },
       { type: "assign", id: "a1", target: "risultato", expr: "numero * 2" },
       { type: "if", id: "if1", cond: "risultato > 10",
@@ -284,8 +284,8 @@
         fBody: [{ type: "output", id: "o2", expr: '"piccolo"' }] },
       { type: "while", id: "w1", cond: "numero < 5",
         body: [{ type: "assign", id: "a2", target: "numero", expr: "numero + 1" }] },
-      { type: "for", id: "f1", var: "contatore", from: "0", to: "29",
-        body: [{ type: "output", id: "o3", expr: "messaggio" }] },
+      { type: "for", id: "f1", var: "contatore", from: "1", to: "3",
+        body: [{ type: "output", id: "o3", expr: '"Giro " & contatore' }] },
       { type: "output", id: "o4", expr: '"Risultato: " & risultato' },
       { type: "end", id: "e" },
     ];
