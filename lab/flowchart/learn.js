@@ -203,7 +203,7 @@
 
     cicli: {
       title: "Cicli",
-      note: "Un <b>ciclo</b> ripete un blocco di istruzioni più volte, finché una condizione è soddisfatta (ogni ripetizione è un'<b>iterazione</b>). Esempio: «stampa i numeri da 1 a " + N + "». Il <b>mentre (while)</b> controlla la condizione <b>prima</b> (può non partire mai). Il <b>do-while</b> la controlla <b>dopo</b> (parte almeno una volta). Il <b>per (for)</b> si usa quando si conosce già il numero di ripetizioni: un <b>contatore</b> parte da un valore e avanza fino al limite.",
+      note: "Un <b>ciclo</b> ripete un blocco di istruzioni più volte, finché una condizione è soddisfatta (ogni ripetizione è un'<b>iterazione</b>). Esempio: «stampa i numeri da 1 a " + N + "». Il <b>mentre (while)</b> controlla la condizione <b>prima</b> (può non partire mai). Il <b>do-while</b> la controlla <b>dopo</b> (parte almeno una volta). Il <b>per (for)</b> si usa quando si conosce già il numero di ripetizioni: un <b>contatore</b> parte da un valore e, a ogni giro, cambia di un <b>passo</b> fisso fino al limite. Il passo di solito è <b>+1</b> (in avanti), ma può essere <b>negativo</b> (es. −1: conta all'indietro, da 5 a 1) o maggiore di uno (es. +2: a salti di due).",
       variants: [
         { key: "mentre", label: "mentre · while", ast: WHILE_AST, frames: () => genWhile(N) },
         { key: "do", label: "do-while", ast: DO_AST, frames: () => genDo(N) },
