@@ -18,6 +18,15 @@ const SITE = {
           "demo"/"repo" in una nuova. Aggiungi "placeholder: true" alle card vuote. */
 const PROJECTS = [
   {
+    title: "Siti web su misura",
+    description: "Il servizio che offro: siti professionali su misura per piccole attività e liberi professionisti, ognuno con un pannello semplice per aggiornare da soli i contenuti — testi, foto, orari — senza saper programmare.",
+    tags: ["Servizio", "Su misura", "Pannello facile"],
+    image: "progetti/siti-web/cover.svg",
+    page: "progetti/siti-web/",
+    demo: "",
+    repo: ""
+  },
+  {
     title: "AURA",
     description: "App personale (Flutter) per tenere insieme la vita di tutti i giorni: calendario ed eventi, abitudini, obiettivi, diario, spese, galleria e documenti. Funziona offline, con un database locale crittografato.",
     tags: ["Flutter", "Dart", "App mobile"],

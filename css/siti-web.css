@@ -1,0 +1,153 @@
+/* ============================================================
+   siti-web.css — pagina servizio "Siti web su misura".
+   Carica DOPO base.css e progetti.css: riusa hero/sezioni/feature.
+   ============================================================ */
+
+/* Due mondi (Wix + sviluppatore) */
+.sw-worlds {
+  margin-top: 2rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+@media (max-width: 640px) { .sw-worlds { grid-template-columns: 1fr; } }
+.sw-world {
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  background: var(--bg-elev);
+  padding: 1.3rem 1.4rem;
+}
+.sw-world h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.1rem;
+  margin-bottom: 0.35rem;
+}
+.sw-world p { color: var(--ink-soft); font-size: 0.95rem; line-height: 1.5; }
+.sw-world .sw-world-tag {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  margin-bottom: 0.6rem;
+}
+.sw-result {
+  margin-top: 1.2rem;
+  font-size: 1.1rem;
+  color: var(--ink);
+}
+.sw-result strong { color: var(--accent); font-weight: 600; }
+
+/* Per chi è — chip categorie */
+.sw-audience { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1.6rem; }
+.sw-audience span {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: var(--ink);
+  background: var(--bg-elev);
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  padding: 0.4rem 0.9rem;
+}
+
+/* Cosa mi distingue — schede di confronto */
+.sw-compare {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1rem;
+  margin-top: 2rem;
+}
+.sw-cmp {
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  background: var(--bg-elev);
+  padding: 1.4rem;
+}
+.sw-cmp-tag {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-wash);
+  border-radius: 100px;
+  padding: 0.25rem 0.7rem;
+  margin-bottom: 0.8rem;
+}
+.sw-cmp h3 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.15rem;
+  margin-bottom: 0.4rem;
+}
+.sw-cmp p { color: var(--ink-soft); font-size: 0.95rem; line-height: 1.55; }
+
+/* Messaggio chiave */
+.sw-keymsg {
+  margin: clamp(2.5rem, 6vw, 4rem) 0;
+  padding: clamp(2rem, 5vw, 3rem);
+  text-align: center;
+  background: var(--accent-wash);
+  border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+  border-radius: 16px;
+}
+.sw-keymsg p {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.5rem, 4vw, 2.4rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  max-width: 24ch;
+  margin: 0 auto;
+}
+.sw-keymsg em { font-style: italic; color: var(--accent); }
+
+/* Come funziona — passi numerati */
+.sw-steps { margin-top: 2rem; display: grid; gap: 0.9rem; }
+.sw-step {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 1rem;
+  align-items: start;
+  padding: 1.1rem 1.3rem;
+  background: var(--bg-elev);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+}
+.sw-step-n {
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: var(--accent-ink);
+  font-family: var(--font-mono);
+  font-weight: 600;
+  font-size: 0.95rem;
+}
+.sw-step p { color: var(--ink-soft); font-size: 0.98rem; line-height: 1.5; padding-top: 0.35rem; }
+.sw-step strong { color: var(--ink); font-weight: 600; }
+
+/* CTA finale */
+.sw-cta {
+  margin-top: clamp(2.5rem, 6vw, 4rem);
+  padding: clamp(2rem, 5vw, 3.2rem);
+  border-radius: 16px;
+  text-align: center;
+  background: linear-gradient(135deg, var(--bg-elev) 0%, color-mix(in srgb, var(--accent) 14%, var(--bg-elev)) 100%);
+  border: 1px solid color-mix(in srgb, var(--accent) 22%, var(--line));
+}
+.sw-cta h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.6rem, 4vw, 2.4rem);
+  letter-spacing: -0.02em;
+  margin-bottom: 0.6rem;
+}
+.sw-cta p { color: var(--ink-soft); max-width: 48ch; margin: 0 auto 1.6rem; }
+.sw-cta .proj-cta { justify-content: center; }
