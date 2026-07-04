@@ -34,6 +34,7 @@
   <link rel="stylesheet" href="css/base.css">
   <link rel="stylesheet" href="css/styles.css">
 
+  <link rel="canonical" href="https://www.simoneconca.it/">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/svg+xml" href="/favicon.svg">
   <link rel="apple-touch-icon" href="/apple-touch-icon.png">
@@ -47,6 +48,32 @@
         document.documentElement.setAttribute("data-theme", theme);
       } catch (e) {}
     })();
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Person",
+        "name": "Simone Conca",
+        "url": "https://www.simoneconca.it",
+        "image": "https://www.simoneconca.it/og-image.png",
+        "jobTitle": "Sviluppatore e docente di informatica",
+        "knowsAbout": ["Sviluppo web", "Realizzazione siti web", "Sviluppo app", "Informatica"],
+        "address": { "@type": "PostalAddress", "addressLocality": "Treviglio", "addressRegion": "BG", "addressCountry": "IT" },
+        "sameAs": [
+          "https://instagram.com/simoneconca_",
+          "https://github.com/simoneconca"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "name": "Simone Conca",
+        "url": "https://www.simoneconca.it"
+      }
+    ]
+  }
   </script>
 </head>
 <body>
