@@ -189,3 +189,16 @@
 .sw-show-link { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.9rem; font-weight: 500; color: var(--accent); white-space: nowrap; }
 .sw-show-link:hover { text-decoration: underline; }
 .sw-note { margin-top: 1rem; font-size: 0.82rem; color: var(--ink-faint); }
+.sw-soon {
+  margin-top: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 0.9rem;
+  padding: 1.4rem 1.6rem;
+  border: 1.5px dashed var(--line);
+  border-radius: var(--radius);
+  background: var(--bg-sunk);
+}
+.sw-soon svg { color: var(--accent); flex: 0 0 auto; }
+.sw-soon p { color: var(--ink-soft); font-size: 0.98rem; }
+.sw-soon strong { color: var(--ink); font-weight: 600; }
