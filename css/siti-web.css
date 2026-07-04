@@ -151,3 +151,41 @@
 }
 .sw-cta p { color: var(--ink-soft); max-width: 48ch; margin: 0 auto 1.6rem; }
 .sw-cta .proj-cta { justify-content: center; }
+
+/* Vetrine (lavori realizzati + siti pronti all'uso) */
+.sw-showcase {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1.2rem;
+  margin-top: 2rem;
+}
+.sw-show-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  background: var(--bg-elev);
+  overflow: hidden;
+  transition: border-color 0.25s var(--ease), transform 0.25s var(--ease);
+}
+.sw-show-card:hover { border-color: var(--line); transform: translateY(-3px); }
+.sw-show-thumb { display: block; aspect-ratio: 16 / 10; background: var(--bg-sunk); overflow: hidden; }
+.sw-show-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.3s var(--ease); }
+.sw-show-card:hover .sw-show-thumb img { transform: scale(1.04); }
+.sw-show-thumb.is-empty {
+  display: grid;
+  place-items: center;
+  gap: 0.45rem;
+  color: var(--ink-faint);
+  border-bottom: 1px dashed var(--line);
+}
+.sw-show-thumb.is-empty span { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.04em; }
+.sw-show-body { padding: 1rem 1.1rem 1.2rem; display: flex; flex-direction: column; gap: 0.3rem; flex: 1; }
+.sw-show-cat { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent); }
+.sw-show-body h3 { font-family: var(--font-display); font-weight: 500; font-size: 1.1rem; }
+.sw-show-body p { color: var(--ink-soft); font-size: 0.9rem; line-height: 1.5; }
+.sw-show-foot { margin-top: auto; padding-top: 0.8rem; display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
+.sw-show-price { font-family: var(--font-mono); font-size: 0.92rem; font-weight: 600; color: var(--ink); }
+.sw-show-link { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.9rem; font-weight: 500; color: var(--accent); white-space: nowrap; }
+.sw-show-link:hover { text-decoration: underline; }
+.sw-note { margin-top: 1rem; font-size: 0.82rem; color: var(--ink-faint); }
