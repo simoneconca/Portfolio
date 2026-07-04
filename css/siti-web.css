@@ -166,6 +166,8 @@
   border-radius: var(--radius);
   background: var(--bg-elev);
   overflow: hidden;
+  text-decoration: none;
+  color: inherit;
   transition: border-color 0.25s var(--ease), transform 0.25s var(--ease);
 }
 .sw-show-card:hover { border-color: var(--line); transform: translateY(-3px); }
@@ -182,12 +184,12 @@
 .sw-show-thumb.is-empty span { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.04em; }
 .sw-show-body { padding: 1rem 1.1rem 1.2rem; display: flex; flex-direction: column; gap: 0.3rem; flex: 1; }
 .sw-show-cat { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.05em; text-transform: uppercase; color: var(--accent); }
-.sw-show-body h3 { font-family: var(--font-display); font-weight: 500; font-size: 1.1rem; }
-.sw-show-body p { color: var(--ink-soft); font-size: 0.9rem; line-height: 1.5; }
+.sw-show-title { font-family: var(--font-display); font-weight: 500; font-size: 1.1rem; color: var(--ink); }
+.sw-show-desc { color: var(--ink-soft); font-size: 0.9rem; line-height: 1.5; }
 .sw-show-foot { margin-top: auto; padding-top: 0.8rem; display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; }
 .sw-show-price { font-family: var(--font-mono); font-size: 0.92rem; font-weight: 600; color: var(--ink); }
 .sw-show-link { display: inline-flex; align-items: center; gap: 0.3rem; font-size: 0.9rem; font-weight: 500; color: var(--accent); white-space: nowrap; }
-.sw-show-link:hover { text-decoration: underline; }
+.sw-show-card:hover .sw-show-link { text-decoration: underline; }
 .sw-note { margin-top: 1rem; font-size: 0.82rem; color: var(--ink-faint); }
 .sw-soon {
   margin-top: 2rem;
