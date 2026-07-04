@@ -31,6 +31,7 @@
   transform: translateY(-1px);
   box-shadow: 0 8px 18px -8px color-mix(in srgb, var(--accent) 70%, transparent);
 }
+.nav-mobile-cta { color: var(--accent) !important; font-weight: 600; }
 
 /* ---------- Intestazioni di sezione (divisore) ---------- */
 .section-head {
