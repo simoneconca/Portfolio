@@ -15,6 +15,23 @@
 .nav-lab::after { display: none; }
 .nav-lab:hover { border-color: var(--accent); color: var(--accent) !important; }
 
+/* Voce menu "Siti web" — CTA in evidenza (pagina servizio) */
+.nav-cta {
+  color: var(--accent-ink) !important;
+  font-weight: 500;
+  padding: 0.35rem 0.9rem !important;
+  background: var(--accent);
+  border: 1px solid var(--accent);
+  border-radius: 100px;
+  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+.nav-cta::after { display: none; }
+.nav-cta:hover {
+  color: var(--accent-ink) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 8px 18px -8px color-mix(in srgb, var(--accent) 70%, transparent);
+}
+
 /* ---------- Intestazioni di sezione (divisore) ---------- */
 .section-head {
   border-top: 1px solid var(--line);
