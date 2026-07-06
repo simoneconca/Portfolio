@@ -18,11 +18,11 @@ const SITE = {
           "demo"/"repo" in una nuova. Aggiungi "placeholder: true" alle card vuote. */
 const PROJECTS = [
   {
-    title: "Siti web su misura",
-    description: "Il servizio che offro: siti professionali su misura per piccole attività e liberi professionisti, ognuno con un pannello semplice per aggiornare da soli i contenuti — testi, foto, orari — senza saper programmare.",
-    tags: ["Servizio", "Su misura", "Pannello facile"],
-    image: "progetti/siti-web/cover.svg",
-    page: "progetti/siti-web/",
+    title: "Siti web",
+    description: "Sviluppo siti web puliti, veloci e curati, ognuno pensato per la sua attività. Qui trovi un sito realizzato e alcune demo, tutte online e navigabili.",
+    tags: ["Sviluppo web", "Su misura", "Responsive"],
+    image: "progetti/web/cover.svg",
+    page: "progetti/web/",
     demo: "",
     repo: ""
   },
