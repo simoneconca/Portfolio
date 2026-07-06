@@ -302,7 +302,9 @@
         <span class="section-num reveal">/ Pronti all'uso</span>
         <h2 class="proj-h2 reveal">Vuoi partire subito? Scegli un modello già pronto</h2>
         <p class="proj-lead reveal">Modelli completi che personalizzo con i tuoi contenuti in pochi giorni — colori, testi e foto diventano i tuoi. Guarda l'anteprima dal vivo e scegli.</p>
-        <div class="sw-showcase reveal">
+        <div class="sw-carousel reveal">
+          <button class="sw-car-btn prev" type="button" aria-label="Modelli precedenti"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <div class="sw-car-track">
           <a class="sw-show-card" href="https://ristorante-bella-vista-site.vercel.app" target="_blank" rel="noopener">
             <span class="sw-show-thumb"><img src="pronti/ristorante.jpg" alt="Anteprima del modello di sito per ristorante" loading="lazy"></span>
             <span class="sw-show-body">
@@ -393,6 +395,8 @@
               <span class="sw-show-foot"><span class="sw-show-link">Anteprima ↗</span></span>
             </span>
           </a>
+          </div>
+          <button class="sw-car-btn next" type="button" aria-label="Modelli successivi"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg></button>
         </div>
       </div>
     </section>
@@ -486,5 +490,26 @@
   </footer>
 
   <script src="../../js/core.js"></script>
+  <script>
+    (function () {
+      document.querySelectorAll(".sw-carousel").forEach(function (car) {
+        var track = car.querySelector(".sw-car-track");
+        var prev = car.querySelector(".sw-car-btn.prev");
+        var next = car.querySelector(".sw-car-btn.next");
+        if (!track || !prev || !next) return;
+        function step() { return Math.max(track.clientWidth * 0.85, 260); }
+        function update() {
+          var max = track.scrollWidth - track.clientWidth - 2;
+          prev.disabled = track.scrollLeft <= 2;
+          next.disabled = track.scrollLeft >= max;
+        }
+        prev.addEventListener("click", function () { track.scrollBy({ left: -step(), behavior: "smooth" }); });
+        next.addEventListener("click", function () { track.scrollBy({ left: step(), behavior: "smooth" }); });
+        track.addEventListener("scroll", update, { passive: true });
+        window.addEventListener("resize", update);
+        update();
+      });
+    })();
+  </script>
 </body>
 </html>

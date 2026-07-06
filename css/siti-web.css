@@ -278,3 +278,44 @@
 
 /* ---------- CTA intermedia ---------- */
 .sw-midcta { margin-top: 2.4rem; text-align: center; }
+
+/* ---------- Carosello vetrina (una riga + frecce) ---------- */
+.sw-carousel { position: relative; margin-top: 2rem; }
+.sw-car-track {
+  display: flex;
+  gap: 1.2rem;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scroll-behavior: smooth;
+  padding: 0.5rem 0.2rem 1.1rem;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+  overscroll-behavior-x: contain;
+}
+.sw-car-track::-webkit-scrollbar { display: none; }
+.sw-car-track > .sw-show-card { flex: 0 0 300px; scroll-snap-align: start; }
+@media (max-width: 560px) { .sw-car-track > .sw-show-card { flex-basis: 80%; } }
+
+.sw-car-btn {
+  position: absolute;
+  top: 33%;
+  transform: translateY(-50%);
+  z-index: 3;
+  width: 44px; height: 44px;
+  border-radius: 50%;
+  border: 1px solid var(--line);
+  background: var(--bg-elev);
+  color: var(--ink);
+  display: grid; place-items: center;
+  cursor: pointer;
+  box-shadow: 0 8px 20px -8px rgba(0, 0, 0, 0.4);
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease), opacity 0.2s var(--ease);
+}
+.sw-car-btn:hover { border-color: var(--accent); color: var(--accent); }
+.sw-car-btn.prev { left: -6px; }
+.sw-car-btn.next { right: -6px; }
+.sw-car-btn:disabled { opacity: 0; pointer-events: none; }
+@media (max-width: 640px) {
+  .sw-car-btn.prev { left: 3px; }
+  .sw-car-btn.next { right: 3px; }
+}
