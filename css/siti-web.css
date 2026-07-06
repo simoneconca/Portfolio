@@ -204,3 +204,77 @@
 .sw-soon svg { color: var(--accent); flex: 0 0 auto; }
 .sw-soon p { color: var(--ink-soft); font-size: 0.98rem; }
 .sw-soon strong { color: var(--ink); font-weight: 600; }
+
+/* ---------- Micro-trust sotto la CTA dell'hero ---------- */
+.sw-microtrust {
+  margin-top: 1rem;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.86rem;
+  color: var(--ink-faint);
+}
+.sw-microtrust svg { color: var(--accent); flex: 0 0 auto; }
+
+/* ---------- Problema: lista dei pain point ---------- */
+.sw-pains {
+  list-style: none;
+  padding: 0;
+  margin: 2rem 0 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.8rem 1.4rem;
+}
+@media (max-width: 640px) { .sw-pains { grid-template-columns: 1fr; } }
+.sw-pains li {
+  display: flex;
+  gap: 0.7rem;
+  align-items: flex-start;
+  padding: 0.9rem 1.1rem;
+  background: var(--bg-elev);
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  color: var(--ink-soft);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+.sw-pains li svg { color: #d2553c; flex: 0 0 auto; margin-top: 0.15rem; }
+.sw-bridge { margin-top: 1.7rem; font-size: clamp(1.1rem, 1rem + 0.5vw, 1.35rem); color: var(--ink); max-width: 46ch; }
+.sw-bridge strong { color: var(--accent); font-weight: 600; }
+
+/* ---------- FAQ (accordion nativo) ---------- */
+.sw-faq { margin-top: 2rem; display: grid; gap: 0.6rem; }
+.sw-faq details {
+  border: 1px solid var(--line-soft);
+  border-radius: var(--radius);
+  background: var(--bg-elev);
+  overflow: hidden;
+}
+.sw-faq summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 1rem 1.2rem;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: 1.05rem;
+  color: var(--ink);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+.sw-faq summary::-webkit-details-marker { display: none; }
+.sw-faq summary::after {
+  content: "+";
+  font-family: var(--font-mono);
+  color: var(--accent);
+  font-size: 1.3rem;
+  line-height: 1;
+  transition: transform 0.2s var(--ease);
+}
+.sw-faq details[open] summary::after { transform: rotate(45deg); }
+.sw-faq details p { padding: 0 1.2rem 1.1rem; margin: 0; color: var(--ink-soft); font-size: 0.95rem; line-height: 1.6; }
+.sw-faq details p a { color: var(--accent); }
+
+/* ---------- CTA intermedia ---------- */
+.sw-midcta { margin-top: 2.4rem; text-align: center; }
