@@ -17,21 +17,38 @@
 
 /* Voce menu "Siti web" — CTA in evidenza (pagina servizio) */
 .nav-cta {
-  color: var(--accent-ink) !important;
-  font-weight: 500;
-  padding: 0.35rem 0.9rem !important;
-  background: var(--accent);
-  border: 1px solid var(--accent);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--accent) !important;
+  font-weight: 600;
+  padding: 0.34rem 0.85rem 0.34rem 0.72rem !important;
+  background: var(--accent-wash);
+  border: 1px solid color-mix(in srgb, var(--accent) 32%, transparent);
   border-radius: 100px;
-  transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
+  transition: background 0.2s var(--ease), color 0.2s var(--ease), transform 0.2s var(--ease), box-shadow 0.2s var(--ease);
 }
 .nav-cta::after { display: none; }
+.nav-cta::before {
+  content: "";
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 22%, transparent);
+}
 .nav-cta:hover {
+  background: var(--accent);
   color: var(--accent-ink) !important;
   transform: translateY(-1px);
-  box-shadow: 0 8px 18px -8px color-mix(in srgb, var(--accent) 70%, transparent);
+  box-shadow: 0 10px 22px -10px color-mix(in srgb, var(--accent) 70%, transparent);
 }
-.nav-mobile-cta { color: var(--accent) !important; font-weight: 600; }
+.nav-cta:hover::before { background: var(--accent-ink); box-shadow: none; }
+.nav-mobile-cta {
+  color: var(--accent) !important;
+  font-weight: 600;
+  background: var(--accent-wash);
+  border-radius: 10px;
+}
 
 /* ---------- Intestazioni di sezione (divisore) ---------- */
 .section-head {
@@ -647,53 +664,131 @@
 }
 .contact-copied.show { opacity: 1; transform: none; }
 
-/* ---------- Banner servizio "Siti web" ---------- */
-.siti-banner-sec { padding-block: clamp(1.25rem, 3.5vw, 2.25rem); }
-.siti-banner {
-  display: flex;
-  flex-wrap: wrap;
+/* ---------- Sezione in evidenza: Siti web ---------- */
+.home-web-sec { padding-block: clamp(1.6rem, 4vw, 2.75rem); }
+.home-web {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1.02fr 0.98fr;
+  gap: clamp(1.6rem, 4vw, 3.4rem);
   align-items: center;
-  justify-content: space-between;
-  gap: 1.2rem 1.6rem;
-  padding: clamp(1.4rem, 4vw, 2.1rem) clamp(1.5rem, 4vw, 2.4rem);
-  border-radius: 18px;
-  background: var(--accent);
-  color: var(--accent-ink);
-  border: 1px solid var(--accent);
-  transition: transform 0.25s var(--ease), box-shadow 0.3s var(--ease);
+  padding: clamp(1.7rem, 4vw, 3.2rem);
+  border-radius: 22px;
+  background:
+    radial-gradient(130% 150% at 100% 0%, color-mix(in srgb, var(--accent) 15%, transparent) 0%, transparent 52%),
+    var(--bg-elev);
+  border: 1px solid color-mix(in srgb, var(--accent) 24%, var(--line));
+  box-shadow: 0 30px 70px -46px color-mix(in srgb, var(--accent) 40%, transparent);
+  overflow: hidden;
 }
-.siti-banner:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 22px 46px -22px color-mix(in srgb, var(--accent) 65%, transparent);
-}
-.siti-banner-kicker {
-  font-family: var(--font-mono);
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  opacity: 0.85;
-}
-.siti-banner h2 {
-  font-family: var(--font-display);
-  font-weight: 500;
-  font-size: clamp(1.5rem, 3.5vw, 2.15rem);
-  letter-spacing: -0.02em;
-  color: var(--accent-ink);
-  margin: 0.3rem 0 0.45rem;
-}
-.siti-banner p { font-size: 1rem; max-width: 54ch; opacity: 0.94; }
-.siti-banner p strong { color: var(--accent-ink); font-weight: 600; }
-.siti-banner-cta {
+.home-web-badge {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  font-weight: 600;
-  white-space: nowrap;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--accent);
 }
-.siti-banner-cta svg { transition: transform 0.25s var(--ease); }
-.siti-banner:hover .siti-banner-cta svg { transform: translateX(4px); }
-@media (max-width: 600px) {
-  .siti-banner { flex-direction: column; align-items: flex-start; }
+.home-web-badge::before {
+  content: "";
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 4px var(--accent-wash);
+}
+.home-web h2 {
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: clamp(1.95rem, 4.6vw, 3.1rem);
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+  margin: 0.8rem 0 0;
+}
+.home-web h2 em { font-style: italic; color: var(--accent-ink); }
+.home-web-lead {
+  margin: 0.95rem 0 0;
+  color: var(--ink-soft);
+  font-size: 1.05rem;
+  line-height: 1.55;
+  max-width: 42ch;
+}
+.home-web-points {
+  list-style: none;
+  padding: 0;
+  margin: 1.15rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.4rem;
+}
+.home-web-points li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.92rem;
+  color: var(--ink-soft);
+}
+.home-web-points svg { color: var(--accent); flex: 0 0 auto; }
+.home-web-cta {
+  margin-top: 1.7rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.7rem 1.3rem;
+  align-items: center;
+}
+.home-web-link {
+  font-weight: 600;
+  color: var(--accent-ink);
+  border-bottom: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
+  padding-bottom: 1px;
+  transition: border-color 0.2s var(--ease);
+}
+.home-web-link:hover { border-color: var(--accent); }
+
+/* Collage anteprime siti */
+.home-web-shots {
+  position: relative;
+  aspect-ratio: 5 / 4;
+  min-height: 230px;
+}
+.hw-frame {
+  position: absolute;
+  width: 60%;
+  border-radius: 11px;
+  overflow: hidden;
+  background: var(--bg-sunk);
+  border: 1px solid var(--line);
+  box-shadow: 0 28px 55px -30px rgba(0, 0, 0, 0.6);
+}
+.hw-bar {
+  height: 17px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 0 9px;
+  background: color-mix(in srgb, var(--ink) 7%, var(--bg-elev));
+  border-bottom: 1px solid var(--line-soft);
+}
+.hw-bar i { width: 6px; height: 6px; border-radius: 50%; background: var(--ink-faint); opacity: 0.55; }
+.hw-frame img { display: block; width: 100%; aspect-ratio: 16 / 10; object-fit: cover; }
+.hw-frame.f1 { top: 0; left: 0; z-index: 1; }
+.hw-frame.f2 { top: 22%; left: 20%; z-index: 2; }
+.hw-frame.f3 { top: 44%; left: 40%; z-index: 3; }
+
+@media (max-width: 860px) {
+  .home-web { grid-template-columns: 1fr; }
+  .home-web-shots {
+    order: -1;
+    aspect-ratio: 16 / 9;
+    width: 100%;
+    max-width: 480px;
+    margin-inline: auto;
+  }
+}
+@media (max-width: 500px) {
+  .hw-frame { width: 62%; }
+  .hw-frame.f3 { left: 38%; }
 }
 .contact-links {
   display: flex;
