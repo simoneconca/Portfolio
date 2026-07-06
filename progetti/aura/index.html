@@ -146,6 +146,7 @@
               <figcaption>Un luogo e i suoi ricordi</figcaption>
             </figure>
           </div>
+          <p class="au-zoom-hint"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4M11 8.5v5M8.5 11h5"/></svg> Tocca una schermata per ingrandirla e leggerla.</p>
         </div>
       </div>
     </section>
@@ -229,6 +230,7 @@
             <figcaption>Abitudini</figcaption>
           </figure>
         </div>
+        <p class="au-zoom-hint reveal"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4M11 8.5v5M8.5 11h5"/></svg> Tocca una schermata per ingrandirla e leggerla.</p>
       </div>
     </section>
 
@@ -277,5 +279,25 @@
   </footer>
 
   <script src="../../js/core.js"></script>
+  <script>
+    (function () {
+      var imgs = document.querySelectorAll(".au-phone img");
+      if (!imgs.length) return;
+      var box = document.createElement("div");
+      box.className = "au-lightbox";
+      box.setAttribute("role", "dialog");
+      box.setAttribute("aria-modal", "true");
+      box.innerHTML = '<button class="au-lightbox-close" type="button" aria-label="Chiudi">✕</button><img alt="">';
+      document.body.appendChild(box);
+      var big = box.querySelector("img");
+      function open(src, alt) { big.src = src; big.alt = alt || ""; box.classList.add("open"); document.body.style.overflow = "hidden"; }
+      function close() { box.classList.remove("open"); document.body.style.overflow = ""; big.removeAttribute("src"); }
+      imgs.forEach(function (im) {
+        im.addEventListener("click", function () { open(im.currentSrc || im.src, im.alt); });
+      });
+      box.addEventListener("click", function (e) { if (e.target === box || e.target.closest(".au-lightbox-close")) close(); });
+      document.addEventListener("keydown", function (e) { if (e.key === "Escape" && box.classList.contains("open")) close(); });
+    })();
+  </script>
 </body>
 </html>
