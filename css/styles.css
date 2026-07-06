@@ -706,7 +706,7 @@
   letter-spacing: -0.025em;
   margin: 0.8rem 0 0;
 }
-.home-web h2 em { font-style: italic; color: var(--accent-ink); }
+.home-web h2 em { font-style: italic; color: var(--accent); }
 .home-web-lead {
   margin: 0.95rem 0 0;
   color: var(--ink-soft);
@@ -739,7 +739,7 @@
 }
 .home-web-link {
   font-weight: 600;
-  color: var(--accent-ink);
+  color: var(--accent);
   border-bottom: 1px solid color-mix(in srgb, var(--accent) 40%, transparent);
   padding-bottom: 1px;
   transition: border-color 0.2s var(--ease);
