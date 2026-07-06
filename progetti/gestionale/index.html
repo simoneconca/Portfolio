@@ -20,6 +20,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../css/base.css">
   <link rel="stylesheet" href="../../css/progetti.css">
+  <link rel="stylesheet" href="../../css/gestform.css">
 
   <link rel="canonical" href="https://www.simoneconca.it/progetti/gestionale/">
   <link rel="icon" href="/favicon.ico" sizes="any">
@@ -72,30 +73,39 @@
 
   <main id="contenuto">
     <!-- HERO -->
-    <section class="proj-hero">
+    <section class="gf-hero">
       <div class="container">
-        <p class="proj-kicker reveal"><span class="dot"></span> Progetto / Gestionale aziendale · PHP + MySQL</p>
-        <h1 class="proj-title reveal">GestForm</h1>
-        <p class="proj-tagline reveal">
-          Un <strong>gestionale web</strong> per tenere traccia di <strong>dipendenti</strong>,
-          <strong>corsi di formazione</strong>, <strong>visite mediche</strong> e relative scadenze.
-          È uno dei miei <strong>primi progetti</strong>, realizzato durante le superiori.
-        </p>
-        <div class="proj-meta reveal">
-          <span class="proj-chip accent">Progetto scolastico</span>
-          <span class="proj-chip">PHP</span>
-          <span class="proj-chip">MySQL</span>
-          <span class="proj-chip">Bootstrap</span>
-          <span class="proj-chip">Realizzato alle superiori</span>
-        </div>
-        <div class="proj-cta reveal">
-          <a class="btn btn-ghost" href="../../#contatti">Contattami</a>
+        <div class="gf-hero-grid">
+          <div class="gf-hero-text">
+            <p class="proj-kicker reveal"><span class="dot"></span> Progetto scolastico · Gestionale · PHP + MySQL</p>
+            <h1 class="proj-title reveal">GestForm</h1>
+            <p class="proj-tagline reveal">
+              Un gestionale web per non perdere di vista <strong>dipendenti</strong>,
+              <strong>corsi di formazione</strong>, <strong>visite mediche</strong> e — soprattutto —
+              le loro <strong>scadenze</strong>. Uno dei miei primi progetti, alle superiori.
+            </p>
+            <div class="proj-meta reveal">
+              <span class="proj-chip accent">Progetto scolastico</span>
+              <span class="proj-chip">PHP · MySQL</span>
+              <span class="proj-chip">Bootstrap</span>
+            </div>
+            <div class="proj-cta reveal">
+              <a class="btn btn-ghost" href="../../#contatti">Contattami</a>
+            </div>
+          </div>
+          <div class="gf-window reveal">
+            <div class="gf-window-bar">
+              <span class="gf-window-dots"><i></i><i></i><i></i></span>
+              <span class="gf-window-url">localhost/gestform</span>
+            </div>
+            <img src="img/gest-home.png" alt="GestForm — schermata home con i quattro moduli">
+          </div>
         </div>
       </div>
     </section>
 
     <!-- NOTA UMILE -->
-    <section class="proj-section" style="padding-bottom: 0;">
+    <section class="proj-section" style="padding-top: clamp(1.5rem, 4vw, 2.5rem); padding-bottom: 0;">
       <div class="container">
         <div class="callout reveal">
           <p>
@@ -108,21 +118,64 @@
       </div>
     </section>
 
-    <!-- COS'È -->
+    <!-- MODULI -->
     <section class="proj-section">
       <div class="container">
-        <span class="section-num reveal">/ Idea</span>
-        <h2 class="proj-h2 reveal">A cosa serve</h2>
+        <span class="section-num reveal">/ I moduli</span>
+        <h2 class="proj-h2 reveal">Quattro aree, un posto solo</h2>
         <p class="proj-lead reveal">
-          L'obiettivo era dare a un'azienda un posto unico dove gestire il personale e i suoi
-          obblighi formativi: l'anagrafica dei <strong>dipendenti</strong>, i <strong>corsi</strong>
-          che hanno seguito, le <strong>visite mediche</strong> e — soprattutto — le
-          <strong>scadenze</strong>, così da sapere in anticipo cosa va rinnovato.
+          Dalla home si arriva subito a tutto: l'anagrafica del personale, la formazione, la parte
+          sanitaria e — al centro di ogni cosa — le scadenze da tenere d'occhio.
         </p>
+        <div class="gf-modules">
+          <div class="gf-mod reveal">
+            <span class="gf-mod-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="18" cy="9" r="2.4"/><path d="M16 20a5 5 0 0 1 5.5-4.9"/></svg></span>
+            <h3>Dipendenti</h3>
+            <p>Anagrafica completa: dati, titolo di studio, livello, allegati.</p>
+          </div>
+          <div class="gf-mod reveal">
+            <span class="gf-mod-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6.5l9-4 9 4-9 4-9-4z"/><path d="M7 9v5c0 1.5 2.2 2.5 5 2.5s5-1 5-2.5V9"/></svg></span>
+            <h3>Corsi</h3>
+            <p>Catalogo per tipo, ente e validità, con le iscrizioni collegate.</p>
+          </div>
+          <div class="gf-mod reveal">
+            <span class="gf-mod-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 3v6a4 4 0 0 0 8 0V3"/><path d="M8.5 13v3a5 5 0 0 0 10 0v-2"/><circle cx="18.5" cy="11" r="2.2"/></svg></span>
+            <h3>Visite mediche</h3>
+            <p>Registro delle visite con esito, validità e data di scadenza.</p>
+          </div>
+          <div class="gf-mod reveal">
+            <span class="gf-mod-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
+            <h3>Scadenze</h3>
+            <p>Corsi e visite in scadenza a colpo d'occhio, per rinnovare in tempo.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SCADENZE: IL CUORE -->
+    <section class="proj-section">
+      <div class="container">
+        <span class="section-num reveal">/ Il cuore</span>
+        <h2 class="proj-h2 reveal">Tutto ruota intorno alle scadenze</h2>
         <p class="proj-lead reveal">
-          È un'applicazione web pensata per girare in locale (con XAMPP): accesso con login, ruoli
-          per gli amministratori e operazioni complete di inserimento, modifica e ricerca.
+          Ogni corso e ogni visita ha una validità. GestForm <strong>colora lo stato</strong> così da
+          capirlo al volo, senza dover controllare le date una per una: si vede subito cosa è a posto
+          e cosa va rinnovato.
         </p>
+        <div class="gf-status">
+          <div class="gf-status-card reveal">
+            <span class="gf-badge ok">In regola</span>
+            <p>Documento valido: nessuna azione richiesta. Resta neutro, non serve che salti all'occhio.</p>
+          </div>
+          <div class="gf-status-card warn reveal">
+            <span class="gf-badge warn">In scadenza</span>
+            <p>Manca poco al termine: diventa <strong>giallo</strong> per ricordarti di rinnovarlo a breve.</p>
+          </div>
+          <div class="gf-status-card bad reveal">
+            <span class="gf-badge bad">Scaduto</span>
+            <p>Validità superata: <strong>rosso</strong>, va rinnovato subito per non restare scoperti.</p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -130,101 +183,54 @@
     <section class="proj-section">
       <div class="container">
         <span class="section-num reveal">/ Schermate</span>
-        <h2 class="proj-h2 reveal">L'applicazione in funzione</h2>
-        <p class="proj-lead reveal">Alcune schermate reali del gestionale. I dati mostrati sono <strong>fittizi</strong>: nomi e anagrafiche dei dipendenti sono stati anonimizzati.</p>
-        <div class="shot-wide reveal">
-          <figure>
-            <img src="img/gest-home.png" alt="GestForm — homepage con accesso rapido alle sezioni" loading="lazy">
-            <figcaption>Home — accesso rapido a dipendenti, corsi, visite e scadenze</figcaption>
+        <h2 class="proj-h2 reveal">L'app in funzione</h2>
+        <p class="proj-lead reveal">Schermate reali del gestionale. I dati mostrati sono <strong>fittizi</strong>: nomi e anagrafiche sono stati anonimizzati.</p>
+        <div class="gf-shots">
+          <figure class="reveal">
+            <div class="gf-window">
+              <div class="gf-window-bar"><span class="gf-window-dots"><i></i><i></i><i></i></span><span class="gf-window-url">localhost/gestform/scadenze</span></div>
+              <img src="img/gest-scadenze.png" alt="GestForm — scadenzario con corsi e visite in scadenza" loading="lazy">
+            </div>
+            <figcaption>Scadenzario — corsi e visite in scadenza nei prossimi mesi, in un colpo d'occhio.</figcaption>
           </figure>
-          <figure>
-            <img src="img/gest-dipendente.png" alt="GestForm — scheda di un dipendente con anagrafica, corsi e visite" loading="lazy">
-            <figcaption>Scheda dipendente — anagrafica completa, con corsi e visite collegati</figcaption>
+          <figure class="reveal">
+            <div class="gf-window">
+              <div class="gf-window-bar"><span class="gf-window-dots"><i></i><i></i><i></i></span><span class="gf-window-url">localhost/gestform/corso</span></div>
+              <img src="img/gest-corso.png" alt="GestForm — dettaglio di un corso con gli iscritti e lo stato della scadenza" loading="lazy">
+            </div>
+            <figcaption>Dettaglio corso — gli iscritti con lo stato: in regola, in scadenza (giallo), scaduto (rosso).</figcaption>
           </figure>
-          <figure>
-            <img src="img/gest-scadenze.png" alt="GestForm — scadenzario con corsi e visite in scadenza" loading="lazy">
-            <figcaption>Scadenzario — i corsi e le visite in scadenza nei prossimi mesi, in un colpo d'occhio</figcaption>
+          <figure class="reveal">
+            <div class="gf-window">
+              <div class="gf-window-bar"><span class="gf-window-dots"><i></i><i></i><i></i></span><span class="gf-window-url">localhost/gestform/dipendente</span></div>
+              <img src="img/gest-dipendente.png" alt="GestForm — scheda di un dipendente con anagrafica, corsi e visite" loading="lazy">
+            </div>
+            <figcaption>Scheda dipendente — anagrafica completa, con corsi e visite collegati.</figcaption>
           </figure>
-          <figure>
-            <img src="img/gest-corso.png" alt="GestForm — dettaglio di un corso con gli iscritti e le scadenze" loading="lazy">
-            <figcaption>Dettaglio corso — gli iscritti con lo stato della scadenza: in regola, in scadenza (giallo), scaduto (rosso)</figcaption>
-          </figure>
-          <figure>
-            <img src="img/gest-visite.png" alt="GestForm — elenco visite mediche valide e scadute" loading="lazy">
-            <figcaption>Visite mediche — divise tra valide e scadute, per non perdere nessun rinnovo</figcaption>
-          </figure>
-          <figure>
-            <img src="img/gest-backup.png" alt="GestForm — backup e ripristino del database" loading="lazy">
-            <figcaption>Backup — esportazione e ripristino dei dati dall'interfaccia</figcaption>
+          <figure class="reveal">
+            <div class="gf-window">
+              <div class="gf-window-bar"><span class="gf-window-dots"><i></i><i></i><i></i></span><span class="gf-window-url">localhost/gestform/visite</span></div>
+              <img src="img/gest-visite.png" alt="GestForm — elenco visite mediche valide e scadute" loading="lazy">
+            </div>
+            <figcaption>Visite mediche — divise tra valide e scadute, per non perdere nessun rinnovo.</figcaption>
           </figure>
         </div>
       </div>
     </section>
 
-    <!-- FUNZIONALITÀ -->
+    <!-- ALTRE FUNZIONI + TECNOLOGIA -->
     <section class="proj-section">
       <div class="container">
-        <span class="section-num reveal">/ Cosa fa</span>
-        <h2 class="proj-h2 reveal">Le funzionalità</h2>
-        <div class="feature-grid">
+        <span class="section-num reveal">/ E poi</span>
+        <h2 class="proj-h2 reveal">Le altre funzioni, e com'è fatto</h2>
+        <ul class="gf-more reveal">
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="M20.5 20.5l-4.5-4.5"/></svg><span><strong>Ricerca filtrata</strong> — filtri combinabili per trovare in fretta dipendenti e situazioni.</span></li>
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg><span><strong>Login e ruoli</strong> — accesso con utenti, ruolo amministratore e controllo dei tentativi.</span></li>
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v6c0 1.7 3.6 3 8 3s8-1.3 8-3V5M4 11v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/></svg><span><strong>Backup e ripristino</strong> — esportazione e import del database direttamente dall'interfaccia.</span></li>
+          <li><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19V5a2 2 0 0 1 2-2h10l4 4v12a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M8 8h6M8 12h8M8 16h5"/></svg><span><strong>Manuale integrato</strong> — una guida d'uso raggiungibile dall'app per chi ci mette le mani la prima volta.</span></li>
+        </ul>
 
-          <article class="feature reveal">
-            <span class="feature-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3.2"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0"/><circle cx="18" cy="9" r="2.4"/><path d="M16 20a5 5 0 0 1 5.5-4.9"/></svg></span>
-            <h3>Anagrafica dipendenti</h3>
-            <p>Dati personali, titolo di studio, centro di costo, livello e cittadinanza, con allegati per ogni dipendente.</p>
-          </article>
-
-          <article class="feature reveal">
-            <span class="feature-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6.5l9-4 9 4-9 4-9-4z"/><path d="M7 9v5c0 1.5 2.2 2.5 5 2.5s5-1 5-2.5V9"/></svg></span>
-            <h3>Corsi di formazione</h3>
-            <p>Catalogo dei corsi per tipo, ente, durata e validità, con le iscrizioni collegate a ciascun dipendente.</p>
-          </article>
-
-          <article class="feature reveal">
-            <span class="feature-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 3v6a4 4 0 0 0 8 0V3"/><path d="M8.5 13v3a5 5 0 0 0 10 0v-2"/><circle cx="18.5" cy="11" r="2.2"/></svg></span>
-            <h3>Visite mediche</h3>
-            <p>Registro delle visite con esito, validità e data di scadenza, collegate al dipendente.</p>
-          </article>
-
-          <article class="feature reveal">
-            <span class="feature-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span>
-            <h3>Scadenzario</h3>
-            <p>Una vista d'insieme di corsi e visite in scadenza, per non lasciare scoperto nessun rinnovo.</p>
-          </article>
-
-          <article class="feature reveal">
-            <span class="feature-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="6.5"/><path d="M20.5 20.5l-4.5-4.5"/></svg></span>
-            <h3>Ricerca filtrata</h3>
-            <p>Ricerca avanzata con filtri combinabili per trovare in fretta dipendenti, corsi e situazioni specifiche.</p>
-          </article>
-
-          <article class="feature reveal">
-            <span class="feature-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg></span>
-            <h3>Login e ruoli</h3>
-            <p>Accesso con utenti e ruolo amministratore, con un controllo sui tentativi di login.</p>
-          </article>
-
-          <article class="feature reveal">
-            <span class="feature-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7V5a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v2"/><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 12h6M9 16h6"/></svg></span>
-            <h3>Backup e manuale</h3>
-            <p>Backup e ripristino del database dall'interfaccia e un manuale utente integrato.</p>
-          </article>
-
-        </div>
-      </div>
-    </section>
-
-    <!-- COME È FATTO -->
-    <section class="proj-section">
-      <div class="container">
-        <span class="section-num reveal">/ Com'è fatto</span>
-        <h2 class="proj-h2 reveal">La tecnologia</h2>
-        <p class="proj-lead reveal">
-          Un classico stack <strong>PHP + MySQL</strong>: le pagine sono in PHP, i dati in un
-          database MySQL e l'interfaccia usa <strong>Bootstrap</strong>. Tutto pensato per girare in
-          locale con <strong>XAMPP</strong>.
-        </p>
-        <div class="stack reveal">
+        <div class="stack reveal" style="margin-top: 2.2rem;">
           <span class="stack-tag">PHP <span>· backend</span></span>
           <span class="stack-tag">MySQL <span>· database</span></span>
           <span class="stack-tag">SQL <span>· query</span></span>
@@ -234,8 +240,7 @@
         </div>
 
         <div class="callout reveal">
-          <p><strong>Gira in locale.</strong> Essendo un'app PHP + MySQL va eseguita su un server
-          (qui XAMPP): le schermate qui sopra sono reali, con dati di esempio anonimizzati.</p>
+          <p><strong>Gira in locale.</strong> Essendo un'app PHP + MySQL va eseguita su un server (qui XAMPP): le schermate qui sopra sono reali, con dati di esempio anonimizzati.</p>
         </div>
 
         <div class="proj-foot-nav reveal">
