@@ -20,6 +20,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="../../css/base.css">
   <link rel="stylesheet" href="../../css/progetti.css">
+  <link rel="stylesheet" href="../../css/aura.css">
 
   <link rel="canonical" href="https://www.simoneconca.it/progetti/aura/">
   <link rel="icon" href="/favicon.ico" sizes="any">
@@ -36,7 +37,7 @@
     })();
   </script>
 </head>
-<body>
+<body class="au-page">
   <div class="grain" aria-hidden="true"></div>
   <a class="skip-link" href="#contenuto">Salta al contenuto</a>
 
@@ -72,34 +73,40 @@
 
   <main id="contenuto">
     <!-- HERO -->
-    <section class="proj-hero">
+    <section class="au-hero">
       <div class="container">
-        <p class="proj-kicker reveal"><span class="dot"></span> Progetto / App personale · Flutter</p>
-        <h1 class="proj-title reveal">AURA</h1>
-        <p class="proj-tagline reveal">
-          Un'app per <strong>tenere insieme la vita di tutti i giorni</strong> in un posto solo:
-          calendario, abitudini, obiettivi, diario, spese e documenti. Pensata per funzionare
-          <strong>offline</strong>, con i dati salvati e <strong>crittografati</strong> sul telefono.
-        </p>
-        <div class="proj-meta reveal">
-          <span class="proj-chip accent">In sviluppo</span>
-          <span class="proj-chip">Flutter · Dart</span>
-          <span class="proj-chip">Android · iOS</span>
-          <span class="proj-chip">Database locale</span>
-          <span class="proj-chip">Progetto personale</span>
+        <div class="au-hero-grid">
+          <div class="au-hero-text">
+            <p class="proj-kicker reveal"><span class="dot"></span> Progetto / App personale · Flutter</p>
+            <h1 class="proj-title reveal">AURA</h1>
+            <p class="proj-tagline reveal">
+              Un'app per <strong>tenere insieme la vita di tutti i giorni</strong> in un posto solo:
+              calendario, abitudini, obiettivi, diario, spese e documenti. Funziona <strong>offline</strong>,
+              con i dati salvati e <strong>crittografati</strong> sul telefono.
+            </p>
+            <div class="proj-meta reveal">
+              <span class="proj-chip accent">In sviluppo</span>
+              <span class="proj-chip">Flutter · Dart</span>
+              <span class="proj-chip">Android · iOS</span>
+              <span class="proj-chip">Offline · crittografata</span>
+            </div>
+            <div class="proj-cta reveal">
+              <a class="btn btn-primary" href="https://github.com/simoneconca/AURA/releases/latest/download/aura.apk" download>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
+                Scarica l'APK (Android)
+              </a>
+              <a class="btn btn-ghost" href="../../#contatti">Contattami</a>
+            </div>
+            <p class="proj-dl-note reveal">File <code>.apk</code> per Android. Alla prima installazione potresti dover consentire le «origini sconosciute». La versione iOS arriverà più avanti.</p>
+          </div>
+          <div class="au-hero-phone reveal">
+            <div class="au-phone"><img src="img/aura-oggi.png" alt="AURA — schermata Oggi: appuntamenti, prossimi eventi e spese"></div>
+          </div>
         </div>
-        <div class="proj-cta reveal">
-          <a class="btn btn-primary" href="https://github.com/simoneconca/AURA/releases/latest/download/aura.apk" download>
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>
-            Scarica l'APK (Android)
-          </a>
-          <a class="btn btn-ghost" href="../../#contatti">Contattami</a>
-        </div>
-        <p class="proj-dl-note reveal">File <code>.apk</code> per Android. Alla prima installazione potresti dover consentire le «origini sconosciute». La versione iOS arriverà più avanti.</p>
       </div>
     </section>
 
-    <!-- COS'È -->
+    <!-- IDEA -->
     <section class="proj-section">
       <div class="container">
         <span class="section-num reveal">/ Idea</span>
@@ -118,25 +125,27 @@
       </div>
     </section>
 
-    <!-- SPOTLIGHT: persone, luoghi e ricordi -->
+    <!-- IL CUORE -->
     <section class="proj-section">
       <div class="container">
-        <span class="section-num reveal">/ Il cuore di AURA</span>
-        <h2 class="proj-h2 reveal">Persone, luoghi e i ricordi che li legano</h2>
-        <p class="proj-lead reveal">È la funzione a cui tengo di più. AURA non si limita a segnare un evento: puoi <strong>collegarci le persone e i luoghi</strong>, dare a ognuno un <strong>profilo</strong> e ritrovare in un colpo solo tutte le <strong>esperienze condivise</strong> e le <strong>foto</strong> legate a quella persona o a quel posto. Così i ricordi smettono di essere sparsi e diventano una storia.</p>
-        <div class="shot-gallery reveal">
-          <figure>
-            <img src="img/aura-persona.png" alt="AURA — profilo di una persona con esperienze e foto" loading="lazy">
-            <figcaption>Il profilo di una persona: esperienze e foto</figcaption>
-          </figure>
-          <figure>
-            <img src="img/aura-persone-luoghi.png" alt="AURA — elenco di persone e luoghi" loading="lazy">
-            <figcaption>Persone &amp; Luoghi</figcaption>
-          </figure>
-          <figure>
-            <img src="img/aura-luogo.png" alt="AURA — un luogo con gli eventi e le foto collegate" loading="lazy">
-            <figcaption>Un luogo e i suoi ricordi</figcaption>
-          </figure>
+        <div class="au-heart reveal">
+          <span class="section-num">/ Il cuore di AURA</span>
+          <h2 class="proj-h2">Persone, luoghi e i ricordi che li legano</h2>
+          <p class="proj-lead">È la funzione a cui tengo di più. AURA non si limita a segnare un evento: puoi <strong>collegarci le persone e i luoghi</strong>, dare a ognuno un <strong>profilo</strong> e ritrovare in un colpo solo tutte le <strong>esperienze condivise</strong> e le <strong>foto</strong> legate a quella persona o a quel posto. Così i ricordi smettono di essere sparsi e diventano una storia.</p>
+          <div class="au-phones">
+            <figure>
+              <div class="au-phone"><img src="img/aura-persona.png" alt="AURA — profilo di una persona con esperienze e foto" loading="lazy"></div>
+              <figcaption>Il profilo di una persona: esperienze e foto</figcaption>
+            </figure>
+            <figure>
+              <div class="au-phone"><img src="img/aura-persone-luoghi.png" alt="AURA — elenco di persone e luoghi" loading="lazy"></div>
+              <figcaption>Persone &amp; Luoghi</figcaption>
+            </figure>
+            <figure>
+              <div class="au-phone"><img src="img/aura-luogo.png" alt="AURA — un luogo con gli eventi e le foto collegate" loading="lazy"></div>
+              <figcaption>Un luogo e i suoi ricordi</figcaption>
+            </figure>
+          </div>
         </div>
       </div>
     </section>
@@ -193,14 +202,37 @@
           <article class="feature reveal">
             <span class="feature-ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></span>
             <h3>Su misura</h3>
-            <p>Tema chiaro e scuro, palette di colori personalizzabili e supporto a più lingue.</p>
+            <p>Tema chiaro e scuro, palette di colori personalizzabili (salvia, oceano, lavanda…) e supporto a più lingue.</p>
           </article>
 
         </div>
       </div>
     </section>
 
-    <!-- COME È FATTA -->
+    <!-- SCHERMATE -->
+    <section class="proj-section">
+      <div class="container">
+        <span class="section-num reveal">/ Schermate</span>
+        <h2 class="proj-h2 reveal">L'app in mano</h2>
+        <p class="proj-lead reveal">Anteprime reali dell'app in funzione: la giornata in sintesi, la contabilità con saldo ed entrate/uscite, e le abitudini con le serie di costanza.</p>
+        <div class="au-phones reveal">
+          <figure>
+            <div class="au-phone"><img src="img/aura-oggi.png" alt="AURA — schermata Oggi" loading="lazy"></div>
+            <figcaption>Oggi</figcaption>
+          </figure>
+          <figure>
+            <div class="au-phone"><img src="img/aura-spese.png" alt="AURA — schermata Contabilità" loading="lazy"></div>
+            <figcaption>Contabilità</figcaption>
+          </figure>
+          <figure>
+            <div class="au-phone"><img src="img/aura-abitudini.png" alt="AURA — schermata Abitudini" loading="lazy"></div>
+            <figcaption>Abitudini</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- COM'È FATTA -->
     <section class="proj-section">
       <div class="container">
         <span class="section-num reveal">/ Com'è fatta</span>
@@ -219,29 +251,6 @@
           <span class="stack-tag">Material 3 <span>· design</span></span>
           <span class="stack-tag">Localizations <span>· multilingua</span></span>
         </div>
-      </div>
-    </section>
-
-    <!-- ANTEPRIME (placeholder) -->
-    <section class="proj-section">
-      <div class="container">
-        <span class="section-num reveal">/ Anteprime</span>
-        <h2 class="proj-h2 reveal">Schermate</h2>
-        <p class="proj-lead reveal">Anteprime reali dell'app in funzione: la giornata in sintesi, la contabilità con saldo ed entrate/uscite, e le abitudini con le serie di costanza.</p>
-        <div class="shot-gallery reveal">
-          <figure>
-            <img src="img/aura-oggi.png" alt="AURA — schermata Oggi su smartphone" loading="lazy">
-            <figcaption>Oggi</figcaption>
-          </figure>
-          <figure>
-            <img src="img/aura-spese.png" alt="AURA — schermata Contabilità" loading="lazy">
-            <figcaption>Contabilità</figcaption>
-          </figure>
-          <figure>
-            <img src="img/aura-abitudini.png" alt="AURA — schermata Abitudini" loading="lazy">
-            <figcaption>Abitudini</figcaption>
-          </figure>
-        </div>
 
         <div class="callout reveal">
           <p><strong>App in sviluppo.</strong> Quelle che vedi sono anteprime reali dell'app in esecuzione.
@@ -253,7 +262,7 @@
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M13 8H3M7 4L3 8l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
             Tutti i progetti
           </a>
-          <a class="proj-back" href="../gestionale/">Gestionale Dipendenti →</a>
+          <a class="proj-back" href="../gestionale/">GestForm →</a>
         </div>
       </div>
     </section>
