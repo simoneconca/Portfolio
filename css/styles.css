@@ -44,11 +44,18 @@
 }
 .nav-cta:hover::before { background: var(--accent-ink); box-shadow: none; }
 .nav-mobile-cta {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
   color: var(--accent) !important;
-  font-weight: 600;
-  background: var(--accent-wash);
-  border-radius: 10px;
 }
+.nav-mobile-cta .nav-num { color: var(--accent); }
+.nav-mobile-arrow {
+  margin-left: auto;
+  font-size: 1.2rem;
+  transition: transform 0.2s var(--ease);
+}
+.nav-mobile-cta:active .nav-mobile-arrow { transform: translateX(3px); }
 
 /* ---------- Intestazioni di sezione (divisore) ---------- */
 .section-head {
