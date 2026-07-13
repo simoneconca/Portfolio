@@ -52,10 +52,15 @@
   background: #10130f;
   border-radius: 38px;
   padding: 7px;
+  overflow: hidden;
   box-shadow: 0 34px 80px -34px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.06);
 }
 .au-phone img {
-  width: 100%; height: 100%;
+  width: 100%;
+  height: 100%;
+  /* aspect-ratio esplicito sull'immagine: evita che Safari la faccia sforare in basso
+     (bug con aspect-ratio + padding + height:100% sul contenitore) */
+  aspect-ratio: 1080 / 2424;
   object-fit: cover;
   border-radius: 31px;
   display: block;
