@@ -126,6 +126,20 @@
 }
 .er-node:hover .er-del { display: grid; }
 .er-del:hover { border-color: #e0533d; color: #e0533d; }
+/* rinomina */
+.er-rename {
+  position: absolute; bottom: -9px; left: -9px;
+  width: 18px; height: 18px; border-radius: 50%;
+  border: 1px solid var(--line); background: var(--bg-elev); color: var(--ink-soft);
+  font-size: 0.62rem; line-height: 1; display: none; place-items: center; cursor: pointer; z-index: 3;
+  padding: 0;
+}
+.er-node:hover .er-rename { display: grid; }
+.er-rename:hover { border-color: var(--accent); color: var(--accent); }
+/* su dispositivi touch (niente hover) i controlli sono sempre visibili */
+@media (hover: none) {
+  .er-del, .er-rename { display: grid; }
+}
 
 /* ---------- Etichette cardinalità ---------- */
 .er-card {

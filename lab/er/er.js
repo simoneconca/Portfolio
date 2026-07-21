@@ -56,7 +56,8 @@
       ${inner}
       <span class="er-port" title="Collega">+</span>
       ${keyBadge}
-      <button class="er-del" type="button" data-del="${n.id}" aria-label="Elimina">×</button>
+      <button class="er-rename" type="button" data-rename="${n.id}" aria-label="Rinomina" title="Rinomina">✎</button>
+      <button class="er-del" type="button" data-del="${n.id}" aria-label="Elimina" title="Elimina">×</button>
     </div>`;
   }
 
@@ -277,6 +278,7 @@
     if (e.target.isContentEditable) return;             // sto rinominando
     const portEl = e.target.closest(".er-port");
     const keyEl = e.target.closest(".er-key");
+    const renameEl = e.target.closest(".er-rename");
     const delEl = e.target.closest(".er-del");
     const cardEl = e.target.closest(".er-card");
     const lineEl = e.target.closest("line.hit");
@@ -287,6 +289,7 @@
     closeMenu();
 
     if (delEl) { e.preventDefault(); deleteNode(delEl.dataset.del); return; }
+    if (renameEl) { e.preventDefault(); startRename(renameEl.dataset.rename); return; }
     if (keyEl && nodeEl) { e.preventDefault(); toggleKey(nodeEl.dataset.id); return; }
     if (cardEl) {
       e.preventDefault();
@@ -338,15 +341,15 @@
     drag = null;
   });
 
-  // doppio clic: rinomina
-  board.addEventListener("dblclick", (e) => {
-    const label = e.target.closest(".er-label");
-    const nodeEl = e.target.closest(".er-node");
-    if (!label || !nodeEl) return;
-    const id = nodeEl.dataset.id;
+  // rinomina: pulsante ✎ (anche touch) oppure doppio clic
+  function startRename(id) {
+    const nodeEl = nodesLayer.querySelector(`.er-node[data-id="${id}"]`);
+    if (!nodeEl) return;
+    const label = nodeEl.querySelector(".er-label");
+    if (!label || label.getAttribute("contenteditable") === "true") return;
     label.setAttribute("contenteditable", "true");
     label.focus();
-    document.getSelection().selectAllChildren(label);
+    try { document.getSelection().selectAllChildren(label); } catch (e) {}
     const commit = () => {
       label.removeAttribute("contenteditable");
       const n = byId(id);
@@ -359,6 +362,11 @@
       if (ev.key === "Enter") { ev.preventDefault(); label.blur(); }
       if (ev.key === "Escape") { label.textContent = byId(id).name; label.blur(); }
     });
+  }
+
+  board.addEventListener("dblclick", (e) => {
+    const nodeEl = e.target.closest(".er-node");
+    if (nodeEl && e.target.closest(".er-label")) startRename(nodeEl.dataset.id);
   });
 
   function toggleKey(id) {
