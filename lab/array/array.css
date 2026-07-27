@@ -1,0 +1,68 @@
+/* ============================================================
+   array.css — Capire gli array  ·  prefisso .ar-
+   Usa base.css + lab.css.
+   ============================================================ */
+
+.ar-sec { position: relative; z-index: 2; }
+.ar-dimseg { flex-wrap: wrap; margin-bottom: 1.1rem; }
+
+.ar-grid-layout { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr); gap: 1.1rem; align-items: start; }
+@media (max-width: 860px) { .ar-grid-layout { grid-template-columns: 1fr; } }
+
+.ar-intro { font-size: 0.95rem; line-height: 1.6; color: var(--ink-soft); margin-bottom: 1rem; }
+.ar-intro b { color: var(--ink); }
+.ar-intro code, .ar-detail code { font-family: var(--font-mono); font-size: 0.85em; background: var(--bg-sunk); border: 1px solid var(--line-soft); border-radius: 5px; padding: 0.05rem 0.35rem; color: var(--accent); }
+
+/* cursori dimensioni */
+.ar-sizes { display: flex; flex-wrap: wrap; align-items: center; gap: 0.7rem 1.1rem; margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--line-soft); }
+.ar-size { display: inline-flex; flex-direction: column; gap: 0.25rem; }
+.ar-size-lbl { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.03em; text-transform: uppercase; color: var(--ink-soft); }
+.ar-stepper { display: inline-flex; align-items: center; gap: 0.5rem; }
+.ar-stepper b { font-family: var(--font-mono); font-size: 1rem; min-width: 1.4rem; text-align: center; color: var(--ink); }
+.ar-step { width: 26px; height: 26px; border-radius: 7px; border: 1px solid var(--line); background: var(--bg); color: var(--ink); font-size: 1rem; line-height: 1; cursor: pointer; display: grid; place-items: center; transition: border-color 0.15s var(--ease), color 0.15s var(--ease); }
+.ar-step:hover { border-color: var(--accent); color: var(--accent); }
+.ar-total { margin-left: auto; font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink-soft); }
+.ar-total b { color: var(--ink); }
+
+/* visualizzazione */
+.ar-viz-scroll { overflow-x: auto; padding: 0.3rem 0.1rem 0.6rem; }
+.ar-viz { display: inline-block; min-width: 100%; }
+.ar-cell {
+  width: 34px; height: 34px; flex: 0 0 auto; border: 1px solid var(--line);
+  border-radius: 6px; background: var(--bg-elev); color: var(--ink-soft);
+  font-family: var(--font-mono); font-size: 0.78rem; cursor: pointer;
+  display: grid; place-items: center; transition: all 0.12s var(--ease);
+}
+.ar-cell:hover { border-color: var(--accent); color: var(--accent); }
+.ar-cell.sel { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+
+.ar-1d { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.ar-1dcell { display: inline-flex; flex-direction: column; align-items: center; gap: 0.2rem; }
+.ar-idx { font-family: var(--font-mono); font-size: 0.62rem; color: var(--ink-faint); }
+
+.ar-2d { display: grid; gap: 4px; }
+
+.ar-slices { display: flex; flex-wrap: wrap; gap: 0.9rem; }
+.ar-slice { border: 1px dashed var(--line); border-radius: 10px; padding: 0.5rem; background: var(--bg-sunk); }
+.ar-slice-lbl { font-family: var(--font-mono); font-size: 0.64rem; color: var(--ink-faint); margin-bottom: 0.35rem; text-align: center; }
+
+.ar-groups { display: flex; flex-wrap: wrap; gap: 1rem; }
+.ar-group { border: 1px solid var(--line); border-radius: 12px; padding: 0.6rem; background: var(--bg-elev); }
+.ar-group-lbl { font-family: var(--font-mono); font-size: 0.7rem; font-weight: 600; color: var(--accent); margin-bottom: 0.5rem; }
+
+.ar-legend { font-size: 0.78rem; color: var(--ink-faint); line-height: 1.5; margin-top: 0.9rem; }
+.ar-legend b { color: var(--ink-soft); }
+.ar-detail { margin-top: 0.9rem; padding: 0.8rem 0.9rem; border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 8px; background: var(--bg-elev); font-size: 0.9rem; line-height: 1.6; color: var(--ink-soft); }
+.ar-detail b { color: var(--ink); }
+.ar-hint { color: var(--ink-faint); }
+
+/* codice */
+.ar-codepanel { position: sticky; top: 88px; }
+.ar-langseg { flex-wrap: wrap; margin-bottom: 0.9rem; }
+.ar-code {
+  margin: 0; padding: 0.9rem 1rem; background: var(--bg-sunk); border: 1px solid var(--line);
+  border-radius: 10px; font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.6;
+  color: var(--ink); white-space: pre; overflow-x: auto;
+}
+
+@media (max-width: 860px) { .ar-codepanel { position: static; } }
