@@ -19,7 +19,7 @@ const SITE = {
 const PROJECTS = [
   {
     title: "Siti web",
-    description: "Sviluppo siti web puliti, veloci e curati, ognuno pensato per la sua attività. Qui trovi un sito realizzato e alcune demo, tutte online e navigabili.",
+    description: "Una selezione di siti web che ho progettato: puliti, veloci e curati, ognuno pensato per la sua attività. Tutti online e navigabili.",
     tags: ["Sviluppo web", "Su misura", "Responsive"],
     image: "progetti/web/cover.svg",
     page: "progetti/web/",
