@@ -8,7 +8,7 @@
   "use strict";
 
   function $(id) { return document.getElementById(id); }
-  let SQL = null, db = null, ready = false;
+  let SQL = null, db = null, ready = false, attempted = false;
 
   const SCHEMA = `
     CREATE TABLE utenti (id INTEGER PRIMARY KEY, username TEXT, password TEXT, ruolo TEXT);
@@ -65,6 +65,7 @@
   /* ---------- Esecuzione ---------- */
   function runLogin() {
     if (!ready) return;
+    attempted = true;
     const u = userIn.value, p = passIn.value;
     let rows = [], cols = [], error = null;
     try {
@@ -150,7 +151,9 @@
       document.querySelectorAll("#siMode .seg-btn").forEach(function (b) { b.classList.remove("active"); });
       btn.classList.add("active");
       renderQuery();
-      if (ready) runLogin();
+      // ri-esegui solo se un accesso è già stato tentato (per vedere l'iniezione
+      // fallire sul server sicuro); non deve comparire un risultato a campi vuoti
+      if (ready && attempted) runLogin();
     });
   });
 

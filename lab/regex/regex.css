@@ -1,0 +1,247 @@
+/* ============================================================
+   regex.css — Espressioni regolari (regex)
+   Usa base.css + lab.css (token, .panel, .control-label, ecc.).
+   ============================================================ */
+
+.rx-sec { position: relative; z-index: 2; }
+.rx-panel { display: grid; gap: 1.1rem; }
+
+/* ---------- Riga pattern + flag ---------- */
+.rx-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  align-items: stretch;
+}
+.rx-field {
+  flex: 1 1 320px;
+  display: flex;
+  align-items: center;
+  min-width: 0;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg);
+  transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+}
+.rx-field:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-wash); }
+.rx-field.invalid { border-color: #e0533d; }
+.rx-field.invalid:focus-within { box-shadow: 0 0 0 3px rgba(224, 83, 61, 0.18); }
+.rx-slash {
+  font-family: var(--font-mono);
+  font-size: 1.05rem;
+  color: var(--ink-faint);
+  padding-inline: 0.55rem;
+  user-select: none;
+}
+.rx-flagsview { color: var(--accent); }
+.rx-field input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 1.02rem;
+  padding: 0.7rem 0.1rem;
+  outline: none;
+}
+
+.rx-flags { display: inline-flex; gap: 0.35rem; }
+.rx-flag {
+  width: 2.2rem;
+  font-family: var(--font-mono);
+  font-size: 0.92rem;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--ink-soft);
+  cursor: pointer;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease), background-color 0.2s var(--ease);
+}
+.rx-flag:hover { border-color: var(--accent); color: var(--accent); }
+.rx-flag.active { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+
+.rx-error {
+  min-height: 1.1rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  color: #e0533d;
+  margin: 0;
+}
+
+/* ---------- Esempi ---------- */
+.rx-examples { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem 0.7rem; }
+.rx-ex-list { display: flex; flex-wrap: wrap; gap: 0.45rem; }
+.rx-ex {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 100px;
+  background: var(--bg);
+  color: var(--ink);
+  cursor: pointer;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease);
+}
+.rx-ex:hover { border-color: var(--accent); color: var(--accent); }
+
+/* ---------- Testo e risultato ---------- */
+.rx-sublabel {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.04em;
+  color: var(--ink-soft);
+}
+.rx-sublabel-row { display: flex; align-items: baseline; justify-content: space-between; gap: 0.75rem; }
+.rx-count { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-faint); }
+.rx-count strong { color: var(--accent); font-weight: 600; }
+
+.rx-text, .rx-output {
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  line-height: 1.6;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--bg-sunk);
+  padding: 0.8rem 0.9rem;
+}
+.rx-text {
+  width: 100%;
+  color: var(--ink);
+  resize: vertical;
+  outline: none;
+  transition: border-color 0.2s var(--ease), box-shadow 0.2s var(--ease);
+  margin-top: -0.4rem;
+}
+.rx-text:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-wash); }
+.rx-output {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  color: var(--ink-soft);
+  min-height: 2.6rem;
+  margin-top: -0.4rem;
+}
+.rx-output mark.rx-hit {
+  background: var(--accent);
+  color: var(--accent-ink);
+  border-radius: 3px;
+  padding: 0 1px;
+}
+.rx-output .rx-nohit { color: var(--ink-faint); font-style: italic; }
+
+/* ---------- Elenco corrispondenze ---------- */
+.rx-matches { display: grid; gap: 0.5rem; }
+.rx-match {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.5rem 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--line-soft);
+  border-radius: 8px;
+  background: var(--bg);
+}
+.rx-match-n { color: var(--ink-faint); }
+.rx-match-txt { color: var(--ink); background: var(--accent-wash); border-radius: 4px; padding: 0 0.3rem; }
+.rx-groups { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-left: auto; }
+.rx-group { color: var(--ink-soft); }
+.rx-group b { color: var(--accent); font-weight: 600; }
+
+/* ---------- Ripasso simboli ---------- */
+.rx-cheat {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 230px), 1fr));
+  gap: 1.1rem 1.5rem;
+}
+.rx-cheat-group h3 {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 0.6rem;
+}
+.rx-tokens { display: flex; flex-direction: column; gap: 0.4rem; }
+.rx-token {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  gap: 0.6rem;
+  width: 100%;
+  text-align: left;
+  border: 0;
+  background: transparent;
+  padding: 0.25rem 0.3rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s var(--ease);
+}
+.rx-token:hover { background: var(--bg-sunk); }
+.rx-token code {
+  font-family: var(--font-mono);
+  font-size: 0.86rem;
+  color: var(--accent);
+  background: var(--accent-wash);
+  border-radius: 5px;
+  padding: 0.1rem 0.4rem;
+  white-space: nowrap;
+}
+.rx-token small { color: var(--ink-soft); font-size: 0.82rem; line-height: 1.35; }
+
+/* ---------- Sfide ---------- */
+.rx-chals { display: grid; gap: 1.1rem; }
+.rx-chal {
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--bg);
+  padding: 1.1rem 1.15rem;
+  transition: border-color 0.25s var(--ease);
+}
+.rx-chal.solved { border-color: color-mix(in srgb, #3fae6b 55%, var(--line)); }
+.rx-chal-head { display: flex; align-items: baseline; gap: 0.6rem; flex-wrap: wrap; margin-bottom: 0.3rem; }
+.rx-chal-n {
+  font-family: var(--font-mono); font-size: 0.72rem;
+  color: var(--accent-ink); background: var(--accent);
+  border-radius: 100px; padding: 0.1rem 0.5rem;
+}
+.rx-chal.solved .rx-chal-n { background: #3fae6b; }
+.rx-chal-title { font-family: var(--font-display); font-weight: 500; font-size: 1.15rem; letter-spacing: -0.01em; }
+.rx-chal-task { color: var(--ink-soft); font-size: 0.92rem; margin-bottom: 0.8rem; }
+
+.rx-chal-field {
+  display: flex; align-items: center;
+  border: 1px solid var(--line); border-radius: 9px; background: var(--bg-sunk);
+  margin-bottom: 0.85rem;
+}
+.rx-chal-field:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-wash); }
+.rx-chal-field .rx-slash { font-size: 0.95rem; }
+.rx-chal-field input {
+  flex: 1; min-width: 0; border: 0; background: transparent; color: var(--ink);
+  font-family: var(--font-mono); font-size: 0.95rem; padding: 0.6rem 0.2rem; outline: none;
+}
+
+.rx-cases { display: flex; flex-wrap: wrap; gap: 0.9rem 1.6rem; }
+.rx-caseset { display: grid; gap: 0.3rem; }
+.rx-caseset-lab { font-family: var(--font-mono); font-size: 0.68rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--ink-faint); }
+.rx-case {
+  display: flex; align-items: center; gap: 0.45rem;
+  font-family: var(--font-mono); font-size: 0.84rem; color: var(--ink-soft);
+}
+.rx-case .rx-dot { width: 15px; text-align: center; font-weight: 700; }
+.rx-case.ok .rx-dot { color: #3fae6b; }
+.rx-case.bad .rx-dot { color: #e0533d; }
+.rx-case samp { color: var(--ink); }
+
+.rx-chal-foot { display: flex; align-items: center; gap: 0.9rem; flex-wrap: wrap; margin-top: 0.9rem; }
+.rx-chal-msg { font-family: var(--font-mono); font-size: 0.8rem; color: #3fae6b; }
+.rx-chal-msg.hidden { display: none; }
+.rx-sol { font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-soft); }
+.rx-sol code { color: var(--accent); background: var(--accent-wash); border-radius: 5px; padding: 0.05rem 0.4rem; }
+
+@media (max-width: 560px) {
+  .rx-flags { flex: 1 1 100%; justify-content: space-between; }
+  .rx-flag { flex: 1; }
+  .rx-groups { margin-left: 0; flex-basis: 100%; }
+}
