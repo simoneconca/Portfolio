@@ -357,7 +357,15 @@
     pwrcpu: { title: "Cavo CPU 8 pin (EPS)", tag: "La spinta per la CPU", where: "In alto a sinistra, vicino al socket.",
       what: "Un connettore dedicato che dà al processore la corrente in più che chiede quando spinge al massimo.",
       tips: ["È il cavo che tutti dimenticano: senza, spesso il PC resta spento e sembra «morto».", "Si innesta in un verso solo, fino al clic.", "Non confonderlo col connettore PCIe della scheda video: spinotti simili, posti diversi."],
-      fun: "Si chiama EPS ed è separato dal 24 pin apposta: la CPU, sotto sforzo, può chiedere di colpo molta più corrente." }
+      fun: "Si chiama EPS ed è separato dal 24 pin apposta: la CPU, sotto sforzo, può chiedere di colpo molta più corrente." },
+    fans: { title: "Ventole del case", tag: "L'aria che circola", where: "A un header SYS_FAN sulla scheda.",
+      what: "Le ventole del case fanno entrare aria fresca e buttano fuori quella calda, così tutti i componenti restano a temperatura, non solo la CPU.",
+      tips: ["Di solito davanti e in basso si fa entrare aria, dietro e in alto la si butta fuori.", "Collega ogni ventola a un header SYS_FAN: la scheda ne regola i giri a seconda della temperatura.", "Spingere dentro un filo d'aria in più di quella che esce tiene lontana la polvere."],
+      fun: "Conta più l'orientamento che il numero: poche ventole ben disposte raffreddano meglio di tante messe a caso." },
+    fpanel: { title: "Pannello frontale", tag: "I pulsanti del case", where: "Ai pin F_PANEL, in basso sulla scheda.",
+      what: "Sono i cavetti che collegano alla scheda il tasto di accensione, il reset, i LED e le porte USB e audio del davanti del case.",
+      tips: ["Sono piccolissimi e vanno su pin precisi: qui il manuale della scheda è indispensabile.", "Il tasto d'accensione (PWR_SW) è quello che fa partire tutto: se il PC non si avvia, spesso l'errore è qui.", "I LED hanno un verso (+ e −): se non si accendono, prova a girare lo spinotto."],
+      fun: "Il tasto d'accensione non «dà corrente»: dice solo alla scheda di avviarsi. La corrente arriva sempre dall'alimentatore." }
   };
 
   const AICON = {
@@ -368,7 +376,9 @@
     drive: '<svg viewBox="0 0 46 30" aria-hidden="true"><rect x="9" y="4" width="28" height="22" rx="2" fill="#aab3b8"/><circle cx="23" cy="14" r="8.5" fill="#d2d8db" stroke="#8a9298"/><circle cx="23" cy="14" r="2.3" fill="#8a9298"/><path d="M33 23 26 16" stroke="#3b4248" stroke-width="2.4" stroke-linecap="round"/></svg>',
     gpu: '<svg viewBox="0 0 46 30" aria-hidden="true"><rect x="3" y="8" width="39" height="15" rx="2" fill="#2b333a"/><circle cx="15" cy="15.5" r="6" fill="#121619"/><circle cx="30" cy="15.5" r="6" fill="#121619"/><g stroke="#5a666e" stroke-width="1.6" stroke-linecap="round"><path d="M15 15.5V10"/><path d="M30 15.5V10"/></g><rect x="12" y="23" width="22" height="3" fill="#e0b54f"/></svg>',
     cable: '<svg viewBox="0 0 46 30" aria-hidden="true"><g stroke="#8a9298" stroke-width="2" stroke-linecap="round"><path d="M6 10h10M6 15h10M6 20h10"/></g><rect x="16" y="6" width="13" height="18" rx="2" fill="#2a2f34"/><g stroke="#e0b54f" stroke-width="2" stroke-linecap="round"><path d="M29 10h11M29 15h11M29 20h11"/></g></svg>',
-    paste: '<svg viewBox="0 0 46 30" aria-hidden="true"><rect x="5" y="9" width="4" height="12" rx="1" fill="#8a9298"/><rect x="9" y="11" width="22" height="8" rx="1.5" fill="#d7ded4" stroke="#9aa6ad" stroke-width=".6"/><rect x="31" y="12.5" width="6" height="5" fill="#aab3b9"/><path d="M37 15h6" stroke="#8a9298" stroke-width="1.6" stroke-linecap="round"/><circle cx="43.4" cy="15" r="1.6" fill="#cdd4d8"/></svg>'
+    paste: '<svg viewBox="0 0 46 30" aria-hidden="true"><rect x="5" y="9" width="4" height="12" rx="1" fill="#8a9298"/><rect x="9" y="11" width="22" height="8" rx="1.5" fill="#d7ded4" stroke="#9aa6ad" stroke-width=".6"/><rect x="31" y="12.5" width="6" height="5" fill="#aab3b9"/><path d="M37 15h6" stroke="#8a9298" stroke-width="1.6" stroke-linecap="round"/><circle cx="43.4" cy="15" r="1.6" fill="#cdd4d8"/></svg>',
+    fan: '<svg viewBox="0 0 46 30" aria-hidden="true"><rect x="9" y="1" width="28" height="28" rx="3" fill="#2f3840"/><circle cx="23" cy="15" r="12" fill="#12171b"/><g stroke="#5a666e" stroke-width="2.2" stroke-linecap="round" fill="none"><path d="M23 15V4"/><path d="M23 15l9.5 5.5"/><path d="M23 15l-9.5 5.5"/></g><circle cx="23" cy="15" r="3" fill="#2d363c"/></svg>',
+    fpanel: '<svg viewBox="0 0 46 30" aria-hidden="true"><rect x="8" y="9" width="30" height="12" rx="1.5" fill="#2a2f34"/><g fill="#e0b54f"><rect x="11" y="12" width="2.5" height="6"/><rect x="16" y="12" width="2.5" height="6"/><rect x="21" y="12" width="2.5" height="6"/><rect x="26" y="12" width="2.5" height="6"/><rect x="31" y="12" width="2.5" height="6"/></g></svg>'
   };
 
   function aPieces() {
@@ -389,19 +399,24 @@
       { id: "storage", label: nvme ? "SSD M.2" : "Disco / SSD", sub: hasK("storage") ? build.storage.name : "Archivio", icon: nvme ? "ssd" : "drive", tray: "R", accepts: [nvme ? "m2" : "sata"], nvme,
         hint: nvme ? "L'SSD M.2 va nello slot piccolo e tratteggiato, sotto il processore." : "Il disco si collega a una porta SATA, in basso sul bordo destro." }
     ];
-    if (hasGpu()) list.push({ id: "gpu", label: "Scheda video", sub: build.gpu.name, icon: "gpu", tray: "R", accepts: ["pcie"],
+    list.push({ id: "gpu", label: "Scheda video", sub: (hasK("gpu") && !build.gpu.integrated) ? build.gpu.name : "GPU dedicata", icon: "gpu", tray: "R", accepts: ["pcie"],
       hint: "La scheda video va nello slot lungo con il rinforzo (PCIe x16)." });
     list.push({ id: "pwr24", label: "Cavo 24 pin", sub: "Alimenta la scheda", icon: "cable", tray: "R", accepts: ["atx24"],
       hint: "Il cavo grande a 24 pin va sul bordo destro della scheda." });
     list.push({ id: "pwrcpu", label: "Cavo CPU 8 pin", sub: "Alimenta la CPU (EPS)", icon: "cable", tray: "R", accepts: ["eps"],
       hint: "Il cavo CPU a 8 pin va in alto a sinistra, vicino al processore." });
+    list.push({ id: "fans", label: "Ventole del case", sub: "Flusso d'aria", icon: "fan", tray: "R", accepts: ["sysfan"],
+      hint: "Le ventole si collegano a un header SYS_FAN sulla scheda." });
+    list.push({ id: "fpanel", label: "Pannello frontale", sub: "Accensione, LED, USB", icon: "fpanel", tray: "R", accepts: ["fpanel"],
+      hint: "I cavetti del frontale vanno sui pin F_PANEL, in basso sulla scheda." });
     return list;
   }
 
   const ZN = {
     socket: [110, 38, 68, 62], eps: [62, -3, 36, 17],
     dimm1: [190, 12, 12, 144], dimm2: [202, 12, 12, 144], dimm3: [214, 12, 12, 144], dimm4: [226, 12, 12, 144],
-    m2: [60, 106, 102, 28], pcie: [16, 150, 124, 19], atx24: [272, 50, 24, 62], sata: [266, 166, 32, 58]
+    m2: [60, 106, 102, 28], pcie: [16, 150, 124, 19], atx24: [272, 50, 24, 62], sata: [266, 166, 32, 58],
+    sysfan: [14, 120, 26, 16], fpanel: [222, 216, 36, 20]
   };
 
   function boardSVG() {
@@ -438,7 +453,9 @@
       '<g id="hwaSata">' + [170, 181, 192, 203].map(function (y) { return '<rect x="282" y="' + y + '" width="13" height="9" rx=".6" fill="#3a3f43"/><path d="M284 ' + (y + 2.2) + 'h9v2h-6v3h-3z" fill="#0b0b0b"/>'; }).join("") + '</g><text class="silk" x="296" y="166" text-anchor="end">SATA</text>' +
       '<rect x="150" y="170" width="54" height="42" rx="3" fill="url(#hwaFins)" stroke="#5a6b74" stroke-width=".4"/><rect x="161" y="180" width="32" height="22" rx="1.5" fill="#46535b"/><text x="177" y="193" text-anchor="middle" font-family="Fraunces, serif" font-weight="600" font-size="5" fill="#8794a0">SC Z-1</text><text x="177" y="198.5" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="2.2" fill="#8794a0">CHIPSET</text>' +
       '<circle class="hwa-led" cx="262" cy="230" r="2"/><text class="silk" x="266" y="231.5">PWR</text>' +
-      '<text class="silk big" x="40" y="226">ATX · 305 × 244 mm</text>' +
+      '<rect x="20" y="124" width="11" height="6" fill="url(#hwaPins)" stroke="#3a3a3a" stroke-width=".3"/><text class="silk" x="18" y="122">SYS_FAN</text>' +
+      '<rect x="228" y="224" width="22" height="7" fill="url(#hwaPins)" stroke="#3a3a3a" stroke-width=".3"/><text class="silk" x="228" y="222">F_PANEL</text>' +
+      '<text class="silk big" x="40" y="212">ATX · 305 × 244 mm</text>' +
       '<g id="hwaOverlays">' +
         '<g class="hwa-ov" id="ov-cpu" style="display:none"><rect x="120" y="46" width="48" height="48" rx="1" fill="#2f6b3a"/><rect x="123" y="49" width="42" height="42" rx="3" fill="#cdd4d8"/><text x="144" y="68" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="3.4" font-weight="700" fill="#79838a">CPU</text><polygon points="121,92 121,88 125,92" fill="#e0b54f"/><rect x="117" y="43" width="54" height="54" rx="1" fill="none" stroke="#9aa3a8" stroke-width="2.2"/></g>' +
         '<g class="hwa-ov" id="ov-paste" style="display:none"><circle cx="144" cy="70" r="4.6" fill="#c7ced3"/><circle cx="144" cy="70" r="4.6" fill="none" stroke="#8a9298" stroke-width=".4"/></g>' +
@@ -450,6 +467,8 @@
         '<g class="hwa-ov" id="ov-gpu" style="display:none"><rect x="12" y="148" width="6" height="18" fill="#aab3b8"/><rect x="18" y="146" width="210" height="22" rx="2.5" fill="#22272c" stroke="#40484f" stroke-width=".6"/><circle cx="60" cy="157" r="9" fill="#111518"/><circle cx="92" cy="157" r="9" fill="#111518"/><rect x="28" y="147" width="150" height="1.6" fill="#6b82ff"/><text x="150" y="160" text-anchor="middle" font-family="Fraunces, serif" font-weight="600" font-size="6" fill="#59646c">GPU</text></g>' +
         '<g class="hwa-ov" id="ov-pwr24" style="display:none"><path d="M292 60 C305 60 305 54 300 50" stroke="#e0b54f" stroke-width="1.6" fill="none"/><rect x="275" y="52" width="14" height="56" rx="1" fill="#141414" stroke="#3a3a3a" stroke-width=".4"/><rect x="284" y="76" width="4" height="8" rx=".5" fill="#2a2a2a"/></g>' +
         '<g class="hwa-ov" id="ov-pwrcpu" style="display:none"><path d="M60 2 C48 2 44 -6 40 -10" stroke="#e0b54f" stroke-width="1.6" fill="none"/><rect x="63" y="-2" width="24" height="12" rx="1" fill="#141414" stroke="#3a3a3a" stroke-width=".4"/></g>' +
+        '<g class="hwa-ov" id="ov-fans" style="display:none"><path d="M26 124 C26 112 20 108 12 108" stroke="#4a555d" stroke-width="1.4" fill="none"/><rect x="19" y="122" width="13" height="7" rx="1" fill="#2a2f34"/></g>' +
+        '<g class="hwa-ov" id="ov-fpanel" style="display:none"><path d="M240 224 C240 216 246 212 252 210" stroke="#4a555d" stroke-width="1.2" fill="none"/><rect x="226" y="222" width="26" height="10" rx="1" fill="#2a2f34"/><rect x="229" y="225" width="2.2" height="4" fill="#5dff9c"/><rect x="233" y="225" width="2.2" height="4" fill="#ff6a5c"/><rect x="240" y="225" width="6" height="4" rx="1" fill="#3a7bdb"/></g>' +
       '</g>' +
       '<g id="hwaZones">' + zoneRects + '</g>' +
     '</svg>';
@@ -470,7 +489,6 @@
         '<div class="hwa-top">' +
           '<div><h2 class="wiz-title">Monta il PC</h2><p class="hwa-sub">Trascina ogni componente sul punto giusto della scheda madre — oppure toccalo e poi tocca il punto dove va. Il montaggio usa i pezzi scelti nella sezione precedente.</p></div>' +
           '<div class="hwa-stats"><div class="hwa-stat"><small>Montati</small><b id="aPieces">0/' + A.pieces.length + '</b></div>' +
-            '<div class="hwa-stat"><small>Errori</small><b id="aErr">0</b></div>' +
             '<button type="button" class="ghost-btn" id="aHint">Aiuto</button>' +
             '<button type="button" class="ghost-btn" id="aReset">Ricomincia</button></div>' +
         '</div>' +
@@ -484,7 +502,8 @@
           '<div class="hwa-tray"><h3>Vassoio B</h3><div class="hwa-cards" id="aTrayR">' + R.map(cardHTML).join("") + '</div></div>' +
         '</div>' +
       '</div>' +
-      '<div class="hwa-modal" id="aModal" hidden><div class="hwa-sheet" id="aSheet" role="dialog" aria-modal="true" aria-labelledby="aSheetT"></div></div>';
+      '<div class="hwa-modal" id="aModal" hidden><div class="hwa-sheet" id="aSheet" role="dialog" aria-modal="true" aria-labelledby="aSheetT"></div></div>' +
+      '<div class="hwa-modal" id="aCpuModal" hidden><div class="hwa-sheet" id="aCpuSheet" role="dialog" aria-modal="true"></div></div>';
     wireAssembly();
   }
 
@@ -519,8 +538,7 @@
   }
   function hotZone(zone) { document.querySelectorAll(".hwa-zone").forEach((z) => z.classList.toggle("hot", z.dataset.zone === zone)); }
 
-  function failA(id, msg, count) {
-    if (count !== false) { A.errors++; $("aErr").textContent = A.errors; }
+  function failA(id, msg) {
     toastA(msg, "bad");
     const c = document.querySelector('.hwa-card[data-id="' + id + '"]');
     c.classList.remove("shake"); void c.offsetWidth; c.classList.add("shake");
@@ -534,7 +552,7 @@
       if (zone === "dimm1" || zone === "dimm3") return failA(id, "Entrerebbe, ma con due moduli il manuale consiglia gli slot <b>alternati</b> (il 2° e il 4°) per il <b>dual channel</b>.");
       if (A.slot[zone]) return failA(id, "Questo slot è già occupato: usa l'altro slot consigliato.", false);
     }
-    if (p.accepts.indexOf(zone) >= 0) return placeA(id, zone, p);
+    if (p.accepts.indexOf(zone) >= 0) { if (id === "cpu") return openCpuModal(); return placeA(id, zone, p); }
     failA(id, "Non va qui. " + p.hint);
   }
 
@@ -575,6 +593,45 @@
 
   function revealPower() { const b = $("aPower"); if (b) { b.hidden = false; b.focus(); } }
 
+  /* mini-gioco: orienta la CPU prima di posarla nel socket */
+  function cpuStageSVG() {
+    return '<svg viewBox="0 0 120 120" aria-label="Allinea il processore al socket">' +
+      '<rect x="8" y="8" width="104" height="104" rx="5" fill="#8d969c"/>' +
+      '<rect x="16" y="16" width="88" height="88" rx="2" fill="#2c2f31"/>' +
+      '<rect x="16" y="36" width="5" height="12" fill="#8d969c"/><rect x="99" y="36" width="5" height="12" fill="#8d969c"/>' +
+      '<polygon points="11,109 11,96 24,109" fill="#e0b54f"/>' +
+      '<text x="60" y="17" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="5" fill="#eef3f4">SOCKET</text>' +
+      '<g id="aCpuChip">' +
+        '<rect x="22" y="22" width="76" height="76" rx="2" fill="#2f6b3a"/>' +
+        '<rect x="31" y="31" width="58" height="58" rx="4" fill="#cdd4d8"/>' +
+        '<text x="60" y="64" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="9" font-weight="700" fill="#79838a">CPU</text>' +
+        '<polygon points="24,96 24,84 36,96" fill="#e0b54f"/>' +
+      '</g></svg>';
+  }
+
+  function openCpuModal() {
+    let ang = [90, 180, 270][Math.floor(Math.random() * 3)];
+    $("aCpuSheet").innerHTML =
+      '<div class="i-tag">Momento delicato</div><h3>Orienta il processore</h3>' +
+      '<p>La CPU entra nel socket in un verso solo. Ruotala finché il <b>triangolino</b> dorato nell\'angolo coincide con quello segnato sul socket, poi appoggiala.</p>' +
+      '<div class="hwa-cpu-stage">' + cpuStageSVG() + '</div>' +
+      '<div class="hwa-cpu-ctrl"><button type="button" class="ghost-btn" id="aRotL">⟲ Ruota</button><button type="button" class="ghost-btn" id="aRotR">Ruota ⟳</button></div>' +
+      '<div class="hwa-cpu-msg" id="aCpuMsg" aria-live="polite"></div>' +
+      '<button class="run-btn" type="button" id="aCpuGo">Appoggia la CPU nel socket</button>';
+    $("aCpuModal").hidden = false;
+    const chip = () => document.getElementById("aCpuChip");
+    const apply = (anim) => { const c = chip(); if (!anim) c.style.transition = "none"; c.style.transform = "rotate(" + ang + "deg)"; if (!anim) { void c.getBoundingClientRect(); c.style.transition = ""; } };
+    apply(false);
+    const clearMsg = () => { const m = $("aCpuMsg"); m.textContent = ""; m.className = "hwa-cpu-msg"; };
+    $("aRotL").onclick = () => { ang -= 90; apply(true); clearMsg(); };
+    $("aRotR").onclick = () => { ang += 90; apply(true); clearMsg(); };
+    $("aRotR").focus();
+    $("aCpuGo").onclick = () => {
+      if ((((ang % 360) + 360) % 360) === 0) { $("aCpuModal").hidden = true; placeA("cpu", "socket", A.pieces.find((p) => p.id === "cpu")); }
+      else { const m = $("aCpuMsg"); m.textContent = "Fermati: il triangolino non è allineato. Forzando così si piegherebbero i contatti del socket."; m.className = "hwa-cpu-msg bad"; }
+    };
+  }
+
   function bootA() {
     $("aPower").hidden = true;
     $("aWrap").classList.add("on");
@@ -595,7 +652,7 @@
       const el = document.createElement("div"); el.className = "hwa-done";
       el.innerHTML = '<h3>Il tuo PC è acceso! 🎉</h3>' +
         '<p>Hai montato tutti i pezzi sulla scheda madre e il computer è partito. Un tecnico vero ci mette circa un\'ora, cavi, case e sistema operativo compresi.</p>' +
-        '<div class="hwa-done-stats"><div><small>Tempo</small><b>' + fmtA(Date.now() - A.start) + '</b></div><div><small>Errori</small><b>' + A.errors + '</b></div><div><small>Aiuti</small><b>' + A.hints + '</b></div></div>' +
+        '<div class="hwa-done-stats"><div><small>Tempo di montaggio</small><b>' + fmtA(Date.now() - A.start) + '</b></div><div><small>Componenti montati</small><b>' + A.pieces.length + '</b></div></div>' +
         '<button class="run-btn" type="button" id="aAgain">↻ Rimonta un altro PC</button>';
       b.appendChild(el);
       $("aAgain").addEventListener("click", renderAssembly);
@@ -664,6 +721,7 @@
     $("aReset").addEventListener("click", renderAssembly);
     $("aPower").addEventListener("click", bootA);
     $("aModal").addEventListener("click", (e) => { if (e.target === $("aModal")) { $("aModal").hidden = true; if (A.complete) revealPower(); } });
+    $("aCpuModal").addEventListener("click", (e) => { if (e.target === $("aCpuModal")) $("aCpuModal").hidden = true; });
   }
 
   /* ---------- Modalità ---------- */

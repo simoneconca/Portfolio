@@ -223,6 +223,13 @@
 .hwa-fun b { color: var(--ink); }
 .hwa-sheet .run-btn { width: 100%; justify-content: center; padding: 11px; }
 
+.hwa-cpu-stage { display: grid; place-items: center; margin: 6px 0 12px; }
+.hwa-cpu-stage svg { width: min(230px, 64vw); height: auto; }
+#aCpuChip { transform-box: fill-box; transform-origin: center; transition: transform 0.35s cubic-bezier(.2,.9,.3,1.1); }
+.hwa-cpu-ctrl { display: flex; gap: 8px; justify-content: center; margin-bottom: 8px; }
+.hwa-cpu-msg { min-height: 1.3em; text-align: center; font-size: 0.86rem; line-height: 1.4; color: var(--ink-soft); margin-bottom: 12px; }
+.hwa-cpu-msg.bad { color: #e0533d; font-weight: 600; }
+
 @media (max-width: 900px) {
   .hwa-bench { grid-template-columns: minmax(0, 1fr); }
   .hwa-board-col { order: -1; }
