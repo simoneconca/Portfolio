@@ -318,42 +318,46 @@
   const gpuTxt = () => hasK("gpu") ? "<b>" + build.gpu.name + "</b>" : "la scheda video";
 
   const AINFO = {
-    cpu: { title: "Processore (CPU)", tag: "Il cervello", where: "Nel socket, il quadrato con i contatti, in alto al centro.",
-      what: "Esegue le istruzioni di tutti i programmi, miliardi di operazioni al secondo. Si posa nel socket senza spingere.",
-      tips: ["Allinea il triangolino dorato dell'angolo con quello del socket: c'è un solo verso.", "Posala delicatamente: deve scendere da sola. Poi abbassa la leva (un po' di resistenza è normale).", "Non toccare i contatti e non forzare: un pin piegato può rovinare CPU o scheda madre."],
-      fun: "Un processore moderno ha decine di miliardi di transistor, ognuno più piccolo di un virus." },
-    cooler: { title: "Dissipatore", tag: "Il raffreddamento", where: "Sopra il processore, sui 4 fori del socket.",
-      what: "La CPU scalda tantissimo: il dissipatore assorbe il calore con le alette e la ventola lo soffia via.",
-      tips: ["Una goccia di pasta termica grande come un chicco di riso al centro della CPU.", "Togli la pellicola di plastica sotto il dissipatore, se c'è: dimenticarla è un classico!", "Avvita a X, poco per volta, e collega la ventola al connettore CPU_FAN."],
-      fun: "Senza dissipatore la CPU supererebbe i 100 °C in pochi secondi e si spegnerebbe da sola." },
-    ram: { title: "Memoria RAM", tag: "La scrivania del PC", where: "Negli slot verticali, a destra del processore.",
-      what: "Tiene a portata i dati dei programmi aperti adesso. Velocissima, ma si svuota quando spegni il PC.",
-      tips: ["Apri le clip, poi allinea la tacca dei contatti con il dentino dello slot: se non entra, non forzarla.", "Premi deciso ai due lati finché le clip si chiudono con un click.", "Con due moduli usa gli slot alternati (il 2° e il 4°) per il dual channel."],
-      fun: "Se l'archivio fosse un armadio, la RAM sarebbe la scrivania: più è grande, più cose tieni aperte." },
-    ram2: { title: "Secondo modulo RAM", tag: "Dual channel attivo", where: "L'altro slot consigliato.",
-      what: "Ora i due moduli lavorano in coppia, come due corsie di un'autostrada: i dati corrono più veloci verso la CPU.",
-      tips: ["Stesso verso, stessa tacca: controlla prima di spingere.", "Meglio due moduli identici per marca, capacità e velocità.", "Nel BIOS puoi poi attivare il profilo di velocità (XMP o EXPO)."],
-      fun: "I due moduli insieme raddoppiano la «corsia» di dati tra memoria e processore." },
-    ssd: { title: "SSD M.2 NVMe", tag: "L'archivio velocissimo", where: "Nello slot M.2, sotto il processore.",
-      what: "Qui restano sistema operativo, programmi e file anche a PC spento. Nessuna parte in movimento: solo chip.",
-      tips: ["Infilalo inclinato di circa 30°, poi abbassalo e fissalo con la vitina (o il fermo a scatto).", "La vite è minuscola: tienila in una ciotolina per non perderla.", "Montalo prima della scheda video, o dopo lo slot resta coperto."],
-      fun: "Un NVMe veloce legge oltre 7 GB al secondo: un film intero in meno di un secondo." },
-    drive: { title: "Disco / SSD SATA", tag: "Il magazzino", where: "A una porta SATA, sul bordo destro della scheda.",
-      what: "Memoria capiente ed economica per foto, video e backup, collegata con un cavo alla scheda madre.",
-      tips: ["Servono due cavi: il SATA dati (sottile) alla scheda, l'alimentazione dall'alimentatore.", "I connettori SATA hanno la forma a L: entrano in un solo verso.", "Fissalo bene nel suo cassetto, così non vibra."],
-      fun: "A parità di prezzo un disco meccanico contiene molti più dati di un SSD: anche 10 TB e oltre." },
-    gpu: { title: "Scheda video (GPU)", tag: "La grafica", where: "Nello slot lungo con il rinforzo (PCIe x16).",
-      what: "Disegna tutto ciò che vedi: finestre, video, i mondi 3D dei giochi. Ha processore e memoria propri.",
-      tips: ["Abbassa il gancetto dello slot, poi spingi la scheda dritta finché scatta.", "Avvitala al case: è pesante e non deve piegarsi.", "Il monitor va collegato alla scheda video, non alla scheda madre!"],
-      fun: "Una scheda video ha migliaia di piccoli processori che lavorano tutti insieme sull'immagine." },
-    pwr24: { title: "Cavo 24 pin", tag: "Alimentazione scheda", where: "Il connettore grande sul bordo destro.",
-      what: "Porta corrente alla scheda madre e a gran parte dei componenti. È il cavo più grosso dell'alimentatore.",
-      tips: ["Ha una clip ed entra in un solo verso: premi finché fa click.", "Fai passare i cavi dietro il pannello: più ordine e l'aria circola meglio."],
-      fun: "L'alimentatore trasforma i 230 volt di casa in 12, 5 e 3,3 volt per i componenti." },
-    pwrcpu: { title: "Cavo CPU 8 pin (EPS)", tag: "Alimentazione CPU", where: "In alto a sinistra, vicino al processore.",
-      what: "Dà alla CPU la corrente extra che le serve quando lavora sotto sforzo.",
-      tips: ["È la dimenticanza più frequente: senza, il PC non si accende!", "Entra in un solo verso: spingi finché scatta."],
-      fun: "Si chiama EPS ed è separato dal 24 pin proprio perché la CPU può assorbire molta corrente." }
+    cpu: { title: "Processore (CPU)", tag: "Il motore dei calcoli", where: "Nel socket, la cornice metallica al centro-alto della scheda.",
+      what: "È il componente che macina i calcoli: ogni istruzione dei programmi passa di qui. Lo si incastra nel socket, dove centinaia di minuscoli contatti lo collegano al resto della scheda.",
+      tips: ["Prendilo per i bordi, mai dai contatti: le dita lasciano un velo di grasso che disturba il contatto elettrico.", "Un angolo è segnato (una piccola freccia): falla combaciare con l'angolo uguale del socket. Si monta in un verso solo.", "Si appoggia, non si preme: scivola in sede con il suo peso. Poi chiudi la levetta di bloccaggio."],
+      fun: "In un battito di ciglia la CPU ha già eseguito centinaia di milioni di istruzioni: dentro corrono segnali a miliardi di impulsi al secondo." },
+    paste: { title: "Pasta termica", tag: "Il ponte per il calore", where: "Un puntino al centro del processore, prima del dissipatore.",
+      what: "Una pasta grigia che riempie i micro-vuoti fra CPU e dissipatore. Senza, fra i due resterebbe un velo d'aria che fa da isolante e blocca il passaggio del calore.",
+      tips: ["Ne basta pochissima: una goccia grande come una lenticchia al centro. La pressione del dissipatore la spalma da sola.", "Metterne troppa non raffredda di più, anzi fa pasticcio e può colare sui contatti.", "Se la rifai, pulisci la vecchia con un panno e un po' di alcol isopropilico."],
+      fun: "La pasta termica non raffredda: serve solo a far «scorrere» meglio il calore. È fatta apposta per condurre il calore ma non l'elettricità." },
+    cooler: { title: "Dissipatore", tag: "Chi porta via il calore", where: "Appoggiato sul processore, agganciato ai fori del socket.",
+      what: "La CPU trasforma energia in calore senza sosta. Il dissipatore lo raccoglie con un blocco di metallo e la ventola lo spinge fuori dal case.",
+      tips: ["Se il dissipatore è nuovo, controlla che la base non abbia una pellicola di plastica: va tolta.", "Avvita a poco a poco e in diagonale (una vite, poi quella opposta): la pressione resta uniforme.", "Infila lo spinotto della ventola nell'header CPU_FAN, così la scheda ne legge i giri e la regola."],
+      fun: "Le CPU hanno una valvola di sicurezza: oltre una certa temperatura rallentano da sole (si chiama throttling) per non bruciarsi." },
+    ram: { title: "Memoria RAM", tag: "Il banco da lavoro", where: "Negli slot stretti e lunghi, in verticale a fianco della CPU.",
+      what: "Ci appoggia i dati che sta usando in questo momento — il documento aperto, la scheda del browser, il gioco in corso. Leggere qui è molto più rapido che dal disco, ma a PC spento si svuota.",
+      tips: ["Sblocca le alette dello slot prima di inserire il banco.", "La fessura tra i contatti non è centrata: combacia con lo slot in un verso soltanto, quindi non va forzata.", "Spingi dritto ai due capi insieme finché le alette risalgono e scattano."],
+      fun: "DDR sta per «double data rate»: la memoria trasferisce dati due volte per ogni ciclo di clock, in andata e in ritorno." },
+    ram2: { title: "Secondo modulo RAM", tag: "Due banchi, doppia corsia", where: "Nell'altro slot della coppia consigliata dal manuale.",
+      what: "Montando due banchi uguali, la CPU li legge in parallelo: è come aprire una seconda corsia, e la memoria rende di più.",
+      tips: ["Per il dual channel servono gli slot giusti: quasi sempre il 2° e il 4° partendo dalla CPU.", "Due moduli identici vanno d'accordo meglio: stessa capacità e stessa velocità.", "La serigrafia sulla scheda indica quali slot riempire per primi."],
+      fun: "Con un solo banco il PC funziona lo stesso, ma nei giochi e nei programmi pesanti il doppio canale fa guadagnare parecchio." },
+    ssd: { title: "SSD M.2 NVMe", tag: "La memoria permanente veloce", where: "Nello slottino M.2, lungo e sottile, in genere sotto la CPU.",
+      what: "Conserva sistema, programmi e file anche a corrente staccata. Non ha dischi che girano, sono chip: silenzioso e rapidissimo ad aprire tutto.",
+      tips: ["Entra inclinato, poi lo abbassi e lo blocchi con una vitina (o una clip che fa click).", "Quella vite è piccolissima: appena la sveti, mettila al sicuro.", "Molte schede hanno una piastrina metallica sopra l'M.2: toglie la pellicola dal cuscinetto che smaltisce il calore."],
+      fun: "«NVMe» è il linguaggio con cui l'SSD parla direttamente con la CPU: salta le vecchie regole dei dischi, ed è questo che lo rende così veloce." },
+    drive: { title: "Disco / SSD SATA", tag: "Lo spazio in più, a poco", where: "A una porta SATA, in basso sul bordo della scheda.",
+      what: "Un'unità capiente dove parcheggiare foto, video e backup. Più lenta dell'M.2, ma costa poco per ogni gigabyte.",
+      tips: ["Vuole due cavi diversi: uno sottile per i dati (verso la scheda), uno più largo per la corrente (dall'alimentatore).", "Gli spinotti SATA hanno una tacca a forma di L: niente verso sbagliato.", "Fissalo bene nel case: se vibra, con gli anni si rovina prima."],
+      fun: "Dentro un hard disk un braccetto vola sui piatti a una distanza minuscola: in proporzione, come un aereo che sfiorasse il suolo a pochi millimetri." },
+    gpu: { title: "Scheda video (GPU)", tag: "Il reparto grafica", where: "Nello slot PCIe più lungo, quello rinforzato in metallo.",
+      what: "Calcola e disegna le immagini, soprattutto la grafica 3D dei giochi e il montaggio video. È quasi un piccolo computer a parte, con chip e memoria propri.",
+      tips: ["Prima togli, dietro al case, le linguette metalliche all'altezza dello slot.", "Spingila dritta finché il gancetto dello slot scatta, poi fissala al case con le viti.", "Dalle corrente coi cavi PCIe dell'alimentatore, e collega il monitor a lei, non alla scheda madre."],
+      fun: "La GPU fa tanti conti semplici tutti insieme; la CPU pochi conti ma complicati. Per questo le schede video oggi servono anche all'intelligenza artificiale." },
+    pwr24: { title: "Cavo 24 pin", tag: "La spina principale", where: "Sul bordo lungo della scheda, in uno zoccolo rettangolare.",
+      what: "Il connettore più grosso dell'alimentatore: porta le tensioni di base alla scheda madre e a ciò che le sta attorno.",
+      tips: ["Ha un gancetto su un lato e si innesta in un verso solo: accompagnalo finché fa clic.", "È rigido: premi deciso ma dritto, senza piegare la scheda.", "Fai correre il cavo dietro al pannello del case, così davanti resta pulito e l'aria passa meglio."],
+      fun: "L'alimentatore prende i 230 volt della presa e li abbassa a 12, 5 e 3,3 volt: tensioni stabili e innocue, adatte all'elettronica." },
+    pwrcpu: { title: "Cavo CPU 8 pin (EPS)", tag: "La spinta per la CPU", where: "In alto a sinistra, vicino al socket.",
+      what: "Un connettore dedicato che dà al processore la corrente in più che chiede quando spinge al massimo.",
+      tips: ["È il cavo che tutti dimenticano: senza, spesso il PC resta spento e sembra «morto».", "Si innesta in un verso solo, fino al clic.", "Non confonderlo col connettore PCIe della scheda video: spinotti simili, posti diversi."],
+      fun: "Si chiama EPS ed è separato dal 24 pin apposta: la CPU, sotto sforzo, può chiedere di colpo molta più corrente." }
   };
 
   const AICON = {
@@ -363,7 +367,8 @@
     ssd: '<svg viewBox="0 0 46 30" aria-hidden="true"><rect x="5" y="10" width="36" height="10" rx="1" fill="#0f5a3b"/><rect x="5" y="11" width="4" height="8" fill="#e0b54f"/><rect x="12" y="8" width="8" height="14" rx="1" fill="#141414"/><rect x="22" y="12" width="17" height="6" rx="1" fill="#e9e4d7"/></svg>',
     drive: '<svg viewBox="0 0 46 30" aria-hidden="true"><rect x="9" y="4" width="28" height="22" rx="2" fill="#aab3b8"/><circle cx="23" cy="14" r="8.5" fill="#d2d8db" stroke="#8a9298"/><circle cx="23" cy="14" r="2.3" fill="#8a9298"/><path d="M33 23 26 16" stroke="#3b4248" stroke-width="2.4" stroke-linecap="round"/></svg>',
     gpu: '<svg viewBox="0 0 46 30" aria-hidden="true"><rect x="3" y="8" width="39" height="15" rx="2" fill="#2b333a"/><circle cx="15" cy="15.5" r="6" fill="#121619"/><circle cx="30" cy="15.5" r="6" fill="#121619"/><g stroke="#5a666e" stroke-width="1.6" stroke-linecap="round"><path d="M15 15.5V10"/><path d="M30 15.5V10"/></g><rect x="12" y="23" width="22" height="3" fill="#e0b54f"/></svg>',
-    cable: '<svg viewBox="0 0 46 30" aria-hidden="true"><g stroke="#8a9298" stroke-width="2" stroke-linecap="round"><path d="M6 10h10M6 15h10M6 20h10"/></g><rect x="16" y="6" width="13" height="18" rx="2" fill="#2a2f34"/><g stroke="#e0b54f" stroke-width="2" stroke-linecap="round"><path d="M29 10h11M29 15h11M29 20h11"/></g></svg>'
+    cable: '<svg viewBox="0 0 46 30" aria-hidden="true"><g stroke="#8a9298" stroke-width="2" stroke-linecap="round"><path d="M6 10h10M6 15h10M6 20h10"/></g><rect x="16" y="6" width="13" height="18" rx="2" fill="#2a2f34"/><g stroke="#e0b54f" stroke-width="2" stroke-linecap="round"><path d="M29 10h11M29 15h11M29 20h11"/></g></svg>',
+    paste: '<svg viewBox="0 0 46 30" aria-hidden="true"><rect x="5" y="9" width="4" height="12" rx="1" fill="#8a9298"/><rect x="9" y="11" width="22" height="8" rx="1.5" fill="#d7ded4" stroke="#9aa6ad" stroke-width=".6"/><rect x="31" y="12.5" width="6" height="5" fill="#aab3b9"/><path d="M37 15h6" stroke="#8a9298" stroke-width="1.6" stroke-linecap="round"/><circle cx="43.4" cy="15" r="1.6" fill="#cdd4d8"/></svg>'
   };
 
   function aPieces() {
@@ -371,8 +376,11 @@
     const list = [
       { id: "cpu", label: "Processore", sub: hasK("cpu") ? build.cpu.name : "CPU", icon: "cpu", tray: "L", accepts: ["socket"],
         hint: "Il processore va nel socket: il quadrato con i contatti, in alto al centro." },
-      { id: "cooler", label: "Dissipatore", sub: hasK("cooler") ? build.cooler.name : "Raffreddamento", icon: "cooler", tray: "L", accepts: ["socket"], requires: "cpu",
-        requiresMsg: "Prima la CPU! Il dissipatore va montato <b>sopra</b> il processore.",
+      { id: "paste", label: "Pasta termica", sub: "Una goccia sulla CPU", icon: "paste", tray: "L", accepts: ["socket"], requires: "cpu",
+        requiresMsg: "Prima la CPU! La pasta termica va messa <b>sopra il processore</b>.",
+        hint: "La pasta termica va al centro del processore, già nel socket." },
+      { id: "cooler", label: "Dissipatore", sub: hasK("cooler") ? build.cooler.name : "Raffreddamento", icon: "cooler", tray: "L", accepts: ["socket"], requires: "paste",
+        requiresMsg: "Prima la <b>pasta termica</b> sulla CPU, poi il dissipatore sopra.",
         hint: "Il dissipatore va sopra il processore, al centro del socket." },
       { id: "ram1", label: "RAM · modulo 1", sub: hasK("ram") ? build.ram.type : "Memoria", icon: "ram", tray: "L", group: "ram", accepts: ["dimm2", "dimm4"],
         hint: "La RAM va negli slot lunghi e verticali, a destra del processore." },
@@ -433,6 +441,7 @@
       '<text class="silk big" x="40" y="226">ATX · 305 × 244 mm</text>' +
       '<g id="hwaOverlays">' +
         '<g class="hwa-ov" id="ov-cpu" style="display:none"><rect x="120" y="46" width="48" height="48" rx="1" fill="#2f6b3a"/><rect x="123" y="49" width="42" height="42" rx="3" fill="#cdd4d8"/><text x="144" y="68" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="3.4" font-weight="700" fill="#79838a">CPU</text><polygon points="121,92 121,88 125,92" fill="#e0b54f"/><rect x="117" y="43" width="54" height="54" rx="1" fill="none" stroke="#9aa3a8" stroke-width="2.2"/></g>' +
+        '<g class="hwa-ov" id="ov-paste" style="display:none"><circle cx="144" cy="70" r="4.6" fill="#c7ced3"/><circle cx="144" cy="70" r="4.6" fill="none" stroke="#8a9298" stroke-width=".4"/></g>' +
         '<g class="hwa-ov" id="ov-cooler" style="display:none"><rect x="106" y="36" width="76" height="68" rx="5" fill="#252b30" stroke="#4d565d" stroke-width=".6"/><circle cx="144" cy="70" r="31" fill="#0f1317"/><g class="hwa-fan" transform="translate(144 70)"><g stroke="#4a555d" stroke-width="3.2" stroke-linecap="round" fill="none"><path d="M0 0V-26"/><path d="M0 0L22.5 13"/><path d="M0 0L-22.5 13"/></g></g><circle cx="144" cy="70" r="8" fill="#2c343a"/><circle cx="144" cy="70" r="8" fill="none" stroke="#6b82ff" stroke-width="1.4"/></g>' +
         '<g class="hwa-ov" id="ov-dimm2" style="display:none"><rect x="201.5" y="12" width="10" height="142" rx="1" fill="#2a3037" stroke="#4f5860" stroke-width=".4"/><rect x="203" y="13" width="7" height="140" rx=".6" fill="#353e46"/><rect x="205" y="15" width="2.4" height="138" fill="#6b82ff"/></g>' +
         '<g class="hwa-ov" id="ov-dimm4" style="display:none"><rect x="225.5" y="12" width="10" height="142" rx="1" fill="#2a3037" stroke="#4f5860" stroke-width=".4"/><rect x="227" y="13" width="7" height="140" rx=".6" fill="#353e46"/><rect x="229" y="15" width="2.4" height="138" fill="#6b82ff"/></g>' +
