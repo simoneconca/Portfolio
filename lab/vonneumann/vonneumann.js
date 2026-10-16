@@ -30,12 +30,17 @@
     psu:    { ico: "🔌", title: "Alimentatore (PSU)", text: "Converte la corrente elettrica della <b>presa a muro</b> in una forma adatta ad alimentare i componenti del computer." },
   };
 
+  // componenti che nel lab "Montaggio PC" si scelgono e si montano davvero
+  const MONTAGGIO = { cpu: "la CPU", mem: "la memoria RAM", ram: "la memoria RAM", storage: "il disco (SSD/HDD)", gpu: "la scheda video", psu: "l'alimentatore", mobo: "la scheda madre" };
   function showInfo(key) {
     const d = INFO[key]; if (!d) return;
+    const link = MONTAGGIO[key]
+      ? `<a class="vn-info-link" href="../hardware/">🔧 Scegli e monta ${MONTAGGIO[key]} nel lab «Montaggio PC» →</a>`
+      : "";
     $("vnInfo").innerHTML =
       `<div class="vn-info-card">` +
       `<div class="vn-info-head"><span class="vn-ico-big">${d.ico}</span><h2>${d.title}</h2></div>` +
-      `<p>${d.text}</p></div>`;
+      `<p>${d.text}</p>${link}</div>`;
     document.querySelectorAll("[data-comp]").forEach((el) => el.classList.toggle("picked", el.dataset.comp === key));
   }
 
@@ -130,6 +135,33 @@
     btn.textContent = opening ? "✕ Nascondi la tabella ASCII completa" : "📋 Mostra la tabella ASCII completa (0–127)";
   });
 
+  /* ---------- Testo → Unicode / UTF-8 ---------- */
+  function renderUnicode() {
+    const s = $("uniIn").value || "";
+    const chars = [...s];
+    if (!chars.length) { $("uniOut").innerHTML = `<p class="txt-hint">Scrivi un carattere qui sopra.</p>`; return; }
+    const enc = new TextEncoder();
+    $("uniOut").innerHTML = chars.map((ch) => {
+      const cp = ch.codePointAt(0);
+      const u = "U+" + cp.toString(16).toUpperCase().padStart(4, "0");
+      const bytes = [...enc.encode(ch)];
+      const nb = bytes.length;
+      const hexB = bytes.map((x) => x.toString(16).toUpperCase().padStart(2, "0")).join(" ");
+      const binB = bytes.map((x) => (x >>> 0).toString(2).padStart(8, "0")).join(" ");
+      return `<div class="uni-cell b${nb}">` +
+        `<span class="uc-char">${esc(ch)}</span>` +
+        `<span class="uc-cp">${u}</span>` +
+        `<span class="uc-nb">${nb} byte</span>` +
+        `<span class="uc-hex">${hexB}</span>` +
+        `<span class="uc-bin">${binB}</span></div>`;
+    }).join("");
+  }
+  $("uniIn").addEventListener("input", renderUnicode);
+  $("uniExamples").addEventListener("click", (e) => {
+    const b = e.target.closest("[data-ch]"); if (!b) return;
+    $("uniIn").value = b.dataset.ch; renderUnicode();
+  });
+
   /* ---------- Immagini → RGB + esadecimale ---------- */
   const hex2 = (n) => n.toString(16).toUpperCase().padStart(2, "0");
   const lumaDark = (r, g, b) => (r * 0.299 + g * 0.587 + b * 0.114) > 140;
@@ -164,8 +196,10 @@
   const GW = 16, GH = 16;           // dimensioni dell'immagine (pixel)
   let grid = [];                    // grid[y][x] = [r,g,b]
   let brush = [233, 30, 99];
-  let cell = 18, showGrid = true, hoverCell = null;
+  let cell = 18, showGrid = true, showGray = false, hoverCell = null;
   const SKY = [170, 214, 240];
+  const grayOf = (p) => Math.round(p[0] * 0.299 + p[1] * 0.587 + p[2] * 0.114);
+  const shown = (p) => { if (!showGray) return p; const y = grayOf(p); return [y, y, y]; };
 
   function newGrid(fill) {
     grid = [];
@@ -191,7 +225,7 @@
     cv.width = GW * c; cv.height = GH * c;
     cv.style.width = (GW * c) + "px"; cv.style.height = (GH * c) + "px";
     for (let y = 0; y < GH; y++) for (let x = 0; x < GW; x++) {
-      const p = grid[y][x];
+      const p = shown(grid[y][x]);
       ctx.fillStyle = `rgb(${p[0]},${p[1]},${p[2]})`;
       ctx.fillRect(x * c, y * c, c, c);
       if (withGrid && c >= 9) {
@@ -212,12 +246,15 @@
     renderStats();
   }
   function renderStats() {
-    const tot = GW * GH, bytes = tot * 3;
+    const tot = GW * GH;
+    const perPx = showGray ? 1 : 3;
+    const bits = showGray ? 8 : 24;
+    const bytes = tot * perPx;
     const kb = (bytes / 1024).toFixed(2).replace(".", ",");
     $("pxStats").innerHTML =
       `<span class="px-stat"><b>${GW} × ${GH}</b> = ${tot} pixel</span>` +
-      `<span class="px-stat"><b>24 bit</b> per pixel</span>` +
-      `<span class="px-stat">peso grezzo: ${tot} × 3 byte = <b>${bytes} byte</b> (${kb} KB)</span>`;
+      `<span class="px-stat"><b>${bits} bit</b> per pixel ${showGray ? "(grigio)" : "(colore)"}</span>` +
+      `<span class="px-stat">peso grezzo: ${tot} × ${perPx} byte = <b>${bytes} byte</b> (${kb} KB)</span>`;
   }
 
   function cellFromEvent(e) {
@@ -230,6 +267,16 @@
   }
   function showReadout(x, y) {
     const p = grid[y][x];
+    if (showGray) {
+      const yv = grayOf(p);
+      $("pxReadout").innerHTML =
+        `<span class="pr-pos">pixel (${x}, ${y}) · grigio</span>` +
+        `<span class="pr-sw" style="background:rgb(${yv},${yv},${yv})"></span>` +
+        `<span class="pr-line"><b>grigio ${yv}</b> / 255</span>` +
+        `<span class="pr-hex">1 byte</span>` +
+        `<span class="pr-bin">${bin(yv, 8)}</span>`;
+      return;
+    }
     const hx = "#" + hex2(p[0]) + hex2(p[1]) + hex2(p[2]);
     $("pxReadout").innerHTML =
       `<span class="pr-pos">pixel (${x}, ${y})</span>` +
@@ -237,6 +284,12 @@
       `<span class="pr-line"><b class="r">R ${p[0]}</b> <b class="g">G ${p[1]}</b> <b class="b">B ${p[2]}</b></span>` +
       `<span class="pr-hex">${hx}</span>` +
       `<span class="pr-bin">${bin(p[0], 8)} ${bin(p[1], 8)} ${bin(p[2], 8)}</span>`;
+  }
+  function buildGrayRamp() {
+    const el = $("grayRamp"); if (!el) return;
+    let h = "";
+    for (let i = 0; i <= 10; i++) { const v = Math.round(i * 25.5); h += `<span style="background:rgb(${v},${v},${v})"></span>`; }
+    el.innerHTML = h;
   }
 
   function wirePixelGrid() {
@@ -256,8 +309,119 @@
 
     $("pxZoom").addEventListener("input", () => { cell = +$("pxZoom").value; paintGrid(); });
     $("pxGrid").addEventListener("change", () => { showGrid = $("pxGrid").checked; paintGrid(); });
+    $("pxGray").addEventListener("change", () => { showGray = $("pxGray").checked; if (hoverCell) showReadout(hoverCell[0], hoverCell[1]); paintGrid(); });
     $("pxExample").addEventListener("click", loadExample);
     $("pxClear").addEventListener("click", () => { newGrid([255, 255, 255]); hoverCell = null; $("pxReadout").textContent = "Passa sopra un pixel per vederne i valori…"; paintGrid(); });
+  }
+
+  /* ---------- helper: byte leggibili ---------- */
+  function fmtBytes(n) {
+    const u = ["byte", "KB", "MB", "GB", "TB"]; let i = 0, v = n;
+    while (v >= 1024 && i < u.length - 1) { v /= 1024; i++; }
+    return v.toFixed(v < 10 && i > 0 ? 1 : 0).replace(".", ",") + " " + u[i];
+  }
+
+  /* ---------- Video → fotogrammi ---------- */
+  let vidTimer = null, vidFrame = 0, vidFps = 8;
+  const VIDLEN = 48;
+  function drawVidFrame() {
+    const cv = $("vidCanvas"), ctx = cv.getContext("2d"), W = cv.width, H = cv.height;
+    ctx.fillStyle = "#0e1726"; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = "#1b2b45"; ctx.fillRect(0, H - 16, W, 16);
+    const t = vidFrame / VIDLEN;
+    const x = 22 + (W - 44) * t;
+    const bounce = Math.abs(Math.sin(t * Math.PI * 3));
+    const y = H - 22 - (H - 64) * bounce;
+    ctx.beginPath(); ctx.arc(x, y, 13, 0, Math.PI * 2);
+    ctx.fillStyle = "#e6a15a"; ctx.fill();
+    ctx.fillStyle = "rgba(230,161,90,0.25)"; ctx.beginPath(); ctx.ellipse(x, H - 14, 13, 4, 0, 0, Math.PI * 2); ctx.fill();
+    $("vidFrame").textContent = "fotogramma " + (vidFrame + 1) + " / " + VIDLEN;
+  }
+  function vidTick() { vidFrame = (vidFrame + 1) % VIDLEN; drawVidFrame(); }
+  function vidStop() { if (vidTimer) { clearInterval(vidTimer); vidTimer = null; } const b = $("vidPlay"); if (b) { b.textContent = "▶ Avvia"; b.classList.remove("on"); } }
+  function vidPlay() {
+    if (vidTimer) { vidStop(); return; }
+    $("vidPlay").textContent = "⏸ Pausa"; $("vidPlay").classList.add("on");
+    vidTimer = setInterval(vidTick, 1000 / vidFps);
+  }
+  function wireVideo() {
+    $("vidPlay").addEventListener("click", vidPlay);
+    $("vidFps").addEventListener("input", () => {
+      vidFps = +$("vidFps").value; $("vidFpsV").textContent = vidFps;
+      if (vidTimer) { clearInterval(vidTimer); vidTimer = setInterval(vidTick, 1000 / vidFps); }
+    });
+    const calc = () => {
+      const [w, h] = $("vcRes").value.split("x").map(Number);
+      const fps = +$("vcFps").value, dur = +$("vcDur").value;
+      $("vcDurV").textContent = dur + " s";
+      const perFrame = w * h * 3, frames = fps * dur, raw = perFrame * frames, comp = raw / 200;
+      $("vidResult").innerHTML =
+        `<div class="vr-line">1 fotogramma = ${w}×${h}×3 byte = <b>${fmtBytes(perFrame)}</b></div>` +
+        `<div class="vr-line">${fps} fps × ${dur} s = <b>${frames} fotogrammi</b></div>` +
+        `<div class="vr-big">grezzo: <b>${fmtBytes(raw)}</b></div>` +
+        `<div class="vr-note">con la compressione video (~200×) ≈ <b>${fmtBytes(comp)}</b></div>`;
+    };
+    ["vcRes", "vcFps", "vcDur"].forEach((id) => $(id).addEventListener("input", calc));
+    calc(); drawVidFrame();
+  }
+
+  /* ---------- Compressione: RLE (lossless) + JPG (lossy) ---------- */
+  const RLE_COLORS = { R: [224, 83, 61], G: [63, 174, 107], B: [44, 111, 224], Y: [240, 193, 7], W: [232, 232, 232] };
+  let rleData = [];
+  function drawRle() {
+    $("rleRow").innerHTML = rleData.map((k) => { const c = RLE_COLORS[k]; return `<span style="background:rgb(${c[0]},${c[1]},${c[2]})"></span>`; }).join("");
+    const runs = []; let i = 0;
+    while (i < rleData.length) { let j = i; while (j < rleData.length && rleData[j] === rleData[i]) j++; runs.push([j - i, rleData[i]]); i = j; }
+    const rleStr = runs.map((r) => r[0] + "×" + r[1]).join("  ");
+    const orig = rleData.length, comp = runs.length * 2;
+    const ratio = (orig / comp).toFixed(2).replace(".", ",");
+    $("rleOut").innerHTML =
+      `<div class="rle-line"><span class="rle-lbl">originale</span><code>${rleData.join(" ")}</code><em>${orig} simboli</em></div>` +
+      `<div class="rle-line"><span class="rle-lbl">RLE</span><code>${rleStr}</code><em>${comp} simboli</em></div>` +
+      `<div class="rle-ratio">` + (comp < orig
+        ? `compressione <b>${ratio}×</b> — e riespandendo si riottiene l'originale identico ✓`
+        : `qui l'RLE <b>non conviene</b> (${comp} ≥ ${orig}): senza ripetizioni non c'è nulla da accorciare`) + `</div>`;
+  }
+  function rleOrdinata() { rleData = "RRRRRRRRGGGGGBBBBWWWWWWYY".split(""); drawRle(); }
+  function rleCasuale() { const k = "RGBYW".split(""); rleData = Array.from({ length: 24 }, () => k[Math.floor(Math.random() * 5)]); drawRle(); }
+
+  function buildJpgSource() {
+    const cv = $("jpgSrc"), ctx = cv.getContext("2d"), W = cv.width, H = cv.height;
+    const g = ctx.createLinearGradient(0, 0, W, H);
+    g.addColorStop(0, "#2c6fe0"); g.addColorStop(0.5, "#e0a53d"); g.addColorStop(1, "#c2415a");
+    ctx.fillStyle = g; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = "rgba(255,255,255,0.55)";
+    for (let i = 0; i < 6; i++) { ctx.beginPath(); ctx.arc(18 + i * 26, 34 + (i % 2) * 48, 13, 0, Math.PI * 2); ctx.fill(); }
+    ctx.fillStyle = "#0e1726"; ctx.font = "bold 30px monospace"; ctx.fillText("JPG", 44, 86);
+    const img = ctx.getImageData(0, 0, W, H), d = img.data;
+    for (let i = 0; i < d.length; i += 4) { const n = (Math.random() - 0.5) * 46; d[i] += n; d[i + 1] += n; d[i + 2] += n; }
+    ctx.putImageData(img, 0, 0);
+  }
+  function dataUrlBytes(url) {
+    const b64 = url.slice(url.indexOf(",") + 1);
+    const pad = b64.endsWith("==") ? 2 : b64.endsWith("=") ? 1 : 0;
+    return Math.floor(b64.length * 3 / 4) - pad;
+  }
+  function renderJpg() {
+    const q = +$("jpgQ").value; $("jpgQV").textContent = q + "%";
+    const src = $("jpgSrc");
+    const jpg = src.toDataURL("image/jpeg", q / 100), png = src.toDataURL("image/png");
+    $("jpgImg").src = jpg;
+    const jb = dataUrlBytes(jpg), pb = dataUrlBytes(png);
+    $("jpgStats").innerHTML =
+      `<div class="js-row">JPG @ ${q}%: <b>${fmtBytes(jb)}</b></div>` +
+      `<div class="js-row js-png">PNG (lossless): ${fmtBytes(pb)}</div>` +
+      `<div class="js-save">≈ <b>${(pb / jb).toFixed(1).replace(".", ",")}×</b> più piccolo del PNG senza perdita</div>`;
+    $("jpgCap").textContent = q >= 80 ? "qualità alta — difetti quasi invisibili"
+      : q >= 40 ? "qualità media — iniziano i difetti" : "qualità bassa — blocchi e aloni ben visibili";
+  }
+  function wireCompression() {
+    rleOrdinata();
+    $("rleOrdinata").addEventListener("click", rleOrdinata);
+    $("rleCasuale").addEventListener("click", rleCasuale);
+    buildJpgSource();
+    $("jpgQ").addEventListener("input", renderJpg);
+    renderJpg();
   }
 
   /* ---------- Suono → campionamento ---------- */
@@ -295,19 +459,24 @@
     $("modeSeg").querySelectorAll(".seg-btn").forEach((x) => x.classList.toggle("active", x === b));
     $("compMode").hidden = b.dataset.mode !== "comp";
     $("codMode").hidden = b.dataset.mode !== "cod";
+    if (b.dataset.mode !== "cod") vidStop();
   });
+  const codPanes = document.querySelectorAll(".cod-pane");
   $("codSeg").addEventListener("click", (e) => {
     const b = e.target.closest("[data-cod]"); if (!b) return;
     $("codSeg").querySelectorAll(".seg-btn").forEach((x) => x.classList.toggle("active", x === b));
-    $("codTesto").hidden = b.dataset.cod !== "testo";
-    $("codImg").hidden = b.dataset.cod !== "img";
-    $("codSuono").hidden = b.dataset.cod !== "suono";
+    codPanes.forEach((p) => p.hidden = p.dataset.cod !== b.dataset.cod);
+    if (b.dataset.cod !== "video") vidStop();
   });
 
   /* ---------- Avvio ---------- */
   renderText();
+  renderUnicode();
   wirePixelGrid();
+  buildGrayRamp();
   loadExample();
   renderRGB();
+  wireVideo();
+  wireCompression();
   renderSound();
 })();

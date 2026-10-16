@@ -2,6 +2,10 @@
    hardware.css — PC Assembly Lab (percorso guidato)
    Primitive (panel, run-btn, ghost-btn) in lab.css.
    ============================================================ */
+.hw-crosslink { margin-top: 0.9rem; font-size: 0.9rem; line-height: 1.5; color: var(--ink-soft); }
+.hw-crosslink b { color: var(--ink); }
+.hw-crosslink a { color: var(--accent); font-weight: 600; text-decoration: none; border-bottom: 1px solid transparent; transition: border-color 0.15s; }
+.hw-crosslink a:hover { border-bottom-color: var(--accent); }
 
 .sort-hero { padding-top: clamp(2rem, 5vw, 3.5rem); padding-bottom: 1.1rem; }
 .run-btn {
