@@ -169,18 +169,47 @@
         <!-- IMMAGINI -->
         <div class="panel cod-pane" id="codImg" hidden>
           <h2 class="cod-h2">Le immagini → pixel e colori (RGB)</h2>
-          <p class="cod-intro">Un'immagine è divisa in tanti quadratini, i <b>pixel</b>. A ogni pixel si associa un colore. Nel modello <b>RGB</b> il colore nasce mescolando <b>Rosso, Verde e Blu</b>: 8 bit per ciascuno = <b>24 bit (3 byte) per pixel</b>, cioè 16.777.216 colori possibili. Muovi i cursori:</p>
+          <p class="cod-intro">Un'immagine è una <b>griglia di quadratini</b>, i <b>pixel</b>. A ogni pixel si associa un colore. Nel modello <b>RGB</b> il colore nasce mescolando <b>Rosso, Verde e Blu</b>: 8 bit per ciascuno = <b>24 bit (3 byte) per pixel</b>, cioè 16.777.216 colori. Quegli 8 bit si scrivono anche, in modo più corto, con 2 cifre <b>esadecimali</b> (0–9, A–F).</p>
+
+          <!-- 1 · il colore di un pixel -->
+          <h3 class="cod-h3">1 · Il colore di un pixel</h3>
+          <p class="cod-sub">Scegli un colore: lo stesso valore è scritto in tre modi — <b>decimale</b> (0–255), <b>binario</b> (8 bit) ed <b>esadecimale</b> (2 cifre). Questo colore diventa anche il tuo «pennello» per la griglia qui sotto.</p>
           <div class="rgb-lab">
             <div class="rgb-swatch" id="rgbSwatch"></div>
             <div class="rgb-controls">
-              <label class="rgb-row r"><span>R</span><input type="range" id="rR" min="0" max="255" value="44" class="slider"><b id="rRv">44</b></label>
-              <label class="rgb-row g"><span>G</span><input type="range" id="rG" min="0" max="255" value="69" class="slider"><b id="rGv">69</b></label>
-              <label class="rgb-row b"><span>B</span><input type="range" id="rB" min="0" max="255" value="255" class="slider"><b id="rBv">255</b></label>
+              <label class="rgb-row r"><span>R</span><input type="range" id="rR" min="0" max="255" value="233" class="slider"><b id="rRv">233</b></label>
+              <label class="rgb-row g"><span>G</span><input type="range" id="rG" min="0" max="255" value="30" class="slider"><b id="rGv">30</b></label>
+              <label class="rgb-row b"><span>B</span><input type="range" id="rB" min="0" max="255" value="99" class="slider"><b id="rBv">99</b></label>
               <div class="rgb-bits" id="rgbBits"></div>
             </div>
           </div>
+          <div class="hex-explain" id="hexExplain"></div>
+
+          <!-- 2 · la griglia di pixel -->
+          <h3 class="cod-h3">2 · Un'immagine è una griglia di pixel</h3>
+          <p class="cod-sub">Quella che sembra una figura è in realtà una tabella di numeri, uno per pixel. <b>Ingrandisci</b> per vedere i singoli quadratini, <b>passa sopra</b> un pixel per leggerne i valori, oppure <b>clicca</b> per dipingerlo con il pennello scelto sopra.</p>
+          <div class="px-toolbar">
+            <button type="button" class="ghost-btn" id="pxExample">✦ Carica esempio</button>
+            <button type="button" class="ghost-btn" id="pxClear">✕ Svuota</button>
+            <label class="px-check"><input type="checkbox" id="pxGrid" checked> Griglia</label>
+            <label class="px-zoom"><span>Zoom</span><input type="range" id="pxZoom" min="6" max="30" value="18" class="slider"></label>
+            <span class="px-brush">pennello <i id="pxBrush"></i></span>
+          </div>
+          <div class="px-stage">
+            <div class="px-big"><canvas id="pxCanvas" aria-label="Griglia di pixel modificabile"></canvas></div>
+            <div class="px-side">
+              <div class="px-real-wrap">
+                <span class="px-real-lbl">dimensione reale</span>
+                <canvas id="pxReal" aria-hidden="true"></canvas>
+                <span class="px-real-hint">com'è <b>vista</b> da lontano</span>
+              </div>
+              <div class="px-readout" id="pxReadout">Passa sopra un pixel per vederne i valori…</div>
+            </div>
+          </div>
+          <div class="px-stats" id="pxStats"></div>
+
           <div class="cod-note">
-            <b>Risoluzione:</b> più pixel ci sono (i <b>DPI</b>), più l'immagine è dettagliata. In <b>scala di grigi</b> basta 1 byte per pixel (256 grigi). Per pesare meno si usano le <b>palette</b> e formati come <b>JPG</b> (foto), <b>PNG</b> (con trasparenza), <b>SVG</b> (vettoriale, ingrandibile senza perdere qualità), <b>GIF</b> (animazioni, 256 colori).
+            <b>Risoluzione:</b> più pixel ci sono, più l'immagine è dettagliata (e pesa). In <b>scala di grigi</b> basta 1 byte per pixel (256 grigi). Per pesare meno si usano le <b>palette</b> e formati come <b>JPG</b> (foto), <b>PNG</b> (con trasparenza), <b>SVG</b> (vettoriale, ingrandibile senza perdere qualità), <b>GIF</b> (animazioni, 256 colori).
           </div>
         </div>
 

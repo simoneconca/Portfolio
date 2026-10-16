@@ -130,21 +130,135 @@
     btn.textContent = opening ? "✕ Nascondi la tabella ASCII completa" : "📋 Mostra la tabella ASCII completa (0–127)";
   });
 
-  /* ---------- Immagini → RGB ---------- */
+  /* ---------- Immagini → RGB + esadecimale ---------- */
+  const hex2 = (n) => n.toString(16).toUpperCase().padStart(2, "0");
+  const lumaDark = (r, g, b) => (r * 0.299 + g * 0.587 + b * 0.114) > 140;
+
   function renderRGB() {
     const r = +$("rR").value, g = +$("rG").value, b = +$("rB").value;
     $("rRv").textContent = r; $("rGv").textContent = g; $("rBv").textContent = b;
+    const hx = "#" + hex2(r) + hex2(g) + hex2(b);
     const sw = $("rgbSwatch");
     sw.style.background = `rgb(${r},${g},${b})`;
-    sw.style.color = (r * 0.299 + g * 0.587 + b * 0.114) > 140 ? "#111" : "#fff";
-    sw.textContent = `rgb(${r}, ${g}, ${b})`;
+    sw.style.color = lumaDark(r, g, b) ? "#111" : "#fff";
+    sw.innerHTML = `<span class="sw-hex">${hx}</span><span class="sw-rgb">rgb(${r}, ${g}, ${b})</span>`;
     $("rgbBits").innerHTML =
-      `<div class="rb r"><span>R ${r}</span><code>${bin(r, 8)}</code></div>` +
-      `<div class="rb g"><span>G ${g}</span><code>${bin(g, 8)}</code></div>` +
-      `<div class="rb b"><span>B ${b}</span><code>${bin(b, 8)}</code></div>` +
-      `<div class="rb tot"><span>1 pixel = 24 bit (3 byte)</span><code>${bin(r, 8)} ${bin(g, 8)} ${bin(b, 8)}</code></div>`;
+      `<div class="rb r"><span>R ${r}</span><code>${bin(r, 8)}</code><em>${hex2(r)}</em></div>` +
+      `<div class="rb g"><span>G ${g}</span><code>${bin(g, 8)}</code><em>${hex2(g)}</em></div>` +
+      `<div class="rb b"><span>B ${b}</span><code>${bin(b, 8)}</code><em>${hex2(b)}</em></div>` +
+      `<div class="rb tot"><span>24 bit = 3 byte</span><code>${bin(r, 8)} ${bin(g, 8)} ${bin(b, 8)}</code></div>` +
+      `<div class="rb hex"><span>esadecimale</span><code class="hexcode">${hx}</code></div>`;
+    $("hexExplain").innerHTML =
+      `Ogni byte (8 bit) si accorcia in <b>2 cifre esadecimali</b>: ` +
+      `<code>${bin(r, 8)}</code> = <b>${hex2(r)}</b>, e così per ogni canale. ` +
+      `Uniti danno il colore <code class="hex-pill">${hx}</code> — lo stesso che usi nel codice HTML/CSS. ` +
+      `<span class="hex-ff">FF = 255 (massimo), 00 = 0 (minimo).</span>`;
+    // il colore scelto diventa il pennello della griglia
+    brush = [r, g, b];
+    const pb = $("pxBrush");
+    if (pb) { pb.style.background = `rgb(${r},${g},${b})`; pb.title = hx; }
   }
   ["rR", "rG", "rB"].forEach((id) => $(id).addEventListener("input", renderRGB));
+
+  /* ---------- Immagini → griglia di pixel ---------- */
+  const GW = 16, GH = 16;           // dimensioni dell'immagine (pixel)
+  let grid = [];                    // grid[y][x] = [r,g,b]
+  let brush = [233, 30, 99];
+  let cell = 18, showGrid = true, hoverCell = null;
+  const SKY = [170, 214, 240];
+
+  function newGrid(fill) {
+    grid = [];
+    for (let y = 0; y < GH; y++) { const row = []; for (let x = 0; x < GW; x++) row.push(fill.slice()); grid.push(row); }
+  }
+  function loadExample() {
+    newGrid(SKY);
+    const cx = 7.5, cy = 6;
+    for (let y = 0; y < GH; y++) for (let x = 0; x < GW; x++) {
+      const d = Math.hypot(x - cx, y - cy);
+      if (d < 1.7) grid[y][x] = [255, 193, 7];          // centro giallo
+      else if (d < 3.4) grid[y][x] = [233, 30, 99];     // petali rosa
+    }
+    for (let y = 9; y <= 14; y++) { grid[y][7] = [76, 175, 80]; grid[y][8] = [76, 175, 80]; } // stelo
+    grid[11][5] = [46, 125, 50]; grid[11][6] = [46, 125, 50];  // foglie
+    grid[12][9] = [46, 125, 50]; grid[12][10] = [46, 125, 50];
+    for (let x = 0; x < GW; x++) grid[15][x] = [76, 175, 80];  // erba
+    paintGrid();
+  }
+
+  function drawCanvas(cv, c, withGrid) {
+    const ctx = cv.getContext("2d");
+    cv.width = GW * c; cv.height = GH * c;
+    cv.style.width = (GW * c) + "px"; cv.style.height = (GH * c) + "px";
+    for (let y = 0; y < GH; y++) for (let x = 0; x < GW; x++) {
+      const p = grid[y][x];
+      ctx.fillStyle = `rgb(${p[0]},${p[1]},${p[2]})`;
+      ctx.fillRect(x * c, y * c, c, c);
+      if (withGrid && c >= 9) {
+        ctx.strokeStyle = "rgba(0,0,0,0.14)"; ctx.lineWidth = 1;
+        ctx.strokeRect(x * c + 0.5, y * c + 0.5, c - 1, c - 1);
+      }
+    }
+    if (hoverCell && cv.id === "pxCanvas") {
+      ctx.strokeStyle = "#fff"; ctx.lineWidth = 2;
+      ctx.strokeRect(hoverCell[0] * c + 1, hoverCell[1] * c + 1, c - 2, c - 2);
+      ctx.strokeStyle = "#000"; ctx.lineWidth = 1;
+      ctx.strokeRect(hoverCell[0] * c + 0.5, hoverCell[1] * c + 0.5, c - 1, c - 1);
+    }
+  }
+  function paintGrid() {
+    drawCanvas($("pxCanvas"), cell, showGrid);
+    drawCanvas($("pxReal"), 3, false);     // anteprima a dimensione reale (3px/pixel)
+    renderStats();
+  }
+  function renderStats() {
+    const tot = GW * GH, bytes = tot * 3;
+    const kb = (bytes / 1024).toFixed(2).replace(".", ",");
+    $("pxStats").innerHTML =
+      `<span class="px-stat"><b>${GW} × ${GH}</b> = ${tot} pixel</span>` +
+      `<span class="px-stat"><b>24 bit</b> per pixel</span>` +
+      `<span class="px-stat">peso grezzo: ${tot} × 3 byte = <b>${bytes} byte</b> (${kb} KB)</span>`;
+  }
+
+  function cellFromEvent(e) {
+    const cv = $("pxCanvas"), rect = cv.getBoundingClientRect();
+    const px = (e.clientX - rect.left) * (cv.width / rect.width);
+    const py = (e.clientY - rect.top) * (cv.height / rect.height);
+    const x = Math.floor(px / cell), y = Math.floor(py / cell);
+    if (x < 0 || x >= GW || y < 0 || y >= GH) return null;
+    return [x, y];
+  }
+  function showReadout(x, y) {
+    const p = grid[y][x];
+    const hx = "#" + hex2(p[0]) + hex2(p[1]) + hex2(p[2]);
+    $("pxReadout").innerHTML =
+      `<span class="pr-pos">pixel (${x}, ${y})</span>` +
+      `<span class="pr-sw" style="background:rgb(${p[0]},${p[1]},${p[2]})"></span>` +
+      `<span class="pr-line"><b class="r">R ${p[0]}</b> <b class="g">G ${p[1]}</b> <b class="b">B ${p[2]}</b></span>` +
+      `<span class="pr-hex">${hx}</span>` +
+      `<span class="pr-bin">${bin(p[0], 8)} ${bin(p[1], 8)} ${bin(p[2], 8)}</span>`;
+  }
+
+  function wirePixelGrid() {
+    const cv = $("pxCanvas");
+    cv.addEventListener("mousemove", (e) => {
+      const c = cellFromEvent(e); if (!c) return;
+      hoverCell = c; showReadout(c[0], c[1]); paintGrid();
+    });
+    cv.addEventListener("mouseleave", () => { hoverCell = null; paintGrid(); });
+    let painting = false;
+    const paintAt = (e) => { const c = cellFromEvent(e); if (!c) return; grid[c[1]][c[0]] = brush.slice(); hoverCell = c; showReadout(c[0], c[1]); paintGrid(); };
+    cv.addEventListener("mousedown", (e) => { painting = true; paintAt(e); });
+    cv.addEventListener("mousemove", (e) => { if (painting) paintAt(e); });
+    window.addEventListener("mouseup", () => { painting = false; });
+    // tocco (mobile)
+    cv.addEventListener("touchstart", (e) => { e.preventDefault(); const t = e.touches[0]; const c = cellFromEvent(t); if (c) { grid[c[1]][c[0]] = brush.slice(); showReadout(c[0], c[1]); paintGrid(); } }, { passive: false });
+
+    $("pxZoom").addEventListener("input", () => { cell = +$("pxZoom").value; paintGrid(); });
+    $("pxGrid").addEventListener("change", () => { showGrid = $("pxGrid").checked; paintGrid(); });
+    $("pxExample").addEventListener("click", loadExample);
+    $("pxClear").addEventListener("click", () => { newGrid([255, 255, 255]); hoverCell = null; $("pxReadout").textContent = "Passa sopra un pixel per vederne i valori…"; paintGrid(); });
+  }
 
   /* ---------- Suono → campionamento ---------- */
   function renderSound() {
@@ -192,6 +306,8 @@
 
   /* ---------- Avvio ---------- */
   renderText();
+  wirePixelGrid();
+  loadExample();
   renderRGB();
   renderSound();
 })();
