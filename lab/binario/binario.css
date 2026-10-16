@@ -363,3 +363,78 @@
   .slot { min-width: 4rem; }
   .slot-digit { width: 2.2rem; height: 2.2rem; font-size: 1.2rem; }
 }
+
+/* ============================================================
+   Sezioni avanzate (05 complemento a due · 06 somma · 07 float)
+   ============================================================ */
+.mini-controls { display: flex; flex-wrap: wrap; align-items: flex-end; gap: 1rem 1.4rem; margin-bottom: 1.1rem; }
+.mini-field { display: flex; flex-direction: column; gap: 0.35rem; }
+.mini-field label { font-size: 0.78rem; color: var(--ink-soft); font-weight: 500; }
+.mini-field .field { max-width: 11rem; }
+.mini-hint { color: var(--ink-soft); font-size: 0.9rem; padding: 0.6rem 0; }
+.mini-hint.err { color: #e0533d; }
+
+.adv-badge { display: inline-block; font-family: var(--font-sans); font-size: 0.62rem; text-transform: uppercase; letter-spacing: 0.05em; font-weight: 600; color: var(--accent); background: var(--accent-wash); border-radius: 999px; padding: 0.1rem 0.5rem; margin-left: 0.4rem; vertical-align: middle; }
+
+/* bit cell condivisa */
+.c2-bit, .sum-cell, .fp-bit {
+  width: 1.7rem; height: 1.9rem; display: inline-flex; align-items: center; justify-content: center;
+  font-family: var(--font-mono); font-size: 0.9rem; border: 1px solid var(--line);
+  border-radius: 6px; background: var(--bg-elev); color: var(--ink-soft);
+}
+.c2-bit.on, .sum-cell.on { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); font-weight: 600; }
+
+/* 05 complemento a due */
+.c2-steps { display: flex; flex-direction: column; gap: 0.9rem; }
+.c2-step { display: flex; flex-direction: column; gap: 0.5rem; padding: 0.8rem 0.9rem; border: 1px solid var(--line-soft); border-radius: 10px; background: var(--bg-sunk); }
+.c2-lbl { font-size: 0.86rem; line-height: 1.5; color: var(--ink-soft); }
+.c2-lbl b { color: var(--ink); }
+.c2-bits { display: flex; align-items: center; gap: 0.28rem; flex-wrap: wrap; }
+.c2-bit.sign { border-style: dashed; border-color: var(--accent); }
+.c2-sep { width: 0.5rem; }
+.c2-final { margin-top: 0.3rem; padding: 0.8rem 0.9rem; border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 10px; background: var(--bg-elev); font-size: 0.9rem; line-height: 1.6; color: var(--ink-soft); }
+.c2-final code { font-family: var(--font-mono); color: var(--accent); letter-spacing: 0.06em; }
+.c2-final b { color: var(--ink); }
+
+/* 06 somma binaria */
+.sum-work { overflow-x: auto; padding: 0.3rem 0 0.6rem; }
+.sum-row { display: flex; align-items: center; gap: 0.7rem; margin-bottom: 0.3rem; }
+.sum-tag { flex: 0 0 2.6rem; text-align: right; font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-soft); }
+.sum-row.result .sum-tag { color: var(--accent); font-weight: 700; }
+.sum-cells { display: flex; align-items: center; gap: 0.28rem; }
+.sum-gap { width: 0.5rem; }
+.sum-cell.dot { color: var(--ink-faint); border-style: dashed; }
+.sum-cell.lead { border: none; background: transparent; width: 1.7rem; }
+.sum-row.carry .sum-cell { border: none; background: transparent; color: #e0a53d; font-size: 0.78rem; height: 1.2rem; }
+.sum-row.carry .sum-cell.lead, .sum-row.result .sum-cell.lead.on { color: #e0a53d; }
+.sum-row.result .sum-cell { border-color: var(--accent); }
+.sum-row.result .sum-cell.lead.on { border: 1px solid #e0a53d; background: transparent; color: #e0a53d; }
+.sum-check { margin-top: 0.6rem; padding: 0.7rem 0.9rem; border-radius: 10px; background: var(--bg-sunk); border: 1px solid var(--line-soft); font-size: 0.88rem; line-height: 1.55; color: var(--ink-soft); }
+.sum-check b { color: var(--ink); }
+
+/* 07 virgola mobile */
+.fp-bits { display: flex; flex-wrap: wrap; align-items: center; gap: 0.2rem; margin-bottom: 1.1rem; }
+.fp-gap { width: 0.55rem; }
+.fp-bit { width: 1.35rem; height: 1.7rem; font-size: 0.8rem; border-radius: 5px; }
+.fp-bit.s { border-color: #e0533d; } .fp-bit.s.on { background: #e0533d; border-color: #e0533d; color: #fff; }
+.fp-bit.e { border-color: #2c6fe0; } .fp-bit.e.on { background: #2c6fe0; border-color: #2c6fe0; color: #fff; }
+.fp-bit.m { border-color: #e0a53d; } .fp-bit.m.on { background: #e0a53d; border-color: #e0a53d; color: #3a2c08; }
+.fp-parts { display: grid; grid-template-columns: 1fr; gap: 0.6rem; margin-bottom: 0.9rem; }
+.fp-part { display: grid; grid-template-columns: 8.5rem auto 1fr; align-items: center; gap: 0.6rem 0.9rem; padding: 0.5rem 0.7rem; border: 1px solid var(--line-soft); border-left-width: 4px; border-radius: 9px; background: var(--bg-sunk); }
+.fp-part.s { border-left-color: #e0533d; } .fp-part.e { border-left-color: #2c6fe0; } .fp-part.m { border-left-color: #e0a53d; }
+.fp-plbl { font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.03em; color: var(--ink-soft); }
+.fp-part code { font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink); letter-spacing: 0.04em; word-break: break-all; }
+.fp-pv { font-size: 0.82rem; color: var(--ink-soft); }
+.fp-pv b { color: var(--ink); }
+.fp-formula { padding: 0.8rem 0.9rem; border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 10px; background: var(--bg-elev); font-family: var(--font-mono); font-size: 0.86rem; line-height: 1.7; color: var(--ink-soft); word-break: break-word; }
+.fp-formula b { color: var(--accent); }
+.fp-warn { margin-top: 0.7rem; padding: 0.7rem 0.9rem; border-radius: 10px; background: color-mix(in srgb, #e0a53d 12%, transparent); border: 1px solid color-mix(in srgb, #e0a53d 35%, transparent); font-size: 0.84rem; line-height: 1.55; color: var(--ink-soft); }
+.fp-warn b { color: var(--ink); } .fp-warn code { font-family: var(--font-mono); color: var(--ink); }
+.fp-presets { display: flex; flex-wrap: wrap; gap: 0.4rem; }
+.fp-presets button { font-family: var(--font-mono); font-size: 0.82rem; padding: 0.35rem 0.7rem; border: 1px solid var(--line); border-radius: 8px; background: var(--bg-elev); color: var(--ink); cursor: pointer; transition: border-color 0.15s, color 0.15s; }
+.fp-presets button:hover { border-color: var(--accent); color: var(--accent); }
+
+@media (max-width: 560px) {
+  .fp-part { grid-template-columns: 1fr; gap: 0.25rem; }
+  .fp-plbl { font-size: 0.68rem; }
+}

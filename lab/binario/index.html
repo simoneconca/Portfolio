@@ -60,7 +60,7 @@
           <a href="../">Lab</a><span class="sep">/</span><span class="current">Binary &amp; Base Analyzer</span>
         </nav>
         <h1>Binary &amp; Base Analyzer</h1>
-        <p class="lead">Converti un numero tra le basi, accendi e spegni i bit con un clic, osserva i pesi posizionali e il complemento a due, e prova le operazioni logiche bit a bit. Tutto in tempo reale.</p>
+        <p class="lead">Converti un numero tra le basi, accendi e spegni i bit con un clic, osserva i pesi posizionali, le operazioni logiche, il <strong>complemento a due</strong> passo per passo, le <strong>somme binarie con riporto</strong> e persino la <strong>virgola mobile</strong> (IEEE 754). Tutto in tempo reale.</p>
       </div>
     </section>
 
@@ -239,6 +239,72 @@
           </div>
         </div>
 
+        <!-- 05 Complemento a due -->
+        <div class="panel full c2-panel">
+          <header class="panel-head">
+            <span class="panel-kicker">05 — Numeri negativi</span>
+            <h2 class="panel-title">Il complemento a due, passo per passo</h2>
+            <p class="panel-sub">Come fa il computer a scrivere un numero <b>negativo</b> usando solo 0 e 1? Con il <b>complemento a due</b>: scrivi il positivo, <b>inverti</b> tutti i bit e <b>aggiungi 1</b>. Scegli un numero e guarda i passaggi.</p>
+          </header>
+          <div class="mini-controls">
+            <div class="mini-field">
+              <label for="c2num">Numero (anche negativo)</label>
+              <div class="field"><span class="field-prefix">#</span><input id="c2num" inputmode="numeric" spellcheck="false" autocomplete="off" value="-6"></div>
+            </div>
+            <div class="control-group">
+              <span class="control-label">Larghezza</span>
+              <div class="seg" id="c2Width" role="group" aria-label="Larghezza in bit">
+                <button type="button" data-w="8" class="seg-btn active">8 bit</button>
+                <button type="button" data-w="16" class="seg-btn">16 bit</button>
+              </div>
+            </div>
+          </div>
+          <div class="c2-steps" id="c2steps" aria-live="polite"></div>
+        </div>
+
+        <!-- 06 Somma binaria -->
+        <div class="panel full sum-panel">
+          <header class="panel-head">
+            <span class="panel-kicker">06 — Aritmetica</span>
+            <h2 class="panel-title">La somma binaria, con il riporto</h2>
+            <p class="panel-sub">Si sommano i bit colonna per colonna, da destra a sinistra, proprio come in colonna sul quaderno: <b>0+0=0</b>, <b>0+1=1</b>, <b>1+1=10</b> (scrivo 0 e <b>riporto 1</b>). Cambia i due numeri e segui i riporti.</p>
+          </header>
+          <div class="mini-controls">
+            <div class="mini-field"><label for="sumA">Addendo A</label><div class="field"><span class="field-prefix">A</span><input id="sumA" inputmode="numeric" spellcheck="false" autocomplete="off" value="13"></div></div>
+            <div class="mini-field"><label for="sumB">Addendo B</label><div class="field"><span class="field-prefix">B</span><input id="sumB" inputmode="numeric" spellcheck="false" autocomplete="off" value="7"></div></div>
+            <div class="control-group">
+              <span class="control-label">Larghezza</span>
+              <div class="seg" id="sumWidth" role="group" aria-label="Larghezza in bit">
+                <button type="button" data-w="8" class="seg-btn active">8 bit</button>
+                <button type="button" data-w="16" class="seg-btn">16 bit</button>
+              </div>
+            </div>
+          </div>
+          <div class="sum-work" id="sumWork" aria-live="polite"></div>
+          <div class="sum-check" id="sumCheck" aria-live="polite"></div>
+        </div>
+
+        <!-- 07 Floating point -->
+        <div class="panel full fp-panel">
+          <header class="panel-head">
+            <span class="panel-kicker">07 — Avanzato <span class="adv-badge">virgola mobile</span></span>
+            <h2 class="panel-title">I numeri con la virgola: lo standard IEEE 754</h2>
+            <p class="panel-sub">I numeri con la virgola (come <b>6,25</b> o <b>0,1</b>) si salvano in <b>virgola mobile</b>, divisi in tre parti: 1 bit di <b>segno</b>, 8 bit di <b>esponente</b> e 23 bit di <b>mantissa</b> (precisione singola, 32 bit). La formula è: <code>valore = (−1)<sup>segno</sup> × 1,mantissa × 2<sup>(esponente − 127)</sup></code>.</p>
+          </header>
+          <div class="mini-controls">
+            <div class="mini-field"><label for="fpNum">Numero decimale</label><div class="field"><span class="field-prefix">#</span><input id="fpNum" inputmode="decimal" spellcheck="false" autocomplete="off" value="6.25"></div></div>
+            <div class="fp-presets" id="fpPresets">
+              <button type="button" data-n="6.25">6,25</button>
+              <button type="button" data-n="-2.5">−2,5</button>
+              <button type="button" data-n="0.1">0,1</button>
+              <button type="button" data-n="1">1</button>
+              <button type="button" data-n="255.75">255,75</button>
+            </div>
+          </div>
+          <div class="fp-bits" id="fpBits" aria-hidden="true"></div>
+          <div class="fp-break" id="fpBreak" aria-live="polite"></div>
+        </div>
+
       </div>
     </section>
   </main>
@@ -254,5 +320,6 @@
   <script src="../../js/core.js"></script>
   <script src="builder.js"></script>
   <script src="binario.js"></script>
+  <script src="avanzate.js"></script>
 </body>
 </html>
