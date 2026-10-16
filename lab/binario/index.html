@@ -299,9 +299,30 @@
               <button type="button" data-n="0.1">0,1</button>
               <button type="button" data-n="1">1</button>
               <button type="button" data-n="255.75">255,75</button>
+              <button type="button" data-n="3.14159265">π</button>
             </div>
           </div>
+
+          <h3 class="fp-subh">Esplora: clicca i bit</h3>
+          <p class="fp-subp">Clicca un bit per accenderlo o spegnerlo: il numero si <b>ricalcola all'istante</b>. Prova a cambiare un bit dell'<span class="fp-k e">esponente</span> e guarda che salto fa il valore, oppure uno della <span class="fp-k m">mantissa</span> per le piccole variazioni.</p>
+          <div class="fp-explorer">
+            <div class="fp-bits clickable" id="fpBits" role="group" aria-label="32 bit, clicca per modificare"></div>
+            <div class="fp-legend"><span class="fp-k s">■ segno · 1</span><span class="fp-k e">■ esponente · 8</span><span class="fp-k m">■ mantissa · 23</span></div>
+            <div class="fp-live" id="fpLive" aria-live="polite"></div>
+            <div class="fp-explore-btns">
+              <button type="button" class="ghost-btn" id="fpExpDown">− esponente</button>
+              <button type="button" class="ghost-btn" id="fpExpUp">+ esponente</button>
+              <button type="button" class="ghost-btn" id="fpFlipSign">± cambia segno</button>
+              <button type="button" class="ghost-btn" id="fpZeroMant">azzera mantissa</button>
+            </div>
+          </div>
+
+          <h3 class="fp-subh">Come ci si arriva, passo per passo</h3>
           <ol class="fp-tutorial" id="fpTutorial" aria-live="polite"></ol>
+
+          <div class="fp-info">
+            <b>Per saperne di più.</b> Con <b>32 bit</b> (precisione <i>singola</i>, il tipo <code>float</code>) hai circa <b>7 cifre decimali</b> di precisione e numeri da ~10⁻³⁸ a ~10³⁸; l'esponente reale va da <b>−126 a +127</b>. Casi speciali: esponente <b>tutto 0</b> → lo <b>zero</b> o numeri <i>denormali</i> (piccolissimi); esponente <b>tutto 1</b> → <b>±infinito</b> (mantissa 0) oppure <b>NaN</b> (“non è un numero”). Per più precisione si usano <b>64 bit</b> (precisione <i>doppia</i>, il tipo <code>double</code>): 11 bit di esponente e 52 di mantissa, ~15-16 cifre decimali.
+          </div>
         </div>
 
       </div>

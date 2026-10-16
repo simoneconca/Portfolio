@@ -196,10 +196,8 @@
   const GW = 16, GH = 16;           // dimensioni dell'immagine (pixel)
   let grid = [];                    // grid[y][x] = [r,g,b]
   let brush = [233, 30, 99];
-  let cell = 18, showGrid = true, showGray = false, hoverCell = null;
+  let cell = 18, showGrid = true, hoverCell = null;
   const SKY = [170, 214, 240];
-  const grayOf = (p) => Math.round(p[0] * 0.299 + p[1] * 0.587 + p[2] * 0.114);
-  const shown = (p) => { if (!showGray) return p; const y = grayOf(p); return [y, y, y]; };
 
   function newGrid(fill) {
     grid = [];
@@ -225,7 +223,7 @@
     cv.width = GW * c; cv.height = GH * c;
     cv.style.width = (GW * c) + "px"; cv.style.height = (GH * c) + "px";
     for (let y = 0; y < GH; y++) for (let x = 0; x < GW; x++) {
-      const p = shown(grid[y][x]);
+      const p = grid[y][x];
       ctx.fillStyle = `rgb(${p[0]},${p[1]},${p[2]})`;
       ctx.fillRect(x * c, y * c, c, c);
       if (withGrid && c >= 9) {
@@ -246,15 +244,12 @@
     renderStats();
   }
   function renderStats() {
-    const tot = GW * GH;
-    const perPx = showGray ? 1 : 3;
-    const bits = showGray ? 8 : 24;
-    const bytes = tot * perPx;
+    const tot = GW * GH, bytes = tot * 3;
     const kb = (bytes / 1024).toFixed(2).replace(".", ",");
     $("pxStats").innerHTML =
       `<span class="px-stat"><b>${GW} × ${GH}</b> = ${tot} pixel</span>` +
-      `<span class="px-stat"><b>${bits} bit</b> per pixel ${showGray ? "(grigio)" : "(colore)"}</span>` +
-      `<span class="px-stat">peso grezzo: ${tot} × ${perPx} byte = <b>${bytes} byte</b> (${kb} KB)</span>`;
+      `<span class="px-stat"><b>24 bit</b> per pixel (colore)</span>` +
+      `<span class="px-stat">peso grezzo: ${tot} × 3 byte = <b>${bytes} byte</b> (${kb} KB)</span>`;
   }
 
   function cellFromEvent(e) {
@@ -267,16 +262,6 @@
   }
   function showReadout(x, y) {
     const p = grid[y][x];
-    if (showGray) {
-      const yv = grayOf(p);
-      $("pxReadout").innerHTML =
-        `<span class="pr-pos">pixel (${x}, ${y}) · grigio</span>` +
-        `<span class="pr-sw" style="background:rgb(${yv},${yv},${yv})"></span>` +
-        `<span class="pr-line"><b>grigio ${yv}</b> / 255</span>` +
-        `<span class="pr-hex">1 byte</span>` +
-        `<span class="pr-bin">${bin(yv, 8)}</span>`;
-      return;
-    }
     const hx = "#" + hex2(p[0]) + hex2(p[1]) + hex2(p[2]);
     $("pxReadout").innerHTML =
       `<span class="pr-pos">pixel (${x}, ${y})</span>` +
@@ -291,6 +276,21 @@
     for (let i = 0; i <= 10; i++) { const v = Math.round(i * 25.5); h += `<span style="background:rgb(${v},${v},${v})"></span>`; }
     el.innerHTML = h;
   }
+
+  /* ---------- Scala di grigi (sezione autonoma) ---------- */
+  function renderGray() {
+    const v = +$("grayVal").value;
+    $("grayValV").textContent = v;
+    const sw = $("graySwatch");
+    sw.style.background = `rgb(${v},${v},${v})`;
+    sw.style.color = v > 140 ? "#111" : "#fff";
+    sw.textContent = v + " / 255";
+    $("grayBits").innerHTML =
+      `<div class="gl-row"><span>decimale</span><code>${v}</code></div>` +
+      `<div class="gl-row"><span>binario · 1 byte</span><code>${bin(v, 8)}</code></div>` +
+      `<div class="gl-row"><span>esadecimale</span><code>${hex2(v)}</code></div>`;
+  }
+  function wireGray() { buildGrayRamp(); $("grayVal").addEventListener("input", renderGray); renderGray(); }
 
   function wirePixelGrid() {
     const cv = $("pxCanvas");
@@ -309,7 +309,6 @@
 
     $("pxZoom").addEventListener("input", () => { cell = +$("pxZoom").value; paintGrid(); });
     $("pxGrid").addEventListener("change", () => { showGrid = $("pxGrid").checked; paintGrid(); });
-    $("pxGray").addEventListener("change", () => { showGray = $("pxGray").checked; if (hoverCell) showReadout(hoverCell[0], hoverCell[1]); paintGrid(); });
     $("pxExample").addEventListener("click", loadExample);
     $("pxClear").addEventListener("click", () => { newGrid([255, 255, 255]); hoverCell = null; $("pxReadout").textContent = "Passa sopra un pixel per vederne i valori…"; paintGrid(); });
   }
@@ -473,7 +472,7 @@
   renderText();
   renderUnicode();
   wirePixelGrid();
-  buildGrayRamp();
+  wireGray();
   loadExample();
   renderRGB();
   wireVideo();

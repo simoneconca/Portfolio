@@ -214,7 +214,6 @@
             <button type="button" class="ghost-btn" id="pxExample">✦ Carica esempio</button>
             <button type="button" class="ghost-btn" id="pxClear">✕ Svuota</button>
             <label class="px-check"><input type="checkbox" id="pxGrid" checked> Griglia</label>
-            <label class="px-check"><input type="checkbox" id="pxGray"> Scala di grigi</label>
             <label class="px-zoom"><span>Zoom</span><input type="range" id="pxZoom" min="6" max="30" value="18" class="slider"></label>
             <span class="px-brush">pennello <i id="pxBrush"></i></span>
           </div>
@@ -231,15 +230,24 @@
           </div>
           <div class="px-stats" id="pxStats"></div>
 
-          <div class="gray-box">
-            <h3 class="cod-h3" style="margin-top:1.6rem">3 · La scala di grigi — 1 byte per pixel</h3>
-            <p class="cod-sub">Se togli il colore, ogni pixel è un <b>solo numero</b> da 0 a 255: <b>0 = nero</b>, <b>255 = bianco</b>, e i valori in mezzo sono grigi. Basta <b>1 byte</b> invece di 3, quindi l'immagine pesa <b>un terzo</b>. Il grigio si ottiene dalla <b>luminosità</b> del colore: <code>Y = 0,299·R + 0,587·G + 0,114·B</code> (il verde «pesa» di più perché l'occhio lo vede meglio). Attiva <b>Scala di grigi</b> qui sopra per vederlo sulla griglia.</p>
-            <div class="gray-ramp" id="grayRamp" aria-hidden="true"></div>
-            <div class="gray-ramp-lbl"><span>0 · nero</span><span>128</span><span>255 · bianco</span></div>
-          </div>
-
           <div class="cod-note">
             <b>Risoluzione:</b> più pixel ci sono, più l'immagine è dettagliata (e pesa). Per pesare meno si usano le <b>palette</b> e formati come <b>JPG</b> (foto), <b>PNG</b> (con trasparenza), <b>SVG</b> (vettoriale, ingrandibile senza perdere qualità), <b>GIF</b> (animazioni, 256 colori).
+          </div>
+
+          <!-- 3 · Scala di grigi (sezione autonoma) -->
+          <div class="gray-sec">
+            <h3 class="cod-h3">3 · La scala di grigi — 1 byte per pixel</h3>
+            <p class="cod-sub">Un'immagine può non avere colori, ma solo <b>grigi</b>. In quel caso ogni pixel è un <b>solo numero</b> da 0 a 255: <b>0 = nero</b>, <b>255 = bianco</b>, e i valori in mezzo sono le sfumature. Serve <b>1 byte</b> invece di 3, quindi l'immagine pesa <b>un terzo</b>. Muovi il cursore e guarda il grigio corrispondente al suo byte:</p>
+            <div class="gray-lab">
+              <div class="gray-swatch" id="graySwatch"></div>
+              <div class="gray-controls">
+                <label class="gray-row"><span>valore</span><input type="range" id="grayVal" min="0" max="255" value="128" class="slider"><b id="grayValV">128</b></label>
+                <div class="gray-bits" id="grayBits"></div>
+              </div>
+            </div>
+            <div class="gray-ramp" id="grayRamp" aria-hidden="true"></div>
+            <div class="gray-ramp-lbl"><span>0 · nero</span><span>128</span><span>255 · bianco</span></div>
+            <p class="cod-sub" style="margin-top:1rem">E il grigio di una <b>foto a colori</b>? Si ricava dalla sua <b>luminosità</b>: <code>grigio = 0,299·R + 0,587·G + 0,114·B</code> — il verde «pesa» di più perché l'occhio lo percepisce meglio.</p>
           </div>
         </div>
 

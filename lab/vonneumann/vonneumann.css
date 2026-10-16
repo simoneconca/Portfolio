@@ -271,7 +271,22 @@
 .uc-hex { font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink); margin-top: 0.1rem; }
 .uc-bin { font-family: var(--font-mono); font-size: 0.64rem; color: var(--ink-faint); word-break: break-all; }
 
-/* Scala di grigi */
+/* Scala di grigi — sezione autonoma */
+.gray-sec { margin-top: 1.8rem; padding-top: 1.5rem; border-top: 1px solid var(--line-soft); }
+.gray-lab { display: flex; gap: 1.2rem; flex-wrap: wrap; align-items: stretch; margin-bottom: 1rem; }
+.gray-swatch { flex: 0 0 160px; min-height: 160px; border-radius: 14px; border: 1px solid var(--line); display: grid; place-items: center; font-family: var(--font-mono); font-size: 0.95rem; font-weight: 600; }
+.gray-controls { flex: 1; min-width: 220px; display: flex; flex-direction: column; gap: 0.7rem; justify-content: center; }
+.gray-row { display: grid; grid-template-columns: 3.4rem 1fr 3rem; align-items: center; gap: 0.7rem; font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink-soft); }
+.gray-row .slider { width: 100%; -webkit-appearance: none; appearance: none; height: 6px; background: linear-gradient(to right, #000, #fff); border-radius: 999px; outline: none; cursor: pointer; border: 1px solid var(--line); }
+.gray-row .slider::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--accent); border: 2px solid var(--bg-elev); box-shadow: 0 0 0 1px var(--line); }
+.gray-row .slider::-moz-range-thumb { width: 16px; height: 16px; border-radius: 50%; background: var(--accent); border: 2px solid var(--bg-elev); }
+.gray-row b { text-align: right; color: var(--ink); }
+.gray-bits { display: grid; gap: 0.3rem; margin-top: 0.3rem; }
+.gl-row { display: flex; align-items: center; justify-content: space-between; gap: 0.8rem; font-family: var(--font-mono); font-size: 0.78rem; }
+.gl-row span { color: var(--ink-soft); } .gl-row code { color: var(--ink); }
+@media (max-width: 560px) { .gray-swatch { flex-basis: 100%; min-height: 110px; } }
+
+/* rampa dei grigi */
 .gray-ramp { display: grid; grid-template-columns: repeat(11, 1fr); height: 34px; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; margin-top: 0.3rem; }
 .gray-ramp span { display: block; }
 .gray-ramp-lbl { display: flex; justify-content: space-between; font-family: var(--font-mono); font-size: 0.68rem; color: var(--ink-faint); margin-top: 0.25rem; }
