@@ -207,7 +207,7 @@
 .hex-explain { margin-top: 1rem; font-size: 0.86rem; line-height: 1.6; color: var(--ink-soft); }
 .hex-explain code { font-family: var(--font-mono); font-size: 0.82em; color: var(--ink); }
 .hex-explain b { color: var(--ink); }
-.hex-pill { background: var(--ink); color: var(--bg); border-radius: 5px; padding: 0.05rem 0.4rem; font-weight: 700; letter-spacing: 0.04em; }
+.hex-explain .hex-pill { background: var(--accent); color: var(--accent-ink); border-radius: 5px; padding: 0.05rem 0.4rem; font-weight: 700; letter-spacing: 0.04em; }
 .hex-ff { display: block; margin-top: 0.3rem; color: var(--ink-faint); }
 
 /* sotto-titoli della codifica */

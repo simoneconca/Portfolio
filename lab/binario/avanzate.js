@@ -100,61 +100,123 @@
   }
 
   /* ============================================================
-     07 — Virgola mobile (IEEE 754, 32 bit)
+     07 — Virgola mobile (IEEE 754, 32 bit) — tutorial passo passo
      ============================================================ */
   function fmt(x) {
     if (!isFinite(x)) return String(x);
     if (x === 0) return "0";
     let s = x.toPrecision(9);
     if (s.indexOf("e") < 0 && s.indexOf(".") >= 0) s = s.replace(/0+$/, "").replace(/\.$/, "");
-    return s;
+    return s.replace(".", ",");
   }
-  function renderFP() {
-    const raw = $("fpNum").value.trim().replace(",", ".");
-    const bitsEl = $("fpBits"), brk = $("fpBreak");
-    if (raw === "" || raw === "-" || isNaN(Number(raw))) { bitsEl.innerHTML = ""; brk.innerHTML = `<p class="mini-hint err">Scrivi un numero con la virgola (es. 6.25 oppure -0.1).</p>`; return; }
-    const num = Number(raw);
-    const dv = new DataView(new ArrayBuffer(4));
-    dv.setFloat32(0, num);
-    const u = dv.getUint32(0), stored = dv.getFloat32(0);
-    const bits = u.toString(2).padStart(32, "0");
-    const sign = bits[0], expBits = bits.slice(1, 9), mantBits = bits.slice(9);
-    const expVal = parseInt(expBits, 2), E = expVal - 127;
-
+  // numero decimale leggibile per i passaggi della frazione
+  const fmtFrac = (x) => (Math.round(x * 1e6) / 1e6).toString().replace(".", ",");
+  // scomposizione in potenze di 2 di un intero positivo (6 → "4 + 2")
+  function powSum(n) {
+    const t = []; let b = n, i = 0;
+    while (b > 0) { if (b % 2 === 1) t.unshift(Math.pow(2, i)); b = Math.floor(b / 2); i++; }
+    return t.join(" + ");
+  }
+  // riga dei 32 bit colorati (1 segno · 8 esponente · 23 mantissa)
+  function fpBitsRow(bits) {
     let cells = "";
     for (let i = 0; i < 32; i++) {
       const cls = i === 0 ? "s" : i < 9 ? "e" : "m";
       cells += `<span class="fp-bit ${cls} ${bits[i] === "1" ? "on" : ""}">${bits[i]}</span>`;
       if (i === 0 || i === 8) cells += `<span class="fp-gap"></span>`;
     }
-    bitsEl.innerHTML = cells;
+    return `<div class="fp-bits">${cells}</div>`;
+  }
 
-    let mantFrac = 0;
-    for (let k = 0; k < 23; k++) if (mantBits[k] === "1") mantFrac += Math.pow(2, -(k + 1));
-    const mantissaValue = 1 + mantFrac;
-    const signTxt = sign === "1" ? "1 → negativo (−)" : "0 → positivo (+)";
+  function renderFP() {
+    const raw = $("fpNum").value.trim().replace(",", ".");
+    const tut = $("fpTutorial");
+    if (raw === "" || raw === "-" || isNaN(Number(raw))) { tut.innerHTML = `<li class="fp-plain"><p class="mini-hint err">Scrivi un numero con la virgola (es. 6.25 oppure -0.1).</p></li>`; return; }
+    const num = Number(raw);
+    const dv = new DataView(new ArrayBuffer(4));
+    dv.setFloat32(0, num);
+    const u = dv.getUint32(0), stored = dv.getFloat32(0);
+    const allBits = u.toString(2).padStart(32, "0");
+    const expField = allBits.slice(1, 9), mantField = allBits.slice(9);
+    const expVal = parseInt(expField, 2);
+    const neg = num < 0, abs = Math.abs(num);
 
-    let special = "";
-    if (expVal === 0 && mantFrac === 0) special = "zero";
-    else if (expVal === 255) special = mantBits.indexOf("1") >= 0 ? "NaN (non è un numero)" : "infinito";
-    else if (expVal === 0) special = "denormale";
+    // casi speciali
+    if (num === 0) {
+      tut.innerHTML = `<li class="fp-plain"><h4>Caso speciale: lo zero</h4><p>Lo zero si scrive con <b>tutti i bit a 0</b> — segno, esponente e mantissa.</p>${fpBitsRow("0".repeat(32))}</li>`;
+      return;
+    }
+    if (!isFinite(stored)) {
+      tut.innerHTML = `<li class="fp-plain"><h4>Troppo grande</h4><p>${fmt(num)} supera il massimo rappresentabile a 32 bit (~3,4 × 10³⁸): diventa <b>infinito</b> (esponente tutto a 1).</p>${fpBitsRow(allBits)}</li>`;
+      return;
+    }
 
-    let formula;
-    if (special === "zero") formula = `Esponente e mantissa a zero → il valore è <b>0</b>.`;
-    else if (special.indexOf("infinito") === 0 || special.indexOf("NaN") === 0) formula = `Caso speciale (esponente tutto a 1): <b>${special}</b>.`;
-    else formula =
-      `valore = (−1)<sup>${sign}</sup> × <b>${fmt(mantissaValue)}</b> × 2<sup>${E}</sup> = <b>${fmt(stored)}</b>`;
+    const steps = [];
 
-    brk.innerHTML =
-      `<div class="fp-parts">` +
-        `<div class="fp-part s"><span class="fp-plbl">segno · 1 bit</span><code>${sign}</code><span class="fp-pv">${signTxt}</span></div>` +
-        `<div class="fp-part e"><span class="fp-plbl">esponente · 8 bit</span><code>${group(expBits)}</code><span class="fp-pv">= ${expVal}, poi ${expVal} − 127 = <b>${E}</b></span></div>` +
-        `<div class="fp-part m"><span class="fp-plbl">mantissa · 23 bit</span><code>${group(mantBits)}</code><span class="fp-pv">= 1 + ${fmt(mantFrac)} = <b>${fmt(mantissaValue)}</b></span></div>` +
-      `</div>` +
-      `<div class="fp-formula">${formula}</div>` +
-      (special === "" && stored !== num
-        ? `<div class="fp-warn">⚠️ <b>${raw}</b> non è rappresentabile in modo <b>esatto</b> con 32 bit: il valore davvero memorizzato è <b>${fmt(stored)}</b>. È questo che, in tanti linguaggi, fa sì che <code>0.1 + 0.2 ≠ 0.3</code>.</div>`
-        : "");
+    // 1 — segno
+    steps.push(`<h4>Il segno</h4><p><b>${fmt(num)}</b> è ${neg ? "<b>negativo</b>" : "<b>positivo</b>"} → il bit di segno è <b>${neg ? 1 : 0}</b>. Da qui proseguiamo con il valore assoluto <b>${fmt(abs)}</b>.</p>`);
+
+    // 2 — parte intera in binario
+    const intPart = Math.floor(abs);
+    const intBin = intPart.toString(2);
+    steps.push(`<h4>La parte intera in binario</h4><p><b>${intPart}</b> in binario è <code>${intBin}</code>${intPart > 0 ? ` &nbsp;(= ${powSum(intPart)})` : ""}.</p>`);
+
+    // 3 — parte frazionaria in binario (metodo: moltiplica per 2)
+    let fracBits = "", terminated = true;
+    let f = abs - intPart;
+    if (f === 0) {
+      steps.push(`<h4>La parte dopo la virgola</h4><p>Non c'è parte frazionaria: vale <b>0</b>.</p>`);
+    } else {
+      const rows = []; const MAXF = 16; const start = f;
+      for (let k = 0; k < MAXF; k++) {
+        const prod = f * 2, bit = prod >= 1 ? 1 : 0;
+        rows.push(`<div class="fp-frac-row"><span>${fmtFrac(f)} × 2 = ${fmtFrac(prod)}</span><b>${bit}</b></div>`);
+        fracBits += bit; f = prod - bit;
+        if (f === 0) { terminated = true; break; }
+        if (k === MAXF - 1) terminated = false;
+      }
+      steps.push(`<h4>La parte dopo la virgola (moltiplica per 2)</h4>` +
+        `<p>Moltiplichi la frazione per 2: la <b>parte intera</b> del risultato è il bit successivo, poi continui con quello che resta dopo la virgola.</p>` +
+        `<div class="fp-frac">${rows.join("")}</div>` +
+        (terminated
+          ? `<p>La sequenza finisce: <b>${fmtFrac(start)}</b> = <code>0,${fracBits}</code> in binario.</p>`
+          : `<p class="fp-periodic">La sequenza <b>non finisce</b> (è periodica). Ecco perché <b>${fmt(abs)}</b> non si può scrivere in modo esatto: a un certo punto va <b>arrotondata</b>.</p>`));
+    }
+
+    // 4 — unisci
+    const combined = intPart >= 1 ? intBin + (fracBits ? "," + fracBits : "") : "0," + fracBits;
+    steps.push(`<h4>Unisci le due parti</h4><p><b>${fmt(abs)}</b> in binario è <code>${combined}</code>.</p>`);
+
+    // 5 — normalizza
+    let E, mantAll;
+    if (intPart >= 1) { E = intBin.length - 1; mantAll = intBin.slice(1) + fracBits; }
+    else { const p = fracBits.indexOf("1"); E = -(p + 1); mantAll = fracBits.slice(p + 1); }
+    const normShown = mantAll.slice(0, 12) + (mantAll.length > 12 ? "…" : "");
+    const shift = Math.abs(E);
+    steps.push(`<h4>Normalizza (notazione scientifica binaria)</h4>` +
+      `<p>Sposta la virgola subito dopo il <b>primo 1</b>, così resta <code>1,…</code> moltiplicato per una potenza di 2:</p>` +
+      `<div class="fp-norm"><code>1,${normShown} × 2<sup>${E}</sup></code></div>` +
+      `<p>Hai spostato la virgola di <b>${shift}</b> ${shift === 1 ? "posizione" : "posizioni"} ${E >= 0 ? "a sinistra" : "a destra"}: l'<b>esponente</b> vale <b>${E}</b>.</p>`);
+
+    // 6 — esponente con bias
+    steps.push(`<h4>L'esponente con il bias (+127)</h4>` +
+      `<p>Non si salva ${E} direttamente: si somma il <b>bias 127</b> (così anche gli esponenti negativi diventano positivi). <b>${E} + 127 = ${expVal}</b>, che a 8 bit è <code>${group(expField)}</code>.</p>`);
+
+    // 7 — mantissa
+    steps.push(`<h4>La mantissa (23 bit)</h4>` +
+      `<p>Si tengono solo le cifre <b>dopo</b> la virgola della forma normalizzata. L'1 iniziale c'è sempre, quindi è <b>implicito</b> e non si memorizza. Completata a 23 bit:</p>` +
+      `<div class="fp-norm"><code>${group(mantField)}</code></div>`);
+
+    // 8 — assembla
+    steps.push(`<h4>Assembla i 32 bit</h4>` +
+      `<p>In fila: <span class="fp-k s">segno</span> + <span class="fp-k e">esponente</span> + <span class="fp-k m">mantissa</span>.</p>` +
+      fpBitsRow(allBits) +
+      `<div class="fp-result">Rimesso insieme: (−1)<sup>${neg ? 1 : 0}</sup> × 1,mantissa × 2<sup>${E}</sup> = <b>${fmt(stored)}</b></div>` +
+      (stored !== num
+        ? `<p class="fp-warn">⚠️ Il numero di partenza (${raw}) è stato <b>arrotondato</b>: il valore davvero salvato è <b>${fmt(stored)}</b>. È questo che, in tanti linguaggi, fa sì che <code>0.1 + 0.2 ≠ 0.3</code>.</p>`
+        : `<p class="fp-exact">✓ ${fmt(num)} si rappresenta <b>esattamente</b> a 32 bit.</p>`));
+
+    tut.innerHTML = steps.map((s) => `<li>${s}</li>`).join("");
   }
 
   /* ============================================================

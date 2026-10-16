@@ -419,15 +419,26 @@
 .fp-bit.s { border-color: #e0533d; } .fp-bit.s.on { background: #e0533d; border-color: #e0533d; color: #fff; }
 .fp-bit.e { border-color: #2c6fe0; } .fp-bit.e.on { background: #2c6fe0; border-color: #2c6fe0; color: #fff; }
 .fp-bit.m { border-color: #e0a53d; } .fp-bit.m.on { background: #e0a53d; border-color: #e0a53d; color: #3a2c08; }
-.fp-parts { display: grid; grid-template-columns: 1fr; gap: 0.6rem; margin-bottom: 0.9rem; }
-.fp-part { display: grid; grid-template-columns: 8.5rem auto 1fr; align-items: center; gap: 0.6rem 0.9rem; padding: 0.5rem 0.7rem; border: 1px solid var(--line-soft); border-left-width: 4px; border-radius: 9px; background: var(--bg-sunk); }
-.fp-part.s { border-left-color: #e0533d; } .fp-part.e { border-left-color: #2c6fe0; } .fp-part.m { border-left-color: #e0a53d; }
-.fp-plbl { font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.03em; color: var(--ink-soft); }
-.fp-part code { font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink); letter-spacing: 0.04em; word-break: break-all; }
-.fp-pv { font-size: 0.82rem; color: var(--ink-soft); }
-.fp-pv b { color: var(--ink); }
-.fp-formula { padding: 0.8rem 0.9rem; border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 10px; background: var(--bg-elev); font-family: var(--font-mono); font-size: 0.86rem; line-height: 1.7; color: var(--ink-soft); word-break: break-word; }
-.fp-formula b { color: var(--accent); }
+/* tutorial passo passo */
+.fp-tutorial { list-style: none; counter-reset: fpstep; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.9rem; }
+.fp-tutorial > li { counter-increment: fpstep; position: relative; padding: 0.9rem 1rem 0.9rem 3rem; border: 1px solid var(--line-soft); border-radius: 12px; background: var(--bg-sunk); }
+.fp-tutorial > li::before { content: counter(fpstep); position: absolute; left: 0.9rem; top: 0.9rem; width: 1.55rem; height: 1.55rem; border-radius: 50%; background: var(--accent); color: var(--accent-ink); font-family: var(--font-mono); font-size: 0.82rem; font-weight: 600; display: flex; align-items: center; justify-content: center; }
+.fp-tutorial > li.fp-plain { padding-left: 1rem; } .fp-tutorial > li.fp-plain::before { display: none; }
+.fp-tutorial h4 { margin: 0 0 0.35rem; font-family: var(--font-display); font-weight: 500; font-size: 1rem; color: var(--ink); }
+.fp-tutorial p { margin: 0.35rem 0; font-size: 0.88rem; line-height: 1.6; color: var(--ink-soft); }
+.fp-tutorial p b { color: var(--ink); }
+.fp-tutorial code { font-family: var(--font-mono); font-size: 0.85em; color: var(--accent); letter-spacing: 0.04em; word-break: break-word; }
+.fp-frac { display: inline-flex; flex-direction: column; gap: 0.2rem; margin: 0.5rem 0; padding: 0.5rem 0.7rem; border: 1px solid var(--line-soft); border-radius: 8px; background: var(--bg-elev); }
+.fp-frac-row { display: flex; align-items: center; justify-content: space-between; gap: 1.2rem; font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-soft); }
+.fp-frac-row b { color: var(--accent); min-width: 1rem; text-align: center; }
+.fp-norm { margin: 0.4rem 0; font-size: 1rem; }
+.fp-norm code { color: var(--ink); }
+.fp-periodic { color: var(--ink-soft); }
+.fp-periodic b { color: #e0a53d; }
+.fp-result { margin-top: 0.6rem; padding: 0.7rem 0.85rem; border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 9px; background: var(--bg-elev); font-size: 0.88rem; line-height: 1.6; color: var(--ink-soft); }
+.fp-result b { color: var(--accent); }
+.fp-exact { color: #3fae6b; font-weight: 500; }
+.fp-k { font-weight: 600; } .fp-k.s { color: #e0533d; } .fp-k.e { color: #2c6fe0; } .fp-k.m { color: #e0a53d; }
 .fp-warn { margin-top: 0.7rem; padding: 0.7rem 0.9rem; border-radius: 10px; background: color-mix(in srgb, #e0a53d 12%, transparent); border: 1px solid color-mix(in srgb, #e0a53d 35%, transparent); font-size: 0.84rem; line-height: 1.55; color: var(--ink-soft); }
 .fp-warn b { color: var(--ink); } .fp-warn code { font-family: var(--font-mono); color: var(--ink); }
 .fp-presets { display: flex; flex-wrap: wrap; gap: 0.4rem; }
@@ -435,6 +446,6 @@
 .fp-presets button:hover { border-color: var(--accent); color: var(--accent); }
 
 @media (max-width: 560px) {
-  .fp-part { grid-template-columns: 1fr; gap: 0.25rem; }
-  .fp-plbl { font-size: 0.68rem; }
+  .fp-bit { width: 1.15rem; height: 1.5rem; font-size: 0.7rem; }
+  .fp-frac-row { gap: 0.6rem; font-size: 0.74rem; }
 }
