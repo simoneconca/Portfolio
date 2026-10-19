@@ -60,33 +60,84 @@
           <a href="../">Lab</a><span class="sep">/</span><span class="current">Come funziona l'IA generativa</span>
         </nav>
         <h1>Come funziona l'<em>IA generativa</em></h1>
-        <p class="lead">ChatGPT e simili sembrano «capire», ma in fondo fanno una cosa sola: <strong>indovinare la parola successiva</strong>, una alla volta. Qui lo vedi davvero — la frase si trasforma in <strong>numeri</strong>, il modello calcola le <strong>probabilità</strong> della parola dopo e ne sceglie una. Gira un modellino vero nel tuo browser, addestrato su un testo d'esempio.</p>
+        <p class="lead">ChatGPT e simili sembrano «capire», ma in fondo fanno una cosa sola: <strong>indovinare la parola successiva</strong>, una alla volta. In questa lezione lo smontiamo pezzo per pezzo — dal testo ai numeri, da come «impara» alle probabilità, fino alla generazione e alla temperatura. Gira un vero modellino nel tuo browser, addestrato su un testo d'esempio: niente magia, solo conteggi e probabilità.</p>
+        <nav class="ga-toc" aria-label="Indice della lezione">
+          <a href="#passo1"><b>1</b> Dal testo ai numeri</a>
+          <a href="#passo2"><b>2</b> Come «impara»</a>
+          <a href="#passo3"><b>3</b> Le probabilità</a>
+          <a href="#passo4"><b>4</b> Genera una parola alla volta</a>
+          <a href="#passo5"><b>5</b> La temperatura</a>
+          <a href="#passo6"><b>6</b> Approfondimenti</a>
+        </nav>
       </div>
     </section>
 
     <!-- 1. TOKENIZZAZIONE -->
-    <section class="section ga-sec">
+    <section class="section ga-sec" id="passo1">
       <div class="container">
         <header class="ga-head">
           <span class="panel-kicker">Passo 1</span>
-          <h2 class="panel-title">Tokenizzazione: dal testo ai numeri</h2>
-          <p class="panel-sub">Un modello non legge lettere: prima spezza il testo in <b>token</b> (pezzi: parole, punteggiatura) e li trasforma in <b>numeri</b>. Scrivi qualcosa e guarda i token.</p>
+          <h2 class="panel-title">Dal testo ai numeri: la tokenizzazione</h2>
+          <p class="panel-sub">Un computer non sa cosa sia una «parola»: sa fare solo calcoli con <b>numeri</b>. Quindi la primissima cosa che fa un modello è spezzare il testo in <b>token</b> (pezzi: parole, punteggiatura) e assegnare a ciascuno un <b>numero</b> (il suo ID nel <b>vocabolario</b>). Scrivi qualcosa e guarda:</p>
         </header>
         <div class="panel">
           <input id="gaTokInput" class="ga-tokinput" type="text" autocomplete="off" spellcheck="false" value="Le IA non capiscono: prevedono.">
           <div class="ga-tokens" id="gaTokens"></div>
           <p class="ga-tokcount" id="gaTokCount"></p>
+          <div class="ga-note">
+            <b>La stessa parola riceve sempre lo stesso numero.</b> L'insieme di tutti i token conosciuti è il <b>vocabolario</b>. Questo modellino ne ha pochi; modelli veri come ChatGPT ne hanno ~100.000, e spesso spezzano le parole in <b>pezzi di parola</b> (es. «incredibilmente» → «in·credibil·mente»), così possono scrivere anche parole mai viste.
+          </div>
+          <button type="button" class="ghost-btn" id="gaVocabBtn" aria-expanded="false">📖 Mostra il vocabolario del modello</button>
+          <div class="ga-vocab" id="gaVocab" hidden></div>
         </div>
       </div>
     </section>
 
-    <!-- 2. GENERATORE -->
-    <section class="section ga-sec" style="padding-top:0">
+    <!-- 2. TRAINING: CONTARE -->
+    <section class="section ga-sec" id="passo2" style="padding-top:0">
       <div class="container">
         <header class="ga-head">
           <span class="panel-kicker">Passo 2</span>
-          <h2 class="panel-title">Prevedi la parola successiva</h2>
-          <p class="panel-sub">Dato l'inizio della frase, il modello assegna una <b>probabilità</b> a ogni possibile parola dopo, e ne pesca una. La <b>temperatura</b> decide quanto «osa»: bassa = sceglie sempre la più probabile (ripetitivo), alta = più casuale (creativo, ma può deragliare). Premi <b>Passo</b>, oppure clicca tu una parola.</p>
+          <h2 class="panel-title">Come «impara»: conta gli schemi</h2>
+          <p class="panel-sub">Addestrare un modello vuol dire <b>leggere tantissimo testo e contare quali parole seguono quali altre</b>. Non memorizza le frasi: tiene il conto dei <b>pattern</b>. Scegli un inizio e guarda, nel testo d'esempio, cosa veniva <b>subito dopo</b> e quante volte:</p>
+        </header>
+        <div class="panel">
+          <div class="ga-ctxpick-row">
+            <span class="ga-seed-lbl">Dopo le parole:</span>
+            <span class="ga-ctxpick" id="gaCtxPick"></span>
+          </div>
+          <span class="state-label" style="margin-top:1rem">Dove compare nel testo d'esempio</span>
+          <div class="ga-corpus" id="gaCorpus"></div>
+          <span class="state-label" style="margin-top:1rem">Conteggio di ciò che viene dopo</span>
+          <div class="ga-counts" id="gaCounts"></div>
+          <p class="ga-tokcount" id="gaCountCap"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. PROBABILITÀ -->
+    <section class="section ga-sec" id="passo3" style="padding-top:0">
+      <div class="container">
+        <header class="ga-head">
+          <span class="panel-kicker">Passo 3</span>
+          <h2 class="panel-title">Dalle conte alle probabilità</h2>
+          <p class="panel-sub">I conteggi diventano <b>probabilità</b> con una semplice divisione: <i>quante volte quella parola / quante volte in totale</i>. Così il modello sa, per lo stesso inizio di prima, <b>quanto è probabile</b> ogni parola successiva.</p>
+        </header>
+        <div class="panel">
+          <p class="ga-ctx" id="gaProbCtx"></p>
+          <div class="ga-prob" id="gaProb"></div>
+          <div class="ga-note" id="gaProbNote"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. GENERATORE -->
+    <section class="section ga-sec" id="passo4" style="padding-top:0">
+      <div class="container">
+        <header class="ga-head">
+          <span class="panel-kicker">Passo 4</span>
+          <h2 class="panel-title">Genera: una parola alla volta</h2>
+          <p class="panel-sub">Mettiamo tutto insieme. Il modello guarda le <b>ultime parole</b>, calcola le probabilità della successiva, ne <b>pesca una</b> (come un dado truccato: le più probabili escono più spesso), la aggiunge alla frase… e ricomincia. Premi <b>Passo</b> per farlo una volta, oppure clicca tu una parola candidata.</p>
         </header>
 
         <div class="ga-gen">
@@ -104,23 +155,50 @@
               <label class="ga-temp">Temperatura <b id="gaTempV">0.8</b>
                 <input type="range" id="gaTemp" min="20" max="150" value="80"></label>
             </div>
+            <div class="ga-ctxlen">
+              <span class="ga-seed-lbl">Quanto contesto guarda:</span>
+              <div class="seg ga-ctxseg" id="gaCtxLen" role="group" aria-label="Lunghezza del contesto">
+                <button type="button" class="seg-btn" data-n="1">1 parola</button>
+                <button type="button" class="seg-btn active" data-n="2">2 parole</button>
+              </div>
+            </div>
           </div>
           <div class="panel ga-cands-panel">
-            <span class="state-label">Parole candidate · prossima</span>
+            <span class="state-label">Parole candidate · la prossima</span>
             <p class="ga-ctx" id="gaCtx"></p>
             <div class="ga-cands" id="gaCands"></div>
+            <p class="ga-cand-hint">La barra è la probabilità. Il modello «tira il dado» pesato su queste: di solito esce una delle prime, ogni tanto una più in basso.</p>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- 3. SPIEGAZIONI -->
-    <section class="section ga-sec" style="padding-top:0;padding-bottom:clamp(4rem,9vw,7rem)">
+    <!-- 5. TEMPERATURA -->
+    <section class="section ga-sec" id="passo5" style="padding-top:0">
+      <div class="container">
+        <header class="ga-head">
+          <span class="panel-kicker">Passo 5</span>
+          <h2 class="panel-title">La temperatura: quanto «osa»</h2>
+          <p class="panel-sub">La temperatura rimodella le probabilità <b>prima</b> di pescare. <b>Bassa</b>: la parola più probabile schiaccia le altre → testo sicuro ma ripetitivo. <b>Alta</b>: le probabilità si <b>appiattiscono</b> → anche le parole rare hanno una chance → più creativo, ma può deragliare. Trascina e guarda le barre cambiare (stesso esempio, solo la temperatura varia):</p>
+        </header>
+        <div class="panel">
+          <div class="ga-tempdemo" id="gaTempDemo"></div>
+          <label class="ga-temp ga-temp-demo">Temperatura <b id="gaTempDemoV">0.80</b>
+            <input type="range" id="gaTempDemoS" min="20" max="200" value="80"></label>
+          <div class="ga-tempmarks"><span>❄ 0,2 · conservativo</span><span>1,0 · neutro</span><span>2,0 · creativo 🔥</span></div>
+          <div class="ga-note">In pratica: formula <code>p<sup>1/T</sup></code> applicata a ogni probabilità, poi si rinormalizza (si fa tornare la somma a 100%). A <b>T molto bassa</b> vince quasi sempre la più alta; a <b>T alta</b> tutte si avvicinano.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 6. APPROFONDIMENTI -->
+    <section class="section ga-sec" id="passo6" style="padding-top:0;padding-bottom:clamp(4rem,9vw,7rem)">
       <div class="container">
         <div class="panel">
           <header class="panel-head">
-            <span class="panel-kicker">Capire</span>
-            <h2 class="panel-title">Cosa sta succedendo davvero</h2>
+            <span class="panel-kicker">Passo 6 · Approfondimenti</span>
+            <h2 class="panel-title">Dal giocattolo ai veri LLM</h2>
+            <p class="panel-sub">Il principio che hai visto è reale. Ecco cosa cambia nei modelli veri, e le cose importanti da sapere. Clicca per espandere.</p>
           </header>
           <div id="gaGuide"></div>
         </div>
