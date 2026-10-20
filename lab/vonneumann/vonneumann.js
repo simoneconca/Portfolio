@@ -83,4 +83,107 @@
   $("flowAuto").addEventListener("click", toggleAuto);
   $("flowReset").addEventListener("click", flowReset);
   flowReset();
+
+  /* ============================================================
+     1. HARDWARE E SOFTWARE — classifica
+     ============================================================ */
+  const HWSW = [
+    { name: "CPU", a: "hw" }, { name: "Tastiera", a: "hw" }, { name: "RAM", a: "hw" },
+    { name: "Mouse", a: "hw" }, { name: "SSD / Hard disk", a: "hw" }, { name: "Monitor", a: "hw" },
+    { name: "Windows", a: "sw" }, { name: "Android", a: "sw" }, { name: "Un videogioco", a: "sw" },
+    { name: "Il browser", a: "sw" }, { name: "WhatsApp", a: "sw" }, { name: "Photoshop", a: "sw" },
+  ];
+  const hwswDone = {}; let hwswScore = 0;
+  function updateHwswScore() {
+    const done = Object.keys(hwswDone).length;
+    $("hwswScore").innerHTML = done
+      ? `Risposte giuste: <b>${hwswScore} / ${done}</b>` + (done === HWSW.length ? " — completato! 🎉" : "") : "";
+  }
+  function renderHwsw() {
+    $("hwswGrid").innerHTML = HWSW.map((it, i) =>
+      `<div class="hwsw-item" data-i="${i}">` +
+        `<span class="hwsw-name">${it.name}</span>` +
+        `<div class="hwsw-btns"><button type="button" data-a="hw">💻 Hardware</button>` +
+        `<button type="button" data-a="sw">📀 Software</button></div></div>`).join("");
+  }
+  $("hwswGrid").addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-a]"); if (!btn) return;
+    const item = btn.closest(".hwsw-item"), i = +item.dataset.i;
+    if (hwswDone[i]) return;
+    const correct = HWSW[i].a, ok = btn.dataset.a === correct;
+    hwswDone[i] = true; if (ok) hwswScore++;
+    item.classList.add(ok ? "correct" : "wrong");
+    item.querySelectorAll("[data-a]").forEach((b) => { b.disabled = true; if (b.dataset.a === correct) b.classList.add("right"); });
+    item.insertAdjacentHTML("beforeend", `<span class="hwsw-fb ${ok ? "ok" : "no"}">${ok ? "✓ giusto" : "✗ è " + (correct === "hw" ? "hardware" : "software")}</span>`);
+    updateHwswScore();
+  });
+  renderHwsw(); updateHwswScore();
+
+  /* ============================================================
+     2. INPUT – ELABORAZIONE – OUTPUT
+     ============================================================ */
+  const IPO = [
+    { topic: "🧮 Calcolatrice: 3 + 5", in: "Digiti «3 + 5» sulla tastiera.", proc: "La CPU somma i due numeri.", out: "Sullo schermo appare «8».", mem: "I numeri e il risultato sono tenuti nella RAM durante il calcolo." },
+    { topic: "🎵 Ascoltare una canzone", in: "Premi play: il file audio viene letto dal disco.", proc: "Il computer decodifica l'audio in un segnale.", out: "Le casse (o le cuffie) emettono il suono.", mem: "Un pezzo di canzone viene caricato in RAM mentre suona." },
+    { topic: "🖨️ Stampare una foto", in: "Invii la foto alla stampante.", proc: "La stampante elabora i dati e prepara i colori.", out: "Esce il foglio stampato.", mem: "L'immagine resta in memoria finché non è stampata." },
+    { topic: "🎮 Giocare", in: "Premi i tasti o muovi il joystick.", proc: "CPU e scheda video (GPU) calcolano la scena.", out: "Lo schermo mostra il gioco, le casse il suono.", mem: "Il gioco e la scena corrente stanno in RAM." },
+  ];
+  let ipoI = 0;
+  function renderIpoPick() { $("ipoPick").innerHTML = IPO.map((s, i) => `<button type="button" class="ipo-btn${i === ipoI ? " active" : ""}" data-i="${i}">${s.topic}</button>`).join(""); }
+  function renderIpo() {
+    const s = IPO[ipoI];
+    $("ipoIn").textContent = s.in; $("ipoProc").textContent = s.proc; $("ipoOut").textContent = s.out;
+    $("ipoMem").innerHTML = `<span class="ipo-mem-ico">📥</span> <b>Memoria:</b> ${s.mem}`;
+  }
+  $("ipoPick").addEventListener("click", (e) => { const b = e.target.closest("[data-i]"); if (!b) return; ipoI = +b.dataset.i; renderIpoPick(); renderIpo(); });
+  renderIpoPick(); renderIpo();
+
+  /* ============================================================
+     4. CICLO MACCHINA — fetch / decode / execute
+     ============================================================ */
+  const FDE = [
+    { desc: "<b>Preleva (fetch).</b> La CU usa il <b>Program Counter</b> (PC) per leggere dalla RAM la prossima istruzione: «<b>SOMMA A, B</b>». L'istruzione entra nella CPU.", pc: 0, ris: "—" },
+    { desc: "<b>Decodifica (decode).</b> La CU <b>interpreta</b> l'istruzione: capisce che è una <b>somma</b> e che deve usare l'ALU con i valori A e B.", pc: 0, ris: "—" },
+    { desc: "<b>Esegui (execute).</b> L'<b>ALU</b> prende A = 3 e B = 5 dai registri e calcola <b>3 + 5 = 8</b>.", pc: 0, ris: "8" },
+    { desc: "<b>Scrivi (write-back).</b> Il risultato <b>8</b> viene salvato. Il <b>PC avanza</b> (→ 1) e il ciclo <b>ricomincia</b> con l'istruzione successiva.", pc: 1, ris: "8" },
+  ];
+  let fdeS = -1, fdeTimer = null;
+  function paintFde() {
+    document.querySelectorAll(".fde-stage").forEach((el) => el.classList.toggle("on", +el.dataset.s === fdeS));
+    const s = fdeS < 0 ? null : FDE[fdeS];
+    $("fdeRegs").innerHTML =
+      `<span class="fde-reg"><b>PC</b><i>${s ? s.pc : 0}</i></span>` +
+      `<span class="fde-reg a"><b>A</b><i>3</i></span>` +
+      `<span class="fde-reg b"><b>B</b><i>5</i></span>` +
+      `<span class="fde-reg r"><b>Risultato</b><i>${s ? s.ris : "—"}</i></span>`;
+    $("fdeDesc").innerHTML = s ? s.desc : "Premi <b>Passo</b> per seguire il ciclo su un'istruzione, oppure <b>«Avvia»</b> per vederlo girare in continuo.";
+  }
+  function fdeNext() { fdeS = (fdeS + 1) % FDE.length; paintFde(); }
+  function fdeStopAuto() { if (fdeTimer) { clearInterval(fdeTimer); fdeTimer = null; $("fdeAuto").textContent = "▶ Avvia il ciclo"; $("fdeAuto").classList.remove("on"); } }
+  $("fdeStep").addEventListener("click", () => { fdeStopAuto(); fdeNext(); });
+  $("fdeAuto").addEventListener("click", () => { if (fdeTimer) { fdeStopAuto(); return; } $("fdeAuto").textContent = "⏸ Pausa"; $("fdeAuto").classList.add("on"); fdeTimer = setInterval(fdeNext, 1600); });
+  $("fdeReset").addEventListener("click", () => { fdeStopAuto(); fdeS = -1; paintFde(); });
+  paintFde();
+
+  /* ============================================================
+     5. SISTEMA OPERATIVO — strati
+     ============================================================ */
+  const SO_LAYERS = [
+    { ico: "🧑", name: "Tu (l'utente)", text: "Usi il computer tramite finestre, icone, tocchi e clic. Non parli mai direttamente con l'hardware: passi sempre dal sistema operativo." },
+    { ico: "🧩", name: "I programmi (le app)", text: "Browser, giochi, Word, WhatsApp… Per funzionare <b>chiedono servizi</b> al sistema operativo (aprire un file, mostrare una finestra, usare la rete)." },
+    { ico: "⚙️", name: "Il Sistema Operativo", text: "Il grande <b>intermediario</b>: gestisce la <b>memoria</b>, i <b>file</b>, i <b>processi</b> (i programmi in esecuzione) e le <b>periferiche</b>; offre a te un'interfaccia e ai programmi dei «servizi» pronti all'uso. Esempi: <b>Windows, macOS, Linux, Android, iOS</b>.", hot: true },
+    { ico: "🔌", name: "L'hardware", text: "CPU, memoria, dischi, schermo… Esegue gli ordini, ma da solo non saprebbe cosa fare: è il sistema operativo a comandarlo per conto tuo e dei programmi." },
+  ];
+  function renderSo() {
+    $("soStack").innerHTML = SO_LAYERS.map((l, i) =>
+      `<button type="button" class="so-layer${l.hot ? " hot" : ""}" data-i="${i}"><span class="so-ico">${l.ico}</span><span class="so-name">${l.name}</span></button>` +
+      (i < SO_LAYERS.length - 1 ? `<span class="so-sep">▼</span>` : "")).join("");
+  }
+  function showSo(i) {
+    const l = SO_LAYERS[i];
+    document.querySelectorAll(".so-layer").forEach((el) => el.classList.toggle("sel", +el.dataset.i === i));
+    $("soDetail").innerHTML = `<span class="so-d-ico">${l.ico}</span><div><b>${l.name}</b><p>${l.text}</p></div>`;
+  }
+  $("soStack").addEventListener("click", (e) => { const b = e.target.closest("[data-i]"); if (b) showSo(+b.dataset.i); });
+  renderSo(); showSo(2);
 })();

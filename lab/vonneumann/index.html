@@ -61,11 +61,62 @@
         </nav>
         <h1>La macchina di von Neumann</h1>
         <p class="lead">Quasi tutti i computer di oggi seguono lo stesso schema, pensato da <strong>John von Neumann</strong>. È il modello di base per capire <strong>com'è fatto</strong> un computer e <strong>come lavora</strong>: hardware e software, dispositivi di input/output, i componenti interni, e il <strong>ciclo</strong> con cui la macchina esegue le istruzioni.</p>
+        <nav class="vn-toc" aria-label="Indice">
+          <a href="#hwsw"><b>1</b> Hardware e software</a>
+          <a href="#ipo"><b>2</b> Input · elaborazione · output</a>
+          <a href="#componenti"><b>3</b> I componenti</a>
+          <a href="#ciclo"><b>4</b> Il ciclo macchina</a>
+          <a href="#so"><b>5</b> Il sistema operativo</a>
+        </nav>
       </div>
     </section>
 
-    <!-- =================== COMPONENTI =================== -->
-    <section class="section vn-section" id="compMode" style="padding-top:0">
+    <!-- =================== 1 · HARDWARE E SOFTWARE =================== -->
+    <section class="section vn-section" id="hwsw" style="padding-top:0">
+      <div class="container">
+        <div class="panel">
+          <header class="panel-head">
+            <span class="panel-kicker">1 · Le due facce del computer</span>
+            <h2 class="panel-title">Hardware e software</h2>
+            <p class="panel-sub">L'<b>hardware</b> è tutto ciò che puoi <b>toccare</b>: le parti fisiche (CPU, RAM, tastiera, schermo…). Il <b>software</b> sono i <b>programmi</b>, cioè le istruzioni: non si toccano (il sistema operativo, le app, i giochi). Si completano a vicenda: l'hardware <b>esegue</b>, il software gli dice <b>cosa fare</b>. Prova a classificarli:</p>
+          </header>
+          <div class="hwsw-grid" id="hwswGrid"></div>
+          <p class="hwsw-score" id="hwswScore"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== 2 · INPUT-ELABORAZIONE-OUTPUT =================== -->
+    <section class="section vn-section" id="ipo" style="padding-top:0">
+      <div class="container">
+        <div class="panel">
+          <header class="panel-head">
+            <span class="panel-kicker">2 · Lo schema fondamentale</span>
+            <h2 class="panel-title">Input, elaborazione, output</h2>
+            <p class="panel-sub">Qualunque cosa faccia, il computer segue sempre lo stesso schema: riceve dei dati (<b>input</b>), li lavora (<b>elaborazione</b>) e restituisce un risultato (<b>output</b>). La <b>memoria</b> conserva i dati durante il percorso. Scegli un esempio:</p>
+          </header>
+          <div class="ipo-pick" id="ipoPick"></div>
+          <div class="ipo-stage">
+            <div class="ipo-box in"><span class="ipo-lbl">⌨️ Input</span><p id="ipoIn"></p></div>
+            <span class="ipo-arr">→</span>
+            <div class="ipo-box proc"><span class="ipo-lbl">🧠 Elaborazione</span><p id="ipoProc"></p></div>
+            <span class="ipo-arr">→</span>
+            <div class="ipo-box out"><span class="ipo-lbl">🖥️ Output</span><p id="ipoOut"></p></div>
+          </div>
+          <div class="ipo-mem" id="ipoMem"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== 3 · COMPONENTI =================== -->
+    <section class="section vn-section" id="componenti" style="padding-top:0">
+      <div class="container">
+        <header class="panel-head" style="margin-bottom:1.1rem">
+          <span class="panel-kicker">3 · L'hardware interno</span>
+          <h2 class="panel-title">I componenti del PC</h2>
+          <p class="panel-sub">Clicca un componente per scoprire a cosa serve, poi premi «Guarda il flusso» per vedere come i dati lo attraversano, dall'accensione all'output.</p>
+        </header>
+      </div>
       <div class="container vn-layout">
 
         <!-- Diagramma -->
@@ -132,6 +183,50 @@
         </div>
       </div>
 
+    </section>
+
+    <!-- =================== 4 · CICLO MACCHINA =================== -->
+    <section class="section vn-section" id="ciclo" style="padding-top:0">
+      <div class="container">
+        <div class="panel">
+          <header class="panel-head">
+            <span class="panel-kicker">4 · Come esegue un programma</span>
+            <h2 class="panel-title">Il ciclo della macchina: fetch · decode · execute</h2>
+            <p class="panel-sub">La CPU non fa altro che ripetere, milioni di volte al secondo, lo stesso <b>ciclo</b> su ogni istruzione: la <b>preleva</b> dalla memoria, la <b>decodifica</b> (capisce cosa fare), la <b>esegue</b> e <b>scrive</b> il risultato. Seguiamo un esempio: far calcolare alla CPU <b>A + B</b>.</p>
+          </header>
+          <div class="fde-stages" id="fdeStages">
+            <div class="fde-stage" data-s="0"><span class="fde-n">①</span> Preleva <small>fetch</small></div>
+            <div class="fde-stage" data-s="1"><span class="fde-n">②</span> Decodifica <small>decode</small></div>
+            <div class="fde-stage" data-s="2"><span class="fde-n">③</span> Esegui <small>execute</small></div>
+            <div class="fde-stage" data-s="3"><span class="fde-n">④</span> Scrivi <small>write-back</small></div>
+          </div>
+          <div class="fde-regs" id="fdeRegs"></div>
+          <p class="fde-desc" id="fdeDesc"></p>
+          <div class="vn-exec">
+            <button id="fdeStep" class="run-btn" type="button">▸ Passo</button>
+            <button id="fdeAuto" class="ghost-btn" type="button">▶ Avvia il ciclo</button>
+            <button id="fdeReset" class="ghost-btn" type="button">↺ Reset</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== 5 · SISTEMA OPERATIVO =================== -->
+    <section class="section vn-section" id="so" style="padding-top:0">
+      <div class="container">
+        <div class="panel">
+          <header class="panel-head">
+            <span class="panel-kicker">5 · Il software che comanda tutto</span>
+            <h2 class="panel-title">Il sistema operativo</h2>
+            <p class="panel-sub">Il <b>sistema operativo</b> (Windows, macOS, Linux, Android, iOS) è il software più importante: fa da <b>intermediario</b> fra te, i programmi e l'hardware. Senza di lui, l'hardware non saprebbe cosa fare e le app non potrebbero funzionare. Clicca uno strato per scoprirlo:</p>
+          </header>
+          <div class="so-stack" id="soStack"></div>
+          <div class="so-detail" id="soDetail"></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section vn-section" style="padding-top:0;padding-bottom:clamp(3rem,7vw,5rem)">
       <div class="container">
         <a class="vn-crosslink" href="../hardware/">
           <span class="vn-cross-ico">🔧</span>
