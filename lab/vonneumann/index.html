@@ -60,13 +60,7 @@
           <a href="../">Lab</a><span class="sep">/</span><span class="current">Macchina di von Neumann</span>
         </nav>
         <h1>La macchina di von Neumann</h1>
-        <p class="lead">Quasi tutti i computer di oggi seguono lo stesso schema, pensato da <strong>John von Neumann</strong>. Scopri <strong>a cosa serve ogni componente</strong>, guarda <strong>come i dati passano</strong> da uno all'altro, e come il computer <strong>codifica</strong> testo, immagini e suoni in 0 e 1.</p>
-        <div class="vn-mode">
-          <div class="seg" id="modeSeg" role="group" aria-label="Argomento">
-            <button type="button" data-mode="comp" class="seg-btn active">I componenti del PC</button>
-            <button type="button" data-mode="cod" class="seg-btn">La codifica dei file</button>
-          </div>
-        </div>
+        <p class="lead">Quasi tutti i computer di oggi seguono lo stesso schema, pensato da <strong>John von Neumann</strong>. È il modello di base per capire <strong>com'è fatto</strong> un computer e <strong>come lavora</strong>: hardware e software, dispositivi di input/output, i componenti interni, e il <strong>ciclo</strong> con cui la macchina esegue le istruzioni.</p>
       </div>
     </section>
 
@@ -144,201 +138,14 @@
           <span class="vn-cross-text"><b>Dalla teoria alla pratica.</b> Hai capito a cosa serve ogni componente? Nel lab <b>«Montaggio PC»</b> li scegli e li assembli davvero, pezzo per pezzo, imparando quali sono compatibili.</span>
           <span class="vn-cross-go">Monta un PC →</span>
         </a>
+        <a class="vn-crosslink" href="../codifica/">
+          <span class="vn-cross-ico">📦</span>
+          <span class="vn-cross-text"><b>E i dati, com'è fatti?</b> Testo, immagini, suoni e video dentro la memoria sono tutti <b>0 e 1</b>. Scopri come si traducono nel lab <b>«Codifica dei file»</b>.</span>
+          <span class="vn-cross-go">Vedi la codifica →</span>
+        </a>
       </div>
     </section>
 
-    <!-- =================== CODIFICA =================== -->
-    <section class="section vn-section" id="codMode" hidden style="padding-top:0">
-      <div class="container">
-        <div class="seg cod-seg" id="codSeg" role="group" aria-label="Tipo di file" style="margin-bottom:1.1rem">
-          <button type="button" data-cod="testo" class="seg-btn active">📝 Testo</button>
-          <button type="button" data-cod="img" class="seg-btn">🖼️ Immagini</button>
-          <button type="button" data-cod="suono" class="seg-btn">🔊 Suono</button>
-          <button type="button" data-cod="video" class="seg-btn">🎬 Video</button>
-          <button type="button" data-cod="compr" class="seg-btn">🗜️ Compressione</button>
-        </div>
-
-        <!-- TESTO -->
-        <div class="panel cod-pane" id="codTesto" data-cod="testo">
-          <h2 class="cod-h2">Il testo → codice ASCII</h2>
-          <p class="cod-intro">A ogni <b>carattere</b> il computer associa un numero, e quel numero lo scrive in <b>binario</b> (0 e 1). La tabella di base si chiama <b>ASCII</b>: usa <b>7 bit</b> per carattere, cioè 128 caratteri possibili. Scrivi qualcosa e guarda come diventa binario:</p>
-          <div class="field cod-field"><input id="txtIn" maxlength="20" spellcheck="false" autocomplete="off" value="Ciao"></div>
-          <div id="txtOut" class="txt-out"></div>
-
-          <div class="ascii-toggle-wrap">
-            <button id="asciiToggle" class="ghost-btn" type="button" aria-expanded="false" aria-controls="asciiTable">📋 Mostra la tabella ASCII completa (0–127)</button>
-          </div>
-          <p class="ascii-legend" id="asciiLegend" hidden>I primi 32 codici (0–31) e il 127 sono <b>caratteri di controllo</b> (non si stampano: invio, tabulazione…), il 32 è lo <b>spazio</b>, dal 33 al 126 ci sono lettere, cifre e simboli.</p>
-          <div id="asciiTable" class="ascii-table" hidden></div>
-
-          <h3 class="cod-h3">Oltre l'ASCII: Unicode e UTF-8</h3>
-          <p class="cod-sub">Con 128 caratteri l'ASCII non basta per accenti, altri alfabeti ed emoji. <b>Unicode</b> assegna un numero (il <b>code point</b>, scritto <code>U+…</code>) a <b>ogni</b> carattere di ogni lingua, più gli emoji. La codifica <b>UTF-8</b> scrive quel numero usando <b>da 1 a 4 byte</b>: i caratteri ASCII restano 1 byte, gli accentati di solito 2, molti altri 3, gli emoji 4. Scrivi qualcosa o prova gli esempi:</p>
-          <div class="field cod-field"><input id="uniIn" maxlength="12" spellcheck="false" autocomplete="off" value="àé€中😀"></div>
-          <div class="uni-examples" id="uniExamples">
-            <button type="button" data-ch="A">A</button>
-            <button type="button" data-ch="à">à</button>
-            <button type="button" data-ch="€">€</button>
-            <button type="button" data-ch="ñ">ñ</button>
-            <button type="button" data-ch="中">中</button>
-            <button type="button" data-ch="😀">😀</button>
-          </div>
-          <div id="uniOut" class="uni-out"></div>
-          <div class="cod-note">
-            Più byte = più caratteri rappresentabili. Esistono anche <b>UTF-16</b> e <b>UTF-32</b>, ma <b>UTF-8</b> è lo standard del web proprio perché è «a lunghezza variabile»: non spreca spazio sui caratteri comuni (ASCII) e resta compatibile con i vecchi testi.
-          </div>
-        </div>
-
-        <!-- IMMAGINI -->
-        <div class="panel cod-pane" id="codImg" data-cod="img" hidden>
-          <h2 class="cod-h2">Le immagini → pixel e colori (RGB)</h2>
-          <p class="cod-intro">Un'immagine è una <b>griglia di quadratini</b>, i <b>pixel</b>. A ogni pixel si associa un colore. Nel modello <b>RGB</b> il colore nasce mescolando <b>Rosso, Verde e Blu</b>: 8 bit per ciascuno = <b>24 bit (3 byte) per pixel</b>, cioè 16.777.216 colori. Quegli 8 bit si scrivono anche, in modo più corto, con 2 cifre <b>esadecimali</b> (0–9, A–F).</p>
-
-          <!-- 1 · il colore di un pixel -->
-          <h3 class="cod-h3">1 · Il colore di un pixel</h3>
-          <p class="cod-sub">Scegli un colore: lo stesso valore è scritto in tre modi — <b>decimale</b> (0–255), <b>binario</b> (8 bit) ed <b>esadecimale</b> (2 cifre). Questo colore diventa anche il tuo «pennello» per la griglia qui sotto.</p>
-          <div class="rgb-lab">
-            <div class="rgb-swatch" id="rgbSwatch"></div>
-            <div class="rgb-controls">
-              <label class="rgb-row r"><span>R</span><input type="range" id="rR" min="0" max="255" value="233" class="slider"><b id="rRv">233</b></label>
-              <label class="rgb-row g"><span>G</span><input type="range" id="rG" min="0" max="255" value="30" class="slider"><b id="rGv">30</b></label>
-              <label class="rgb-row b"><span>B</span><input type="range" id="rB" min="0" max="255" value="99" class="slider"><b id="rBv">99</b></label>
-              <div class="rgb-bits" id="rgbBits"></div>
-            </div>
-          </div>
-          <div class="hex-explain" id="hexExplain"></div>
-
-          <!-- 2 · la griglia di pixel -->
-          <h3 class="cod-h3">2 · Un'immagine è una griglia di pixel</h3>
-          <p class="cod-sub">Quella che sembra una figura è in realtà una tabella di numeri, uno per pixel. <b>Ingrandisci</b> per vedere i singoli quadratini, <b>passa sopra</b> un pixel per leggerne i valori, oppure <b>clicca</b> per dipingerlo con il pennello scelto sopra.</p>
-          <div class="px-toolbar">
-            <button type="button" class="ghost-btn" id="pxExample">✦ Carica esempio</button>
-            <button type="button" class="ghost-btn" id="pxClear">✕ Svuota</button>
-            <label class="px-check"><input type="checkbox" id="pxGrid" checked> Griglia</label>
-            <label class="px-zoom"><span>Zoom</span><input type="range" id="pxZoom" min="6" max="30" value="18" class="slider"></label>
-            <span class="px-brush">pennello <i id="pxBrush"></i></span>
-          </div>
-          <div class="px-stage">
-            <div class="px-big"><canvas id="pxCanvas" aria-label="Griglia di pixel modificabile"></canvas></div>
-            <div class="px-side">
-              <div class="px-real-wrap">
-                <span class="px-real-lbl">dimensione reale</span>
-                <canvas id="pxReal" aria-hidden="true"></canvas>
-                <span class="px-real-hint">com'è <b>vista</b> da lontano</span>
-              </div>
-              <div class="px-readout" id="pxReadout">Passa sopra un pixel per vederne i valori…</div>
-            </div>
-          </div>
-          <div class="px-stats" id="pxStats"></div>
-
-          <div class="cod-note">
-            <b>Risoluzione:</b> più pixel ci sono, più l'immagine è dettagliata (e pesa). Per pesare meno si usano le <b>palette</b> e formati come <b>JPG</b> (foto), <b>PNG</b> (con trasparenza), <b>SVG</b> (vettoriale, ingrandibile senza perdere qualità), <b>GIF</b> (animazioni, 256 colori).
-          </div>
-
-          <!-- 3 · Scala di grigi (sezione autonoma) -->
-          <div class="gray-sec">
-            <h3 class="cod-h3">3 · La scala di grigi — 1 byte per pixel</h3>
-            <p class="cod-sub">Un'immagine può non avere colori, ma solo <b>grigi</b>. In quel caso ogni pixel è un <b>solo numero</b> da 0 a 255: <b>0 = nero</b>, <b>255 = bianco</b>, e i valori in mezzo sono le sfumature. Serve <b>1 byte</b> invece di 3, quindi l'immagine pesa <b>un terzo</b>. Muovi il cursore e guarda il grigio corrispondente al suo byte:</p>
-            <div class="gray-lab">
-              <div class="gray-swatch" id="graySwatch"></div>
-              <div class="gray-controls">
-                <label class="gray-row"><span>valore</span><input type="range" id="grayVal" min="0" max="255" value="128" class="slider"><b id="grayValV">128</b></label>
-                <div class="gray-bits" id="grayBits"></div>
-              </div>
-            </div>
-            <div class="gray-ramp" id="grayRamp" aria-hidden="true"></div>
-            <div class="gray-ramp-lbl"><span>0 · nero</span><span>128</span><span>255 · bianco</span></div>
-            <p class="cod-sub" style="margin-top:1rem">E il grigio di una <b>foto a colori</b>? Si ricava dalla sua <b>luminosità</b>: <code>grigio = 0,299·R + 0,587·G + 0,114·B</code> — il verde «pesa» di più perché l'occhio lo percepisce meglio.</p>
-          </div>
-        </div>
-
-        <!-- SUONO -->
-        <div class="panel cod-pane" id="codSuono" data-cod="suono" hidden>
-          <h2 class="cod-h2">Il suono → campionamento</h2>
-          <p class="cod-intro">Il suono è un'onda <b>analogica</b> (continua). Per salvarlo, il computer ne misura l'altezza a intervalli regolari: è il <b>campionamento</b>. Più campioni prende, più la versione digitale somiglia all'originale (ma occupa più memoria). Muovi il cursore:</p>
-          <div class="snd-lab">
-            <svg id="sndWave" viewBox="0 0 600 200" preserveAspectRatio="none" aria-hidden="true"></svg>
-            <label class="snd-row"><span>Campioni</span><input type="range" id="sndRate" min="6" max="64" value="12" class="slider"><b id="sndRatev">12</b></label>
-            <p class="snd-quality" id="sndQuality"></p>
-          </div>
-          <div class="cod-note">
-            Formati audio comuni: <b>WAV</b> e <b>PCM</b> (non compressi, qualità piena), <b>MP3</b> e <b>WMA</b> (compressi, file più piccoli). La compressione può essere <b>lossless</b> (senza perdere nulla) o <b>lossy</b> (perde qualcosa per pesare meno).
-          </div>
-        </div>
-
-        <!-- VIDEO -->
-        <div class="panel cod-pane" id="codVideo" data-cod="video" hidden>
-          <h2 class="cod-h2">Il video → una sequenza di fotogrammi</h2>
-          <p class="cod-intro">Un video non è nient'altro che <b>tante immagini in fila</b> (i <b>fotogrammi</b>, o <i>frame</i>) mostrate una dopo l'altra molto in fretta: l'occhio le fonde e vede il <b>movimento</b>. Quanti fotogrammi al secondo si chiamano <b>fps</b> (<i>frame per second</i>). Più fps = movimento più fluido.</p>
-
-          <h3 class="cod-h3">Guarda i fotogrammi scorrere</h3>
-          <p class="cod-sub">Muovi il cursore: a pochi fps il movimento è a scatti, a tanti fps diventa fluido. Il contatore mostra quale fotogramma stai vedendo.</p>
-          <div class="vid-stage">
-            <canvas id="vidCanvas" width="320" height="180" aria-label="Animazione a fotogrammi"></canvas>
-            <div class="vid-controls">
-              <button type="button" class="run-btn" id="vidPlay">▶ Avvia</button>
-              <label class="vid-fps"><span>fps</span><input type="range" id="vidFps" min="1" max="30" value="8" class="slider"><b id="vidFpsV">8</b></label>
-              <span class="vid-frame" id="vidFrame">fotogramma 1</span>
-            </div>
-          </div>
-
-          <h3 class="cod-h3">Quanto pesa un video «grezzo»?</h3>
-          <p class="cod-sub">Ogni fotogramma è un'immagine (pixel × 3 byte). Moltiplica per gli fps e per i secondi: il numero diventa enorme. Prova:</p>
-          <div class="vid-calc">
-            <label class="vc-row"><span>Risoluzione</span>
-              <select id="vcRes">
-                <option value="640x480">640 × 480 (VGA)</option>
-                <option value="1280x720" selected>1280 × 720 (HD)</option>
-                <option value="1920x1080">1920 × 1080 (Full HD)</option>
-                <option value="3840x2160">3840 × 2160 (4K)</option>
-              </select>
-            </label>
-            <label class="vc-row"><span>fps</span>
-              <select id="vcFps"><option>24</option><option selected>30</option><option>60</option></select>
-            </label>
-            <label class="vc-row"><span>Durata (secondi)</span>
-              <input type="range" id="vcDur" min="1" max="120" value="10" class="slider"><b id="vcDurV">10 s</b>
-            </label>
-          </div>
-          <div class="vid-result" id="vidResult"></div>
-
-          <div class="cod-note">
-            Per questo i video sono <b>sempre compressi</b> (codec come <b>H.264/H.265</b> dentro i file <b>MP4</b>, <b>MKV</b>, <b>WEBM</b>): invece di salvare ogni fotogramma per intero, salvano <b>solo ciò che cambia</b> tra un frame e l'altro. Così un video diventa centinaia di volte più piccolo del «grezzo».
-          </div>
-        </div>
-
-        <!-- COMPRESSIONE -->
-        <div class="panel cod-pane" id="codCompr" data-cod="compr" hidden>
-          <h2 class="cod-h2">La compressione → file più piccoli</h2>
-          <p class="cod-intro">Comprimere vuol dire scrivere la stessa informazione <b>con meno byte</b>. Ci sono due famiglie: <b>senza perdita</b> (<i>lossless</i>) e <b>con perdita</b> (<i>lossy</i>).</p>
-
-          <h3 class="cod-h3">1 · Senza perdita (lossless) — esempio RLE</h3>
-          <p class="cod-sub">La compressione <b>lossless</b> sfrutta le <b>ripetizioni</b>: invece di scrivere «🟥🟥🟥🟥🟥» scrive «5×🟥». Si chiama <b>RLE</b> (Run-Length Encoding). Riespandendola si riottiene <b>esattamente</b> l'originale (ZIP, PNG, FLAC funzionano così). Prova a cambiare la riga:</p>
-          <div class="rle-toolbar">
-            <button type="button" class="ghost-btn" id="rleOrdinata">▦ Riga ordinata</button>
-            <button type="button" class="ghost-btn" id="rleCasuale">🎲 Riga casuale</button>
-          </div>
-          <div class="rle-row" id="rleRow" aria-hidden="true"></div>
-          <div class="rle-out" id="rleOut"></div>
-
-          <h3 class="cod-h3">2 · Con perdita (lossy) — la qualità JPG</h3>
-          <p class="cod-sub">La compressione <b>lossy</b> <b>butta via</b> i dettagli che l'occhio nota meno, per pesare molto meno (JPG per le foto, MP3 per la musica). Più comprimi, più si vedono i «difetti». Muovi il cursore della qualità: l'immagine viene davvero ri-compressa in JPEG dal tuo browser.</p>
-          <div class="jpg-lab">
-            <div class="jpg-view">
-              <figure><img id="jpgImg" alt="Immagine compressa in JPEG"><figcaption id="jpgCap"></figcaption></figure>
-            </div>
-            <div class="jpg-controls">
-              <label class="jpg-q"><span>Qualità</span><input type="range" id="jpgQ" min="1" max="100" value="80" class="slider"><b id="jpgQV">80%</b></label>
-              <div class="jpg-stats" id="jpgStats"></div>
-            </div>
-          </div>
-          <canvas id="jpgSrc" width="160" height="120" hidden></canvas>
-
-          <div class="cod-note">
-            <b>Lossless</b> (ZIP, PNG, FLAC): riottieni il file identico, ma risparmi meno. <b>Lossy</b> (JPG, MP3, MP4): risparmi moltissimo ma perdi qualcosa per sempre. Si sceglie in base all'uso: un documento o un programma <b>devono</b> essere lossless, una foto o una canzone possono permettersi il lossy.
-          </div>
-        </div>
-      </div>
-    </section>
   </main>
 
   <footer class="site-footer">
