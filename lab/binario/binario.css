@@ -474,3 +474,37 @@
   .fp-bit { width: 1.15rem; height: 1.5rem; font-size: 0.7rem; }
   .fp-frac-row { gap: 0.6rem; font-size: 0.74rem; }
 }
+
+/* ============================================================
+   Base personalizzata + ricerca delle cifre (costruttore)
+   ============================================================ */
+.base-custom { display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 0.6rem; font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink-soft); }
+.base-custom input { width: 4.5rem; padding: 0.35rem 0.5rem; border: 1px solid var(--line); border-radius: 7px; background: var(--bg); color: var(--ink); font-family: var(--font-mono); font-size: 0.9rem; }
+.base-custom input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-wash); }
+.pos-help { font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-soft); line-height: 1.4; }
+.pos-help b { color: var(--ink); }
+.ph-ok { color: #2f9e57; font-weight: 600; } .ph-no { color: #d2553c; font-weight: 600; }
+.pos-stepper button.flash { animation: flashBtn 0.5s var(--ease) 2; }
+@keyframes flashBtn { 0%,100% { background: var(--bg); color: var(--ink); } 50% { background: var(--accent); color: var(--accent-ink); } }
+
+/* ============================================================
+   Convertitore con i calcoli (02)
+   ============================================================ */
+.conv-layout { display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 1.4rem; align-items: start; }
+@media (max-width: 820px) { .conv-layout { grid-template-columns: 1fr; } }
+.conv-calc { display: grid; gap: 0.7rem; }
+.cc-block { border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 10px; background: var(--bg-sunk); padding: 0.75rem 0.9rem; }
+.cc-head { display: flex; align-items: baseline; flex-wrap: wrap; gap: 0.3rem 0.6rem; margin-bottom: 0.5rem; }
+.cc-title { font-family: var(--font-display); font-weight: 500; font-size: 0.98rem; color: var(--ink); }
+.cc-sub { font-family: var(--font-mono); font-size: 0.7rem; color: var(--ink-faint); }
+.cc-res { margin-left: auto; }
+.cc-res code { font-family: var(--font-mono); font-size: 0.95rem; font-weight: 700; color: var(--accent); letter-spacing: 0.04em; }
+.cc-divs { display: flex; flex-direction: column; gap: 0.2rem; }
+.cc-div { display: flex; align-items: baseline; justify-content: space-between; gap: 1rem; font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink-soft); }
+.cc-div b { color: var(--ink); font-weight: 600; }
+.cc-read { font-size: 0.82rem; color: var(--ink-soft); margin-top: 0.45rem; line-height: 1.5; }
+.cc-read b { color: var(--ink); } .cc-read code { font-family: var(--font-mono); color: var(--accent); font-weight: 600; }
+.cc-sum { font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.7; color: var(--ink-soft); word-break: break-word; }
+.cc-sum b { color: var(--ink); } .cc-sum sub, .cc-sum sup { color: var(--ink-faint); }
+.cc-t.on { color: var(--accent); } .cc-t.off { color: var(--ink-faint); }
+.cc-note { font-size: 0.85rem; color: var(--ink-soft); } .cc-note code { font-family: var(--font-mono); color: var(--ink); }

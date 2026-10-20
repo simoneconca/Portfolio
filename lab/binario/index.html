@@ -60,7 +60,7 @@
           <a href="../">Lab</a><span class="sep">/</span><span class="current">Binary &amp; Base Analyzer</span>
         </nav>
         <h1>Binary &amp; Base Analyzer</h1>
-        <p class="lead">Converti un numero tra le basi, accendi e spegni i bit con un clic, osserva i pesi posizionali, le operazioni logiche, il <strong>complemento a due</strong> passo per passo, le <strong>somme binarie con riporto</strong> e persino la <strong>virgola mobile</strong> (IEEE 754). Tutto in tempo reale.</p>
+        <p class="lead">Converti un numero tra le basi (anche <strong>personalizzate</strong>) vedendo tutti i <strong>calcoli</strong>, costruisci le conversioni coi pesi posizionali, prova le operazioni logiche, il <strong>complemento a due</strong> passo per passo, le <strong>somme binarie con riporto</strong> e persino la <strong>virgola mobile</strong> (IEEE 754). Tutto in tempo reale.</p>
       </div>
     </section>
 
@@ -72,7 +72,7 @@
           <header class="panel-head">
             <span class="panel-kicker">01 — Per iniziare</span>
             <h2 class="panel-title">Costruttore guidato di conversioni</h2>
-            <p class="panel-sub">Se parti da zero, comincia da qui: componi un numero attivando i blocchi dei pesi posizionali e guarda la conversione formarsi passo dopo passo. Funziona in entrambi i versi, per basi 2, 8 e 16.</p>
+            <p class="panel-sub">Componi un numero attivando i blocchi dei pesi posizionali e guarda la conversione formarsi passo dopo passo. Scegli il verso e la base — anche una <b>base personalizzata</b> (3, 4, 17…).</p>
           </header>
 
           <div class="builder-controls">
@@ -89,6 +89,11 @@
                 <button type="button" data-base="2" class="seg-btn active">Bin · 2</button>
                 <button type="button" data-base="8" class="seg-btn">Ott · 8</button>
                 <button type="button" data-base="16" class="seg-btn">Esa · 16</button>
+                <button type="button" data-base="custom" class="seg-btn">Altra…</button>
+              </div>
+              <div class="base-custom" id="baseCustom" hidden>
+                <label for="baseCustomInput">base</label>
+                <input id="baseCustomInput" type="number" min="2" max="36" value="3" inputmode="numeric">
               </div>
             </div>
           </div>
@@ -97,6 +102,15 @@
             <div class="target-row">
               <label for="target">Numero decimale di partenza</label>
               <div class="field target-field"><span class="field-prefix">#</span><input id="target" inputmode="numeric" spellcheck="false" autocomplete="off" value="13"></div>
+            </div>
+            <div class="pos-row">
+              <span class="control-label">Quante cifre servono?</span>
+              <div class="pos-stepper">
+                <button type="button" id="fwdMinus" aria-label="Meno cifre">−</button>
+                <span id="fwdCount">1</span>
+                <button type="button" id="fwdPlus" aria-label="Più cifre">+</button>
+              </div>
+              <span class="pos-help" id="fwdHelp"></span>
             </div>
             <div class="target-banner" id="fwdBanner" aria-live="polite"></div>
           </div>
@@ -123,89 +137,55 @@
           <div class="builder-output" id="output" aria-live="polite"></div>
         </div>
 
-        <!-- Barra controlli -->
-        <div class="panel controls-panel full">
-          <div class="control-group">
+        <!-- 02 Convertitore con i calcoli -->
+        <div class="panel full">
+          <header class="panel-head">
+            <span class="panel-kicker">02 — Convertitore</span>
+            <h2 class="panel-title">Un numero, quattro basi — con i calcoli</h2>
+            <p class="panel-sub">Scrivi un numero in una qualsiasi delle quattro basi: le altre si aggiornano da sole. A destra vedi <b>come si ottiene</b> ogni conversione, passo per passo. Nessun limite di bit.</p>
+          </header>
+          <div class="conv-layout">
+            <div class="conv">
+              <div class="conv-row">
+                <label for="inDec">Decimale <span class="base-tag">base 10</span></label>
+                <div class="field"><span class="field-prefix">#</span><input id="inDec" inputmode="numeric" spellcheck="false" autocomplete="off" value="13"></div>
+                <span class="field-err" data-for="inDec"></span>
+              </div>
+              <div class="conv-row">
+                <label for="inBin">Binario <span class="base-tag">base 2</span></label>
+                <div class="field"><span class="field-prefix">0b</span><input id="inBin" spellcheck="false" autocomplete="off" value="1101"></div>
+                <span class="field-err" data-for="inBin"></span>
+              </div>
+              <div class="conv-row">
+                <label for="inOct">Ottale <span class="base-tag">base 8</span></label>
+                <div class="field"><span class="field-prefix">0o</span><input id="inOct" spellcheck="false" autocomplete="off" value="15"></div>
+                <span class="field-err" data-for="inOct"></span>
+              </div>
+              <div class="conv-row">
+                <label for="inHex">Esadecimale <span class="base-tag">base 16</span></label>
+                <div class="field"><span class="field-prefix">0x</span><input id="inHex" spellcheck="false" autocomplete="off" value="D"></div>
+                <span class="field-err" data-for="inHex"></span>
+              </div>
+            </div>
+            <div class="conv-calc" id="convCalc" aria-live="polite"></div>
+          </div>
+        </div>
+
+        <!-- 03 Operazioni bit a bit -->
+        <div class="panel full">
+          <header class="panel-head">
+            <span class="panel-kicker">03 — Operazioni bit a bit</span>
+            <h2 class="panel-title">Algebra booleana sui bit</h2>
+            <p class="panel-sub">Le operazioni logiche lavorano <b>bit per bit</b>, su un numero fisso di bit. Scegli la larghezza e confronta A e B.</p>
+          </header>
+          <div class="control-group" style="margin-bottom:1.1rem">
             <span class="control-label">Larghezza</span>
             <div class="seg" id="widthSeg" role="group" aria-label="Larghezza in bit">
               <button type="button" data-width="8" class="seg-btn active">8 bit</button>
               <button type="button" data-width="16" class="seg-btn">16</button>
               <button type="button" data-width="32" class="seg-btn">32</button>
-              <button type="button" data-width="64" class="seg-btn">64</button>
             </div>
           </div>
-          <div class="control-group">
-            <span class="control-label">Interpretazione</span>
-            <div class="seg" id="signSeg" role="group" aria-label="Interpretazione del numero">
-              <button type="button" data-sign="unsigned" class="seg-btn active">Senza segno</button>
-              <button type="button" data-sign="signed" class="seg-btn">Con segno (C2)</button>
-            </div>
-          </div>
-          <p class="control-meta" id="rangeInfo" aria-live="polite"></p>
-        </div>
-
-        <!-- Convertitore -->
-        <div class="panel">
-          <header class="panel-head">
-            <span class="panel-kicker">02 — Convertitore</span>
-            <h2 class="panel-title">Un numero, quattro basi</h2>
-          </header>
-
-          <div class="conv">
-            <div class="conv-row">
-              <label for="inDec">Decimale <span class="base-tag">base 10</span></label>
-              <div class="field"><span class="field-prefix">#</span><input id="inDec" inputmode="numeric" spellcheck="false" autocomplete="off" value="0"></div>
-              <span class="field-err" data-for="inDec"></span>
-            </div>
-            <div class="conv-row">
-              <label for="inBin">Binario <span class="base-tag">base 2</span></label>
-              <div class="field"><span class="field-prefix">0b</span><input id="inBin" spellcheck="false" autocomplete="off" value="0"></div>
-              <span class="field-err" data-for="inBin"></span>
-            </div>
-            <div class="conv-row">
-              <label for="inOct">Ottale <span class="base-tag">base 8</span></label>
-              <div class="field"><span class="field-prefix">0o</span><input id="inOct" spellcheck="false" autocomplete="off" value="0"></div>
-              <span class="field-err" data-for="inOct"></span>
-            </div>
-            <div class="conv-row">
-              <label for="inHex">Esadecimale <span class="base-tag">base 16</span></label>
-              <div class="field"><span class="field-prefix">0x</span><input id="inHex" spellcheck="false" autocomplete="off" value="0"></div>
-              <span class="field-err" data-for="inHex"></span>
-            </div>
-          </div>
-        </div>
-
-        <!-- Visualizzatore bit -->
-        <div class="panel">
-          <header class="panel-head">
-            <span class="panel-kicker">03 — Visualizzatore di bit</span>
-            <h2 class="panel-title">Clicca un bit per accenderlo</h2>
-          </header>
-
-          <div class="bitfield-wrap">
-            <div class="bitfield" id="bitField" aria-label="Bit del numero"></div>
-          </div>
-
-          <div class="bit-actions">
-            <div class="stepper" role="group" aria-label="Operazioni rapide">
-              <button type="button" data-act="dec">−1</button>
-              <button type="button" data-act="inc">+1</button>
-              <button type="button" data-act="shl">«&nbsp;×2</button>
-              <button type="button" data-act="shr">÷2&nbsp;»</button>
-              <button type="button" data-act="not">NOT</button>
-              <button type="button" data-act="clear">Azzera</button>
-            </div>
-          </div>
-
-          <div class="decomp" id="decomp" aria-live="polite"></div>
-        </div>
-
-        <!-- Operazioni bit a bit -->
-        <div class="panel full">
-          <header class="panel-head">
-            <span class="panel-kicker">04 — Operazioni bit a bit</span>
-            <h2 class="panel-title">Algebra booleana sui bit</h2>
-          </header>
 
           <div class="bitwise">
             <div class="bw-inputs">
@@ -242,7 +222,7 @@
         <!-- 05 Complemento a due -->
         <div class="panel full c2-panel">
           <header class="panel-head">
-            <span class="panel-kicker">05 — Numeri negativi</span>
+            <span class="panel-kicker">04 — Numeri negativi</span>
             <h2 class="panel-title">Il complemento a due, passo per passo</h2>
             <p class="panel-sub">Come fa il computer a scrivere un numero <b>negativo</b> usando solo 0 e 1? Con il <b>complemento a due</b>: scrivi il positivo, <b>inverti</b> tutti i bit e <b>aggiungi 1</b>. Scegli un numero e guarda i passaggi.</p>
           </header>
@@ -254,8 +234,10 @@
             <div class="control-group">
               <span class="control-label">Larghezza</span>
               <div class="seg" id="c2Width" role="group" aria-label="Larghezza in bit">
+                <button type="button" data-w="4" class="seg-btn">4 bit</button>
                 <button type="button" data-w="8" class="seg-btn active">8 bit</button>
                 <button type="button" data-w="16" class="seg-btn">16 bit</button>
+                <button type="button" data-w="32" class="seg-btn">32 bit</button>
               </div>
             </div>
           </div>
@@ -265,7 +247,7 @@
         <!-- 06 Somma binaria -->
         <div class="panel full sum-panel">
           <header class="panel-head">
-            <span class="panel-kicker">06 — Aritmetica</span>
+            <span class="panel-kicker">05 — Aritmetica</span>
             <h2 class="panel-title">La somma binaria, con il riporto</h2>
             <p class="panel-sub">Si sommano i bit colonna per colonna, da destra a sinistra, proprio come in colonna sul quaderno: <b>0+0=0</b>, <b>0+1=1</b>, <b>1+1=10</b> (scrivo 0 e <b>riporto 1</b>). Cambia i due numeri e segui i riporti.</p>
           </header>
@@ -287,7 +269,7 @@
         <!-- 07 Floating point -->
         <div class="panel full fp-panel">
           <header class="panel-head">
-            <span class="panel-kicker">07 — Avanzato <span class="adv-badge">virgola mobile</span></span>
+            <span class="panel-kicker">06 — Avanzato <span class="adv-badge">virgola mobile</span></span>
             <h2 class="panel-title">I numeri con la virgola: lo standard IEEE 754</h2>
             <p class="panel-sub">I numeri con la virgola (come <b>6,25</b> o <b>0,1</b>) si salvano in <b>virgola mobile</b>, divisi in tre parti: 1 bit di <b>segno</b>, 8 bit di <b>esponente</b> e 23 bit di <b>mantissa</b> (precisione singola, 32 bit). La formula è: <code>valore = (−1)<sup>segno</sup> × 1,mantissa × 2<sup>(esponente − 127)</sup></code>.</p>
           </header>

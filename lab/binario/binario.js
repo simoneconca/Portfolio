@@ -1,217 +1,105 @@
 /* ============================================================
    binario.js — Binary & Base Analyzer
-   Logica interamente in BigInt: precisione esatta fino a 64 bit.
-   Nessuna dipendenza esterna.
+   02) Convertitore tra le 4 basi con i calcoli mostrati (BigInt, nessun limite di bit)
+   03) Operazioni bit a bit (larghezza propria)
    ============================================================ */
 (function () {
   "use strict";
-
   const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  const SYM = "0123456789ABCDEF";
+  const symOf = (r) => SYM[Number(r)];
+  const cap = (s) => s.charAt(0).toUpperCase() + s.slice(1);
 
-  /* ---------- Stato ---------- */
-  let W = 8;            // larghezza in bit
-  let signed = false;   // interpretazione con segno (complemento a due)
-  let bits = 0n;        // pattern di bit, sempre in [0, 2^W - 1]
-
-  /* ---------- Elementi ---------- */
+  /* ============================================================
+     02 — Convertitore (BigInt, senza limiti di bit)
+     ============================================================ */
+  let value = 13n;
   const fields = { dec: $("inDec"), bin: $("inBin"), oct: $("inOct"), hex: $("inHex") };
-  const bitField = $("bitField");
-  const decompEl = $("decomp");
-  const rangeInfo = $("rangeInfo");
-  const bwRows = $("bwRows");
-  const bwResult = $("bwResult");
-  const opA = $("opA"), opB = $("opB"), opSelect = $("opSelect"), opBWrap = $("opBWrap");
+  const patterns = { dec: /^\d+$/, bin: /^[01]+$/, oct: /^[0-7]+$/, hex: /^[0-9a-fA-F]+$/ };
+  const prefix = { bin: "0b", oct: "0o", hex: "0x" };
 
-  /* ---------- Helper numerici ---------- */
+  function setErr(b, m) { const s = document.querySelector(`.field-err[data-for="in${cap(b)}"]`); if (s) s.textContent = m; }
+  function clearErr(b) { const s = document.querySelector(`.field-err[data-for="in${cap(b)}"]`); if (s) s.textContent = ""; }
+  const hintFor = (b) => b === "dec" ? "solo cifre 0-9" : b === "bin" ? "solo 0 e 1" : b === "oct" ? "solo cifre 0-7" : "solo 0-9 e A-F";
+
+  function setValue(v, skipId) {
+    value = v < 0n ? 0n : v;
+    const vals = { dec: value.toString(10), bin: value.toString(2), oct: value.toString(8), hex: value.toString(16).toUpperCase() };
+    for (const k in fields) {
+      const el = fields[k]; clearErr(k); el.closest(".field").classList.remove("invalid");
+      if (el.id !== skipId) el.value = vals[k];
+    }
+    renderCalc();
+  }
+  function onConvInput(base) {
+    const el = fields[base], raw = el.value.trim(), box = el.closest(".field");
+    clearErr(base); box.classList.remove("invalid");
+    if (raw === "") { setValue(0n, el.id); return; }
+    if (!patterns[base].test(raw)) { box.classList.add("invalid"); setErr(base, hintFor(base)); return; }
+    let v;
+    try { v = base === "dec" ? BigInt(raw) : BigInt(prefix[base] + raw.toLowerCase()); }
+    catch (e) { box.classList.add("invalid"); setErr(base, "numero non valido"); return; }
+    setValue(v, el.id);
+  }
+  for (const b in fields) fields[b].addEventListener("input", () => onConvInput(b));
+
+  /* ---------- I calcoli delle 4 conversioni ---------- */
+  function divSteps(v, b) {
+    const B = BigInt(b), rows = [], digits = [];
+    let x = v;
+    while (x > 0n) { const q = x / B, r = x % B; rows.push({ x, q, r }); digits.unshift(symOf(r)); x = q; }
+    return { rows, digits: digits.join("") || "0" };
+  }
+  function blockHtml(title, sub, result, body) {
+    return `<div class="cc-block"><div class="cc-head"><span class="cc-title">${title}</span>` +
+      `<span class="cc-sub">${sub}</span><span class="cc-res"><code>${result}</code></span></div>${body}</div>`;
+  }
+  function divBlock(title, sub, b) {
+    if (value === 0n) return blockHtml(title, sub, "0", `<p class="cc-note">0 vale <code>0</code> in ogni base.</p>`);
+    const { rows, digits } = divSteps(value, b);
+    const rowsH = rows.map((r) =>
+      `<div class="cc-div"><span>${r.x} ÷ ${b} = ${r.q}</span><b>resto ${r.r}${(b === 16 && r.r > 9n) ? " → " + symOf(r.r) : ""}</b></div>`).join("");
+    return blockHtml(title, sub, digits,
+      `<div class="cc-divs">${rowsH}</div>` +
+      `<p class="cc-read">Leggi i resti <b>dal basso verso l'alto</b> → <code>${digits}</code></p>`);
+  }
+  function decBlock() {
+    const bin = value.toString(2), n = bin.length, terms = [], active = [];
+    for (let i = 0; i < n; i++) {
+      const bit = bin[i], w = 2n ** BigInt(n - 1 - i);
+      terms.push(`<span class="cc-t ${bit === "1" ? "on" : "off"}">${bit}·2<sup>${n - 1 - i}</sup></span>`);
+      if (bit === "1") active.push(w.toString());
+    }
+    return blockHtml("In decimale", "base 10 · somma dei pesi", value.toString(10),
+      `<p class="cc-sum">${bin}<sub>2</sub> = ${terms.join(" + ")}</p>` +
+      `<p class="cc-sum">= ${active.length ? active.join(" + ") : "0"} = <b>${value.toString(10)}</b></p>`);
+  }
+  function renderCalc() {
+    $("convCalc").innerHTML =
+      decBlock() +
+      divBlock("In binario", "base 2 · divisioni per 2", 2) +
+      divBlock("In ottale", "base 8 · divisioni per 8", 8) +
+      divBlock("In esadecimale", "base 16 · divisioni per 16", 16);
+  }
+
+  /* ============================================================
+     03 — Operazioni bit a bit (larghezza propria)
+     ============================================================ */
+  let W = 8;
+  const bwRows = $("bwRows"), bwResult = $("bwResult");
+  const opA = $("opA"), opB = $("opB"), opSelect = $("opSelect"), opBWrap = $("opBWrap");
   const Wn = () => BigInt(W);
-  const mask = () => (1n << Wn()) - 1n;
-  const signBit = () => 1n << (Wn() - 1n);
   const modulus = () => 1n << Wn();
 
-  function signedValue(b) {
-    return (signed && (b & signBit())) ? b - modulus() : b;
-  }
-
-  function setBits(b, skipId) {
-    bits = ((b % modulus()) + modulus()) % modulus(); // normalizza in [0, 2^W)
-    render(skipId);
-  }
-
-  /* ---------- Render principale ---------- */
-  function render(skipId) {
-    const binStr = bits.toString(2);
-    const values = {
-      dec: signedValue(bits).toString(),
-      bin: binStr,
-      oct: bits.toString(8),
-      hex: bits.toString(16).toUpperCase(),
-    };
-    for (const k in fields) {
-      const el = fields[k];
-      el.closest(".field").classList.remove("invalid");
-      clearErr(k);
-      if (el.id !== skipId) el.value = values[k];
-    }
-    renderRange();
-    renderBits();
-    renderDecomp();
-    renderBitwise();
-  }
-
-  function renderRange() {
-    const max = signed ? signBit() - 1n : mask();
-    const min = signed ? -signBit() : 0n;
-    rangeInfo.innerHTML =
-      `Range a <strong>${W} bit</strong> ${signed ? "con segno" : "senza segno"}: ` +
-      `<strong>${min}</strong> … <strong>${max}</strong>`;
-  }
-
-  /* ---------- Visualizzatore di bit ---------- */
-  function renderBits() {
-    let html = "";
-    for (let i = W - 1; i >= 0; i--) {
-      const on = (bits >> BigInt(i)) & 1n;
-      const isSign = signed && i === W - 1;
-      if (i !== W - 1 && (i + 1) % 4 === 0) {
-        // chiudi il nibble precedente e aprine uno nuovo
-        html += `</div><div class="nibble">`;
-      } else if (i === W - 1) {
-        html += `<div class="nibble">`;
-      }
-      html +=
-        `<button type="button" class="bit${on ? " on" : ""}${isSign ? " sign" : ""}" ` +
-        `data-i="${i}" aria-pressed="${on ? "true" : "false"}" ` +
-        `aria-label="bit ${i}, peso 2 alla ${i}${isSign ? ", bit di segno" : ""}, valore ${on}">` +
-        `<span class="bit-box">${on}</span>` +
-        `<span class="bit-weight">2<sup>${i}</sup></span>` +
-        `<span class="bit-index">b${i}</span>` +
-        `</button>`;
-    }
-    html += `</div>`;
-    bitField.innerHTML = html;
-  }
-
-  /* ---------- Decomposizione ---------- */
-  function renderDecomp() {
-    if (bits === 0n) {
-      decompEl.innerHTML = `<span class="eq">0</span> — tutti i bit sono a zero.`;
-      return;
-    }
-    const terms = [];
-    for (let i = W - 1; i >= 0; i--) {
-      if ((bits >> BigInt(i)) & 1n) terms.push(2n ** BigInt(i));
-    }
-    const sum = terms.reduce((a, b) => a + b, 0n);
-    let html = terms.map((t) => `<span class="term">${t}</span>`).join(" + ") +
-               ` = <span class="eq">${sum}</span>`;
-    if (signed && (bits & signBit())) {
-      const sd = sum - modulus();
-      html += `<span class="note">Il bit di segno è 1 → complemento a due: ` +
-              `${sum} − 2<sup>${W}</sup> (${modulus()}) = <span class="eq">${sd}</span></span>`;
-    }
-    decompEl.innerHTML = html;
-  }
-
-  /* ---------- Input convertitore ---------- */
-  const patterns = {
-    bin: /^[01]+$/, oct: /^[0-7]+$/, hex: /^[0-9a-fA-F]+$/,
-  };
-  function decPattern() { return signed ? /^-?\d+$/ : /^\d+$/; }
-
-  function onConvInput(base) {
-    const el = fields[base];
-    const raw = el.value.trim();
-    const fieldBox = el.closest(".field");
-    clearErr(base);
-    fieldBox.classList.remove("invalid");
-
-    if (raw === "" || raw === "-") { setBits(0n, el.id); return; }
-
-    const re = base === "dec" ? decPattern() : patterns[base];
-    if (!re.test(raw)) {
-      fieldBox.classList.add("invalid");
-      const hint = base === "dec"
-        ? (signed ? "solo cifre 0-9 (e − per i negativi)" : "solo cifre 0-9 — i negativi servono la modalità con segno")
-        : base === "bin" ? "solo 0 e 1"
-        : base === "oct" ? "solo cifre 0-7"
-        : "solo 0-9 e A-F";
-      setErr(base, hint);
-      return;
-    }
-
-    let v;
-    try {
-      v = base === "dec" ? BigInt(raw)
-        : base === "bin" ? BigInt("0b" + raw)
-        : base === "oct" ? BigInt("0o" + raw)
-        : BigInt("0x" + raw);
-    } catch (e) { fieldBox.classList.add("invalid"); setErr(base, "numero non valido"); return; }
-
-    // Avviso di fuori-range (il valore viene comunque troncato a W bit)
-    const overflow = base === "dec"
-      ? (signed ? (v > signBit() - 1n || v < -signBit()) : (v > mask() || v < 0n))
-      : (v > mask());
-    setBits(v, el.id);
-    if (overflow) { fieldBox.classList.add("invalid"); setErr(base, `fuori range: troncato a ${W} bit`); }
-  }
-
-  function setErr(base, msg) {
-    const span = document.querySelector(`.field-err[data-for="in${cap(base)}"]`);
-    if (span) span.textContent = msg;
-  }
-  function clearErr(base) {
-    const span = document.querySelector(`.field-err[data-for="in${cap(base)}"]`);
-    if (span) span.textContent = "";
-  }
-  function cap(s) { return s.charAt(0).toUpperCase() + s.slice(1); }
-
-  /* ---------- Operazioni bit a bit ---------- */
   function parseOperand(el) {
-    const raw = el.value.trim();
-    el.closest(".field").classList.remove("invalid");
-    if (raw === "" || raw === "-") return 0n;
-    if (!/^-?\d+$/.test(raw)) { el.closest(".field").classList.add("invalid"); return null; }
+    const raw = el.value.trim(); el.closest(".field").classList.remove("invalid");
+    if (raw === "") return 0n;
+    if (!/^\d+$/.test(raw)) { el.closest(".field").classList.add("invalid"); return null; }
     return ((BigInt(raw) % modulus()) + modulus()) % modulus();
   }
-
-  function renderBitwise() {
-    const op = opSelect.value;
-    const unary = op === "not";
-    opBWrap.classList.toggle("hidden", unary);
-
-    const a = parseOperand(opA);
-    const b = unary ? 0n : parseOperand(opB);
-    if (a === null || b === null) { bwRows.innerHTML = ""; bwResult.innerHTML = `<span>—</span>`; return; }
-
-    let r;
-    switch (op) {
-      case "and": r = a & b; break;
-      case "or":  r = a | b; break;
-      case "xor": r = a ^ b; break;
-      case "not": r = ~a; break;
-      case "shl": r = a << clampShift(b); break;
-      case "shr": r = a >> clampShift(b); break;
-      default: r = a;
-    }
-    r = ((r % modulus()) + modulus()) % modulus();
-
-    let rows = bitRow("A", a);
-    if (!unary) rows += bitRow(op === "shl" || op === "shr" ? "B*" : "B", b);
-    rows += bitRow(symbol(op), r, true);
-    bwRows.innerHTML = rows;
-
-    bwResult.innerHTML =
-      `<span><b>${signedValue(r)}</b><span class="k">decimale</span></span>` +
-      `<span><b>0b${r.toString(2).padStart(W, "0")}</b><span class="k">binario</span></span>` +
-      `<span><b>0x${r.toString(16).toUpperCase()}</b><span class="k">esadecimale</span></span>`;
-  }
-
-  function clampShift(b) { return b < 0n ? 0n : (b > Wn() ? Wn() : b); }
-
-  function symbol(op) {
-    return { and: "AND", or: "OR", xor: "XOR", not: "~A", shl: "«", shr: "»" }[op] || "=";
-  }
-
+  const clampShift = (b) => b < 0n ? 0n : (b > Wn() ? Wn() : b);
+  const symbol = (op) => ({ and: "AND", or: "OR", xor: "XOR", not: "~A", shl: "«", shr: "»" }[op] || "=");
   function bitRow(tag, val, isResult) {
     let cells = "";
     for (let i = W - 1; i >= 0; i--) {
@@ -221,54 +109,38 @@
     }
     return `<div class="bw-line${isResult ? " result" : ""}"><span class="bw-tag">${tag}</span><span class="bw-bits">${cells}</span></div>`;
   }
-
-  /* ---------- Eventi ---------- */
-  for (const base in fields) {
-    fields[base].addEventListener("input", () => onConvInput(base));
+  function renderBitwise() {
+    const op = opSelect.value, unary = op === "not";
+    opBWrap.classList.toggle("hidden", unary);
+    const a = parseOperand(opA), b = unary ? 0n : parseOperand(opB);
+    if (a === null || b === null) { bwRows.innerHTML = ""; bwResult.innerHTML = `<span>—</span>`; return; }
+    let r;
+    switch (op) {
+      case "and": r = a & b; break; case "or": r = a | b; break; case "xor": r = a ^ b; break;
+      case "not": r = ~a; break; case "shl": r = a << clampShift(b); break; case "shr": r = a >> clampShift(b); break;
+      default: r = a;
+    }
+    r = ((r % modulus()) + modulus()) % modulus();
+    let rows = bitRow("A", a);
+    if (!unary) rows += bitRow(op === "shl" || op === "shr" ? "B*" : "B", b);
+    rows += bitRow(symbol(op), r, true);
+    bwRows.innerHTML = rows;
+    bwResult.innerHTML =
+      `<span><b>${r.toString()}</b><span class="k">decimale</span></span>` +
+      `<span><b>0b${r.toString(2).padStart(W, "0")}</b><span class="k">binario</span></span>` +
+      `<span><b>0x${r.toString(16).toUpperCase()}</b><span class="k">esadecimale</span></span>`;
   }
-
-  bitField.addEventListener("click", (e) => {
-    const btn = e.target.closest(".bit");
-    if (!btn) return;
-    const i = BigInt(btn.dataset.i);
-    setBits(bits ^ (1n << i));
-  });
-
-  document.querySelector(".stepper").addEventListener("click", (e) => {
-    const act = e.target.closest("button")?.dataset.act;
-    if (!act) return;
-    if (act === "inc") setBits(bits + 1n);
-    else if (act === "dec") setBits(bits - 1n);
-    else if (act === "shl") setBits(bits << 1n);
-    else if (act === "shr") setBits(bits >> 1n);
-    else if (act === "not") setBits(~bits);
-    else if (act === "clear") setBits(0n);
-  });
-
-  $("widthSeg").addEventListener("click", (e) => {
-    const btn = e.target.closest("[data-width]");
-    if (!btn) return;
-    W = parseInt(btn.dataset.width, 10);
-    setActive("widthSeg", btn);
-    setBits(bits); // ri-normalizza alla nuova larghezza
-  });
-
-  $("signSeg").addEventListener("click", (e) => {
-    const btn = e.target.closest("[data-sign]");
-    if (!btn) return;
-    signed = btn.dataset.sign === "signed";
-    setActive("signSeg", btn);
-    render();
-  });
-
   [opA, opB].forEach((el) => el.addEventListener("input", renderBitwise));
   opSelect.addEventListener("change", renderBitwise);
-
-  function setActive(groupId, btn) {
-    $(groupId).querySelectorAll(".seg-btn").forEach((b) => b.classList.remove("active"));
+  $("widthSeg").addEventListener("click", (e) => {
+    const btn = e.target.closest("[data-width]"); if (!btn) return;
+    W = parseInt(btn.dataset.width, 10);
+    $("widthSeg").querySelectorAll(".seg-btn").forEach((b) => b.classList.remove("active"));
     btn.classList.add("active");
-  }
+    renderBitwise();
+  });
 
   /* ---------- Avvio ---------- */
-  render();
+  onConvInput("dec");
+  renderBitwise();
 })();
