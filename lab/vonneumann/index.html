@@ -65,8 +65,7 @@
           <a href="#hwsw"><b>1</b> Hardware e software</a>
           <a href="#ipo"><b>2</b> Input · elaborazione · output</a>
           <a href="#componenti"><b>3</b> I componenti</a>
-          <a href="#ciclo"><b>4</b> Il ciclo macchina</a>
-          <a href="#so"><b>5</b> Il sistema operativo</a>
+          <a href="#so"><b>4</b> Il sistema operativo</a>
         </nav>
       </div>
     </section>
@@ -78,10 +77,21 @@
           <header class="panel-head">
             <span class="panel-kicker">1 · Le due facce del computer</span>
             <h2 class="panel-title">Hardware e software</h2>
-            <p class="panel-sub">L'<b>hardware</b> è tutto ciò che puoi <b>toccare</b>: le parti fisiche (CPU, RAM, tastiera, schermo…). Il <b>software</b> sono i <b>programmi</b>, cioè le istruzioni: non si toccano (il sistema operativo, le app, i giochi). Si completano a vicenda: l'hardware <b>esegue</b>, il software gli dice <b>cosa fare</b>. Prova a classificarli:</p>
+            <p class="panel-sub">Un computer è fatto di due cose che lavorano sempre <b>insieme</b>: l'hardware e il software.</p>
           </header>
-          <div class="hwsw-grid" id="hwswGrid"></div>
-          <p class="hwsw-score" id="hwswScore"></p>
+          <div class="hwsw-cols">
+            <div class="hwsw-col hw">
+              <span class="hwsw-h">💻 Hardware</span>
+              <p>Le <b>parti fisiche</b>, quelle che puoi <b>toccare</b>.</p>
+              <div class="hwsw-ex"><span>CPU</span><span>RAM</span><span>Tastiera</span><span>Mouse</span><span>Monitor</span><span>Disco SSD/HDD</span><span>Scheda video</span></div>
+            </div>
+            <div class="hwsw-col sw">
+              <span class="hwsw-h">📀 Software</span>
+              <p>I <b>programmi</b>: le <b>istruzioni</b>, che non si toccano.</p>
+              <div class="hwsw-ex"><span>Windows</span><span>Android</span><span>Il browser</span><span>Un videogioco</span><span>WhatsApp</span><span>Word</span></div>
+            </div>
+          </div>
+          <div class="hwsw-note">Insieme: l'<b>hardware esegue</b>, il <b>software gli dice cosa fare</b>. Senza software l'hardware è una scatola inerte; senza hardware il software non ha dove «girare».</div>
         </div>
       </div>
     </section>
@@ -185,38 +195,12 @@
 
     </section>
 
-    <!-- =================== 4 · CICLO MACCHINA =================== -->
-    <section class="section vn-section" id="ciclo" style="padding-top:0">
-      <div class="container">
-        <div class="panel">
-          <header class="panel-head">
-            <span class="panel-kicker">4 · Come esegue un programma</span>
-            <h2 class="panel-title">Il ciclo della macchina: fetch · decode · execute</h2>
-            <p class="panel-sub">La CPU non fa altro che ripetere, milioni di volte al secondo, lo stesso <b>ciclo</b> su ogni istruzione: la <b>preleva</b> dalla memoria, la <b>decodifica</b> (capisce cosa fare), la <b>esegue</b> e <b>scrive</b> il risultato. Seguiamo un esempio: far calcolare alla CPU <b>A + B</b>.</p>
-          </header>
-          <div class="fde-stages" id="fdeStages">
-            <div class="fde-stage" data-s="0"><span class="fde-n">①</span> Preleva <small>fetch</small></div>
-            <div class="fde-stage" data-s="1"><span class="fde-n">②</span> Decodifica <small>decode</small></div>
-            <div class="fde-stage" data-s="2"><span class="fde-n">③</span> Esegui <small>execute</small></div>
-            <div class="fde-stage" data-s="3"><span class="fde-n">④</span> Scrivi <small>write-back</small></div>
-          </div>
-          <div class="fde-regs" id="fdeRegs"></div>
-          <p class="fde-desc" id="fdeDesc"></p>
-          <div class="vn-exec">
-            <button id="fdeStep" class="run-btn" type="button">▸ Passo</button>
-            <button id="fdeAuto" class="ghost-btn" type="button">▶ Avvia il ciclo</button>
-            <button id="fdeReset" class="ghost-btn" type="button">↺ Reset</button>
-          </div>
-        </div>
-      </div>
-    </section>
-
     <!-- =================== 5 · SISTEMA OPERATIVO =================== -->
     <section class="section vn-section" id="so" style="padding-top:0">
       <div class="container">
         <div class="panel">
           <header class="panel-head">
-            <span class="panel-kicker">5 · Il software che comanda tutto</span>
+            <span class="panel-kicker">4 · Il software che comanda tutto</span>
             <h2 class="panel-title">Il sistema operativo</h2>
             <p class="panel-sub">Il <b>sistema operativo</b> (Windows, macOS, Linux, Android, iOS) è il software più importante: fa da <b>intermediario</b> fra te, i programmi e l'hardware. Senza di lui, l'hardware non saprebbe cosa fare e le app non potrebbero funzionare. Clicca uno strato per scoprirlo:</p>
           </header>
