@@ -60,17 +60,57 @@
           <a href="../">Lab</a><span class="sep">/</span><span class="current">Prompt Engineering</span>
         </nav>
         <h1>Prompt <em>Engineering</em></h1>
-        <p class="lead">Un'IA è brava quanto le <strong>istruzioni</strong> che le dai. Qui impari a scrivere <strong>prompt</strong> chiari ed efficaci: costruiscine uno pezzo per pezzo, fai analizzare il tuo da un controllo automatico, confronta versioni deboli e forti e scopri le tecniche. Tutto nel browser, senza inviare niente a nessuna IA.</p>
+        <p class="lead">Un'IA è brava quanto le <strong>istruzioni</strong> che le dai. In questa lezione impari, passo per passo, a scrivere <strong>prompt</strong> chiari ed efficaci: prima capisci <em>perché</em> contano, poi ne smonti uno pezzo per pezzo, ne costruisci e ne analizzi uno tuo, e infine impari le tecniche e gli errori da evitare. Tutto nel browser, senza inviare niente a nessuna IA.</p>
+        <nav class="pe-toc" aria-label="Indice della lezione">
+          <a href="#passo1"><b>1</b> Perché conta</a>
+          <a href="#passo2"><b>2</b> L'anatomia di un prompt</a>
+          <a href="#passo3"><b>3</b> Costruiscine uno</a>
+          <a href="#passo4"><b>4</b> Analizza il tuo</a>
+          <a href="#passo5"><b>5</b> Debole → forte</a>
+          <a href="#passo6"><b>6</b> Le tecniche</a>
+          <a href="#passo7"><b>7</b> Errori comuni</a>
+        </nav>
       </div>
     </section>
 
-    <!-- 1. COSTRUTTORE -->
-    <section class="section pe-sec">
+    <!-- 1. PERCHÉ CONTA -->
+    <section class="section pe-sec" id="passo1">
       <div class="container">
         <header class="pe-head">
-          <span class="panel-kicker">Costruisci</span>
-          <h2 class="panel-title">Le parti di un buon prompt</h2>
-          <p class="panel-sub">Compila i pezzi (solo il <b>Compito</b> è obbligatorio): il prompt si costruisce a destra e la barra mostra quanto è completo. Più pezzi utili dai, più la risposta sarà mirata.</p>
+          <span class="panel-kicker">Passo 1</span>
+          <h2 class="panel-title">Perché conta un buon prompt</h2>
+          <p class="panel-sub">La stessa richiesta, chiesta male o bene, dà risultati lontanissimi. L'IA non legge nel pensiero: riempie i vuoti con ciò che le sembra più probabile. Scegli un caso e confronta cosa potresti ottenere (risposte simulate, per capire l'effetto):</p>
+        </header>
+        <div class="panel">
+          <div class="pe-scen-pick" id="peScenPick"></div>
+          <div class="pe-compare" id="peCompare"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 2. ANATOMIA -->
+    <section class="section pe-sec" id="passo2" style="padding-top:0">
+      <div class="container">
+        <header class="pe-head">
+          <span class="panel-kicker">Passo 2</span>
+          <h2 class="panel-title">L'anatomia di un prompt</h2>
+          <p class="panel-sub">Un prompt forte è fatto di pezzi che svolgono funzioni diverse. Ecco un esempio completo: <b>clicca ogni parte colorata</b> (o un'etichetta) per capire a cosa serve.</p>
+        </header>
+        <div class="panel">
+          <div class="pe-anat-legend" id="peAnatLegend"></div>
+          <div class="pe-anat" id="peAnatomy"></div>
+          <div class="pe-anat-detail" id="peAnatDetail"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. COSTRUTTORE -->
+    <section class="section pe-sec" id="passo3" style="padding-top:0">
+      <div class="container">
+        <header class="pe-head">
+          <span class="panel-kicker">Passo 3</span>
+          <h2 class="panel-title">Costruiscine uno, pezzo per pezzo</h2>
+          <p class="panel-sub">Ora tocca a te. Compila i pezzi (solo il <b>Compito</b> è obbligatorio): il prompt si assembla a destra e la barra mostra quanto è completo. Più pezzi utili dai, più la risposta sarà mirata.</p>
         </header>
         <div class="pe-builder">
           <div class="pe-fields panel" id="peFields"></div>
@@ -87,43 +127,44 @@
       </div>
     </section>
 
-    <!-- 2. ANALIZZATORE -->
-    <section class="section pe-sec" style="padding-top:0">
+    <!-- 4. ANALIZZATORE -->
+    <section class="section pe-sec" id="passo4" style="padding-top:0">
       <div class="container">
         <header class="pe-head">
-          <span class="panel-kicker">Analizza</span>
-          <h2 class="panel-title">Quanto è forte il tuo prompt?</h2>
-          <p class="panel-sub">Scrivi un prompt tuo: un controllo automatico cerca gli ingredienti di un buon prompt e ti dice cosa manca. (È un'analisi <i>euristica</i>, non un'IA: guarda la struttura, non «capisce» davvero.)</p>
+          <span class="panel-kicker">Passo 4</span>
+          <h2 class="panel-title">Mettiti alla prova: analizza un prompt</h2>
+          <p class="panel-sub">Scrivi un prompt tuo (o incolla quello costruito sopra): un controllo automatico cerca gli ingredienti di un buon prompt e ti dice cosa manca. È un'analisi <i>euristica</i>, non un'IA: guarda la struttura, non «capisce» davvero — ma ti allena a non dimenticare i pezzi.</p>
         </header>
         <div class="pe-analyzer">
           <div class="panel">
             <textarea id="peInput" class="pe-input" rows="7" spellcheck="false" placeholder="Es. Sei un insegnante di storia. Spiega la Rivoluzione francese a studenti di terza superiore in 5 punti elenco, in italiano semplice, senza date inutili."></textarea>
+            <div class="pe-try" id="peTry"></div>
           </div>
           <div class="panel pe-report" id="peReport"></div>
         </div>
       </div>
     </section>
 
-    <!-- 3. DEBOLE → FORTE -->
-    <section class="section pe-sec" style="padding-top:0">
+    <!-- 5. DEBOLE → FORTE -->
+    <section class="section pe-sec" id="passo5" style="padding-top:0">
       <div class="container">
         <header class="pe-head">
-          <span class="panel-kicker">Confronta</span>
+          <span class="panel-kicker">Passo 5</span>
           <h2 class="panel-title">Da prompt debole a prompt forte</h2>
-          <p class="panel-sub">Stesso obiettivo, due modi di chiederlo. Guarda cosa cambia e perché.</p>
+          <p class="panel-sub">Stesso obiettivo, due modi di chiederlo. Per ognuno vedi <b>quali ingredienti sono stati aggiunti</b> per passare da debole a forte.</p>
         </header>
         <div class="pe-examples" id="peExamples"></div>
       </div>
     </section>
 
-    <!-- 4. TECNICHE -->
-    <section class="section pe-sec" style="padding-top:0;padding-bottom:clamp(4rem,9vw,7rem)">
+    <!-- 6. TECNICHE -->
+    <section class="section pe-sec" id="passo6" style="padding-top:0">
       <div class="container">
         <div class="panel">
           <header class="panel-head">
-            <span class="panel-kicker">Tecniche</span>
+            <span class="panel-kicker">Passo 6 · Tecniche</span>
             <h2 class="panel-title">I trucchi del mestiere</h2>
-            <p class="panel-sub">Le strategie che ricorrono nel prompting, spiegate con un esempio. Clicca per espandere.</p>
+            <p class="panel-sub">Le strategie che ricorrono nel prompting, ognuna con un esempio concreto. Clicca per espandere, o cerca.</p>
           </header>
           <div class="guide-search field">
             <span class="field-prefix">⌕</span>
@@ -132,6 +173,19 @@
           <p class="guide-empty" id="peEmpty" hidden>Nessuna tecnica corrisponde.</p>
           <div id="peGuide"></div>
         </div>
+      </div>
+    </section>
+
+    <!-- 7. ERRORI COMUNI -->
+    <section class="section pe-sec" id="passo7" style="padding-top:0;padding-bottom:clamp(4rem,9vw,7rem)">
+      <div class="container">
+        <header class="pe-head">
+          <span class="panel-kicker">Passo 7</span>
+          <h2 class="panel-title">Errori comuni e buone abitudini</h2>
+          <p class="panel-sub">Gli sbagli che fanno quasi tutti all'inizio — e cosa fare invece.</p>
+        </header>
+        <div class="pe-mistakes" id="peMistakes"></div>
+        <div class="panel pe-real" id="peReal"></div>
       </div>
     </section>
   </main>
