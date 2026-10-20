@@ -72,7 +72,7 @@
           <header class="panel-head">
             <span class="panel-kicker">01 — Per iniziare</span>
             <h2 class="panel-title">Costruttore guidato di conversioni</h2>
-            <p class="panel-sub">Componi un numero attivando i blocchi dei pesi posizionali e guarda la conversione formarsi passo dopo passo. Scegli il verso e la base — anche una <b>base personalizzata</b> (3, 4, 17…).</p>
+            <p class="panel-sub">Componi un numero attivando i blocchi dei pesi posizionali e guarda la conversione formarsi passo dopo passo. Scegli il verso e la base — anche una <b>base personalizzata</b> (3, 4, 5…).</p>
           </header>
 
           <div class="builder-controls">
@@ -233,12 +233,12 @@
             </div>
             <div class="control-group">
               <span class="control-label">Larghezza</span>
-              <div class="seg" id="c2Width" role="group" aria-label="Larghezza in bit">
-                <button type="button" data-w="4" class="seg-btn">4 bit</button>
-                <button type="button" data-w="8" class="seg-btn active">8 bit</button>
-                <button type="button" data-w="16" class="seg-btn">16 bit</button>
-                <button type="button" data-w="32" class="seg-btn">32 bit</button>
+              <div class="pos-stepper" id="c2Width" role="group" aria-label="Larghezza in bit">
+                <button type="button" id="c2Minus" aria-label="Meno bit">−</button>
+                <span id="c2Count">8</span>
+                <button type="button" id="c2Plus" aria-label="Più bit">+</button>
               </div>
+              <span class="c2-wlbl">bit (da 4 a 32)</span>
             </div>
           </div>
           <div class="c2-steps" id="c2steps" aria-live="polite"></div>

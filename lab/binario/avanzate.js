@@ -263,7 +263,9 @@
      Wiring
      ============================================================ */
   $("c2num").addEventListener("input", renderC2);
-  $("c2Width").addEventListener("click", (e) => { const b = e.target.closest("[data-w]"); if (!b) return; c2W = +b.dataset.w; setActive("c2Width", b); renderC2(); });
+  function setC2W(w) { c2W = Math.max(4, Math.min(32, w)); $("c2Count").textContent = c2W; renderC2(); }
+  $("c2Minus").addEventListener("click", () => setC2W(c2W - 1));
+  $("c2Plus").addEventListener("click", () => setC2W(c2W + 1));
 
   $("sumA").addEventListener("input", renderSum);
   $("sumB").addEventListener("input", renderSum);

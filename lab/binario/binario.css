@@ -272,10 +272,11 @@
   transition: background-color 0.2s var(--ease), color 0.2s var(--ease);
 }
 .pos-stepper button:hover { background: var(--accent); color: var(--accent-ink); }
-.pos-stepper #posCount {
+.pos-stepper > span {
   min-width: 2rem; text-align: center;
   font-family: var(--font-mono); font-weight: 600;
 }
+.c2-wlbl { font-family: var(--font-mono); font-size: 0.78rem; color: var(--ink-faint); margin-left: 0.6rem; }
 
 .slots-wrap { overflow-x: auto; padding: 0.25rem 0 0.75rem; }
 .slots { display: flex; gap: 0.6rem; align-items: stretch; min-width: min-content; }
