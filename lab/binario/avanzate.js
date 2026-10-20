@@ -176,24 +176,30 @@
     const intPart = Math.floor(abs), intBin = intPart.toString(2);
     steps.push(`<h4>La parte intera in binario</h4><p><b>${intPart}</b> in binario è <code>${intBin}</code>${intPart > 0 ? ` &nbsp;(= ${powSum(intPart)})` : ""}.</p>`);
 
-    let fracBits = "", terminated = true, f = abs - intPart;
+    let fracBits = "", terminated = false, f = abs - intPart;
     if (f === 0) {
       steps.push(`<h4>La parte dopo la virgola</h4><p>Non c'è parte frazionaria: vale <b>0</b>.</p>`);
     } else {
-      const rows = [], MAXF = 16, start = f;
-      for (let k = 0; k < MAXF; k++) {
+      // Continua la moltiplicazione per 2 fino al LIMITE dei 24 bit significativi
+      // (1 implicito + 23 di mantissa): contati a partire dal primo 1.
+      const rows = [], start = f, CAP = 60;
+      let sig = intPart >= 1 ? intBin.length : 0;  // bit significativi già dalla parte intera
+      let seenOne = intPart >= 1;
+      for (let k = 0; k < CAP; k++) {
         const prod = f * 2, bit = prod >= 1 ? 1 : 0;
         rows.push(`<div class="fp-frac-row"><span>${fmtFrac(f)} × 2 = ${fmtFrac(prod)}</span><b>${bit}</b></div>`);
         fracBits += bit; f = prod - bit;
+        if (bit === 1) seenOne = true;
+        if (seenOne) sig++;
         if (f === 0) { terminated = true; break; }
-        if (k === MAXF - 1) terminated = false;
+        if (sig >= 24) break;        // raggiunto il limite della precisione a 32 bit
       }
       steps.push(`<h4>La parte dopo la virgola (moltiplica per 2)</h4>` +
         `<p>Moltiplichi la frazione per 2: la <b>parte intera</b> del risultato è il bit successivo, poi continui con quello che resta dopo la virgola.</p>` +
         `<div class="fp-frac">${rows.join("")}</div>` +
         (terminated
           ? `<p>La sequenza finisce: <b>${fmtFrac(start)}</b> = <code>0,${fracBits}</code> in binario.</p>`
-          : `<p class="fp-periodic">La sequenza <b>non finisce</b> (è periodica). Ecco perché <b>${fmt(abs)}</b> non si può scrivere in modo esatto: a un certo punto va <b>arrotondata</b>.</p>`));
+          : `<p class="fp-periodic">La sequenza <b>non finisce</b>: continuerebbe all'infinito (è periodica). Ma con 32 bit ci sono solo <b>24 cifre significative</b>: arrivati al limite ci si ferma qui e gli ultimi bit vengono <b>arrotondati</b>. Ecco perché <b>${fmt(abs)}</b> non si può scrivere in modo esatto.</p>`));
     }
 
     const combined = intPart >= 1 ? intBin + (fracBits ? "," + fracBits : "") : "0," + fracBits;

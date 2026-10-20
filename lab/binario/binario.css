@@ -428,7 +428,7 @@
 .fp-tutorial p { margin: 0.35rem 0; font-size: 0.88rem; line-height: 1.6; color: var(--ink-soft); }
 .fp-tutorial p b { color: var(--ink); }
 .fp-tutorial code { font-family: var(--font-mono); font-size: 0.85em; color: var(--accent); letter-spacing: 0.04em; word-break: break-word; }
-.fp-frac { display: inline-flex; flex-direction: column; gap: 0.2rem; margin: 0.5rem 0; padding: 0.5rem 0.7rem; border: 1px solid var(--line-soft); border-radius: 8px; background: var(--bg-elev); }
+.fp-frac { display: flex; flex-direction: column; gap: 0.2rem; margin: 0.5rem 0; padding: 0.5rem 0.7rem; border: 1px solid var(--line-soft); border-radius: 8px; background: var(--bg-elev); max-width: max-content; max-height: 340px; overflow-y: auto; }
 .fp-frac-row { display: flex; align-items: center; justify-content: space-between; gap: 1.2rem; font-family: var(--font-mono); font-size: 0.8rem; color: var(--ink-soft); }
 .fp-frac-row b { color: var(--accent); min-width: 1rem; text-align: center; }
 .fp-norm { margin: 0.4rem 0; font-size: 1rem; }
