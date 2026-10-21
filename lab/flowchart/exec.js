@@ -213,6 +213,8 @@
      Driver + UI
      ============================================================ */
   let gen = null, scope = null, auto = false, timer = null, steps = 0, awaiting = false, done = false;
+  let speed = "medio";
+  const DELAYS = { lento: 1200, medio: 550, veloce: 0 };
   const LIMIT = 8000;
 
   // tela sempre in modalità modifica (con i «+»): si può editare anche dopo l'esecuzione
@@ -281,19 +283,30 @@
       const val = box.value;
       awaiting = false;
       const st = advance(val);
-      if (auto && st === "frame") scheduleAuto();
+      if (auto && st === "frame") continueRun();
     };
     $("fcInputOk").addEventListener("click", submit);
     box.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); submit(); } });
   }
 
-  function scheduleAuto() { timer = setTimeout(autoTick, 850); }
+  function scheduleAuto() { timer = setTimeout(autoTick, DELAYS[speed]); }
   function autoTick() {
     if (!auto) return;
     const st = advance(undefined);
     if (st === "frame") scheduleAuto();
     else if (st === "input") { /* aspetta input */ }
     else stopAuto();
+  }
+  // esecuzione istantanea: avanza senza pause finché non serve un input o finisce
+  function runInstant() {
+    let st;
+    do { st = advance(undefined); } while (st === "frame" && auto);
+  }
+  // riprende l'esecuzione automatica con la modalità/velocità corrente
+  function continueRun() {
+    if (!auto) return;
+    if (speed === "veloce") runInstant();
+    else scheduleAuto();
   }
   function stopAuto() { auto = false; if (timer) { clearTimeout(timer); timer = null; } $("fcRun").textContent = "▶ Esegui"; }
 
@@ -308,7 +321,7 @@
     if (done || !gen) begin();
     if (awaiting) return;
     auto = true; $("fcRun").textContent = "⏸ Pausa";
-    autoTick();
+    continueRun();
   }
   function doReset() {
     stopAuto(); gen = null; scope = null; done = false; awaiting = false;
@@ -321,6 +334,13 @@
   $("fcStep").addEventListener("click", doStep);
   $("fcRun").addEventListener("click", doRun);
   $("fcReset").addEventListener("click", doReset);
+
+  document.querySelectorAll(".fc-spd").forEach((b) => b.addEventListener("click", () => {
+    speed = b.dataset.speed;
+    document.querySelectorAll(".fc-spd").forEach((x) => x.classList.toggle("active", x === b));
+    // se sta già girando in automatico, applica subito la nuova velocità
+    if (auto && !awaiting) { if (timer) { clearTimeout(timer); timer = null; } continueRun(); }
+  }));
 
   window.FCExec = { reset: doReset };
 })();
