@@ -89,8 +89,8 @@
   }
 
   function measureLoop(n) {
-    const sW = Math.max(120, label(n).length * CH + (n.type === "for" ? 78 : 62));
-    const sH = n.type === "for" ? HH : DH;
+    const sW = Math.max(120, label(n).length * CH + 78);
+    const sH = HH;
     const mb = measureSeq(n.body);
     const rOff = sW / 2 + HGAP + mb.lw;   // corpo a destra
     const h = sH + BRGAP + Math.max(mb.h, 24) + BACK + 24;
@@ -99,7 +99,7 @@
   }
 
   function measureDo(n) {
-    const dW = Math.max(120, label(n).length * CH + 62), dH = DH;
+    const dW = Math.max(120, label(n).length * CH + 78), dH = HH;
     const mb = measureSeq(n.body);
     const bodyH = n.body.length ? mb.h : 30;   // stub se il corpo è vuoto
     const ch = Math.max(mb.lw, dW / 2) + 30;   // canale del back-edge a SINISTRA
@@ -209,7 +209,7 @@
     out.push(pathArr(`M${cx - sW / 2} ${cy} H${leftX} V${exitY} H${cx}`, false));
     out.push(edgeLbl(cx - sW / 2 - 52, cy + 14, isFor ? "Termina" : "falso"));
     out.push(`<circle cx="${cx}" cy="${exitY}" r="4" class="fc-join"/>`);
-    out.push(shapeSVG(isFor ? "for" : "dec", cx, cy, sW, sH, label(n), n.id));
+    out.push(shapeSVG("for", cx, cy, sW, sH, label(n), n.id));
     return exitY;
   }
 
@@ -218,7 +218,7 @@
   function placeDo(n, cx, top, out) {
     const L = n._lay, dW = L.dW, dH = L.dH;
     const bodyTop = top + GAP;
-    out.push(vArr(cx, top, bodyTop));                       // ingresso nel corpo
+    out.push(vArr(cx, top, bodyTop));                       // ingresso nel corpo (do-while, esagono in fondo)
     let bb;
     if (!n.body.length) {                                   // corpo vuoto: stub con un «+» ben dentro il ciclo
       bb = bodyTop + 30;
@@ -238,7 +238,7 @@
     const exitY = decTop + dH + 26;
     out.push(pathArr(`M${cx} ${decTop + dH} V${exitY}`, false));
     out.push(edgeLbl(cx + 8, decTop + dH + 16, "falso"));
-    out.push(shapeSVG("dec", cx, cy, dW, dH, label(n), n.id));
+    out.push(shapeSVG("for", cx, cy, dW, dH, label(n), n.id));
     return exitY;
   }
 
