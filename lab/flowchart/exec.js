@@ -152,8 +152,8 @@
       }
       case "output": {
         const v = evalExpr(n.expr, scope);
-        scope.out.push(toStr(v));
-        yield { node: n.id, fresh: scope.out.length - 1, desc: "Scrivo a schermo: " + toStr(v) };
+        scope.log.push({ t: "out", s: toStr(v) });
+        yield { node: n.id, fresh: scope.log.length - 1, desc: "Scrivo a schermo: " + toStr(v) };
         break;
       }
       case "input": {
@@ -162,7 +162,8 @@
         const raw = yield { node: n.id, needInput: { name: n.name, type } };
         const val = coerceInput(raw, type);
         scope.v[n.name].value = val; scope.v[n.name].init = true;
-        yield { node: n.id, changed: n.name, desc: "Hai inserito " + toStr(val) + " → " + n.name + "." };
+        scope.log.push({ t: "in", name: n.name, s: toStr(val) });
+        yield { node: n.id, changed: n.name, fresh: scope.log.length - 1, desc: "Hai inserito " + toStr(val) + " → " + n.name + "." };
         break;
       }
       case "if": {
@@ -233,14 +234,20 @@
     }).join("") : '<span class="fc-empty">nessuna variabile</span>';
   }
   function renderOut(fresh) {
-    $("fcOut").innerHTML = scope.out.length ? scope.out.map((l, i) =>
-      '<div' + (i === fresh ? ' class="fresh"' : "") + ">" + esc(l) + "</div>").join("") : '<span class="fc-empty">— niente stampato —</span>';
+    if (!scope.log.length) { $("fcOut").innerHTML = '<span class="fc-empty">— console vuota —</span>'; return; }
+    $("fcOut").innerHTML = scope.log.map((e, i) => {
+      const fr = i === fresh ? " fresh" : "";
+      if (e.t === "in") {
+        return '<div class="fc-io fc-io-in' + fr + '"><span class="io-tag">input</span><b>' + esc(e.name) + "</b> ← " + esc(e.s) + "</div>";
+      }
+      return '<div class="fc-io fc-io-out' + fr + '">' + esc(e.s) + "</div>";
+    }).join("");
   }
   function setDesc(html) { $("fcDesc").innerHTML = html; }
 
   function begin() {
     stopAuto();
-    scope = { v: {}, out: [] }; steps = 0; done = false; awaiting = false;
+    scope = { v: {}, log: [] }; steps = 0; done = false; awaiting = false;
     gen = execSeq(window.FC.program, scope);
     setClean();
     renderVars(); renderOut();
@@ -307,7 +314,7 @@
     stopAuto(); gen = null; scope = null; done = false; awaiting = false;
     window.FC.render();   // ritorna in modalità modifica (con i «+»)
     $("fcVars").innerHTML = '<span class="fc-empty">nessuna variabile</span>';
-    $("fcOut").innerHTML = '<span class="fc-empty">— niente stampato —</span>';
+    $("fcOut").innerHTML = '<span class="fc-empty">— console vuota —</span>';
     setDesc("Premi <b>Esegui</b> o <b>Passo</b> per far partire il diagramma.");
   }
 

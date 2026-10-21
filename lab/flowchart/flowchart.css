@@ -109,6 +109,15 @@
 .fc-out { margin-top: 0.5rem; font-family: var(--font-mono); font-size: 0.82rem; line-height: 1.6;
   background: var(--bg-sunk); border: 1px solid var(--line); border-radius: 8px; padding: 0.6rem 0.7rem;
   min-height: 3rem; white-space: pre-wrap; word-break: break-word; }
+.fc-out .fc-io { border-radius: 4px; padding: 0 0.2rem; }
+.fc-out .fc-io-out { color: var(--ink); }
+.fc-out .fc-io-in { color: var(--ink-soft); }
+.fc-out .fc-io-in b { color: var(--ink); font-weight: 600; }
+.fc-out .fc-io-in .io-tag {
+  font-size: 0.62rem; letter-spacing: 0.05em; text-transform: uppercase;
+  color: var(--accent); border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--line));
+  border-radius: 100px; padding: 0.02rem 0.4rem; margin-right: 0.4rem;
+}
 .fc-out .fresh { background: var(--accent-wash); }
 .fc-inputrow { display: flex; flex-wrap: wrap; align-items: center; gap: 0.5rem; }
 .fc-inputrow small { color: var(--ink-faint); }
@@ -121,12 +130,7 @@
 .fc-legend { display: flex; flex-wrap: wrap; gap: 0.5rem 1.2rem; margin-top: 1.25rem;
   font-size: 0.82rem; color: var(--ink-soft); }
 .fc-leg { display: inline-flex; align-items: center; gap: 0.45rem; }
-.fc-leg i { width: 22px; height: 14px; display: inline-block; border: 1.6px solid; background: var(--bg-elev); }
-.fc-leg i.lg-term { border-color: var(--accent); background: var(--accent); border-radius: 7px; }
-.fc-leg i.lg-proc { border-color: var(--accent); border-radius: 2px; }
-.fc-leg i.lg-io { border-color: #2f9e57; transform: skewX(-16deg); }
-.fc-leg i.lg-dec { border-color: #c98a1b; transform: rotate(45deg) scale(0.8); }
-.fc-leg i.lg-for { border-color: #b5468f; clip-path: polygon(14% 0, 86% 0, 100% 50%, 86% 100%, 14% 100%, 0 50%); }
+.fc-leg svg { width: 24px; height: 16px; flex: none; }
 
 @media (max-width: 560px) {
   .fc-canvas-scroll { max-height: 64vh; padding: 0.6rem; }
