@@ -401,7 +401,7 @@
 
 /* 5 · sistema operativo */
 .so-stack { display: flex; flex-direction: column; align-items: center; gap: 0.2rem; }
-.so-layer { width: 100%; max-width: 32rem; display: flex; align-items: center; gap: 0.7rem; justify-content: center; padding: 0.85rem 1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--bg-elev); cursor: pointer; transition: all 0.15s var(--ease); }
+.so-layer { width: 100%; max-width: 32rem; display: flex; align-items: center; gap: 0.7rem; justify-content: center; padding: 0.85rem 1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--bg-elev); color: var(--ink); cursor: pointer; transition: all 0.15s var(--ease); }
 .so-layer:hover { border-color: var(--accent); }
 .so-layer.sel { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent); }
 .so-layer.hot { background: var(--accent-wash); border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); }

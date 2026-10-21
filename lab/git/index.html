@@ -57,15 +57,82 @@
     <section class="section tool-hero" style="padding-bottom:0">
       <div class="container">
         <nav class="breadcrumb" aria-label="Percorso">
-          <a href="../">Lab</a><span class="sep">/</span><span class="current">Git Visual Sandbox</span>
+          <a href="../">Lab</a><span class="sep">/</span><span class="current">Git da zero</span>
         </nav>
-        <h1>Git <em>Visual Sandbox</em></h1>
-        <p class="lead">Una riga di comando simulata affiancata a un <strong>grafo che cresce</strong>: digiti <code>git commit</code>, <code>git branch</code>, <code>git merge</code> e vedi nascere commit, puntatori e fusioni. <strong>HEAD</strong>, merge e checkout smettono di essere astratti. Nessun file reale: è tutto un modello in memoria.</p>
+        <h1>Git <em>da zero</em></h1>
+        <p class="lead">Un corso completo in un'unica pagina: <strong>entri senza sapere nulla di Git ed esci sapendolo usare</strong>. Prima capisci <em>perché</em> esiste e i concetti chiave, poi provi i comandi veri in un <strong>terminale simulato</strong> con un grafo che cresce a ogni comando, infine vedi come funziona nel mondo reale con i file e GitHub. Nessuna installazione: tutto qui dentro.</p>
+
+        <nav class="gv-toc" aria-label="Indice del corso">
+          <a href="#perche"><span>01</span> Perché esiste Git</a>
+          <a href="#concetti"><span>02</span> I concetti in un minuto</a>
+          <a href="#banco"><span>03</span> Il banco di prova</a>
+          <a href="#lezione"><span>04</span> Lezione guidata</a>
+          <a href="#reale"><span>05</span> File, staging e GitHub</a>
+          <a href="#guida"><span>06</span> Guida ai comandi</a>
+        </nav>
       </div>
     </section>
 
-    <section class="section gv-sec" style="padding-top:clamp(1.5rem,4vw,2.5rem);padding-bottom:clamp(4rem,9vw,7rem)">
+    <!-- ============ §1 PERCHÉ ESISTE GIT ============ -->
+    <section class="section gv-block" id="perche" style="padding-top:clamp(2rem,5vw,3rem)">
       <div class="container">
+        <header class="gv-shead">
+          <span class="gv-skicker">01 · L'idea</span>
+          <h2 class="gv-stitle">Cos'è Git e perché ti serve</h2>
+          <p class="gv-ssub">Git è un <strong>sistema di controllo di versione</strong>: tiene la cronologia completa di un progetto, così puoi tornare indietro, lavorare in parallelo e collaborare senza pestarti i piedi. Immagina un videogioco in cui <em>ogni salvataggio è permanente</em> e puoi sempre ricaricarlo.</p>
+        </header>
+
+        <div class="gv-why">
+          <article class="gv-why-card">
+            <div class="wc-bad"><span class="wc-tag">senza Git</span><p>«Copio la cartella in <code>progetto_v2_FINALE_vero.zip</code>»</p></div>
+            <div class="wc-good"><span class="wc-tag">con Git</span><p>Una sola cartella con <strong>tutta la cronologia</strong> dentro. Ogni versione è un <em>commit</em> etichettato.</p></div>
+          </article>
+          <article class="gv-why-card">
+            <div class="wc-bad"><span class="wc-tag">senza Git</span><p>«Ho rotto tutto e non so cosa ho cambiato ieri»</p></div>
+            <div class="wc-good"><span class="wc-tag">con Git</span><p>Vedi <strong>esattamente</strong> cosa è cambiato e quando, e <strong>torni indietro</strong> a qualunque versione in un comando.</p></div>
+          </article>
+          <article class="gv-why-card">
+            <div class="wc-bad"><span class="wc-tag">senza Git</span><p>«Provo una modifica rischiosa… ma se non funziona?»</p></div>
+            <div class="wc-good"><span class="wc-tag">con Git</span><p>Apri un <strong>ramo</strong> separato, sperimenti in tranquillità e lo unisci solo se funziona.</p></div>
+          </article>
+          <article class="gv-why-card">
+            <div class="wc-bad"><span class="wc-tag">senza Git</span><p>«In due sullo stesso file ci mandiamo versioni via email»</p></div>
+            <div class="wc-good"><span class="wc-tag">con Git</span><p>Ognuno lavora sulla sua copia e Git <strong>unisce</strong> i contributi. È lo standard per lavorare in gruppo.</p></div>
+          </article>
+        </div>
+
+        <p class="gv-note-line">Git lavora <strong>in locale</strong>, sul tuo computer. <strong>GitHub</strong> (o GitLab) è un servizio online dove <em>caricare</em> una copia del repository per condividerlo e salvarlo nel cloud — ne parliamo alla fine. Non sono la stessa cosa: Git è lo strumento, GitHub è un posto dove mettere i tuoi repository.</p>
+      </div>
+    </section>
+
+    <!-- ============ §2 I CONCETTI ============ -->
+    <section class="section gv-block" id="concetti" style="padding-top:clamp(2rem,5vw,3rem)">
+      <div class="container">
+        <header class="gv-shead">
+          <span class="gv-skicker">02 · Il vocabolario</span>
+          <h2 class="gv-stitle">I concetti in un minuto</h2>
+          <p class="gv-ssub">Sei parole che sentirai sempre. Ti bastano per capire tutto il resto — e nel banco di prova qui sotto le vedrai muoversi.</p>
+        </header>
+
+        <div class="gv-concepts">
+          <article class="gv-concept"><span class="gc-icon">📦</span><h3>Repository</h3><p>La cartella del progetto <strong>più la sua cronologia</strong>. «Repo» per gli amici. La crei con <code>git init</code>.</p></article>
+          <article class="gv-concept"><span class="gc-icon">💾</span><h3>Commit</h3><p>Una <strong>fotografia salvata</strong> del progetto in un momento preciso, con un messaggio che la descrive. È il mattone di Git.</p></article>
+          <article class="gv-concept"><span class="gc-icon">🌿</span><h3>Branch (ramo)</h3><p>Una <strong>linea di sviluppo parallela</strong>. Il ramo di default si chiama <code>main</code>. Ne apri altri per lavorare senza rischi.</p></article>
+          <article class="gv-concept"><span class="gc-icon">📍</span><h3>HEAD</h3><p>Un segnalibro: <strong>dove stai lavorando adesso</strong>. Di solito punta alla punta del ramo corrente.</p></article>
+          <article class="gv-concept"><span class="gc-icon">🔀</span><h3>Merge</h3><p><strong>Unire due rami</strong>. Git combina il lavoro; se le linee erano divergenti crea un «commit di merge».</p></article>
+          <article class="gv-concept"><span class="gc-icon">☁️</span><h3>Remote / GitHub</h3><p>Una <strong>copia del repo online</strong>. <code>push</code> carica i tuoi commit, <code>pull</code> scarica quelli degli altri.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ §3 IL BANCO DI PROVA ============ -->
+    <section class="section gv-sec gv-block" id="banco" style="padding-top:clamp(2rem,5vw,3rem);padding-bottom:clamp(2rem,5vw,3rem)">
+      <div class="container">
+        <header class="gv-shead">
+          <span class="gv-skicker">03 · Prova con mano</span>
+          <h2 class="gv-stitle">Il banco di prova</h2>
+          <p class="gv-ssub">Un Git vero in miniatura. Scrivi i comandi a sinistra e guarda il <strong>grafo dei commit</strong> crescere a destra: i commit sono cerchi, i rami etichette colorate, <strong>HEAD</strong> il cerchio col contorno tratteggiato. Nessun file reale, così puoi sbagliare senza conseguenze. Nella <a href="#lezione">lezione guidata</a> qui sotto ti diciamo cosa scrivere, passo per passo.</p>
+        </header>
 
         <div class="gv-layout">
           <!-- TERMINALE -->
@@ -95,18 +162,11 @@
         </div>
 
         <div class="gv-suggests">
-          <span class="gv-suggests-label">Prova questa sequenza, <strong>in ordine</strong> (ogni comando si appoggia ai precedenti):</span>
-          <div class="gv-seq">
-            <button class="gv-chip" type="button" data-cmd='git commit -m "primo"'><span class="gv-step">1</span>git commit -m "primo"</button>
-            <button class="gv-chip" type="button" data-cmd="git checkout -b feature"><span class="gv-step">2</span>git checkout -b feature</button>
-            <button class="gv-chip" type="button" data-cmd='git commit -m "lavoro sul ramo"'><span class="gv-step">3</span>git commit -m "lavoro sul ramo"</button>
-            <button class="gv-chip" type="button" data-cmd="git checkout main"><span class="gv-step">4</span>git checkout main</button>
-            <button class="gv-chip" type="button" data-cmd="git merge feature"><span class="gv-step">5</span>git merge feature</button>
-          </div>
-          <span class="gv-suggests-label">Oppure, in qualsiasi momento:</span>
+          <span class="gv-suggests-label">Comandi utili da provare <strong>in qualsiasi momento</strong>:</span>
           <div class="gv-seq">
             <button class="gv-chip" type="button" data-cmd="git log">git log</button>
             <button class="gv-chip" type="button" data-cmd="git status">git status</button>
+            <button class="gv-chip" type="button" data-cmd="git branch">git branch</button>
             <button class="gv-chip" type="button" data-cmd="help">help</button>
           </div>
         </div>
@@ -114,7 +174,170 @@
       </div>
     </section>
 
-    <section class="section" style="padding-top:0">
+    <!-- ============ §4 LEZIONE GUIDATA ============ -->
+    <section class="section gv-block" id="lezione" style="padding-top:clamp(2rem,5vw,3rem)">
+      <div class="container">
+        <header class="gv-shead">
+          <span class="gv-skicker">04 · Impara facendo</span>
+          <h2 class="gv-stitle">Lezione guidata: dal nulla al primo merge</h2>
+          <p class="gv-ssub">Segui i passi <strong>in ordine</strong>. Premi <strong>▸ Esegui</strong> su ciascuno: il comando parte nel terminale qui sopra e il grafo si aggiorna. Leggi la spiegazione, osserva il grafo, poi passa al successivo. Alla fine avrai creato commit, un ramo e la tua prima fusione.</p>
+        </header>
+
+        <div class="les-tip">
+          <strong>Suggerimento:</strong> premi <code>↺ Reset</code> nel terminale per ripartire da zero, poi scorri in alto per guardare il grafo mentre esegui ogni passo.
+        </div>
+
+        <ol class="gv-les">
+          <li class="les-step">
+            <span class="les-num">1</span>
+            <div class="les-body">
+              <h3>Crea il repository</h3>
+              <p><code>git init</code> trasforma una cartella normale in un repository Git. Nasce già il ramo <code>main</code>, ancora «vuoto»: punterà a qualcosa solo dopo il primo commit.</p>
+            </div>
+            <button class="les-run" type="button" data-cmd="git init">▸ Esegui</button>
+          </li>
+          <li class="les-step">
+            <span class="les-num">2</span>
+            <div class="les-body">
+              <h3>Il primo commit</h3>
+              <p>Salvi la prima «fotografia». Il <code>-m</code> è il <strong>messaggio</strong> che descrive il salvataggio. Nel grafo appare il primo cerchio, con l'etichetta <code>main</code> sopra.</p>
+            </div>
+            <button class="les-run" type="button" data-cmd='git commit -m "primo commit"'>▸ Esegui</button>
+          </li>
+          <li class="les-step">
+            <span class="les-num">3</span>
+            <div class="les-body">
+              <h3>Un secondo commit</h3>
+              <p>Un altro salvataggio sopra il precedente. Ora hai una <strong>cronologia</strong>: due commit collegati, e <code>main</code> che avanza sul più recente insieme a HEAD.</p>
+            </div>
+            <button class="les-run" type="button" data-cmd='git commit -m "aggiungo la homepage"'>▸ Esegui</button>
+          </li>
+          <li class="les-step">
+            <span class="les-num">4</span>
+            <div class="les-body">
+              <h3>Guarda la cronologia</h3>
+              <p><code>git log</code> elenca i commit dal più recente. Vedi gli identificatori, i messaggi e dove puntano <code>HEAD</code> e <code>main</code>.</p>
+            </div>
+            <button class="les-run" type="button" data-cmd="git log">▸ Esegui</button>
+          </li>
+          <li class="les-step">
+            <span class="les-num">5</span>
+            <div class="les-body">
+              <h3>Apri un ramo per sperimentare</h3>
+              <p><code>git checkout -b feature</code> crea il ramo <code>feature</code> e ci sposta HEAD sopra. Da qui lavori <strong>in parallelo</strong> senza toccare <code>main</code>.</p>
+            </div>
+            <button class="les-run" type="button" data-cmd="git checkout -b feature">▸ Esegui</button>
+          </li>
+          <li class="les-step">
+            <span class="les-num">6</span>
+            <div class="les-body">
+              <h3>Lavora sul ramo</h3>
+              <p>Un commit mentre sei su <code>feature</code>: avanza <strong>solo questo ramo</strong>. Il grafo si biforca — <code>main</code> resta fermo, <code>feature</code> va avanti.</p>
+            </div>
+            <button class="les-run" type="button" data-cmd='git commit -m "nuova funzione sperimentale"'>▸ Esegui</button>
+          </li>
+          <li class="les-step">
+            <span class="les-num">7</span>
+            <div class="les-body">
+              <h3>Torna su main</h3>
+              <p><code>git checkout main</code> riporta HEAD sul ramo principale. Il lavoro su <code>feature</code> non è perso: è lì, su un'altra linea, che ti aspetta.</p>
+            </div>
+            <button class="les-run" type="button" data-cmd="git checkout main">▸ Esegui</button>
+          </li>
+          <li class="les-step">
+            <span class="les-num">8</span>
+            <div class="les-body">
+              <h3>Unisci il lavoro (merge)</h3>
+              <p><code>git merge feature</code> porta dentro <code>main</code> quello che hai fatto su <code>feature</code>. Le due linee si <strong>riuniscono</strong>: è il cuore del lavoro in gruppo.</p>
+            </div>
+            <button class="les-run" type="button" data-cmd="git merge feature">▸ Esegui</button>
+          </li>
+        </ol>
+
+        <p class="gv-note-line">🎉 Fatto. Hai appena usato il flusso che si ripete <strong>ogni giorno</strong> su progetti reali: salvare commit, ramificare per lavorare in sicurezza, unire. Prova a rifarlo da solo scrivendo i comandi a mano, o usa <code>✦ Carica esempio</code> per vedere uno scenario più ricco.</p>
+      </div>
+    </section>
+
+    <!-- ============ §5 FILE, STAGING, GITHUB ============ -->
+    <section class="section gv-block" id="reale" style="padding-top:clamp(2rem,5vw,3rem)">
+      <div class="container">
+        <header class="gv-shead">
+          <span class="gv-skicker">05 · Nel mondo reale</span>
+          <h2 class="gv-stitle">File, staging e GitHub</h2>
+          <p class="gv-ssub">Nel banco di prova i file non esistono, per concentrarci sul grafo. Su Git vero, invece, un commit nasce <strong>dai file</strong>. Ecco l'unico pezzo che manca — ed è semplice.</p>
+        </header>
+
+        <div class="gv-pipeline">
+          <div class="pl-stage">
+            <span class="pl-icon">📁</span>
+            <h4>Working directory</h4>
+            <p>I tuoi file, come li stai modificando adesso sul disco.</p>
+          </div>
+          <div class="pl-arrow"><code>git add</code><span>→</span></div>
+          <div class="pl-stage">
+            <span class="pl-icon">📋</span>
+            <h4>Staging area</h4>
+            <p>La «lista di cosa entrerà nel prossimo commit». Scegli tu <em>cosa</em> salvare.</p>
+          </div>
+          <div class="pl-arrow"><code>git commit</code><span>→</span></div>
+          <div class="pl-stage">
+            <span class="pl-icon">📦</span>
+            <h4>Repository</h4>
+            <p>Il commit è salvato per sempre nella cronologia locale.</p>
+          </div>
+          <div class="pl-arrow"><code>git push</code><span>→</span></div>
+          <div class="pl-stage pl-cloud">
+            <span class="pl-icon">☁️</span>
+            <h4>GitHub (remote)</h4>
+            <p>La copia online, condivisa con tutti e salvata nel cloud.</p>
+          </div>
+        </div>
+
+        <div class="gv-real-grid">
+          <article class="gv-real-card">
+            <code class="rc-cmd">git status</code>
+            <p>Mostra quali file hai modificato e quali sono già in <em>staging</em>. È il comando che userai di più: ti dice sempre «a che punto sei».</p>
+          </article>
+          <article class="gv-real-card">
+            <code class="rc-cmd">git add file.txt</code>
+            <p>Mette <code>file.txt</code> in staging. <code>git add .</code> aggiunge tutto. È il passo che scegli <strong>prima</strong> di ogni commit.</p>
+          </article>
+          <article class="gv-real-card">
+            <code class="rc-cmd">git commit -m "..."</code>
+            <p>Salva nel repository <strong>solo ciò che è in staging</strong>, con un messaggio. Esattamente i commit che hai creato nel banco di prova.</p>
+          </article>
+          <article class="gv-real-card">
+            <code class="rc-cmd">git clone &lt;url&gt;</code>
+            <p>Scarica un repository esistente da GitHub sul tuo computer, cronologia compresa. È come inizi a lavorare su un progetto altrui.</p>
+          </article>
+          <article class="gv-real-card">
+            <code class="rc-cmd">git push</code>
+            <p>Carica i tuoi commit locali su GitHub, così gli altri li vedono e il lavoro è al sicuro online.</p>
+          </article>
+          <article class="gv-real-card">
+            <code class="rc-cmd">git pull</code>
+            <p>Scarica e unisce i commit che gli altri hanno caricato. Da fare spesso, per restare allineato col gruppo.</p>
+          </article>
+          <article class="gv-real-card">
+            <code class="rc-cmd">.gitignore</code>
+            <p>Un file che elenca ciò che Git deve <strong>ignorare</strong> (file temporanei, password, cartelle enormi). Non tutto va versionato.</p>
+          </article>
+          <article class="gv-real-card">
+            <code class="rc-cmd">git diff</code>
+            <p>Mostra riga per riga <strong>cosa</strong> è cambiato rispetto all'ultimo commit. Utile per ricontrollare prima di salvare.</p>
+          </article>
+        </div>
+
+        <div class="gv-flow-real">
+          <span class="gv-flow-label">Il ciclo di tutti i giorni, in pratica:</span>
+          <div class="gv-flow-steps">
+            <span>modifichi i file</span><i>→</i><code>git add</code><i>→</i><code>git commit -m "..."</code><i>→</i><code>git push</code><i>↺</i>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section gv-block" id="guida" style="padding-top:clamp(2rem,5vw,3rem)">
       <div class="container">
         <div class="panel guide-panel">
           <header class="panel-head">

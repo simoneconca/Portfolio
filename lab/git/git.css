@@ -5,6 +5,180 @@
    ============================================================ */
 
 .gv-sec { position: relative; z-index: 2; }
+
+/* ============================================================
+   Corso: indice, intestazioni di sezione, blocchi didattici
+   ============================================================ */
+.gv-block { position: relative; z-index: 2; }
+
+/* ---- Indice ---- */
+.gv-toc {
+  display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.6rem;
+  margin-top: clamp(1.5rem, 4vw, 2.25rem);
+}
+@media (max-width: 720px) { .gv-toc { grid-template-columns: 1fr; } }
+.gv-toc a {
+  display: flex; align-items: center; gap: 0.6rem;
+  padding: 0.7rem 0.95rem; border: 1px solid var(--line); border-radius: 10px;
+  background: var(--bg); color: var(--ink); font-size: 0.9rem; text-decoration: none;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease), background 0.2s var(--ease);
+}
+.gv-toc a:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-wash); }
+.gv-toc a span {
+  font-family: var(--font-mono); font-size: 0.75rem; font-weight: 600;
+  color: var(--accent-ink); background: var(--accent); border-radius: 6px;
+  padding: 0.15rem 0.4rem; flex-shrink: 0;
+}
+
+/* ---- Intestazione di sezione ---- */
+.gv-shead { max-width: 64ch; margin-bottom: clamp(1.5rem, 4vw, 2.25rem); }
+.gv-skicker {
+  display: inline-block; font-family: var(--font-mono); font-size: 0.72rem;
+  letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent);
+  margin-bottom: 0.6rem;
+}
+.gv-stitle {
+  font-family: var(--font-display); font-weight: 500;
+  font-size: clamp(1.5rem, 3.5vw, 2.1rem); letter-spacing: -0.02em; line-height: 1.15;
+}
+.gv-ssub { margin-top: 0.7rem; color: var(--ink-soft); font-size: 1rem; line-height: 1.6; }
+.gv-ssub strong { color: var(--ink); }
+.gv-ssub a, .gv-note-line a { color: var(--accent); }
+
+.gv-note-line {
+  margin-top: 1.5rem; padding: 0.9rem 1.1rem; border-left: 3px solid var(--accent);
+  background: var(--accent-wash); border-radius: 0 10px 10px 0;
+  font-size: 0.92rem; line-height: 1.6; color: var(--ink-soft);
+}
+.gv-note-line strong { color: var(--ink); }
+
+/* ---- §1 Perché: carte senza/con ---- */
+.gv-why { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.9rem; }
+@media (max-width: 720px) { .gv-why { grid-template-columns: 1fr; } }
+.gv-why-card {
+  border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--bg);
+  display: flex; flex-direction: column;
+}
+.wc-bad, .wc-good { padding: 0.9rem 1.1rem; }
+.wc-bad { background: var(--bg-sunk); border-bottom: 1px solid var(--line); }
+.wc-tag {
+  display: inline-block; font-family: var(--font-mono); font-size: 0.68rem;
+  letter-spacing: 0.05em; text-transform: uppercase; margin-bottom: 0.45rem;
+}
+.wc-bad .wc-tag { color: #c0392b; }
+.wc-good .wc-tag { color: #2e9e5b; }
+.wc-bad p { color: var(--ink-soft); font-size: 0.92rem; line-height: 1.5; font-style: italic; }
+.wc-good p { color: var(--ink); font-size: 0.92rem; line-height: 1.55; }
+.wc-good p strong { color: var(--accent); }
+
+/* ---- §2 Concetti ---- */
+.gv-concepts { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.9rem; }
+@media (max-width: 860px) { .gv-concepts { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .gv-concepts { grid-template-columns: 1fr; } }
+.gv-concept {
+  border: 1px solid var(--line); border-radius: 12px; background: var(--bg);
+  padding: 1.1rem 1.1rem 1.2rem; transition: border-color 0.2s var(--ease);
+}
+.gv-concept:hover { border-color: color-mix(in srgb, var(--accent) 40%, var(--line)); }
+.gc-icon { font-size: 1.5rem; display: block; margin-bottom: 0.5rem; }
+.gv-concept h3 {
+  font-family: var(--font-mono); font-size: 0.95rem; font-weight: 600;
+  color: var(--accent); margin-bottom: 0.4rem;
+}
+.gv-concept p { color: var(--ink-soft); font-size: 0.9rem; line-height: 1.55; }
+.gv-concept p strong { color: var(--ink); }
+
+/* ---- §4 Lezione guidata ---- */
+.les-tip {
+  margin-bottom: 1.3rem; padding: 0.75rem 1rem; border: 1px dashed var(--line);
+  border-radius: 10px; background: var(--bg-sunk); color: var(--ink-soft);
+  font-size: 0.88rem; line-height: 1.55;
+}
+.les-tip strong { color: var(--ink); }
+.gv-les { list-style: none; padding: 0; margin: 0; display: grid; gap: 0.7rem; }
+.les-step {
+  display: flex; align-items: center; gap: 1rem;
+  border: 1px solid var(--line); border-radius: 12px; background: var(--bg);
+  padding: 1rem 1.1rem; transition: border-color 0.2s var(--ease);
+}
+.les-step:hover { border-color: color-mix(in srgb, var(--accent) 35%, var(--line)); }
+.les-num {
+  flex-shrink: 0; width: 2rem; height: 2rem; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: var(--accent); color: var(--accent-ink);
+  font-family: var(--font-mono); font-weight: 600; font-size: 0.95rem;
+}
+.les-body { flex: 1; min-width: 0; }
+.les-body h3 { font-family: var(--font-sans); font-size: 1rem; font-weight: 600; margin-bottom: 0.25rem; }
+.les-body p { color: var(--ink-soft); font-size: 0.9rem; line-height: 1.55; }
+.les-run {
+  flex-shrink: 0; align-self: center;
+  font-family: var(--font-mono); font-size: 0.82rem; font-weight: 500;
+  padding: 0.5rem 1rem; border: 1px solid var(--accent); border-radius: 100px;
+  background: var(--accent); color: var(--accent-ink); cursor: pointer;
+  transition: opacity 0.2s var(--ease), transform 0.1s var(--ease); white-space: nowrap;
+}
+.les-run:hover { opacity: 0.88; }
+.les-run:active { transform: scale(0.96); }
+@media (max-width: 620px) {
+  .les-step { flex-wrap: wrap; }
+  .les-run { width: 100%; }
+}
+
+/* ---- §5 Pipeline file → GitHub ---- */
+.gv-pipeline {
+  display: flex; align-items: stretch; gap: 0.4rem; flex-wrap: wrap;
+  margin-bottom: 1.6rem;
+}
+.pl-stage {
+  flex: 1; min-width: 150px; border: 1px solid var(--line); border-radius: 12px;
+  background: var(--bg); padding: 1rem; text-align: center;
+}
+.pl-stage.pl-cloud { border-color: color-mix(in srgb, var(--accent) 45%, var(--line)); background: var(--accent-wash); }
+.pl-icon { font-size: 1.6rem; display: block; margin-bottom: 0.4rem; }
+.pl-stage h4 { font-family: var(--font-mono); font-size: 0.82rem; font-weight: 600; color: var(--ink); margin-bottom: 0.3rem; }
+.pl-stage p { font-size: 0.8rem; color: var(--ink-soft); line-height: 1.45; }
+.pl-arrow {
+  display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.2rem;
+  flex-shrink: 0; padding: 0 0.1rem;
+}
+.pl-arrow code {
+  font-family: var(--font-mono); font-size: 0.68rem; color: var(--accent);
+  background: var(--accent-wash); border-radius: 5px; padding: 0.1rem 0.35rem; white-space: nowrap;
+}
+.pl-arrow span { color: var(--ink-faint); font-size: 1.1rem; }
+@media (max-width: 760px) {
+  .gv-pipeline { flex-direction: column; }
+  .pl-arrow { flex-direction: row; gap: 0.5rem; padding: 0.2rem 0; }
+  .pl-arrow span { transform: rotate(90deg); }
+}
+
+.gv-real-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 0.8rem; }
+@media (max-width: 680px) { .gv-real-grid { grid-template-columns: 1fr; } }
+.gv-real-card {
+  border: 1px solid var(--line); border-radius: 10px; background: var(--bg); padding: 0.95rem 1.05rem;
+}
+.rc-cmd {
+  display: inline-block; font-family: var(--font-mono); font-size: 0.85rem; font-weight: 600;
+  color: var(--accent-ink); background: var(--accent); border-radius: 6px;
+  padding: 0.2rem 0.5rem; margin-bottom: 0.5rem;
+}
+.gv-real-card p { color: var(--ink-soft); font-size: 0.88rem; line-height: 1.55; }
+.gv-real-card p strong { color: var(--ink); }
+.gv-real-card p code {
+  font-family: var(--font-mono); font-size: 0.82em; background: var(--bg-elev);
+  border: 1px solid var(--line-soft); border-radius: 5px; padding: 0.02rem 0.3rem; color: var(--ink);
+}
+
+.gv-flow-real { margin-top: 1.5rem; padding: 1rem 1.1rem; border: 1px solid var(--line); border-radius: 12px; background: var(--bg-sunk); }
+.gv-flow-label { display: block; font-size: 0.82rem; color: var(--ink-soft); margin-bottom: 0.6rem; }
+.gv-flow-steps { display: flex; align-items: center; flex-wrap: wrap; gap: 0.5rem; }
+.gv-flow-steps code {
+  font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink);
+  background: var(--bg); border: 1px solid var(--line); border-radius: 6px; padding: 0.25rem 0.55rem;
+}
+.gv-flow-steps span { font-size: 0.85rem; color: var(--ink-soft); font-style: italic; }
+.gv-flow-steps i { color: var(--accent); font-style: normal; font-weight: 600; }
 .gv-layout { display: grid; grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr); gap: 1.25rem; align-items: stretch; margin-top: 1.25rem; }
 @media (max-width: 900px) { .gv-layout { grid-template-columns: 1fr; } }
 
