@@ -157,6 +157,13 @@
 .tool-status.soon { color: var(--ink-soft); border: 1px solid var(--line); }
 .tool-status.live { color: var(--accent-ink); background: var(--accent); }
 
+/* Strumento non ancora pronto: non cliccabile, leggermente spento */
+.tool-card.is-soon { cursor: default; }
+.tool-card.is-soon:hover { transform: none; border-color: var(--line); box-shadow: none; }
+.tool-card.is-soon:hover::after { opacity: 0; }
+.tool-card.is-soon .tool-icon { opacity: 0.55; }
+.tool-card.is-soon .tool-title { color: var(--ink-soft); }
+
 /* tutta la card è cliccabile */
 .tool-link { display: contents; }
 .tool-card .tool-arrow {
