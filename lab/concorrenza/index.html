@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Processi e concorrenza: dagli stati del processo ai thread, race condition, semafori di Dijkstra, produttori-consumatori, lettori-scrittori, filosofi a cena, deadlock, grafo di Holt e monitor in Java. Tutto interattivo.">
+  <meta name="theme-color" content="#f4f1ea" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#100f0c" media="(prefers-color-scheme: dark)">
+  <title>Simone Conca - LAB - Processi e concorrenza</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400..600;1,9..144,400..600&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../../css/base.css">
+  <link rel="stylesheet" href="../../css/lab.css">
+  <link rel="stylesheet" href="concorrenza.css">
+  <link rel="canonical" href="https://www.simoneconca.it/lab/concorrenza/">
+  <link rel="icon" href="/favicon.ico" sizes="any">
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <script>
+    (function () { try { var s = localStorage.getItem("theme"); document.documentElement.setAttribute("data-theme", s || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")); } catch (e) {} })();
+  </script>
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="brand" href="../../" aria-label="Simone Conca — home">
+        <span class="brand-mark"><svg viewBox="0 0 100 100" width="22" height="22" aria-hidden="true" focusable="false"><path d="M76.8 34.5 A31 31 0 1 0 76.8 65.5" fill="none" stroke="var(--accent)" stroke-width="7" stroke-linecap="round"/><text x="50" y="62" text-anchor="middle" font-size="34" font-family="Georgia,serif" font-weight="600" fill="currentColor">S</text></svg></span>
+        <span class="brand-name">Simone Conca</span>
+        <span class="brand-lab">LAB</span>
+      </a>
+      <nav class="nav" aria-label="Navigazione">
+        <a href="../">← Lab</a>
+        <a href="../../">Portfolio</a>
+        <a href="../../#contatti">Contatti</a>
+      </nav>
+      <div class="header-actions">
+        <button class="theme-toggle" type="button" aria-label="Cambia tema chiaro/scuro" title="Cambia tema">
+          <svg class="icon-sun" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/></svg>
+          <svg class="icon-moon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+        </button>
+        <button class="nav-toggle" type="button" aria-expanded="false" aria-controls="nav-mobile" aria-label="Apri menu"><span></span><span></span></button>
+      </div>
+    </div>
+  </header>
+
+  <nav id="nav-mobile" class="nav-mobile" aria-label="Navigazione mobile">
+    <a href="../">← Lab</a>
+    <a href="../../">Portfolio</a>
+    <a href="../../#contatti">Contatti</a>
+  </nav>
+
+  <main>
+    <!-- ===================== HERO ===================== -->
+    <section class="section tool-hero" style="padding-bottom:0">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Percorso">
+          <a href="../">Lab</a><span class="sep">/</span><span class="current">Processi e concorrenza</span>
+        </nav>
+        <h1>Processi e <em>concorrenza</em></h1>
+        <p class="lead">Il corso di TPSIT di quarta in un'unica pagina interattiva: da <strong>cos'è un processo</strong> fino a far girare più flussi di esecuzione <strong>insieme</strong> senza che si pestino i piedi. Stati del processo, thread, <strong>race condition</strong>, <strong>semafori di Dijkstra</strong>, i problemi classici (produttori-consumatori, lettori-scrittori, filosofi), il <strong>deadlock</strong> col grafo di Holt, e infine i <strong>monitor</strong> in Java. Ogni concetto si muove: lo guardi succedere.</p>
+
+        <nav class="co-toc" aria-label="Indice del corso">
+          <a href="#processi"><span>01</span> Processi e thread</a>
+          <a href="#stati"><span>02</span> Gli stati di un processo</a>
+          <a href="#cooperazione"><span>03</span> Cooperazione e precedenza</a>
+          <a href="#race"><span>04</span> La race condition</a>
+          <a href="#critica"><span>05</span> Sezione critica &amp; mutua esclusione</a>
+          <a href="#semafori"><span>06</span> I semafori (Dijkstra)</a>
+          <a href="#prodcons"><span>07</span> Produttori-consumatori</a>
+          <a href="#lettori"><span>08</span> Lettori-scrittori</a>
+          <a href="#filosofi"><span>09</span> I filosofi a cena</a>
+          <a href="#deadlock"><span>10</span> Deadlock &amp; grafo di Holt</a>
+          <a href="#java"><span>11</span> Monitor &amp; Java</a>
+        </nav>
+      </div>
+    </section>
+
+    <!-- ===================== 1 · PROCESSI E THREAD ===================== -->
+    <section class="section co-block" id="processi" style="padding-top:clamp(2rem,5vw,3rem)">
+      <div class="container">
+        <header class="co-shead">
+          <span class="co-skicker">01 · Le basi</span>
+          <h2 class="co-stitle">Processi, multiprogrammazione e thread</h2>
+          <p class="co-ssub">Un <strong>programma</strong> è un file sul disco; diventa <strong>processo</strong> quando la CPU lo esegue. Il sistema operativo tiene in esecuzione tanti processi insieme alternandoli sulla CPU: è la <strong>multiprogrammazione</strong>. Il trucco sta nei tempi morti.</p>
+        </header>
+
+        <div class="co-demo">
+          <div class="co-demo-head">
+            <h3>Perché alternare conviene</h3>
+            <p>Un processo non calcola e basta: ogni tanto <strong>aspetta</strong> (un file dal disco, un tasto, la rete). Durante l'attesa la CPU, da sola, resterebbe ferma. Premi play e confronta.</p>
+          </div>
+          <div class="cpu-wrap">
+            <div class="cpu-seg" role="tablist" aria-label="Modalità CPU">
+              <button class="cpu-seg-btn active" data-mode="mono" role="tab">Un processo per volta</button>
+              <button class="cpu-seg-btn" data-mode="multi" role="tab">Multiprogrammazione</button>
+            </div>
+            <div class="cpu-gantt" id="cpuGantt"></div>
+            <div class="cpu-legend">
+              <span><i class="lg lg-cpu"></i> usa la CPU</span>
+              <span><i class="lg lg-io"></i> aspetta (I/O)</span>
+              <span><i class="lg lg-idle"></i> CPU ferma</span>
+            </div>
+            <div class="cpu-controls">
+              <button class="run-btn" id="cpuPlay" type="button">▶ Avvia</button>
+              <button class="ghost-btn" id="cpuReset" type="button">↺ Azzera</button>
+              <span class="cpu-readout" id="cpuReadout"></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="co-split">
+          <article class="co-card">
+            <h4>🧱 Processo</h4>
+            <p>Un programma in esecuzione con la <strong>sua</strong> memoria privata (codice, dati, stack, heap). Due processi sono <strong>isolati</strong>: non vedono le variabili l'uno dell'altro. Creare e far comunicare processi costa.</p>
+          </article>
+          <article class="co-card">
+            <h4>🧵 Thread</h4>
+            <p>Un flusso di esecuzione <strong>dentro</strong> un processo. Più thread dello stesso processo <strong>condividono</strong> la memoria (le stesse variabili): comunicano facilmente, ma proprio per questo possono interferire. Sono «leggeri».</p>
+          </article>
+        </div>
+        <p class="co-note-line">La memoria condivisa dei thread è comoda <em>e</em> pericolosa: è la radice di tutti i problemi di questo corso. In Java un thread si crea estendendo <code>Thread</code> o implementando <code>Runnable</code>, e si avvia con <code>start()</code>.</p>
+      </div>
+    </section>
+
+    <!-- ===================== 2 · STATI ===================== -->
+    <section class="section co-block" id="stati" style="padding-top:clamp(2rem,5vw,3rem)">
+      <div class="container">
+        <header class="co-shead">
+          <span class="co-skicker">02 · Il ciclo di vita</span>
+          <h2 class="co-stitle">Gli stati di un processo</h2>
+          <p class="co-ssub">Rispetto alla CPU, un processo si trova sempre in uno di <strong>cinque stati</strong>. Comanda tu gli eventi e guarda il processo spostarsi tra la <strong>Ready List</strong> (i pronti) e la <strong>Waiting List</strong> (chi aspetta qualcosa). Su una sola CPU, <strong>un solo</strong> processo per volta può essere in esecuzione.</p>
+        </header>
+
+        <div class="st-layout">
+          <div class="panel st-diagram">
+            <div class="st-row st-new">
+              <span class="st-node" data-st="new">Nuovo</span>
+              <span class="st-node st-term" data-st="term">Finito</span>
+            </div>
+            <div class="st-lists">
+              <div class="st-list" id="stReady"><span class="st-list-h">Ready List · pronti</span><div class="st-slots" id="stReadySlots"></div></div>
+              <div class="st-run"><span class="st-list-h">CPU · in esecuzione</span><div class="st-slots" id="stRunSlot"></div></div>
+              <div class="st-list" id="stWaiting"><span class="st-list-h">Waiting List · sospesi</span><div class="st-slots" id="stWaitSlots"></div></div>
+            </div>
+          </div>
+          <div class="panel st-panel">
+            <h3>Eventi</h3>
+            <div class="st-btns">
+              <button class="st-btn" data-ev="new" type="button">＋ Nuovo processo</button>
+              <button class="st-btn" data-ev="dispatch" type="button">▸ Dispatch <small>pronto → CPU</small></button>
+              <button class="st-btn" data-ev="timeout" type="button">⏱ Quanto scaduto <small>CPU → pronto</small></button>
+              <button class="st-btn" data-ev="io" type="button">⇄ Richiesta I/O <small>CPU → sospeso</small></button>
+              <button class="st-btn" data-ev="done" type="button">✓ I/O completato <small>sospeso → pronto</small></button>
+              <button class="st-btn" data-ev="exit" type="button">■ Terminazione <small>CPU → finito</small></button>
+            </div>
+            <p class="st-explain" id="stExplain">Crea qualche processo e prova a eseguirli. Nota: da <strong>Sospeso</strong> non si torna mai dritti in esecuzione — si ripassa sempre dalla Ready List.</p>
+            <button class="ghost-btn" id="stReset" type="button">↺ Ricomincia</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 3 · COOPERAZIONE / PRECEDENZA ===================== -->
+    <section class="section co-block" id="cooperazione" style="padding-top:clamp(2rem,5vw,3rem)">
+      <div class="container">
+        <header class="co-shead">
+          <span class="co-skicker">03 · Tre modi di stare insieme</span>
+          <h2 class="co-stitle">Indipendenti, cooperanti, in competizione</h2>
+          <p class="co-ssub">I processi su un sistema hanno rapporti diversi. Capirli serve per sapere <em>cosa</em> dobbiamo gestire nel resto del corso.</p>
+        </header>
+
+        <div class="co-three">
+          <article class="co-card co-ind"><h4>Indipendenti</h4><p>Evolvono ognuno per conto suo, senza scambiarsi nulla. Nessun problema da risolvere.</p></article>
+          <article class="co-card co-coop"><h4>Cooperanti</h4><p>Collaborano a un obiettivo comune producendo e usando <strong>dati condivisi</strong>. Hanno bisogno di <strong>comunicare</strong> e <strong>sincronizzarsi</strong>. Es.: il correttore di Word mentre scrivi, un gioco online.</p></article>
+          <article class="co-card co-comp"><h4>In competizione</h4><p>Potrebbero essere indipendenti, ma litigano per una <strong>risorsa limitata</strong> (CPU, stampante, un file). Vanno coordinati, altrimenti si bloccano a vicenda.</p></article>
+        </div>
+
+        <h3 class="co-sub2">Grafi di precedenza: chi prima, chi dopo, chi insieme</h3>
+        <p class="co-ssub" style="margin-bottom:1.2rem">Un <strong>grafo di precedenza</strong> dice in che ordine devono avvenire le operazioni. Alcune sono in sequenza, altre si possono fare <strong>in parallelo</strong>. Due notazioni per descriverlo nel codice:</p>
+        <div class="co-split">
+          <article class="co-card">
+            <h4>fork / join</h4>
+            <p><code>fork</code> lancia un'attività in parallelo; <code>join</code> aspetta che finisca. Flessibile: puoi biforcare e ricongiungere dove vuoi.</p>
+            <svg class="prec-svg" viewBox="0 0 300 150" aria-label="Grafo di precedenza fork-join">
+              <defs><marker id="ah" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0L6 3L0 6z" fill="var(--ink-soft)"/></marker></defs>
+              <g font-family="var(--font-mono)" font-size="12" fill="var(--ink)">
+                <circle cx="40" cy="75" r="16" fill="var(--accent-wash)" stroke="var(--accent)"/><text x="40" y="79" text-anchor="middle">S1</text>
+                <circle cx="150" cy="35" r="16" fill="var(--bg-elev)" stroke="var(--line)"/><text x="150" y="39" text-anchor="middle">S2</text>
+                <circle cx="150" cy="115" r="16" fill="var(--bg-elev)" stroke="var(--line)"/><text x="150" y="119" text-anchor="middle">S3</text>
+                <circle cx="260" cy="75" r="16" fill="var(--accent-wash)" stroke="var(--accent)"/><text x="260" y="79" text-anchor="middle">S4</text>
+                <line x1="56" y1="68" x2="134" y2="42" stroke="var(--ink-soft)" marker-end="url(#ah)"/>
+                <line x1="56" y1="82" x2="134" y2="108" stroke="var(--ink-soft)" marker-end="url(#ah)"/>
+                <line x1="166" y1="42" x2="244" y2="68" stroke="var(--ink-soft)" marker-end="url(#ah)"/>
+                <line x1="166" y1="108" x2="244" y2="82" stroke="var(--ink-soft)" marker-end="url(#ah)"/>
+              </g>
+            </svg>
+            <pre class="co-code"><code>S1;
+fork S3;   <span class="c-cm">// S2 e S3 in parallelo</span>
+S2;
+join;      <span class="c-cm">// aspetta S3</span>
+S4;</code></pre>
+          </article>
+          <article class="co-card">
+            <h4>cobegin / coend</h4>
+            <p>Tutto ciò che sta tra <code>cobegin</code> e <code>coend</code> parte <strong>insieme</strong>; si prosegue solo quando <strong>tutte</strong> le attività sono finite. Più leggibile, ma meno libero.</p>
+            <svg class="prec-svg" viewBox="0 0 300 150" aria-label="Grafo cobegin-coend">
+              <g font-family="var(--font-mono)" font-size="12" fill="var(--ink)">
+                <circle cx="40" cy="75" r="16" fill="var(--accent-wash)" stroke="var(--accent)"/><text x="40" y="79" text-anchor="middle">S1</text>
+                <circle cx="150" cy="30" r="15" fill="var(--bg-elev)" stroke="var(--line)"/><text x="150" y="34" text-anchor="middle">A</text>
+                <circle cx="150" cy="75" r="15" fill="var(--bg-elev)" stroke="var(--line)"/><text x="150" y="79" text-anchor="middle">B</text>
+                <circle cx="150" cy="120" r="15" fill="var(--bg-elev)" stroke="var(--line)"/><text x="150" y="124" text-anchor="middle">C</text>
+                <circle cx="260" cy="75" r="16" fill="var(--accent-wash)" stroke="var(--accent)"/><text x="260" y="79" text-anchor="middle">S2</text>
+                <line x1="56" y1="70" x2="135" y2="35" stroke="var(--ink-soft)" marker-end="url(#ah)"/>
+                <line x1="56" y1="75" x2="135" y2="75" stroke="var(--ink-soft)" marker-end="url(#ah)"/>
+                <line x1="56" y1="80" x2="135" y2="115" stroke="var(--ink-soft)" marker-end="url(#ah)"/>
+                <line x1="165" y1="35" x2="244" y2="70" stroke="var(--ink-soft)" marker-end="url(#ah)"/>
+                <line x1="165" y1="75" x2="244" y2="75" stroke="var(--ink-soft)" marker-end="url(#ah)"/>
+                <line x1="165" y1="115" x2="244" y2="80" stroke="var(--ink-soft)" marker-end="url(#ah)"/>
+              </g>
+            </svg>
+            <pre class="co-code"><code>S1;
+cobegin
+  A; B; C;   <span class="c-cm">// tutti e tre insieme</span>
+coend
+S2;          <span class="c-cm">// dopo che A, B, C finiscono</span></code></pre>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 4 · RACE CONDITION ===================== -->
+    <section class="section co-block" id="race" style="padding-top:clamp(2rem,5vw,3rem)">
+      <div class="container">
+        <header class="co-shead">
+          <span class="co-skicker">04 · Il problema, dal vivo</span>
+          <h2 class="co-stitle">La race condition</h2>
+          <p class="co-ssub">Due thread aumentano di 1 lo <strong>stesso</strong> contatore. Sembra banale, ma <code>x = x + 1</code> non è un'operazione sola: la CPU la spezza in <strong>tre passi</strong> — <em>leggi</em> x in un registro, <em>incrementa</em> il registro, <em>riscrivi</em> x. Se il sistema operativo cambia thread nel mezzo, un aggiornamento va perso. Decidi tu l'ordine dei passi e guarda.</p>
+        </header>
+
+        <div class="race-wrap panel">
+          <div class="race-shared">
+            <span class="race-shared-lbl">variabile condivisa</span>
+            <span class="race-x" id="raceX">x = 0</span>
+          </div>
+          <div class="race-threads">
+            <div class="race-th" id="raceT1">
+              <div class="race-th-head"><span class="race-dot t1"></span> Thread 1</div>
+              <ol class="race-steps" id="raceSteps1">
+                <li data-s="load">reg₁ ← x <span class="race-reg" id="raceReg1">–</span></li>
+                <li data-s="inc">reg₁ ← reg₁ + 1</li>
+                <li data-s="store">x ← reg₁</li>
+              </ol>
+              <button class="race-adv t1" data-th="1" type="button">avanza T1 ▸</button>
+            </div>
+            <div class="race-th" id="raceT2">
+              <div class="race-th-head"><span class="race-dot t2"></span> Thread 2</div>
+              <ol class="race-steps" id="raceSteps2">
+                <li data-s="load">reg₂ ← x <span class="race-reg" id="raceReg2">–</span></li>
+                <li data-s="inc">reg₂ ← reg₂ + 1</li>
+                <li data-s="store">x ← reg₂</li>
+              </ol>
+              <button class="race-adv t2" data-th="2" type="button">avanza T2 ▸</button>
+            </div>
+          </div>
+          <p class="race-log" id="raceLog">Ogni thread fa +1: alla fine <strong>x dovrebbe valere 2</strong>. Avanza i due thread a turno — o tutto uno e poi l'altro — e vedi se ci riesci… o se perdi un aggiornamento.</p>
+          <div class="race-controls">
+            <button class="ghost-btn" data-preset="good" type="button">✓ Interleaving «buono»</button>
+            <button class="ghost-btn" data-preset="bad" type="button">⚠ Interleaving «cattivo»</button>
+            <button class="ghost-btn" id="raceReset" type="button">↺ Azzera</button>
+          </div>
+        </div>
+        <p class="co-note-line">Il risultato dipende dall'<strong>ordine</strong> con cui i thread vengono eseguiti — un ordine che tu non controlli. Un bug che a volte c'è e a volte no: il più infido che esista. La porzione di codice che tocca la variabile condivisa si chiama <strong>sezione critica</strong>.</p>
+      </div>
+    </section>
+
+    <!-- ===================== 5 · SEZIONE CRITICA ===================== -->
+    <section class="section co-block" id="critica" style="padding-top:clamp(2rem,5vw,3rem)">
+      <div class="container">
+        <header class="co-shead">
+          <span class="co-skicker">05 · La regola</span>
+          <h2 class="co-stitle">Sezione critica e mutua esclusione</h2>
+          <p class="co-ssub">La cura alla race condition è garantire la <strong>mutua esclusione</strong>: nella sezione critica può starci <strong>un thread per volta</strong>. Gli altri aspettano il loro turno. Una buona soluzione deve rispettare tre requisiti.</p>
+        </header>
+
+        <div class="co-three">
+          <article class="co-card"><h4>① Mutua esclusione</h4><p>Se un processo è nella sezione critica, nessun altro può entrarci nello stesso momento.</p></article>
+          <article class="co-card"><h4>② Progresso</h4><p>Se la sezione è libera e qualcuno vuole entrare, la scelta di chi entra non può essere rimandata all'infinito.</p></article>
+          <article class="co-card"><h4>③ Attesa limitata</h4><p>Un processo che vuole entrare deve riuscirci entro un tempo finito: niente attese eterne (niente <em>starvation</em>).</p></article>
+        </div>
+
+        <h3 class="co-sub2">Tre proprietà da ricordare</h3>
+        <div class="co-split3">
+          <div class="co-prop"><b>Safety</b> — «non succede mai niente di male»: due thread non sono mai insieme nella sezione critica, i dati restano coerenti.</div>
+          <div class="co-prop"><b>Liveness</b> — «prima o poi qualcosa di buono succede»: i processi avanzano, nessuno resta bloccato per sempre.</div>
+          <div class="co-prop"><b>Fairness</b> — «a ciascuno il suo turno»: nessun processo viene sistematicamente scavalcato dagli altri.</div>
+        </div>
+        <p class="co-note-line">Lo strumento storico per ottenere la mutua esclusione, inventato da <strong>Edsger Dijkstra</strong> nel 1965, è il <strong>semaforo</strong>. È la prossima sezione.</p>
+      </div>
+    </section>
+
+    <!-- ===================== 6 · SEMAFORI ===================== -->
+    <section class="section co-block" id="semafori" style="padding-top:clamp(2rem,5vw,3rem)">
+      <div class="container">
+        <header class="co-shead">
+          <span class="co-skicker">06 · Lo strumento</span>
+          <h2 class="co-stitle">I semafori di Dijkstra</h2>
+          <p class="co-ssub">Un semaforo è un <strong>intero</strong> con una coda, su cui agiscono due sole operazioni <strong>atomiche</strong>. <code>P()</code> (o <code>wait</code>, dall'olandese <em>proberen</em>, «provare»): decrementa; se diventa negativo, il processo si <strong>blocca</strong> in coda. <code>V()</code> (o <code>signal</code>, <em>verhogen</em>, «incrementare»): incrementa; se c'era qualcuno in attesa, lo <strong>sveglia</strong>. Provalo.</p>
+        </header>
+
+        <div class="sem-wrap panel">
+          <div class="sem-top">
+            <div class="sem-gauge">
+              <span class="sem-lbl">valore del semaforo S</span>
+              <span class="sem-val" id="semVal">1</span>
+              <div class="sem-seg" role="group" aria-label="Tipo di semaforo">
+                <button class="sem-seg-btn active" data-init="1" type="button">Binario (mutex) · S=1</button>
+                <button class="sem-seg-btn" data-init="3" type="button">Contatore · S=3</button>
+              </div>
+            </div>
+            <div class="sem-cs">
+              <span class="sem-lbl">sezione critica / risorsa</span>
+              <div class="sem-cs-slots" id="semCS"></div>
+            </div>
+          </div>
+          <div class="sem-queue-wrap">
+            <span class="sem-lbl">coda dei bloccati (Waiting)</span>
+            <div class="sem-queue" id="semQueue"><span class="sem-empty">— nessuno in attesa —</span></div>
+          </div>
+          <p class="sem-explain" id="semExplain">Con S=1 solo un processo per volta entra: è un <strong>mutex</strong>. Premi <code>P()</code> con più processi e guarda chi entra e chi finisce in coda; poi libera con <code>V()</code>.</p>
+          <div class="sem-controls">
+            <span class="sem-ctl-lbl">P() — chiedi di entrare:</span>
+            <div class="sem-procs" id="semProcsP"></div>
+            <span class="sem-ctl-lbl">V() — esci / segnala:</span>
+            <div class="sem-procs" id="semProcsV"></div>
+            <button class="ghost-btn" id="semReset" type="button">↺ Azzera</button>
+          </div>
+        </div>
+
+        <div class="co-split">
+          <article class="co-card">
+            <h4>Semaforo binario (mutex)</h4>
+            <p>Vale 0 o 1. Fa <strong>mutua esclusione</strong>: protegge una sezione critica. Si usa a coppie <code>P</code>…sezione critica…<code>V</code>.</p>
+            <pre class="co-code"><code>Semaforo mutex = 1;
+P(mutex);   <span class="c-cm">// entro</span>
+  x = x + 1;        <span class="c-cm">// sezione critica</span>
+V(mutex);   <span class="c-cm">// esco</span></code></pre>
+          </article>
+          <article class="co-card">
+            <h4>Semaforo contatore &amp; rendez-vous</h4>
+            <p>Inizializzato a <strong>N</strong>, concede l'accesso a N processi insieme (es. N copie di una risorsa). Due semafori incrociati creano un <strong>rendez-vous</strong>: due processi si aspettano a un punto d'incontro.</p>
+            <pre class="co-code"><code><span class="c-cm">// spin lock (attesa attiva): spreca CPU</span>
+while (occupato) ;   <span class="c-cm">// gira a vuoto!</span>
+<span class="c-cm">// il semaforo invece BLOCCA e libera la CPU</span></code></pre>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 7 · PRODUTTORI-CONSUMATORI ===================== -->
+    <section class="section co-block" id="prodcons" style="padding-top:clamp(2rem,5vw,3rem)">
+      <div class="container">
+        <header class="co-shead">
+          <span class="co-skicker">07 · Problema classico #1</span>
+          <h2 class="co-stitle">Produttori e consumatori</h2>
+          <p class="co-ssub">Un <strong>produttore</strong> mette oggetti in un <strong>buffer</strong> di capacità limitata, un <strong>consumatore</strong> li toglie. Il produttore deve fermarsi se il buffer è <strong>pieno</strong>, il consumatore se è <strong>vuoto</strong>. Si risolve con tre semafori: <code>vuoti</code>, <code>pieni</code> e <code>mutex</code>.</p>
+        </header>
+
+        <div class="pc-wrap panel">
+          <div class="pc-stage">
+            <div class="pc-side pc-prod">
+              <span class="pc-face" id="pcProdFace">🏭</span>
+              <span class="pc-role">Produttore</span>
+              <span class="pc-state" id="pcProdState">pronto</span>
+            </div>
+            <div class="pc-buffer">
+              <span class="pc-buf-lbl">buffer (capacità <b id="pcCap">5</b>)</span>
+              <div class="pc-slots" id="pcSlots"></div>
+            </div>
+            <div class="pc-side pc-cons">
+              <span class="pc-face" id="pcConsFace">🛒</span>
+              <span class="pc-role">Consumatore</span>
+              <span class="pc-state" id="pcConsState">pronto</span>
+            </div>
+          </div>
+          <div class="pc-sems">
+            <div class="pc-sem"><span>vuoti</span><b id="pcEmpty">5</b></div>
+            <div class="pc-sem"><span>pieni</span><b id="pcFull">0</b></div>
+            <div class="pc-sem"><span>mutex</span><b id="pcMutex">1</b></div>
+          </div>
+          <div class="pc-controls">
+            <button class="run-btn" id="pcProduce" type="button">🏭 Produci</button>
+            <button class="run-btn" id="pcConsume" type="button">🛒 Consuma</button>
+            <button class="ghost-btn" id="pcAuto" type="button">▶ Auto</button>
+            <button class="ghost-btn" id="pcReset" type="button">↺ Azzera</button>
+          </div>
+          <p class="pc-log" id="pcLog">Premi <b>Produci</b> finché il buffer si riempie: al sesto tentativo il produttore si blocca (<code>vuoti = 0</code>). Poi <b>Consuma</b> e guardalo ripartire.</p>
+        </div>
+        <pre class="co-code co-code-wide"><code><span class="c-kw">Produttore</span>:                         <span class="c-kw">Consumatore</span>:
+  P(vuoti);   <span class="c-cm">// c'è posto?</span>            P(pieni);   <span class="c-cm">// c'è roba?</span>
+  P(mutex);                            P(mutex);
+    buffer.inserisci(dato);             dato = buffer.togli();
+  V(mutex);                            V(mutex);
+  V(pieni);   <span class="c-cm">// +1 da consumare</span>        V(vuoti);   <span class="c-cm">// +1 posto libero</span></code></pre>
+      </div>
+    </section>
+
+    <!-- ===================== 8 · LETTORI-SCRITTORI ===================== -->
+    <section class="section co-block" id="lettori" style="padding-top:clamp(2rem,5vw,3rem)">
+      <div class="container">
+        <header class="co-shead">
+          <span class="co-skicker">08 · Problema classico #2</span>
+          <h2 class="co-stitle">Lettori e scrittori</h2>
+          <p class="co-ssub">Una risorsa condivisa (es. un archivio). <strong>Molti lettori insieme</strong> non danno problemi: leggono e basta. Ma uno <strong>scrittore</strong> deve avere accesso <strong>esclusivo</strong>: mentre modifica, nessun altro può leggere o scrivere. Aggiungi lettori e scrittori e guarda chi entra e chi aspetta.</p>
+        </header>
+
+        <div class="rw-wrap panel">
+          <div class="rw-resource" id="rwResource">
+            <span class="rw-res-lbl">risorsa condivisa</span>
+            <span class="rw-res-state" id="rwResState">libera</span>
+            <div class="rw-inside" id="rwInside"></div>
+          </div>
+          <div class="rw-queue-wrap">
+            <span class="sem-lbl">in attesa</span>
+            <div class="rw-queue" id="rwQueue"><span class="sem-empty">— nessuno —</span></div>
+          </div>
+          <p class="rw-log" id="rwLog">Fai entrare 2–3 lettori insieme: convivono. Poi aggiungi uno scrittore: aspetta che la stanza si svuoti, ed entra da solo.</p>
+          <div class="rw-controls">
+            <button class="run-btn rw-r" id="rwAddR" type="button">📖 Arriva un lettore</button>
+            <button class="run-btn rw-w" id="rwAddW" type="button">✍ Arriva uno scrittore</button>
+            <button class="ghost-btn" id="rwLeave" type="button">⬅ Esce chi ha finito</button>
+            <button class="ghost-btn" id="rwReset" type="button">↺ Azzera</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 9 · FILOSOFI ===================== -->
+    <section class="section co-block" id="filosofi" style="padding-top:clamp(2rem,5vw,3rem)">
+      <div class="container">
+        <header class="co-shead">
+          <span class="co-skicker">09 · Problema classico #3</span>
+          <h2 class="co-stitle">I cinque filosofi a cena</h2>
+          <p class="co-ssub">Cinque filosofi attorno a un tavolo, cinque forchette, una tra ogni coppia. Per mangiare servono <strong>entrambe</strong> le forchette vicine. Se tutti prendono insieme la forchetta sinistra e aspettano la destra… nessuno mangia più: <strong>deadlock</strong>. Guardalo succedere, poi applica la soluzione.</p>
+        </header>
+
+        <div class="ph-wrap panel">
+          <div class="ph-stage"><svg id="phSvg" viewBox="0 0 360 360" aria-label="Tavolo dei filosofi"></svg></div>
+          <div class="ph-side">
+            <p class="ph-explain" id="phExplain">Premi <b>«tutti sinistra»</b> per innescare lo stallo: ognuno tiene una forchetta e aspetta per sempre quella del vicino. La <b>soluzione asimmetrica</b>: un filosofo prende prima la <em>destra</em>, e il cerchio dell'attesa si spezza.</p>
+            <div class="ph-status" id="phStatus"></div>
+            <div class="ph-controls">
+              <button class="run-btn" id="phDeadlock" type="button">⚠ Tutti a sinistra</button>
+              <button class="run-btn" id="phSolve" type="button">✓ Soluzione asimmetrica</button>
+              <button class="ghost-btn" id="phStep" type="button">▸ Passo</button>
+              <button class="ghost-btn" id="phReset" type="button">↺ Azzera</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 10 · DEADLOCK + HOLT ===================== -->
+    <section class="section co-block" id="deadlock" style="padding-top:clamp(2rem,5vw,3rem)">
+      <div class="container">
+        <header class="co-shead">
+          <span class="co-skicker">10 · Lo stallo</span>
+          <h2 class="co-stitle">Deadlock e grafo di Holt</h2>
+          <p class="co-ssub">Un <strong>deadlock</strong> (stallo) è un gruppo di processi ciascuno in attesa di una risorsa tenuta da un altro del gruppo: un'attesa circolare da cui non si esce. Serve e basta che valgano <strong>quattro condizioni</strong> insieme (Coffman).</p>
+        </header>
+
+        <div class="co-four">
+          <article class="co-card"><h4>Mutua esclusione</h4><p>La risorsa è usabile da un processo per volta.</p></article>
+          <article class="co-card"><h4>Hold &amp; wait</h4><p>Un processo tiene una risorsa e ne chiede altre.</p></article>
+          <article class="co-card"><h4>No preemption</h4><p>Una risorsa non può essere tolta a forza: la rilascia solo chi la tiene.</p></article>
+          <article class="co-card"><h4>Attesa circolare</h4><p>Esiste un ciclo P₁→P₂→…→P₁ di attese.</p></article>
+        </div>
+
+        <h3 class="co-sub2">Il grafo di Holt, con la riduzione passo-passo</h3>
+        <p class="co-ssub" style="margin-bottom:1.2rem">Il <strong>grafo di Holt</strong> disegna la situazione: i <strong>processi</strong> sono cerchi, le <strong>risorse</strong> rettangoli con un pallino per istanza. Un arco <strong>risorsa → processo</strong> è un'assegnazione; un arco <strong>processo → risorsa</strong> è una richiesta ancora da soddisfare. Il grafo è <strong>riducibile</strong> se si riesce a far terminare tutti: se ci si riesce del tutto, <strong>niente stallo</strong>. Carica uno scenario e riduci.</p>
+
+        <div class="holt-wrap panel">
+          <div class="holt-presets" id="holtPresets"></div>
+          <div class="holt-stage"><svg id="holtSvg" viewBox="0 0 520 300" aria-label="Grafo di Holt"></svg></div>
+          <p class="holt-explain" id="holtExplain">Scegli uno scenario qui sopra. Poi premi <b>Riduci di un passo</b>: a ogni passo cerchiamo un processo con sole richieste soddisfatte (solo archi entranti), lo facciamo terminare e liberiamo le sue risorse.</p>
+          <div class="holt-controls">
+            <button class="run-btn" id="holtStep" type="button">▸ Riduci di un passo</button>
+            <button class="ghost-btn" id="holtAuto" type="button">⏩ Riduci tutto</button>
+            <button class="ghost-btn" id="holtReset" type="button">↺ Ripristina scenario</button>
+          </div>
+        </div>
+
+        <h3 class="co-sub2">Evitare lo stallo: l'algoritmo del banchiere</h3>
+        <p class="co-ssub" style="margin-bottom:1rem">Dijkstra di nuovo. Il sistema concede una risorsa <strong>solo se</strong> dopo resta in uno <strong>stato sicuro</strong>: esiste almeno un ordine in cui tutti i processi possono finire. Come un banchiere che presta solo se è certo di rientrare.</p>
+        <div class="bank-wrap panel">
+          <div class="bank-head">
+            <span>Risorse totali: <b>10</b> · disponibili ora: <b id="bankAvail">3</b></span>
+            <button class="ghost-btn" id="bankReset" type="button">↺ Azzera</button>
+          </div>
+          <table class="bank-table">
+            <thead><tr><th>Processo</th><th>Possiede</th><th>Max</th><th>Gli manca</th><th>Richiesta</th></tr></thead>
+            <tbody id="bankBody"></tbody>
+          </table>
+          <p class="bank-verdict" id="bankVerdict">Prova a concedere una richiesta: il banchiere la accetta solo se lo stato resta <b>sicuro</b>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 11 · MONITOR / JAVA ===================== -->
+    <section class="section co-block" id="java" style="padding-top:clamp(2rem,5vw,3rem)">
+      <div class="container">
+        <header class="co-shead">
+          <span class="co-skicker">11 · Nel linguaggio</span>
+          <h2 class="co-stitle">Monitor e concorrenza in Java</h2>
+          <p class="co-ssub">Usare i semafori a mano è facile da sbagliare: basta una <code>P()</code> senza la sua <code>V()</code> e il programma si blocca. Il <strong>monitor</strong> è un costrutto di più alto livello: un oggetto in cui i metodi sono già in mutua esclusione. In Java il monitor è integrato nel linguaggio con <code>synchronized</code>.</p>
+        </header>
+
+        <div class="co-split">
+          <article class="co-card">
+            <h4><code>synchronized</code> — mutua esclusione automatica</h4>
+            <p>Un metodo <code>synchronized</code> acquisisce il <strong>lock</strong> dell'oggetto all'ingresso e lo rilascia all'uscita, anche in caso di errore. Un thread per volta, senza <code>P</code>/<code>V</code> manuali.</p>
+            <pre class="co-code"><code><span class="c-kw">class</span> Conto {
+  <span class="c-kw">private int</span> saldo = 0;
+  <span class="c-kw">public synchronized void</span> deposita(<span class="c-kw">int</span> n) {
+    saldo = saldo + n;   <span class="c-cm">// ora è sicuro</span>
+  }
+}</code></pre>
+          </article>
+          <article class="co-card">
+            <h4><code>wait()</code> / <code>notify()</code> — sincronizzazione</h4>
+            <p>Dentro un monitor, <code>wait()</code> sospende il thread e <strong>rilascia</strong> il lock; <code>notify()</code> risveglia chi aspetta. È così che si realizzano produttori-consumatori senza semafori espliciti.</p>
+            <pre class="co-code"><code><span class="c-kw">synchronized void</span> preleva() <span class="c-kw">throws</span> InterruptedException {
+  <span class="c-kw">while</span> (vuoto)
+    wait();        <span class="c-cm">// aspetta un dato</span>
+  ...              <span class="c-cm">// consuma</span>
+  notify();        <span class="c-cm">// sveglia un produttore</span>
+}</code></pre>
+          </article>
+        </div>
+
+        <h3 class="co-sub2">Gli strumenti pronti: <code>java.util.concurrent</code></h3>
+        <p class="co-ssub" style="margin-bottom:1.2rem">Oggi raramente si scrivono i semafori a mano: la libreria standard offre mattoni già corretti e collaudati.</p>
+        <div class="co-three">
+          <article class="co-card"><h4><code>Semaphore</code></h4><p>Il semaforo di Dijkstra, bello e pronto: <code>acquire()</code> è la <code>P()</code>, <code>release()</code> è la <code>V()</code>.</p></article>
+          <article class="co-card"><h4><code>ReentrantLock</code></h4><p>Un lock esplicito più flessibile di <code>synchronized</code>: <code>lock()</code> / <code>unlock()</code>, con tentativi e timeout.</p></article>
+          <article class="co-card"><h4><code>BlockingQueue</code></h4><p>Una coda thread-safe che <strong>è già</strong> un produttori-consumatori: <code>put()</code> blocca se piena, <code>take()</code> se vuota.</p></article>
+        </div>
+        <pre class="co-code co-code-wide"><code><span class="c-kw">import</span> java.util.concurrent.Semaphore;
+
+Semaphore mutex = <span class="c-kw">new</span> Semaphore(1);   <span class="c-cm">// binario</span>
+mutex.acquire();          <span class="c-cm">// P()</span>
+<span class="c-kw">try</span> {
+  saldo = saldo + 1;      <span class="c-cm">// sezione critica</span>
+} <span class="c-kw">finally</span> {
+  mutex.release();        <span class="c-cm">// V() — sempre, anche in caso di errore</span>
+}</code></pre>
+
+        <div class="co-recap">
+          <h3>In sintesi</h3>
+          <ol>
+            <li>Più flussi che condividono memoria possono interferire: <strong>race condition</strong>.</li>
+            <li>La cura è la <strong>mutua esclusione</strong> sulla <strong>sezione critica</strong>.</li>
+            <li>Lo strumento base è il <strong>semaforo</strong> (<code>P</code>/<code>V</code>); i problemi classici si risolvono combinandone alcuni.</li>
+            <li>Coordinare male porta al <strong>deadlock</strong>: lo si riconosce col <strong>grafo di Holt</strong> e lo si evita col <strong>banchiere</strong>.</li>
+            <li>In pratica si usano i <strong>monitor</strong> (<code>synchronized</code>) e <code>java.util.concurrent</code>.</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <span class="footer-brand">Simone Conca · Lab</span>
+      <span class="footer-meta">© <span id="year"></span></span>
+      <a class="footer-top" href="../">← Tutti gli strumenti</a>
+    </div>
+  </footer>
+
+  <script src="../../js/core.js"></script>
+  <script src="concorrenza.js"></script>
+</body>
+</html>
