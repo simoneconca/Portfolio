@@ -216,6 +216,42 @@
 .vr-explain { font-size: 0.9rem; line-height: 1.55; color: var(--ink-soft); min-height: 3rem; }
 .vr-explain strong { color: var(--ink); } .vr-explain code { font-family: var(--font-mono); font-size: 0.86em; background: var(--bg-elev); border: 1px solid var(--line-soft); border-radius: 5px; padding: 0.02rem 0.3rem; color: var(--ink); }
 
+/* ============================================================
+   6 · BROCCHE GRADUATE
+   ============================================================ */
+.jg-wrap, .sw-wrap { padding: 1.3rem; }
+.jg-stage { display: flex; gap: 1.6rem; justify-content: center; align-items: flex-end; flex-wrap: wrap; margin-bottom: 1.1rem; }
+.jug { display: flex; flex-direction: column; align-items: center; gap: 0.45rem; }
+.jug-name { font-family: var(--font-mono); font-size: 0.9rem; font-weight: 600; color: var(--accent); }
+.jug-glass {
+  position: relative; width: 66px; height: 150px;
+  border: 2px solid var(--line); border-top: 0; border-radius: 0 0 16px 16px;
+  background: var(--bg-sunk); overflow: hidden; display: flex; align-items: flex-end;
+}
+.jug-glass::before {
+  content: ""; position: absolute; inset: 0 auto 0 0; width: 9px;
+  background: repeating-linear-gradient(to top, transparent 0, transparent 14px, var(--line) 14px, var(--line) 15px);
+  pointer-events: none; z-index: 2;
+}
+.jug-fill { width: 100%; height: 0; background: var(--accent); transition: height 0.5s var(--ease); }
+.jug-val { position: absolute; top: 8px; left: 0; right: 0; text-align: center; font-family: var(--font-mono); font-weight: 600; font-size: 1.15rem; color: var(--ink); z-index: 3; }
+#opA .jug-fill, #swA .jug-fill { background: color-mix(in srgb, #2c7be5 70%, transparent); }
+#opB .jug-fill, #swB .jug-fill { background: color-mix(in srgb, #d9772b 70%, transparent); }
+#swT .jug-fill { background: color-mix(in srgb, #b5468f 70%, transparent); }
+.jug-step { display: flex; gap: 0.3rem; margin-top: 0.1rem; }
+.jug-step button { width: 1.9rem; height: 1.9rem; border: 1px solid var(--line); border-radius: 7px; background: var(--bg); color: var(--ink); cursor: pointer; font-size: 1.05rem; line-height: 1; transition: all 0.15s var(--ease); }
+.jug-step button:hover { border-color: var(--accent); color: var(--accent); }
+.jug.flash .jug-glass { box-shadow: 0 0 0 3px var(--accent-wash); }
+.jug.lost .jug-glass { box-shadow: 0 0 0 3px color-mix(in srgb, #c0392b 30%, transparent); border-color: #c0392b; }
+.sw-temp.sw-off { opacity: 0.3; }
+
+.jg-ops, .sw-controls { display: flex; flex-wrap: wrap; gap: 0.5rem; justify-content: center; }
+.jg-note { margin-top: 1rem; text-align: center; font-size: 0.9rem; color: var(--ink-soft); line-height: 1.55; min-height: 2.6rem; }
+.jg-note strong { color: var(--ink); } .jg-note b { color: var(--accent); }
+.jg-note code, .sw-note code { font-family: var(--font-mono); font-size: 0.86em; background: var(--bg-elev); border: 1px solid var(--line-soft); border-radius: 5px; padding: 0.02rem 0.3rem; color: var(--ink); }
+.sw-mode { justify-content: center; margin-bottom: 1.1rem; }
+.sw-code { display: block; text-align: center; font-family: var(--font-mono); font-size: 1rem; font-weight: 600; color: var(--accent); margin: 0.3rem 0 0.2rem; min-height: 1.5rem; }
+
 /* ---------- Recap ---------- */
 .va-recap { padding: 1.2rem 1.3rem; border: 1px solid var(--line); border-radius: 14px; background: var(--accent-wash); }
 .va-recap ol { margin: 0; padding-left: 1.3rem; display: grid; gap: 0.4rem; }

@@ -69,7 +69,8 @@
           <a href="#ingredienti"><span>03</span> Nome, valore e tipo</a>
           <a href="#tipi"><span>04</span> I tipi di dato</a>
           <a href="#operazioni"><span>05</span> Dichiarare, inizializzare, assegnare</a>
-          <a href="#ricapitolando"><span>06</span> Ricapitolando</a>
+          <a href="#brocche"><span>06</span> Le brocche graduate</a>
+          <a href="#ricapitolando"><span>07</span> Ricapitolando</a>
         </nav>
       </div>
     </section>
@@ -314,11 +315,59 @@
       </div>
     </section>
 
-    <!-- ===================== 6 · RICAPITOLANDO ===================== -->
+    <!-- ===================== 6 · BROCCHE ===================== -->
+    <section class="section va-block" id="brocche" style="padding-top:clamp(2rem,5vw,3rem)">
+      <div class="container">
+        <header class="va-shead">
+          <span class="va-skicker">06 · Vederle come contenitori</span>
+          <h2 class="va-stitle">Le brocche graduate</h2>
+          <p class="va-ssub">Immagina ogni variabile come una <strong>brocca graduata</strong>: il valore è il <strong>livello</strong> del liquido. Così si vede cosa succede quando fai <strong>operazioni</strong> tra variabili — e perché <strong>scambiare</strong> due valori richiede un piccolo trucco.</p>
+        </header>
+
+        <h3 class="va-sub2">Operazioni tra variabili</h3>
+        <p class="va-ssub" style="margin-bottom:1rem">Regola i livelli di <code>a</code> e <code>b</code>, poi prova un'operazione. Nota: un'operazione come <code>a = a + b</code> cambia <strong>solo a</strong>, usando i valori <em>attuali</em>; <strong>b</strong> resta com'è.</p>
+        <div class="jg-wrap panel">
+          <div class="jg-stage">
+            <div class="jug" id="opA"><span class="jug-name">a</span><div class="jug-glass"><div class="jug-fill"></div><span class="jug-val">5</span></div><div class="jug-step"><button type="button" data-j="a" data-d="-1">−</button><button type="button" data-j="a" data-d="1">+</button></div></div>
+            <div class="jug" id="opB"><span class="jug-name">b</span><div class="jug-glass"><div class="jug-fill"></div><span class="jug-val">3</span></div><div class="jug-step"><button type="button" data-j="b" data-d="-1">−</button><button type="button" data-j="b" data-d="1">+</button></div></div>
+          </div>
+          <div class="jg-ops">
+            <button class="run-btn" data-op="plus" type="button">a = a + b</button>
+            <button class="run-btn" data-op="minus" type="button">a = a − b</button>
+            <button class="run-btn" data-op="double" type="button">a = a × 2</button>
+            <button class="run-btn" data-op="copy" type="button">a = b</button>
+            <button class="ghost-btn" data-op="reset" type="button">↺ Azzera</button>
+          </div>
+          <p class="jg-note" id="opNote">Regola i livelli con <b>−</b> e <b>+</b>, poi prova un'operazione: cambia solo <strong>a</strong>, mentre <strong>b</strong> resta com'è.</p>
+        </div>
+
+        <h3 class="va-sub2">Scambiare due variabili (la brocca d'appoggio)</h3>
+        <p class="va-ssub" style="margin-bottom:1rem">Vuoi <strong>scambiare</strong> i valori di <code>a</code> e <code>b</code>. Se provi diretto — <code>a = b</code>, poi <code>b = a</code> — ne <strong>perdi uno</strong>! Serve una brocca <strong>d'appoggio</strong> (<code>temp</code>) dove mettere da parte un valore. Guarda la differenza.</p>
+        <div class="sw-wrap panel">
+          <div class="sw-mode bt-seg" id="swMode" role="group" aria-label="Metodo di scambio">
+            <button class="bt-seg-btn active" data-m="good" type="button">✓ Con brocca d'appoggio</button>
+            <button class="bt-seg-btn" data-m="bad" type="button">✗ Senza (sbagliato)</button>
+          </div>
+          <div class="jg-stage sw-stage">
+            <div class="jug" id="swA"><span class="jug-name">a</span><div class="jug-glass"><div class="jug-fill"></div><span class="jug-val">7</span></div></div>
+            <div class="jug" id="swB"><span class="jug-name">b</span><div class="jug-glass"><div class="jug-fill"></div><span class="jug-val">3</span></div></div>
+            <div class="jug sw-temp" id="swT"><span class="jug-name">temp</span><div class="jug-glass"><div class="jug-fill"></div><span class="jug-val"></span></div></div>
+          </div>
+          <code class="sw-code" id="swCode">— stato iniziale —</code>
+          <p class="jg-note" id="swNote">a = 7, b = 3. Vogliamo scambiarli. Premi <strong>Passo successivo</strong>.</p>
+          <div class="sw-controls">
+            <button class="run-btn" id="swStep" type="button">▸ Passo successivo</button>
+            <button class="ghost-btn" id="swReset" type="button">↺ Ricomincia</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===================== 7 · RICAPITOLANDO ===================== -->
     <section class="section va-block" id="ricapitolando" style="padding-top:clamp(2rem,5vw,3rem)">
       <div class="container">
         <header class="va-shead">
-          <span class="va-skicker">06 · In sei righe</span>
+          <span class="va-skicker">07 · In sei righe</span>
           <h2 class="va-stitle">Ricapitolando</h2>
         </header>
         <div class="va-recap">

@@ -271,4 +271,93 @@
     loadProg(0);
   })();
 
+  /* ========================================================
+     6a · BROCCHE — operazioni tra variabili
+     ======================================================== */
+  (function ops() {
+    var A = $("opA"), B = $("opB"); if (!A) return;
+    var MAX = 20, LIM = 10, a = 5, b = 3, note = $("opNote");
+    var aFill = A.querySelector(".jug-fill"), aVal = A.querySelector(".jug-val");
+    var bFill = B.querySelector(".jug-fill"), bVal = B.querySelector(".jug-val");
+    function render(flashA) {
+      aFill.style.height = (a / MAX * 100) + "%"; aVal.textContent = a;
+      bFill.style.height = (b / MAX * 100) + "%"; bVal.textContent = b;
+      if (flashA) { A.classList.remove("flash"); void A.offsetWidth; A.classList.add("flash"); }
+    }
+    function say(h) { note.innerHTML = h; }
+    function op(kind) {
+      var old = a, over = false, na;
+      if (kind === "plus") { na = a + b; }
+      else if (kind === "minus") { na = a - b; }
+      else if (kind === "double") { na = a * 2; }
+      else if (kind === "copy") { na = b; }
+      else { a = 5; b = 3; render(); say("Livelli azzerati: a = 5, b = 3."); return; }
+      if (na > MAX) { na = MAX; over = true; } if (na < 0) { na = 0; }
+      a = na; render(true);
+      if (kind === "plus") say("<code>a = a + b</code> → " + old + " + " + b + " = <strong>" + a + "</strong>." + (over ? " (la brocca è piena: max " + MAX + ")" : "") + " <strong>b</strong> è rimasta " + b + ".");
+      else if (kind === "minus") say("<code>a = a − b</code> → " + old + " − " + b + " = <strong>" + a + "</strong>." + (old - b < 0 ? " (non si scende sotto 0)" : "") + " <strong>b</strong> non cambia.");
+      else if (kind === "double") say("<code>a = a × 2</code> → " + old + " × 2 = <strong>" + a + "</strong>." + (over ? " (max " + MAX + ")" : ""));
+      else if (kind === "copy") say("<code>a = b</code>: a <strong>copia</strong> il valore di b (" + b + "). Il valore di prima (" + old + ") è <strong>perso</strong>. b resta " + b + ".");
+    }
+    document.querySelectorAll(".jg-ops [data-op]").forEach(function (btn) {
+      btn.addEventListener("click", function () { op(btn.dataset.op); });
+    });
+    document.querySelectorAll(".jg-stage .jug-step button").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var d = +btn.dataset.d;
+        if (btn.dataset.j === "a") a = Math.max(0, Math.min(LIM, a + d));
+        else b = Math.max(0, Math.min(LIM, b + d));
+        render();
+      });
+    });
+    render();
+  })();
+
+  /* ========================================================
+     6b · BROCCHE — scambio con variabile d'appoggio
+     ======================================================== */
+  (function swap() {
+    var A = $("swA"), B = $("swB"), T = $("swT"); if (!A) return;
+    var MAX = 10, mode = "good", step = 0;
+    var codeEl = $("swCode"), note = $("swNote"), stepBtn = $("swStep");
+    var SEQ = {
+      good: [
+        { code: "— stato iniziale —", a: 7, b: 3, t: null, note: "a = 7, b = 3. Vogliamo scambiarli. Premi <strong>Passo successivo</strong>." },
+        { code: "temp = a", a: 7, b: 3, t: 7, flash: "t", note: "Metto da parte il valore di a nella brocca d'appoggio <strong>temp</strong> (ora 7)." },
+        { code: "a = b", a: 3, b: 3, t: 7, flash: "a", note: "Ora posso sovrascrivere a con b: <strong>a = 3</strong>. Il 7 è al sicuro in temp." },
+        { code: "b = temp", a: 3, b: 7, t: 7, flash: "b", note: "Verso temp in b: <strong>b = 7</strong>. ✓ Scambio completato: a = 3, b = 7." }
+      ],
+      bad: [
+        { code: "— stato iniziale —", a: 7, b: 3, t: null, note: "Proviamo <strong>senza</strong> brocca d'appoggio. Premi <strong>Passo successivo</strong>." },
+        { code: "a = b", a: 3, b: 3, t: null, lost: "a", note: "a prende il valore di b (3). Ma il <strong>7 che era in a è perso per sempre</strong>!" },
+        { code: "b = a", a: 3, b: 3, t: null, note: "Copio a in b… ma a vale già 3. Risultato: a = 3, b = 3. ✗ <strong>Lo scambio è fallito.</strong>" }
+      ]
+    };
+    function setJug(el, v, flash, lost) {
+      var f = el.querySelector(".jug-fill"), val = el.querySelector(".jug-val");
+      f.style.height = (v == null ? 0 : v / MAX * 100) + "%"; val.textContent = (v == null ? "" : v);
+      el.classList.remove("flash", "lost");
+      if (flash) { void el.offsetWidth; el.classList.add("flash"); }
+      if (lost) { void el.offsetWidth; el.classList.add("lost"); }
+    }
+    function show() {
+      var s = SEQ[mode][step];
+      setJug(A, s.a, s.flash === "a", s.lost === "a");
+      setJug(B, s.b, s.flash === "b");
+      setJug(T, s.t, s.flash === "t");
+      T.classList.toggle("sw-off", mode === "bad");
+      codeEl.textContent = s.code; note.innerHTML = s.note;
+      stepBtn.disabled = step >= SEQ[mode].length - 1;
+    }
+    stepBtn.addEventListener("click", function () { if (step < SEQ[mode].length - 1) { step++; show(); } });
+    $("swReset").addEventListener("click", function () { step = 0; show(); });
+    document.querySelectorAll("#swMode .bt-seg-btn").forEach(function (b) {
+      b.addEventListener("click", function () {
+        document.querySelectorAll("#swMode .bt-seg-btn").forEach(function (x) { x.classList.remove("active"); });
+        b.classList.add("active"); mode = b.dataset.m; step = 0; show();
+      });
+    });
+    show();
+  })();
+
 })();
