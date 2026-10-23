@@ -1,0 +1,202 @@
+/* ============================================================
+   variabili.css — Capire le variabili (introduttivo)
+   Prefisso .va- (+ vc- sp- vi- nm- vt- bt- di- vr- per gli interattivi)
+   Usa base.css + lab.css.
+   ============================================================ */
+
+.va-block { position: relative; z-index: 2; }
+
+/* ---------- Indice ---------- */
+.va-toc { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.55rem; margin-top: clamp(1.5rem, 4vw, 2.25rem); }
+@media (max-width: 820px) { .va-toc { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 540px) { .va-toc { grid-template-columns: 1fr; } }
+.va-toc a {
+  display: flex; align-items: center; gap: 0.55rem; padding: 0.6rem 0.85rem;
+  border: 1px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink);
+  font-size: 0.86rem; text-decoration: none;
+  transition: border-color 0.2s var(--ease), color 0.2s var(--ease), background 0.2s var(--ease);
+}
+.va-toc a:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-wash); }
+.va-toc a span {
+  font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600;
+  color: var(--accent-ink); background: var(--accent); border-radius: 6px; padding: 0.12rem 0.38rem; flex-shrink: 0;
+}
+
+/* ---------- Intestazioni ---------- */
+.va-shead { max-width: 66ch; margin-bottom: clamp(1.4rem, 4vw, 2rem); }
+.va-skicker { display: inline-block; font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--accent); margin-bottom: 0.55rem; }
+.va-stitle { font-family: var(--font-display); font-weight: 500; font-size: clamp(1.5rem, 3.5vw, 2.1rem); letter-spacing: -0.02em; line-height: 1.15; }
+.va-ssub { margin-top: 0.7rem; color: var(--ink-soft); font-size: 1rem; line-height: 1.6; }
+.va-ssub strong { color: var(--ink); } .va-ssub a { color: var(--accent); }
+.va-sub2 { font-family: var(--font-display); font-weight: 500; font-size: clamp(1.15rem, 2.6vw, 1.5rem); letter-spacing: -0.015em; margin: 2.2rem 0 0.4rem; }
+.va-sub2 code { font-family: var(--font-mono); font-size: 0.9em; }
+.va-note-line { margin-top: 1.4rem; padding: 0.9rem 1.1rem; border-left: 3px solid var(--accent); background: var(--accent-wash); border-radius: 0 10px 10px 0; font-size: 0.92rem; line-height: 1.6; color: var(--ink-soft); }
+.va-note-line strong { color: var(--ink); }
+.va-ssub code, .va-note-line code, .va-card code, .vt-what code, .vt-ex code, .nm-rules code, .va-recap code {
+  font-family: var(--font-mono); font-size: 0.86em; background: var(--bg-elev); border: 1px solid var(--line-soft); border-radius: 5px; padding: 0.02rem 0.32rem; color: var(--ink);
+}
+
+/* ---------- Carte generiche ---------- */
+.va-card { border: 1px solid var(--line); border-radius: 12px; background: var(--bg); padding: 1.05rem 1.1rem; }
+.va-card h4 { font-family: var(--font-mono); font-size: 0.92rem; font-weight: 600; color: var(--accent); margin-bottom: 0.45rem; }
+.va-card p { color: var(--ink-soft); font-size: 0.92rem; line-height: 1.55; }
+.va-card p strong { color: var(--ink); }
+
+/* ---------- Chip ---------- */
+.va-chip { font-family: var(--font-mono); font-size: 0.78rem; padding: 0.4rem 0.75rem; border: 1px solid var(--line); border-radius: 100px; background: var(--bg); color: var(--ink-soft); cursor: pointer; transition: all 0.18s var(--ease); }
+.va-chip:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-wash); }
+
+/* ============================================================
+   LA SCATOLA (componente .va-box)
+   ============================================================ */
+.va-box {
+  display: inline-flex; flex-direction: column; gap: 0.3rem; align-items: center;
+  min-width: 9rem; padding: 0.9rem 1.1rem 1rem; border-radius: 12px;
+  background: var(--bg-sunk); border: 2px solid var(--line);
+  position: relative;
+}
+.va-box-label { font-family: var(--font-mono); font-size: 0.82rem; font-weight: 600; color: var(--accent); background: var(--accent-wash); border-radius: 6px; padding: 0.15rem 0.6rem; }
+.va-box-val { font-family: var(--font-mono); font-size: 1.5rem; font-weight: 600; color: var(--ink); min-height: 1.6em; display: flex; align-items: center; }
+.va-box-type { font-family: var(--font-mono); font-size: 0.74rem; color: var(--ink-faint); }
+.va-box.big { min-width: 13rem; padding: 1.4rem 1.6rem 1.5rem; }
+.va-box.big .va-box-val { font-size: 2rem; }
+.t-int { color: #2c7be5 !important; } .t-real { color: #1f9ab0 !important; } .t-str { color: #d9772b !important; } .t-bool { color: #2e9e5b !important; } .t-char { color: #b5468f !important; }
+
+/* ---------- 1 · Box creator ---------- */
+.vc-wrap { padding: 1.3rem; }
+.vc-form { display: flex; flex-wrap: wrap; gap: 0.8rem; align-items: flex-end; }
+.vc-field { display: flex; flex-direction: column; gap: 0.35rem; flex: 1; min-width: 10rem; }
+.vc-field span { font-size: 0.78rem; color: var(--ink-soft); font-family: var(--font-mono); }
+.vc-field input { font-family: var(--font-mono); font-size: 0.95rem; padding: 0.55rem 0.7rem; border: 1px solid var(--line); border-radius: 9px; background: var(--bg); color: var(--ink); }
+.vc-field input:focus { outline: none; border-color: var(--accent); }
+.vc-presets { margin: 1.1rem 0; display: flex; flex-wrap: wrap; gap: 0.4rem; align-items: center; }
+.vc-presets-lbl { font-size: 0.8rem; color: var(--ink-soft); margin-right: 0.3rem; }
+.vc-stage { display: flex; flex-wrap: wrap; gap: 0.9rem; min-height: 6rem; padding: 0.5rem 0; }
+.vc-stage:empty::before { content: "Le scatole create appariranno qui."; color: var(--ink-faint); font-size: 0.85rem; font-family: var(--font-mono); }
+.vc-stage .va-box { animation: vapop 0.25s var(--ease); }
+@keyframes vapop { from { transform: scale(0.7); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+/* ============================================================
+   2 · PERCHÉ (spesa)
+   ============================================================ */
+.sp-wrap { padding: 1.3rem; display: grid; grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr); gap: 1.2rem; }
+@media (max-width: 820px) { .sp-wrap { grid-template-columns: 1fr; } }
+.sp-inputs { display: grid; gap: 0.5rem; align-content: start; }
+.sp-row { display: flex; align-items: center; gap: 0.5rem; font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink-soft); }
+.sp-lbl { flex: 1; color: var(--accent); }
+.sp-row input { width: 5rem; font-family: var(--font-mono); font-size: 0.9rem; padding: 0.35rem 0.5rem; border: 1px solid var(--line); border-radius: 7px; background: var(--bg); color: var(--ink); }
+.sp-row input:focus { outline: none; border-color: var(--accent); }
+.sp-calc { display: grid; gap: 0.8rem; }
+.sp-block { border: 1px solid var(--line); border-radius: 12px; padding: 0.95rem 1.05rem; }
+.sp-good { border-color: color-mix(in srgb, #2e9e5b 45%, var(--line)); background: color-mix(in srgb, #2e9e5b 6%, var(--bg)); }
+.sp-bad { border-color: color-mix(in srgb, #c0392b 35%, var(--line)); background: color-mix(in srgb, #c0392b 5%, var(--bg)); }
+.sp-tag { display: inline-block; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 600; margin-bottom: 0.6rem; }
+.sp-tag.good { color: #2e9e5b; } .sp-tag.bad { color: #c0392b; }
+.sp-formula { display: block; font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.6; color: var(--ink); white-space: pre-wrap; word-break: break-word; }
+.sp-sub { display: block; font-family: var(--font-mono); font-size: 0.8rem; line-height: 1.6; color: var(--ink-faint); margin-top: 0.4rem; white-space: pre-wrap; word-break: break-word; }
+.sp-total { margin-top: 0.6rem; font-family: var(--font-mono); font-size: 1rem; color: var(--ink); }
+.sp-total b { color: #2e9e5b; font-size: 1.2rem; }
+.sp-note { margin-top: 0.6rem; font-size: 0.84rem; color: var(--ink-soft); line-height: 1.5; }
+.sp-note strong { color: var(--ink); }
+.sp-bad .sp-formula.stale { text-decoration: line-through; color: var(--ink-faint); }
+.sp-bad .sp-formula.stale + .sp-note strong { color: #c0392b; }
+
+/* ============================================================
+   3 · INGREDIENTI + NOMI
+   ============================================================ */
+.vi-layout { display: grid; grid-template-columns: auto 1fr; gap: 1.5rem; align-items: center; }
+@media (max-width: 700px) { .vi-layout { grid-template-columns: 1fr; } .vi-demo { justify-self: center; } }
+.vi-cards { display: grid; gap: 0.7rem; }
+.vi-point { display: inline-block; font-family: var(--font-sans); font-size: 0.6rem; font-weight: 600; color: var(--accent-ink); background: var(--accent); border-radius: 100px; padding: 0.1rem 0.45rem; vertical-align: middle; margin-left: 0.3rem; }
+
+.nm-wrap { padding: 1.3rem; }
+.nm-check { display: flex; flex-wrap: wrap; gap: 1rem; align-items: flex-end; }
+.nm-field { flex: 1; min-width: 12rem; }
+.nm-verdict { flex: 1.3; min-width: 12rem; font-family: var(--font-mono); font-size: 0.88rem; padding: 0.6rem 0.9rem; border-radius: 9px; border: 1px solid var(--line); background: var(--bg-sunk); min-height: 2.6rem; display: flex; align-items: center; }
+.nm-verdict.ok { border-color: #2e9e5b; color: #2e9e5b; }
+.nm-verdict.no { border-color: #c0392b; color: #c0392b; }
+.nm-verdict .vsmall { color: var(--ink-soft); font-size: 0.8rem; margin-left: 0.4rem; }
+.nm-try { margin: 1.1rem 0; }
+.nm-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; }
+.nm-chips .va-chip { font-family: var(--font-mono); }
+.nm-rules { list-style: none; padding: 0; margin: 0.5rem 0 0; display: grid; gap: 0.4rem; }
+.nm-rules li { font-size: 0.9rem; color: var(--ink-soft); line-height: 1.5; }
+.nm-rules li b { display: inline-block; width: 1.2rem; color: var(--accent); }
+.nm-rules strong { color: var(--ink); }
+
+/* ============================================================
+   4 · TIPI
+   ============================================================ */
+.vt-ref { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.8rem; }
+@media (max-width: 860px) { .vt-ref { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 480px) { .vt-ref { grid-template-columns: 1fr; } }
+.vt-type { border: 1px solid var(--line); border-radius: 12px; background: var(--bg); padding: 1rem; border-top: 3px solid var(--line); }
+.vt-type.t-int { border-top-color: #2c7be5; } .vt-type.t-real { border-top-color: #1f9ab0; } .vt-type.t-str { border-top-color: #d9772b; } .vt-type.t-bool { border-top-color: #2e9e5b; }
+.vt-ico { font-size: 1.4rem; display: block; margin-bottom: 0.4rem; }
+.vt-type h4 { font-family: var(--font-display); font-weight: 500; font-size: 1.05rem; margin-bottom: 0.4rem; color: var(--ink); }
+.vt-what { color: var(--ink-soft); font-size: 0.86rem; line-height: 1.45; margin-bottom: 0.5rem; }
+.vt-ex { display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.5rem; }
+.vt-ex code { font-size: 0.78rem; }
+.vt-use { font-size: 0.8rem; color: var(--ink-faint); font-style: italic; }
+
+.bt-wrap { padding: 1.3rem; }
+.bt-head { display: flex; flex-wrap: wrap; gap: 1.2rem; align-items: center; justify-content: space-between; }
+.bt-seg { display: inline-flex; flex-wrap: wrap; gap: 0.3rem; padding: 0.25rem; border: 1px solid var(--line); border-radius: 100px; background: var(--bg-sunk); }
+.bt-seg-btn { font-size: 0.8rem; padding: 0.4rem 0.85rem; border: 0; border-radius: 100px; background: transparent; color: var(--ink-soft); cursor: pointer; transition: all 0.18s var(--ease); }
+.bt-seg-btn.active { background: var(--accent); color: var(--accent-ink); }
+.bt-box { min-width: 8rem; }
+.bt-box .va-box-val.ok { color: #2e9e5b; } .bt-box .va-box-val.no { color: #c0392b; }
+.bt-box.shake { animation: btshake 0.4s var(--ease); }
+@keyframes btshake { 0%,100% { transform: translateX(0); } 25% { transform: translateX(-5px); } 75% { transform: translateX(5px); } }
+.bt-try { margin: 1.1rem 0 0.9rem; }
+.bt-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-top: 0.5rem; }
+.bt-chips .va-chip { font-family: var(--font-mono); }
+.bt-msg { font-size: 0.9rem; line-height: 1.55; color: var(--ink-soft); min-height: 2.5rem; }
+.bt-msg strong { color: var(--ink); }
+.bt-msg.ok strong { color: #2e9e5b; } .bt-msg.no strong { color: #c0392b; }
+
+/* ============================================================
+   5 · DICHIARAZIONE/INIZIALIZZAZIONE/ASSEGNAZIONE
+   ============================================================ */
+.di-wrap { padding: 1.3rem; display: grid; grid-template-columns: auto 1fr; gap: 1.5rem; align-items: center; }
+@media (max-width: 680px) { .di-wrap { grid-template-columns: 1fr; } .di-box-wrap { justify-self: center; } }
+.di-box { min-width: 11rem; }
+.di-box .va-box-val { color: var(--accent); }
+.di-box .va-box-val:empty::before { content: "vuota"; color: var(--ink-faint); font-size: 0.9rem; font-style: italic; }
+.va-box-old { font-family: var(--font-mono); font-size: 0.9rem; color: var(--ink-faint); text-decoration: line-through; min-height: 1.2em; }
+.di-steps { display: grid; gap: 0.5rem; }
+.di-step { text-align: left; border: 1px solid var(--line); border-radius: 10px; background: var(--bg); padding: 0.7rem 0.9rem; cursor: pointer; transition: all 0.18s var(--ease); display: flex; flex-direction: column; gap: 0.15rem; }
+.di-step:hover { border-color: var(--accent); }
+.di-step.active { border-color: var(--accent); background: var(--accent-wash); }
+.di-step b { font-family: var(--font-sans); font-size: 0.92rem; color: var(--ink); }
+.di-step small { font-family: var(--font-mono); font-size: 0.76rem; color: var(--ink-faint); }
+
+/* ---------- Tracciatore di assegnazione ---------- */
+.vr-wrap { padding: 1.3rem; }
+.vr-progsel { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+.vr-prog-btn { font-size: 0.8rem; padding: 0.4rem 0.8rem; border: 1px solid var(--line); border-radius: 100px; background: var(--bg); color: var(--ink-soft); cursor: pointer; transition: all 0.18s var(--ease); }
+.vr-prog-btn:hover { border-color: var(--accent); color: var(--accent); }
+.vr-prog-btn.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+.vr-main { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+@media (max-width: 760px) { .vr-main { grid-template-columns: 1fr; } }
+.vr-prog { list-style: none; counter-reset: ln; padding: 0; margin: 0 0 0.9rem; border: 1px solid var(--line); border-radius: 10px; overflow: hidden; background: var(--bg-sunk); }
+.vr-prog li { counter-increment: ln; font-family: var(--font-mono); font-size: 0.85rem; padding: 0.5rem 0.8rem 0.5rem 2.4rem; position: relative; color: var(--ink); border-bottom: 1px solid var(--line-soft); }
+.vr-prog li:last-child { border-bottom: 0; }
+.vr-prog li::before { content: counter(ln); position: absolute; left: 0.7rem; color: var(--ink-faint); font-size: 0.75rem; }
+.vr-prog li.done { opacity: 0.5; }
+.vr-prog li.next { background: var(--accent-wash); color: var(--ink); box-shadow: inset 3px 0 0 var(--accent); }
+.vr-controls { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.vr-side { }
+.vr-vars-lbl { display: block; font-family: var(--font-mono); font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--ink-faint); margin-bottom: 0.5rem; }
+.vr-vars { display: flex; flex-wrap: wrap; gap: 0.7rem; min-height: 5rem; margin-bottom: 0.9rem; }
+.vr-empty { font-family: var(--font-mono); font-size: 0.82rem; color: var(--ink-faint); }
+.vr-vars .va-box { min-width: 7rem; animation: vapop 0.25s var(--ease); }
+.vr-vars .va-box.flash { box-shadow: 0 0 0 3px var(--accent-wash); }
+.vr-explain { font-size: 0.9rem; line-height: 1.55; color: var(--ink-soft); min-height: 3rem; }
+.vr-explain strong { color: var(--ink); } .vr-explain code { font-family: var(--font-mono); font-size: 0.86em; background: var(--bg-elev); border: 1px solid var(--line-soft); border-radius: 5px; padding: 0.02rem 0.3rem; color: var(--ink); }
+
+/* ---------- Recap ---------- */
+.va-recap { padding: 1.2rem 1.3rem; border: 1px solid var(--line); border-radius: 14px; background: var(--accent-wash); }
+.va-recap ol { margin: 0; padding-left: 1.3rem; display: grid; gap: 0.4rem; }
+.va-recap li { color: var(--ink-soft); font-size: 0.94rem; line-height: 1.55; }
+.va-recap li strong { color: var(--ink); }
