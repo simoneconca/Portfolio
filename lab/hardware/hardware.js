@@ -365,7 +365,19 @@
     fpanel: { title: "Pannello frontale", tag: "I pulsanti del case", where: "Ai pin F_PANEL, in basso sulla scheda.",
       what: "Sono i cavetti che collegano alla scheda il tasto di accensione, il reset, i LED e le porte USB e audio del davanti del case.",
       tips: ["Sono piccolissimi e vanno su pin precisi: qui il manuale della scheda è indispensabile.", "Il tasto d'accensione (PWR_SW) è quello che fa partire tutto: se il PC non si avvia, spesso l'errore è qui.", "I LED hanno un verso (+ e −): se non si accendono, prova a girare lo spinotto."],
-      fun: "Il tasto d'accensione non «dà corrente»: dice solo alla scheda di avviarsi. La corrente arriva sempre dall'alimentatore." }
+      fun: "Il tasto d'accensione non «dà corrente»: dice solo alla scheda di avviarsi. La corrente arriva sempre dall'alimentatore." },
+    psu: { title: "Alimentatore (PSU)", tag: "L'energia di tutto", where: "Nella sua culla in fondo al case; da qui partono tutti i cavi.",
+      what: "Prende i 230 V della presa e li trasforma nelle tensioni che servono ai componenti: +12V, +5V, +3,3V. È la sorgente di ogni cavo di alimentazione del PC.",
+      tips: ["Si fissa con quattro viti sul retro del case.", "La ventola va rivolta verso una griglia (di solito in basso), così prende aria fresca da fuori.", "Se è modulare, attacca solo i cavi che ti servono: meno grovigli, più aria."],
+      fun: "Dentro c'è un piccolo alimentatore a commutazione: abbassa la tensione migliaia di volte al secondo, per questo è leggero e non scalda come un vecchio trasformatore." },
+    pwrpcie: { title: "Cavo PCIe (alimentazione GPU)", tag: "La spinta per la scheda video", where: "Dal PSU al connettore sul bordo superiore della scheda video.",
+      what: "Le schede video potenti consumano più di quanto lo slot PCIe possa dare da solo: questo cavo porta la corrente in più direttamente dall'alimentatore alla GPU.",
+      tips: ["Spingi fino al clic: un connettore inserito a metà scalda e fa spegnere il PC sotto sforzo.", "Usa i cavi dell'alimentatore, non adattatori improvvisati.", "Le schede recentissime usano un connettore 12VHPWR: stesso scopo, forma diversa."],
+      fun: "Una scheda video di fascia alta può chiedere da sola più corrente di tutto il resto del PC messo insieme." },
+    pwrsata: { title: "Cavo di alimentazione SATA", tag: "Corrente al disco", where: "Dal PSU allo spinotto piatto del disco o SSD SATA.",
+      what: "Un disco SATA vuole due cavi: uno sottile per i dati (verso la scheda) e questo, più largo, per la corrente dall'alimentatore.",
+      tips: ["Lo spinotto ha una tacca a L: entra in un verso solo.", "Un cavo del PSU ha più spinotti in fila: con lo stesso puoi alimentare più dischi.", "Senza questo cavo il disco non gira e il PC non lo vede proprio."],
+      fun: "SSD e hard disk SATA usano lo stesso identico spinotto di corrente: cambia la velocità, non l'alimentazione." }
   };
 
   const AICON = {
@@ -378,12 +390,17 @@
     cable: '<svg viewBox="0 0 46 30" aria-hidden="true"><g stroke="#8a9298" stroke-width="2" stroke-linecap="round"><path d="M6 10h10M6 15h10M6 20h10"/></g><rect x="16" y="6" width="13" height="18" rx="2" fill="#2a2f34"/><g stroke="#e0b54f" stroke-width="2" stroke-linecap="round"><path d="M29 10h11M29 15h11M29 20h11"/></g></svg>',
     paste: '<svg viewBox="0 0 46 30" aria-hidden="true"><rect x="5" y="9" width="4" height="12" rx="1" fill="#8a9298"/><rect x="9" y="11" width="22" height="8" rx="1.5" fill="#d7ded4" stroke="#9aa6ad" stroke-width=".6"/><rect x="31" y="12.5" width="6" height="5" fill="#aab3b9"/><path d="M37 15h6" stroke="#8a9298" stroke-width="1.6" stroke-linecap="round"/><circle cx="43.4" cy="15" r="1.6" fill="#cdd4d8"/></svg>',
     fan: '<svg viewBox="0 0 46 30" aria-hidden="true"><rect x="9" y="1" width="28" height="28" rx="3" fill="#2f3840"/><circle cx="23" cy="15" r="12" fill="#12171b"/><g stroke="#5a666e" stroke-width="2.2" stroke-linecap="round" fill="none"><path d="M23 15V4"/><path d="M23 15l9.5 5.5"/><path d="M23 15l-9.5 5.5"/></g><circle cx="23" cy="15" r="3" fill="#2d363c"/></svg>',
-    fpanel: '<svg viewBox="0 0 46 30" aria-hidden="true"><rect x="8" y="9" width="30" height="12" rx="1.5" fill="#2a2f34"/><g fill="#e0b54f"><rect x="11" y="12" width="2.5" height="6"/><rect x="16" y="12" width="2.5" height="6"/><rect x="21" y="12" width="2.5" height="6"/><rect x="26" y="12" width="2.5" height="6"/><rect x="31" y="12" width="2.5" height="6"/></g></svg>'
+    fpanel: '<svg viewBox="0 0 46 30" aria-hidden="true"><rect x="8" y="9" width="30" height="12" rx="1.5" fill="#2a2f34"/><g fill="#e0b54f"><rect x="11" y="12" width="2.5" height="6"/><rect x="16" y="12" width="2.5" height="6"/><rect x="21" y="12" width="2.5" height="6"/><rect x="26" y="12" width="2.5" height="6"/><rect x="31" y="12" width="2.5" height="6"/></g></svg>',
+    psu: '<svg viewBox="0 0 46 30" aria-hidden="true"><rect x="5" y="6" width="27" height="20" rx="2" fill="#2a2f34" stroke="#4a545b" stroke-width=".6"/><circle cx="18" cy="16" r="7.5" fill="#12171b"/><g stroke="#5a666e" stroke-width="1.6" stroke-linecap="round" fill="none"><path d="M18 16V8.5"/><path d="M18 16l6.5 3.8"/><path d="M18 16l-6.5 3.8"/></g><circle cx="18" cy="16" r="2" fill="#2d363c"/><g stroke="#e0b54f" stroke-width="2" stroke-linecap="round"><path d="M32 11h9M32 16h9M32 21h9"/></g></svg>'
   };
 
   function aPieces() {
     const nvme = hasK("storage") && /NVMe/i.test(build.storage.name);
+    const integrated = hasK("gpu") && build.gpu.integrated;
+    const showGpu = !integrated;
     const list = [
+      { id: "psu", label: "Alimentatore (PSU)", sub: hasK("psu") ? build.psu.watt + " W" : "Energia", icon: "psu", tray: "R", accepts: ["psu"],
+        hint: "L'alimentatore va nella sua culla, in fondo al case (la striscia in basso)." },
       { id: "cpu", label: "Processore", sub: hasK("cpu") ? build.cpu.name : "CPU", icon: "cpu", tray: "L", accepts: ["socket"],
         hint: "Il processore va nel socket: il quadrato con i contatti, in alto al centro." },
       { id: "paste", label: "Pasta termica", sub: "Una goccia sulla CPU", icon: "paste", tray: "L", accepts: ["socket"], requires: "cpu",
@@ -396,15 +413,23 @@
         hint: "La RAM va negli slot lunghi e verticali, a destra del processore." },
       { id: "ram2", label: "RAM · modulo 2", sub: hasK("ram") ? build.ram.type : "Memoria", icon: "ram", tray: "L", group: "ram", accepts: ["dimm2", "dimm4"],
         hint: "La RAM va negli slot lunghi e verticali, a destra del processore." },
-      { id: "storage", label: nvme ? "SSD M.2" : "Disco / SSD", sub: hasK("storage") ? build.storage.name : "Archivio", icon: nvme ? "ssd" : "drive", tray: "R", accepts: [nvme ? "m2" : "sata"], nvme,
-        hint: nvme ? "L'SSD M.2 va nello slot piccolo e tratteggiato, sotto il processore." : "Il disco si collega a una porta SATA, in basso sul bordo destro." }
+      { id: "storage", label: nvme ? "SSD M.2" : "Disco / SSD SATA", sub: hasK("storage") ? build.storage.name : "Archivio", icon: nvme ? "ssd" : "drive", tray: "R", accepts: [nvme ? "m2" : "sata"], nvme,
+        hint: nvme ? "L'SSD M.2 va nello slot piccolo e tratteggiato, sotto il processore." : "Il disco si collega (cavo dati) a una porta SATA, in basso sul bordo destro." }
     ];
-    list.push({ id: "gpu", label: "Scheda video", sub: (hasK("gpu") && !build.gpu.integrated) ? build.gpu.name : "GPU dedicata", icon: "gpu", tray: "R", accepts: ["pcie"],
+    if (showGpu) list.push({ id: "gpu", label: "Scheda video", sub: (hasK("gpu") && !build.gpu.integrated) ? build.gpu.name : "GPU dedicata", icon: "gpu", tray: "R", accepts: ["pcie"],
       hint: "La scheda video va nello slot lungo con il rinforzo (PCIe x16)." });
-    list.push({ id: "pwr24", label: "Cavo 24 pin", sub: "Alimenta la scheda", icon: "cable", tray: "R", accepts: ["atx24"],
+    list.push({ id: "pwr24", label: "Cavo ATX 24 pin", sub: "Alimenta la scheda", icon: "cable", tray: "R", accepts: ["atx24"], requiresAll: ["psu"],
+      requiresMsg: "Prima installa l'<b>alimentatore</b>: i cavi di corrente partono da lì.",
       hint: "Il cavo grande a 24 pin va sul bordo destro della scheda." });
-    list.push({ id: "pwrcpu", label: "Cavo CPU 8 pin", sub: "Alimenta la CPU (EPS)", icon: "cable", tray: "R", accepts: ["eps"],
+    list.push({ id: "pwrcpu", label: "Cavo CPU 8 pin (EPS)", sub: "Alimenta la CPU", icon: "cable", tray: "R", accepts: ["eps"], requiresAll: ["psu"],
+      requiresMsg: "Prima installa l'<b>alimentatore</b>: i cavi di corrente partono da lì.",
       hint: "Il cavo CPU a 8 pin va in alto a sinistra, vicino al processore." });
+    if (showGpu) list.push({ id: "pwrpcie", label: "Cavo PCIe (GPU)", sub: "Corrente alla scheda video", icon: "cable", tray: "R", accepts: ["gpupwr"], requiresAll: ["psu", "gpu"],
+      requiresMsg: "Serve prima l'<b>alimentatore</b> <u>e</u> la <b>scheda video</b> montata.",
+      hint: "Il cavo PCIe va sul connettore in cima alla scheda video." });
+    if (!nvme) list.push({ id: "pwrsata", label: "Cavo SATA (corrente)", sub: "Corrente al disco", icon: "cable", tray: "R", accepts: ["satapwr"], requiresAll: ["psu", "storage"],
+      requiresMsg: "Serve prima l'<b>alimentatore</b> <u>e</u> il <b>disco</b> collegato ai dati.",
+      hint: "Il cavo di corrente SATA va sullo spinotto del disco." });
     list.push({ id: "fans", label: "Ventole del case", sub: "Flusso d'aria", icon: "fan", tray: "R", accepts: ["sysfan"],
       hint: "Le ventole si collegano a un header SYS_FAN sulla scheda." });
     list.push({ id: "fpanel", label: "Pannello frontale", sub: "Accensione, LED, USB", icon: "fpanel", tray: "R", accepts: ["fpanel"],
@@ -415,8 +440,9 @@
   const ZN = {
     socket: [110, 38, 68, 62], eps: [62, -3, 36, 17],
     dimm1: [190, 12, 12, 144], dimm2: [202, 12, 12, 144], dimm3: [214, 12, 12, 144], dimm4: [226, 12, 12, 144],
-    m2: [60, 106, 102, 28], pcie: [16, 150, 124, 19], atx24: [272, 50, 24, 62], sata: [266, 166, 32, 58],
-    sysfan: [14, 120, 26, 16], fpanel: [222, 216, 36, 20]
+    m2: [60, 106, 102, 28], pcie: [16, 150, 124, 19], atx24: [272, 50, 24, 62], sata: [266, 178, 32, 46],
+    sysfan: [14, 120, 26, 16], fpanel: [222, 216, 36, 20],
+    psu: [10, 248, 150, 24], gpupwr: [196, 137, 26, 13], satapwr: [250, 150, 32, 13]
   };
 
   function boardSVG() {
@@ -426,7 +452,7 @@
       return '<rect class="hwa-zone" data-zone="' + k + '" x="' + z[0] + '" y="' + z[1] + '" width="' + z[2] + '" height="' + z[3] + '" tabindex="0" role="button" aria-label="' + k + '"/>';
     }).join("");
     return '' +
-    '<svg id="hwaBoard" viewBox="0 0 300 240" role="img" aria-label="Scheda madre vista dall\'alto">' +
+    '<svg id="hwaBoard" viewBox="0 0 300 276" role="img" aria-label="Scheda madre e alimentatore, vista dall\'alto">' +
       '<defs>' +
         '<pattern id="hwaPins" width="2" height="2" patternUnits="userSpaceOnUse"><rect width="2" height="2" fill="#243441"/><circle cx="1" cy="1" r=".42" fill="#a7b6c0"/></pattern>' +
         '<pattern id="hwaFins" width="10" height="3.2" patternUnits="userSpaceOnUse"><rect width="10" height="3.2" fill="#3a4e5c"/><rect width="10" height="1.5" fill="#54707f"/></pattern>' +
@@ -456,6 +482,14 @@
       '<rect x="20" y="124" width="11" height="6" fill="url(#hwaPins)" stroke="#3a3a3a" stroke-width=".3"/><text class="silk" x="18" y="122">SYS_FAN</text>' +
       '<rect x="228" y="224" width="22" height="7" fill="url(#hwaPins)" stroke="#3a3a3a" stroke-width=".3"/><text class="silk" x="228" y="222">F_PANEL</text>' +
       '<text class="silk big" x="40" y="212">ATX · 305 × 244 mm</text>' +
+      // --- connettori di alimentazione aggiuntivi (etichette) ---
+      '<text class="silk" x="209" y="134" text-anchor="middle">PCIe → GPU</text>' +
+      '<text class="silk" x="266" y="148" text-anchor="middle">SATA pwr</text>' +
+      // --- culla dell\'alimentatore (in fondo al case) ---
+      '<rect x="4" y="242" width="292" height="30" rx="4" fill="#0a1a22" stroke="#163041" stroke-width=".8"/>' +
+      '<rect x="4" y="242" width="292" height="30" rx="4" fill="url(#hwaDots)"/>' +
+      '<rect x="10" y="247" width="150" height="21" rx="2" fill="none" stroke="#cdd8dc55" stroke-width=".7" stroke-dasharray="2.4 1.6"/>' +
+      '<text class="silk" x="86" y="245">CULLA ALIMENTATORE (PSU)</text>' +
       '<g id="hwaOverlays">' +
         '<g class="hwa-ov" id="ov-cpu" style="display:none"><rect x="120" y="46" width="48" height="48" rx="1" fill="#2f6b3a"/><rect x="123" y="49" width="42" height="42" rx="3" fill="#cdd4d8"/><text x="144" y="68" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="3.4" font-weight="700" fill="#79838a">CPU</text><polygon points="121,92 121,88 125,92" fill="#e0b54f"/><rect x="117" y="43" width="54" height="54" rx="1" fill="none" stroke="#9aa3a8" stroke-width="2.2"/></g>' +
         '<g class="hwa-ov" id="ov-paste" style="display:none"><circle cx="144" cy="70" r="4.6" fill="#c7ced3"/><circle cx="144" cy="70" r="4.6" fill="none" stroke="#8a9298" stroke-width=".4"/></g>' +
@@ -469,6 +503,9 @@
         '<g class="hwa-ov" id="ov-pwrcpu" style="display:none"><path d="M60 2 C48 2 44 -6 40 -10" stroke="#e0b54f" stroke-width="1.6" fill="none"/><rect x="63" y="-2" width="24" height="12" rx="1" fill="#141414" stroke="#3a3a3a" stroke-width=".4"/></g>' +
         '<g class="hwa-ov" id="ov-fans" style="display:none"><path d="M26 124 C26 112 20 108 12 108" stroke="#4a555d" stroke-width="1.4" fill="none"/><rect x="19" y="122" width="13" height="7" rx="1" fill="#2a2f34"/></g>' +
         '<g class="hwa-ov" id="ov-fpanel" style="display:none"><path d="M240 224 C240 216 246 212 252 210" stroke="#4a555d" stroke-width="1.2" fill="none"/><rect x="226" y="222" width="26" height="10" rx="1" fill="#2a2f34"/><rect x="229" y="225" width="2.2" height="4" fill="#5dff9c"/><rect x="233" y="225" width="2.2" height="4" fill="#ff6a5c"/><rect x="240" y="225" width="6" height="4" rx="1" fill="#3a7bdb"/></g>' +
+        '<g class="hwa-ov" id="ov-psu" style="display:none"><rect x="10" y="247" width="150" height="21" rx="2" fill="#20262b" stroke="#454f56" stroke-width=".7"/><circle cx="29" cy="257.5" r="8.6" fill="#10151a"/><g stroke="#4a555d" stroke-width="1.5" stroke-linecap="round" fill="none"><path d="M29 257.5V250"/><path d="M29 257.5l6.6 3.9"/><path d="M29 257.5l-6.6 3.9"/></g><circle cx="29" cy="257.5" r="2.3" fill="#2d363c"/><text x="99" y="259" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="3.6" font-weight="700" fill="#7a858c">PSU</text><g stroke="#e0b54f" stroke-width="1" opacity=".6" fill="none"><path d="M160 251 C205 250 230 220 285 112"/><path d="M160 258 C120 258 90 60 80 6"/></g></g>' +
+        '<g class="hwa-ov" id="ov-pwrpcie" style="display:none"><rect x="197" y="138" width="24" height="11" rx="1" fill="#141414" stroke="#3a3a3a" stroke-width=".4"/><g fill="#e0b54f"><rect x="200" y="140.5" width="2" height="6"/><rect x="204" y="140.5" width="2" height="6"/><rect x="208" y="140.5" width="2" height="6"/><rect x="212" y="140.5" width="2" height="6"/></g><path d="M221 143 C244 143 252 210 160 252" stroke="#e0b54f" stroke-width="1.5" fill="none" opacity=".85"/></g>' +
+        '<g class="hwa-ov" id="ov-pwrsata" style="display:none"><rect x="252" y="151" width="24" height="11" rx="1" fill="#141414" stroke="#3a3a3a" stroke-width=".4"/><rect x="254" y="153" width="3" height="7" fill="#2a2a2a"/><path d="M276 156 C292 156 294 210 160 254" stroke="#e0b54f" stroke-width="1.5" fill="none" opacity=".85"/></g>' +
       '</g>' +
       '<g id="hwaZones">' + zoneRects + '</g>' +
     '</svg>';
@@ -482,16 +519,22 @@
   let A = null;
 
   function renderAssembly() {
-    A = { placed: {}, slot: {}, errors: 0, hints: 0, selected: null, complete: false, pieces: aPieces(), start: Date.now() };
+    A = { placed: {}, slot: {}, errors: 0, hints: 0, selected: null, complete: false, guided: (A && typeof A.guided === "boolean") ? A.guided : true, pieces: aPieces(), start: Date.now() };
     const L = A.pieces.filter((p) => p.tray === "L"), R = A.pieces.filter((p) => p.tray === "R");
     $("asm").innerHTML =
       '<div class="hwa-wrap">' +
         '<div class="hwa-top">' +
-          '<div><h2 class="wiz-title">Monta il PC</h2><p class="hwa-sub">Trascina ogni componente sul punto giusto della scheda madre — oppure toccalo e poi tocca il punto dove va. Il montaggio usa i pezzi scelti nella sezione precedente.</p></div>' +
-          '<div class="hwa-stats"><div class="hwa-stat"><small>Montati</small><b id="aPieces">0/' + A.pieces.length + '</b></div>' +
+          '<div><h2 class="wiz-title">Monta il PC</h2><p class="hwa-sub">In <b>Guidato</b> ti dico cosa montare, un pezzo alla volta e nel giusto ordine. In <b>Libero</b> sperimenti come vuoi. Trascina un componente sul punto giusto — o toccalo e poi tocca dove va.</p></div>' +
+          '<div class="hwa-stats">' +
+            '<div class="seg hwa-asmmode" id="aModeSeg" role="group" aria-label="Modalità di montaggio">' +
+              '<button type="button" class="seg-btn ' + (A.guided ? "active" : "") + '" data-g="1">🧭 Guidato</button>' +
+              '<button type="button" class="seg-btn ' + (!A.guided ? "active" : "") + '" data-g="0">🧪 Libero</button>' +
+            '</div>' +
+            '<div class="hwa-stat"><small>Montati</small><b id="aPieces">0/' + A.pieces.length + '</b></div>' +
             '<button type="button" class="ghost-btn" id="aHint">Aiuto</button>' +
             '<button type="button" class="ghost-btn" id="aReset">Ricomincia</button></div>' +
         '</div>' +
+        '<div class="hwa-guide" id="aGuide" hidden></div>' +
         '<div class="hwa-bench">' +
           '<div class="hwa-tray"><h3>Vassoio A</h3><div class="hwa-cards" id="aTrayL">' + L.map(cardHTML).join("") + '</div></div>' +
           '<div class="hwa-board-col"><div class="hwa-boardwrap" id="aWrap">' +
@@ -522,6 +565,7 @@
   }
   function toggleSelectA(id) {
     if (A.placed[id] || A.complete) return;
+    if (A.guided && activePieceId() !== id) { toastA("In modalità guidata, prima monta: <b>" + ((A.pieces.find((p) => p.id === activePieceId()) || {}).label || "il prossimo pezzo") + "</b>.", "info"); return; }
     if (A.selected === id) { selectA(null); return; }
     selectA(id);
     toastA((A.pieces.find((p) => p.id === id).label) + ": ora tocca il punto della scheda dove va.", "info");
@@ -544,10 +588,20 @@
     c.classList.remove("shake"); void c.offsetWidth; c.classList.add("shake");
   }
 
+  function activePieceId() {
+    for (let i = 0; i < A.pieces.length; i++) if (!A.placed[A.pieces[i].id]) return A.pieces[i].id;
+    return null;
+  }
+
   function tryPlaceA(id, zone) {
     const p = A.pieces.find((x) => x.id === id);
     if (!p || A.placed[id] || A.complete || !zone) return;
+    if (A.guided && activePieceId() !== id) {
+      const act = A.pieces.find((x) => x.id === activePieceId());
+      return failA(id, "In modalità <b>guidata</b> si procede in ordine: ora tocca montare <b>" + (act ? act.label : "il prossimo pezzo") + "</b>.");
+    }
     if (p.requires && !A.placed[p.requires]) return failA(id, p.requiresMsg);
+    if (p.requiresAll) { for (let i = 0; i < p.requiresAll.length; i++) { if (!A.placed[p.requiresAll[i]]) return failA(id, p.requiresMsg); } }
     if (p.group === "ram") {
       if (zone === "dimm1" || zone === "dimm3") return failA(id, "Entrerebbe, ma con due moduli il manuale consiglia gli slot <b>alternati</b> (il 2° e il 4°) per il <b>dual channel</b>.");
       if (A.slot[zone]) return failA(id, "Questo slot è già occupato: usa l'altro slot consigliato.", false);
@@ -570,6 +624,7 @@
     const n = Object.keys(A.placed).length;
     $("aPieces").textContent = n + "/" + A.pieces.length;
     if (n === A.pieces.length) A.complete = true;
+    applyGuided();
     let key = id;
     if (p.group === "ram") key = (A.slot.dimm2 && A.slot.dimm4) ? "ram2" : "ram";
     else if (id === "storage") key = p.nvme ? "ssd" : "drive";
@@ -644,7 +699,8 @@
       line("Memoria: " + (hasK("ram") ? build.ram.name : "RAM") + " · dual channel"),
       line("Archivio: " + (hasK("storage") ? build.storage.name : "SSD")),
       hasGpu() ? line("Video: " + build.gpu.name) : line("Video: grafica integrata nella CPU"),
-      line("Alimentazione: +12V +5V +3,3V"),
+      line("Alimentatore: " + (hasK("psu") ? build.psu.watt + " W" : "PSU") + " · +12V +5V +3,3V"),
+      hasGpu() ? line("Alimentazione PCIe scheda video: collegata") : "SC Z-1 · alimentazione scheda OK",
       "Avvio del sistema operativo..."
     ];
     lines.forEach((l, i) => setTimeout(() => { const p = document.createElement("p"); p.className = "bl"; p.innerHTML = l; b.appendChild(p); b.scrollTop = b.scrollHeight; }, i * 340));
@@ -657,6 +713,31 @@
       b.appendChild(el);
       $("aAgain").addEventListener("click", renderAssembly);
     }, lines.length * 340 + 250);
+  }
+
+  function applyGuided() {
+    const banner = $("aGuide");
+    document.querySelectorAll(".hwa-zone").forEach((z) => z.classList.remove("guide"));
+    if (!A.guided || A.complete) {
+      if (banner) banner.hidden = true;
+      document.querySelectorAll(".hwa-card").forEach((c) => c.classList.remove("locked"));
+      return;
+    }
+    const actId = activePieceId();
+    document.querySelectorAll(".hwa-card").forEach((c) => {
+      const id = c.dataset.id;
+      c.classList.toggle("locked", !A.placed[id] && id !== actId);
+    });
+    const p = A.pieces.find((x) => x.id === actId);
+    if (!p) { if (banner) banner.hidden = true; return; }
+    if (banner) {
+      banner.hidden = false;
+      banner.innerHTML = '<span class="g-step">Passo ' + (Object.keys(A.placed).length + 1) + "/" + A.pieces.length + "</span>" +
+        "<div><b>Monta ora: " + p.label + "</b><br>" + p.hint + "</div>";
+    }
+    let targets = p.accepts.slice();
+    if (p.group === "ram") targets = targets.filter((z) => !A.slot[z]);
+    document.querySelectorAll(".hwa-zone").forEach((z) => { if (targets.indexOf(z.dataset.zone) >= 0) z.classList.add("guide"); });
   }
 
   function hintA() {
@@ -680,6 +761,7 @@
       c.addEventListener("pointerdown", (e) => {
         if (e.button > 0) return;
         const id = c.dataset.id; if (A.placed[id] || A.complete) return;
+        if (A.guided && activePieceId() !== id) { failA(id, "In modalità <b>guidata</b> tocca prima: <b>" + ((A.pieces.find((p) => p.id === activePieceId()) || {}).label || "il prossimo pezzo") + "</b>."); return; }
         drag = { id, x0: e.clientX, y0: e.clientY, ghost: null };
         try { c.setPointerCapture(e.pointerId); } catch (_) {}
       });
@@ -719,9 +801,17 @@
     }));
     $("aHint").addEventListener("click", hintA);
     $("aReset").addEventListener("click", renderAssembly);
+    $("aModeSeg").addEventListener("click", (e) => {
+      const b = e.target.closest("[data-g]"); if (!b) return;
+      A.guided = b.dataset.g === "1";
+      $("aModeSeg").querySelectorAll(".seg-btn").forEach((x) => x.classList.toggle("active", x === b));
+      selectA(null); applyGuided();
+      toastA(A.guided ? "Modalità <b>guidata</b>: ti guido pezzo per pezzo, in ordine." : "Modalità <b>libera</b>: monta come vuoi, nell'ordine che preferisci.", "info");
+    });
     $("aPower").addEventListener("click", bootA);
     $("aModal").addEventListener("click", (e) => { if (e.target === $("aModal")) { $("aModal").hidden = true; if (A.complete) revealPower(); } });
     $("aCpuModal").addEventListener("click", (e) => { if (e.target === $("aCpuModal")) $("aCpuModal").hidden = true; });
+    applyGuided();
   }
 
   /* ---------- Modalità ---------- */
