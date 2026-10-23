@@ -109,8 +109,31 @@
         <header class="va-shead">
           <span class="va-skicker">02 · A cosa servono davvero</span>
           <h2 class="va-stitle">Perché usare le variabili</h2>
-          <p class="va-ssub">Marta vuole il <strong>costo totale della spesa</strong>: 2 mele a 0,50 € l'una, 1,5 kg di pane a 4 €/kg, 1 litro di latte a 1,50 €. Potremmo scrivere il totale coi <strong>numeri fissi</strong>… ma se Marta cambia la spesa, quella formula non vale più. Con le <strong>variabili</strong> la stessa formula resta valida: basta cambiare un valore. Prova a modificare i dati qui sotto.</p>
+          <p class="va-ssub">Un programma non risolve un <strong>caso singolo</strong>, ma un <strong>tipo</strong> di problema: la stessa logica deve funzionare con dati diversi. Le variabili danno un <strong>nome</strong> ai dati che cambiano. Pensa a una <strong>scheda</strong> con dei campi — <code>nome</code>, <code>cognome</code>, <code>eta</code>: prima li <strong>dichiari</strong> (crei i campi, ancora vuoti), poi li <strong>riempi</strong> (assegni i valori). Gli stessi campi valgono per persone diverse.</p>
         </header>
+
+        <div class="pe-wrap panel">
+          <div class="pe-card" id="peCard">
+            <span class="pe-title">scheda Persona</span>
+            <div class="pe-fields">
+              <div class="pe-field"><span class="pe-fname">nome</span><span class="pe-fval t-str" data-f="nome"></span><span class="pe-ftype">stringa</span></div>
+              <div class="pe-field"><span class="pe-fname">cognome</span><span class="pe-fval t-str" data-f="cognome"></span><span class="pe-ftype">stringa</span></div>
+              <div class="pe-field"><span class="pe-fname">eta</span><span class="pe-fval t-int" data-f="eta"></span><span class="pe-ftype">intero</span></div>
+            </div>
+          </div>
+          <div class="pe-side">
+            <span class="pe-step" id="peStep">① Dichiarazione</span>
+            <p class="pe-note" id="peNote"></p>
+            <div class="pe-controls">
+              <button class="ghost-btn" data-p="0" type="button">① Dichiara (vuoti)</button>
+              <button class="run-btn" data-p="1" type="button">② Persona 1</button>
+              <button class="run-btn" data-p="2" type="button">② Persona 2</button>
+            </div>
+          </div>
+        </div>
+
+        <h3 class="va-sub2">Un altro esempio: la spesa</h3>
+        <p class="va-ssub" style="margin-bottom:1rem">Marta vuole il <strong>costo totale della spesa</strong>: 2 mele a 0,50 € l'una, 1,5 kg di pane a 4 €/kg, 1 litro di latte a 1,50 €. Coi <strong>numeri fissi</strong> la formula vale una volta sola; con le <strong>variabili</strong> resta valida: cambi un valore e il totale si aggiorna da solo. Provalo.</p>
 
         <div class="sp-wrap panel">
           <div class="sp-inputs" id="spInputs">

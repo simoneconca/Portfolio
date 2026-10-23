@@ -49,7 +49,33 @@
   })();
 
   /* ========================================================
-     2 · PERCHÉ (spesa)
+     2a · PERCHÉ (scheda Persona: dichiara poi riempi)
+     ======================================================== */
+  (function persona() {
+    var card = $("peCard"); if (!card) return;
+    var note = $("peNote"), stepEl = $("peStep");
+    var fields = {}; card.querySelectorAll(".pe-fval").forEach(function (f) { fields[f.dataset.f] = f; });
+    var DATA = [
+      { step: "① Dichiarazione", vals: { nome: "", cognome: "", eta: "" },
+        note: "Ho <strong>dichiarato</strong> i campi: le scatole <code>nome</code>, <code>cognome</code>, <code>eta</code> esistono ma sono ancora <strong>vuote</strong>. C'è lo schema, non ancora i dati." },
+      { step: "② Assegnazione · Persona 1", vals: { nome: '"Anna"', cognome: '"Rossi"', eta: "15" },
+        note: "Ho <strong>riempito</strong> gli stessi campi con i dati di Anna. La variabile «varia»: stessa scatola, un valore dentro." },
+      { step: "② Assegnazione · Persona 2", vals: { nome: '"Luca"', cognome: '"Bianchi"', eta: "17" },
+        note: "Stessi identici campi, <strong>persona diversa</strong>: cambio solo i valori, non lo schema. Ecco perché un programma risolve un <strong>tipo</strong> di problema, non un caso singolo." }
+    ];
+    function show(i) {
+      var d = DATA[i]; stepEl.textContent = d.step;
+      Object.keys(fields).forEach(function (k) { fields[k].textContent = d.vals[k]; });
+      note.innerHTML = d.note;
+      card.classList.remove("flash"); void card.offsetWidth; card.classList.add("flash");
+      document.querySelectorAll(".pe-controls button").forEach(function (b) { b.classList.toggle("on", +b.dataset.p === i); });
+    }
+    document.querySelectorAll(".pe-controls button").forEach(function (b) { b.addEventListener("click", function () { show(+b.dataset.p); }); });
+    show(0);
+  })();
+
+  /* ========================================================
+     2b · PERCHÉ (spesa)
      ======================================================== */
   (function spesa() {
     var wrap = $("spInputs"); if (!wrap) return;
@@ -92,6 +118,7 @@
         if (/^[A-Z][A-Z0-9_]*$/.test(name)) return { ok: true, msg: "valido — tutto maiuscolo: è il modo giusto di scrivere una COSTANTE" };
         return { ok: false, msg: "i nomi iniziano con la minuscola; le MAIUSCOLE si riservano alle costanti (es. PI_GRECO)" };
       }
+      if (/_/.test(name) && /[A-Z]/.test(name)) return { ok: false, msg: "non mescolare gli stili: o minuscole_con_underscore (numero_studenti) o camelCase (numeroStudenti), non tutti e due" };
       return { ok: true, msg: "valido" };
     }
     function render() {
