@@ -161,7 +161,11 @@
 .hwa-guide { display: flex; align-items: flex-start; gap: 12px; margin: 2px 0 16px; padding: 11px 14px; border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--line)); border-radius: 12px; background: var(--accent-wash); font-size: 0.92rem; line-height: 1.45; color: var(--ink-soft); }
 .hwa-guide .g-step { flex: 0 0 auto; font-family: var(--font-mono); font-size: 0.72rem; font-weight: 700; color: var(--accent-ink); background: var(--accent); border-radius: 100px; padding: 0.25rem 0.6rem; white-space: nowrap; }
 .hwa-guide b { color: var(--ink); }
+.hwa-guide .g-step.g-hard { background: #c0392b; color: #fff; }
 .hwa-asmmode { flex-wrap: nowrap; }
+.hwa-errstat b { color: #e0533d; }
+.pcbl { transition: opacity 0.5s ease, stroke-dasharray 0.5s ease; }
+#hwaBoard.tidy .pcbl { opacity: 0.16 !important; stroke-dasharray: 3 2.4; }
 @keyframes hwaShake { 20%,60%{transform:translateX(-5px)} 40%,80%{transform:translateX(5px)} }
 .hwa-c-name { font-family: var(--font-display); font-weight: 500; font-size: 1.02rem; line-height: 1.1; }
 .hwa-c-sub { font-size: 0.76rem; color: var(--ink-soft); }
