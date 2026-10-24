@@ -402,9 +402,11 @@
     const nvme = hasK("storage") && /NVMe/i.test(build.storage.name);
     const integrated = hasK("gpu") && build.gpu.integrated;
     const showGpu = !integrated;
-    const list = [
-      { id: "psu", label: "Alimentatore (PSU)", sub: hasK("psu") ? build.psu.watt + " W" : "Energia", icon: "psu", tray: "R", accepts: ["psu"],
-        hint: "L'alimentatore va nella sua culla, in fondo al case (la striscia in basso)." },
+    const list = [];
+    // DIFFICILE: l'alimentatore si installa come unità, e i cavi partono da lì
+    if (hardMode) list.push({ id: "psu", label: "Alimentatore (PSU)", sub: hasK("psu") ? build.psu.watt + " W" : "Energia", icon: "psu", tray: "R", accepts: ["psu"],
+      hint: "L'alimentatore va nella sua culla, in fondo al case (la striscia in basso)." });
+    list.push(
       { id: "cpu", label: "Processore", sub: hasK("cpu") ? build.cpu.name : "CPU", icon: "cpu", tray: "L", accepts: ["socket"],
         hint: "Il processore va nel socket: il quadrato con i contatti, in alto al centro." },
       { id: "paste", label: "Pasta termica", sub: "Una goccia sulla CPU", icon: "paste", tray: "L", accepts: ["socket"], requires: "cpu",
@@ -417,23 +419,23 @@
         hint: "La RAM va negli slot lunghi e verticali, a destra del processore." },
       { id: "ram2", label: "RAM · modulo 2", sub: hasK("ram") ? build.ram.type : "Memoria", icon: "ram", tray: "L", group: "ram", accepts: ["dimm2", "dimm4"],
         hint: "La RAM va negli slot lunghi e verticali, a destra del processore." },
-      { id: "storage", label: nvme ? "SSD M.2 (1°)" : "Disco / SSD SATA", sub: hasK("storage") ? build.storage.name : "Archivio", icon: nvme ? "ssd" : "drive", tray: "R", accepts: [nvme ? "m2" : "sata"], nvme,
-        hint: nvme ? "L'SSD M.2 va nel primo slot M.2 (M.2_1), sotto il processore." : "Il disco si collega (cavo dati) a una porta SATA, in basso sul bordo destro." }
-    ];
-    list.push({ id: "ssd2", label: "2° SSD NVMe", sub: "Disco extra", icon: "ssd", tray: "R", accepts: [nvme ? "m2b" : "m2"],
+      { id: "storage", label: nvme ? (hardMode ? "SSD M.2 (1°)" : "SSD M.2") : "Disco / SSD SATA", sub: hasK("storage") ? build.storage.name : "Archivio", icon: nvme ? "ssd" : "drive", tray: "R", accepts: [nvme ? "m2" : "sata"], nvme,
+        hint: nvme ? "L'SSD M.2 va nello slot M.2, sotto il processore." : "Il disco si collega (cavo dati) a una porta SATA, in basso sul bordo destro." }
+    );
+    if (hardMode) list.push({ id: "ssd2", label: "2° SSD NVMe", sub: "Disco extra", icon: "ssd", tray: "R", accepts: [nvme ? "m2b" : "m2"],
       hint: nvme ? "Il secondo SSD va nell'altro slot M.2 (M.2_2), più in basso sulla scheda." : "Questo SSD M.2 va nello slot M.2_1, sotto il processore." });
     if (showGpu) list.push({ id: "gpu", label: "Scheda video", sub: (hasK("gpu") && !build.gpu.integrated) ? build.gpu.name : "GPU dedicata", icon: "gpu", tray: "R", accepts: ["pcie"],
       hint: "La scheda video va nello slot lungo con il rinforzo (PCIe x16)." });
-    list.push({ id: "pwr24", label: "Cavo ATX 24 pin", sub: "Alimenta la scheda", icon: "cable", tray: "R", accepts: ["atx24"], requiresAll: ["psu"],
+    list.push({ id: "pwr24", label: "Cavo ATX 24 pin", sub: "Alimenta la scheda", icon: "cable", tray: "R", accepts: ["atx24"], requiresAll: hardMode ? ["psu"] : null,
       requiresMsg: "Prima installa l'<b>alimentatore</b>: i cavi di corrente partono da lì.",
       hint: "Il cavo grande a 24 pin va sul bordo destro della scheda." });
-    list.push({ id: "pwrcpu", label: "Cavo CPU 8 pin (EPS)", sub: "Alimenta la CPU", icon: "cable", tray: "R", accepts: ["eps"], requiresAll: ["psu"],
+    list.push({ id: "pwrcpu", label: "Cavo CPU 8 pin (EPS)", sub: "Alimenta la CPU", icon: "cable", tray: "R", accepts: ["eps"], requiresAll: hardMode ? ["psu"] : null,
       requiresMsg: "Prima installa l'<b>alimentatore</b>: i cavi di corrente partono da lì.",
       hint: "Il cavo CPU a 8 pin va in alto a sinistra, vicino al processore." });
-    if (showGpu) list.push({ id: "pwrpcie", label: "Cavo PCIe (GPU)", sub: "Corrente alla scheda video", icon: "cable", tray: "R", accepts: ["gpupwr"], requiresAll: ["psu", "gpu"],
+    if (hardMode && showGpu) list.push({ id: "pwrpcie", label: "Cavo PCIe (GPU)", sub: "Corrente alla scheda video", icon: "cable", tray: "R", accepts: ["gpupwr"], requiresAll: ["psu", "gpu"],
       requiresMsg: "Serve prima l'<b>alimentatore</b> <u>e</u> la <b>scheda video</b> montata.",
       hint: "Il cavo PCIe va sul connettore in cima alla scheda video." });
-    if (!nvme) list.push({ id: "pwrsata", label: "Cavo SATA (corrente)", sub: "Corrente al disco", icon: "cable", tray: "R", accepts: ["satapwr"], requiresAll: ["psu", "storage"],
+    if (hardMode && !nvme) list.push({ id: "pwrsata", label: "Cavo SATA (corrente)", sub: "Corrente al disco", icon: "cable", tray: "R", accepts: ["satapwr"], requiresAll: ["psu", "storage"],
       requiresMsg: "Serve prima l'<b>alimentatore</b> <u>e</u> il <b>disco</b> collegato ai dati.",
       hint: "Il cavo di corrente SATA va sullo spinotto del disco." });
     list.push({ id: "fans", label: "Ventole del case", sub: "Flusso d'aria", icon: "fan", tray: "R", accepts: ["sysfan"],
@@ -448,18 +450,20 @@
     dimm1: [190, 12, 12, 144], dimm2: [202, 12, 12, 144], dimm3: [214, 12, 12, 144], dimm4: [226, 12, 12, 144],
     m2: [60, 106, 102, 28], pcie: [16, 150, 124, 19], atx24: [272, 50, 24, 62], sata: [266, 178, 32, 46],
     sysfan: [14, 120, 26, 16], fpanel: [222, 216, 36, 20],
-    psu: [10, 248, 150, 24], gpupwr: [196, 137, 26, 13], satapwr: [250, 150, 32, 13],
+    psu: [10, 248, 150, 24], gpupwr: [138, 137, 26, 12], satapwr: [250, 150, 32, 13],
     m2b: [20, 180, 110, 13]
   };
+  let hardMode = false;
 
   function boardSVG() {
     const sock = hasK("cpu") ? build.cpu.socket : "SOCKET";
-    const zoneRects = Object.keys(ZN).map((k) => {
+    const extraZones = ["psu", "gpupwr", "satapwr", "m2b"];
+    const zoneRects = Object.keys(ZN).filter((k) => hardMode || extraZones.indexOf(k) < 0).map((k) => {
       const z = ZN[k];
       return '<rect class="hwa-zone" data-zone="' + k + '" x="' + z[0] + '" y="' + z[1] + '" width="' + z[2] + '" height="' + z[3] + '" tabindex="0" role="button" aria-label="' + k + '"/>';
     }).join("");
     return '' +
-    '<svg id="hwaBoard" viewBox="0 0 300 276" role="img" aria-label="Scheda madre e alimentatore, vista dall\'alto">' +
+    '<svg id="hwaBoard" viewBox="0 0 300 ' + (hardMode ? 276 : 240) + '" role="img" aria-label="Scheda madre vista dall\'alto">' +
       '<defs>' +
         '<pattern id="hwaPins" width="2" height="2" patternUnits="userSpaceOnUse"><rect width="2" height="2" fill="#243441"/><circle cx="1" cy="1" r=".42" fill="#a7b6c0"/></pattern>' +
         '<pattern id="hwaFins" width="10" height="3.2" patternUnits="userSpaceOnUse"><rect width="10" height="3.2" fill="#3a4e5c"/><rect width="10" height="1.5" fill="#54707f"/></pattern>' +
@@ -480,8 +484,8 @@
         var x = 191 + i * 12, c = (i % 2) ? "#55616a" : "#2e353a";
         return '<rect x="' + x + '" y="14" width="9" height="140" rx=".6" fill="' + c + '"/><rect x="' + (x + 2) + '" y="16" width="1.5" height="60" fill="#0b0b0b"/><rect x="' + (x + 2) + '" y="80" width="1.5" height="62" fill="#0b0b0b"/>';
       }).join("") + '<text class="silk" x="215" y="162" text-anchor="middle">DDR DIMM</text></g>' +
-      '<text class="silk" x="64" y="113">M.2_1 · SSD</text><rect x="62" y="116" width="96" height="12" rx=".6" fill="none" stroke="#cdd8dc80" stroke-width=".5" stroke-dasharray="2 1.5"/><circle cx="155" cy="122" r="1.7" fill="#b39d62"/>' +
-      '<text class="silk" x="22" y="177">M.2_2 · SSD</text><rect x="20" y="180" width="108" height="12" rx=".6" fill="none" stroke="#cdd8dc80" stroke-width=".5" stroke-dasharray="2 1.5"/><circle cx="124" cy="186" r="1.7" fill="#b39d62"/>' +
+      '<text class="silk" x="64" y="113">' + (hardMode ? "M.2_1" : "M.2") + ' · SSD</text><rect x="62" y="116" width="96" height="12" rx=".6" fill="none" stroke="#cdd8dc80" stroke-width=".5" stroke-dasharray="2 1.5"/><circle cx="155" cy="122" r="1.7" fill="#b39d62"/>' +
+      (hardMode ? '<text class="silk" x="22" y="177">M.2_2 · SSD</text><rect x="20" y="180" width="108" height="12" rx=".6" fill="none" stroke="#cdd8dc80" stroke-width=".5" stroke-dasharray="2 1.5"/><circle cx="124" cy="186" r="1.7" fill="#b39d62"/>' : "") +
       '<text class="silk" x="24" y="151">PCIEX16_1</text><rect x="24" y="153" width="96" height="7" rx=".6" fill="#3b4349" stroke="#aab3b8" stroke-width=".6"/><rect x="25.5" y="155.6" width="16" height="1.4" fill="#0b0b0b"/><rect x="43.5" y="155.6" width="74" height="1.4" fill="#0b0b0b"/><rect x="120" y="152" width="5" height="9" rx=".5" fill="#5c666c"/>' +
       '<rect x="278" y="54" width="10" height="52" fill="url(#hwaPins)" stroke="#3a3a3a" stroke-width=".3"/><text class="silk" transform="translate(276 106) rotate(-90)">ATX 24-pin</text>' +
       '<g id="hwaSata">' + [170, 181, 192, 203].map(function (y) { return '<rect x="282" y="' + y + '" width="13" height="9" rx=".6" fill="#3a3f43"/><path d="M284 ' + (y + 2.2) + 'h9v2h-6v3h-3z" fill="#0b0b0b"/>'; }).join("") + '</g><text class="silk" x="296" y="166" text-anchor="end">SATA</text>' +
@@ -490,14 +494,15 @@
       '<rect x="20" y="124" width="11" height="6" fill="url(#hwaPins)" stroke="#3a3a3a" stroke-width=".3"/><text class="silk" x="18" y="122">SYS_FAN</text>' +
       '<rect x="228" y="224" width="22" height="7" fill="url(#hwaPins)" stroke="#3a3a3a" stroke-width=".3"/><text class="silk" x="228" y="222">F_PANEL</text>' +
       '<text class="silk big" x="40" y="212">ATX · 305 × 244 mm</text>' +
-      // --- connettori di alimentazione aggiuntivi (etichette) ---
-      '<text class="silk" x="209" y="134" text-anchor="middle">PCIe → GPU</text>' +
-      '<text class="silk" x="266" y="148" text-anchor="middle">SATA pwr</text>' +
-      // --- culla dell\'alimentatore (in fondo al case) ---
-      '<rect x="4" y="242" width="292" height="30" rx="4" fill="#0a1a22" stroke="#163041" stroke-width=".8"/>' +
-      '<rect x="4" y="242" width="292" height="30" rx="4" fill="url(#hwaDots)"/>' +
-      '<rect x="10" y="247" width="150" height="21" rx="2" fill="none" stroke="#cdd8dc55" stroke-width=".7" stroke-dasharray="2.4 1.6"/>' +
-      '<text class="silk" x="86" y="245">CULLA ALIMENTATORE (PSU)</text>' +
+      (hardMode ?
+        // --- extra della modalità difficile: connettori e culla dell'alimentatore ---
+        '<text class="silk" x="151" y="134" text-anchor="middle">PCIe → GPU</text>' +
+        '<text class="silk" x="266" y="148" text-anchor="middle">SATA pwr</text>' +
+        '<rect x="4" y="242" width="292" height="30" rx="4" fill="#0a1a22" stroke="#163041" stroke-width=".8"/>' +
+        '<rect x="4" y="242" width="292" height="30" rx="4" fill="url(#hwaDots)"/>' +
+        '<rect x="10" y="247" width="150" height="21" rx="2" fill="none" stroke="#cdd8dc55" stroke-width=".7" stroke-dasharray="2.4 1.6"/>' +
+        '<text class="silk" x="86" y="245">CULLA ALIMENTATORE (PSU)</text>'
+      : "") +
       '<g id="hwaOverlays">' +
         '<g class="hwa-ov" id="ov-cpu" style="display:none"><rect x="120" y="46" width="48" height="48" rx="1" fill="#2f6b3a"/><rect x="123" y="49" width="42" height="42" rx="3" fill="#cdd4d8"/><text x="144" y="68" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="3.4" font-weight="700" fill="#79838a">CPU</text><polygon points="121,92 121,88 125,92" fill="#e0b54f"/><rect x="117" y="43" width="54" height="54" rx="1" fill="none" stroke="#9aa3a8" stroke-width="2.2"/></g>' +
         '<g class="hwa-ov" id="ov-paste" style="display:none"><circle cx="144" cy="70" r="4.6" fill="#c7ced3"/><circle cx="144" cy="70" r="4.6" fill="none" stroke="#8a9298" stroke-width=".4"/></g>' +
@@ -505,16 +510,18 @@
         '<g class="hwa-ov" id="ov-dimm2" style="display:none"><rect x="201.5" y="12" width="10" height="142" rx="1" fill="#2a3037" stroke="#4f5860" stroke-width=".4"/><rect x="203" y="13" width="7" height="140" rx=".6" fill="#353e46"/><rect x="205" y="15" width="2.4" height="138" fill="#6b82ff"/></g>' +
         '<g class="hwa-ov" id="ov-dimm4" style="display:none"><rect x="225.5" y="12" width="10" height="142" rx="1" fill="#2a3037" stroke="#4f5860" stroke-width=".4"/><rect x="227" y="13" width="7" height="140" rx=".6" fill="#353e46"/><rect x="229" y="15" width="2.4" height="138" fill="#6b82ff"/></g>' +
         '<g class="hwa-ov" id="ov-ssd" style="display:none"><rect x="62" y="116.5" width="94" height="11" rx="1" fill="#0f5a3b"/><rect x="66" y="119" width="8" height="7" rx=".6" fill="#121212"/><rect x="78" y="118" width="64" height="8" rx="1" fill="#e9e4d7"/><text x="110" y="124" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="3.2" font-weight="700" fill="#333">SSD NVMe</text><circle cx="155" cy="122" r="2.2" fill="#c3cacd" stroke="#7a8287" stroke-width=".4"/></g>' +
-        '<g class="hwa-ov" id="ov-ssd-b" style="display:none"><rect x="20" y="180.5" width="106" height="11" rx="1" fill="#0f5a3b"/><rect x="24" y="183" width="8" height="7" rx=".6" fill="#121212"/><rect x="36" y="182" width="74" height="8" rx="1" fill="#e9e4d7"/><text x="73" y="188" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="3.2" font-weight="700" fill="#333">SSD NVMe 2</text><circle cx="124" cy="186" r="2.2" fill="#c3cacd" stroke="#7a8287" stroke-width=".4"/></g>' +
+        (hardMode ? '<g class="hwa-ov" id="ov-ssd-b" style="display:none"><rect x="20" y="180.5" width="106" height="11" rx="1" fill="#0f5a3b"/><rect x="24" y="183" width="8" height="7" rx=".6" fill="#121212"/><rect x="36" y="182" width="74" height="8" rx="1" fill="#e9e4d7"/><text x="73" y="188" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="3.2" font-weight="700" fill="#333">SSD NVMe 2</text><circle cx="124" cy="186" r="2.2" fill="#c3cacd" stroke="#7a8287" stroke-width=".4"/></g>' : "") +
         '<g class="hwa-ov" id="ov-sata" style="display:none"><path d="M288 174 C300 173 300 185 300 190" stroke="#c23b2f" stroke-width="2.4" fill="none"/><rect x="280" y="169" width="18" height="11" rx="1" fill="#c23b2f"/><rect x="282" y="171.5" width="2" height="6" fill="#8c231b"/></g>' +
         '<g class="hwa-ov" id="ov-gpu" style="display:none"><rect x="12" y="148" width="6" height="18" fill="#aab3b8"/><rect x="18" y="146" width="210" height="22" rx="2.5" fill="#22272c" stroke="#40484f" stroke-width=".6"/><circle cx="60" cy="157" r="9" fill="#111518"/><circle cx="92" cy="157" r="9" fill="#111518"/><rect x="28" y="147" width="150" height="1.6" fill="#6b82ff"/><text x="150" y="160" text-anchor="middle" font-family="Fraunces, serif" font-weight="600" font-size="6" fill="#59646c">GPU</text></g>' +
         '<g class="hwa-ov" id="ov-pwr24" style="display:none"><path d="M292 60 C305 60 305 54 300 50" stroke="#e0b54f" stroke-width="1.6" fill="none"/><rect x="275" y="52" width="14" height="56" rx="1" fill="#141414" stroke="#3a3a3a" stroke-width=".4"/><rect x="284" y="76" width="4" height="8" rx=".5" fill="#2a2a2a"/></g>' +
         '<g class="hwa-ov" id="ov-pwrcpu" style="display:none"><path d="M60 2 C48 2 44 -6 40 -10" stroke="#e0b54f" stroke-width="1.6" fill="none"/><rect x="63" y="-2" width="24" height="12" rx="1" fill="#141414" stroke="#3a3a3a" stroke-width=".4"/></g>' +
         '<g class="hwa-ov" id="ov-fans" style="display:none"><path d="M26 124 C26 112 20 108 12 108" stroke="#4a555d" stroke-width="1.4" fill="none"/><rect x="19" y="122" width="13" height="7" rx="1" fill="#2a2f34"/></g>' +
         '<g class="hwa-ov" id="ov-fpanel" style="display:none"><path d="M240 224 C240 216 246 212 252 210" stroke="#4a555d" stroke-width="1.2" fill="none"/><rect x="226" y="222" width="26" height="10" rx="1" fill="#2a2f34"/><rect x="229" y="225" width="2.2" height="4" fill="#5dff9c"/><rect x="233" y="225" width="2.2" height="4" fill="#ff6a5c"/><rect x="240" y="225" width="6" height="4" rx="1" fill="#3a7bdb"/></g>' +
-        '<g class="hwa-ov" id="ov-psu" style="display:none"><rect x="10" y="247" width="150" height="21" rx="2" fill="#20262b" stroke="#454f56" stroke-width=".7"/><circle cx="29" cy="257.5" r="8.6" fill="#10151a"/><g stroke="#4a555d" stroke-width="1.5" stroke-linecap="round" fill="none"><path d="M29 257.5V250"/><path d="M29 257.5l6.6 3.9"/><path d="M29 257.5l-6.6 3.9"/></g><circle cx="29" cy="257.5" r="2.3" fill="#2d363c"/><text x="99" y="259" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="3.6" font-weight="700" fill="#7a858c">PSU</text><g class="pcbl" stroke="#e0b54f" stroke-width="1" opacity=".6" fill="none"><path d="M160 251 C205 250 230 220 285 112"/><path d="M160 258 C120 258 90 60 80 6"/></g></g>' +
-        '<g class="hwa-ov" id="ov-pwrpcie" style="display:none"><rect x="197" y="138" width="24" height="11" rx="1" fill="#141414" stroke="#3a3a3a" stroke-width=".4"/><g fill="#e0b54f"><rect x="200" y="140.5" width="2" height="6"/><rect x="204" y="140.5" width="2" height="6"/><rect x="208" y="140.5" width="2" height="6"/><rect x="212" y="140.5" width="2" height="6"/></g><path class="pcbl" d="M221 143 C244 143 252 210 160 252" stroke="#e0b54f" stroke-width="1.5" fill="none" opacity=".85"/></g>' +
-        '<g class="hwa-ov" id="ov-pwrsata" style="display:none"><rect x="252" y="151" width="24" height="11" rx="1" fill="#141414" stroke="#3a3a3a" stroke-width=".4"/><rect x="254" y="153" width="3" height="7" fill="#2a2a2a"/><path class="pcbl" d="M276 156 C292 156 294 210 160 254" stroke="#e0b54f" stroke-width="1.5" fill="none" opacity=".85"/></g>' +
+        (hardMode ?
+          '<g class="hwa-ov" id="ov-psu" style="display:none"><rect x="10" y="247" width="150" height="21" rx="2" fill="#20262b" stroke="#454f56" stroke-width=".7"/><circle cx="29" cy="257.5" r="8.6" fill="#10151a"/><g stroke="#4a555d" stroke-width="1.5" stroke-linecap="round" fill="none"><path d="M29 257.5V250"/><path d="M29 257.5l6.6 3.9"/><path d="M29 257.5l-6.6 3.9"/></g><circle cx="29" cy="257.5" r="2.3" fill="#2d363c"/><text x="99" y="259" text-anchor="middle" font-family="JetBrains Mono, monospace" font-size="3.6" font-weight="700" fill="#7a858c">PSU</text><g class="pcbl" stroke="#e0b54f" stroke-width="1" opacity=".6" fill="none"><path d="M160 251 C205 250 230 220 285 112"/><path d="M160 258 C120 258 90 60 80 6"/></g></g>' +
+          '<g class="hwa-ov" id="ov-pwrpcie" style="display:none"><rect x="138" y="138" width="24" height="11" rx="1" fill="#141414" stroke="#3a3a3a" stroke-width=".4"/><g fill="#e0b54f"><rect x="141" y="140.5" width="2" height="6"/><rect x="145" y="140.5" width="2" height="6"/><rect x="149" y="140.5" width="2" height="6"/><rect x="153" y="140.5" width="2" height="6"/></g><path class="pcbl" d="M162 143 C210 143 240 210 160 252" stroke="#e0b54f" stroke-width="1.5" fill="none" opacity=".85"/></g>' +
+          '<g class="hwa-ov" id="ov-pwrsata" style="display:none"><rect x="252" y="151" width="24" height="11" rx="1" fill="#141414" stroke="#3a3a3a" stroke-width=".4"/><rect x="254" y="153" width="3" height="7" fill="#2a2a2a"/><path class="pcbl" d="M276 156 C292 156 294 210 160 254" stroke="#e0b54f" stroke-width="1.5" fill="none" opacity=".85"/></g>'
+        : "") +
       '</g>' +
       '<g id="hwaZones">' + zoneRects + '</g>' +
     '</svg>';
@@ -528,19 +535,18 @@
   let A = null;
 
   function renderAssembly() {
-    A = { placed: {}, slot: {}, errors: 0, hints: 0, selected: null, complete: false, hard: (A && typeof A.hard === "boolean") ? A.hard : false, tidied: false, pieces: aPieces(), start: Date.now() };
+    A = { placed: {}, slot: {}, errors: 0, hints: 0, selected: null, complete: false, hard: hardMode, tidied: false, pieces: aPieces(), start: Date.now() };
     const L = A.pieces.filter((p) => p.tray === "L"), R = A.pieces.filter((p) => p.tray === "R");
     $("asm").innerHTML =
       '<div class="hwa-wrap">' +
         '<div class="hwa-top">' +
-          '<div><h2 class="wiz-title">Monta il PC</h2><p class="hwa-sub">Monti sempre nell\'ordine che vuoi: <b>sperimenta</b>. Trascina un componente sul punto giusto — o toccalo e poi tocca dove va.</p></div>' +
+          '<div><h2 class="wiz-title">Monta il PC</h2><p class="hwa-sub">Monti sempre nell\'ordine che vuoi: <b>sperimenta</b>, con gli aiuti sempre attivi. In <b>Facile</b> i componenti essenziali; in <b>Difficile</b> il PC completo, con alimentatore e tutti i cavi.</p></div>' +
           '<div class="hwa-stats">' +
             '<div class="seg hwa-asmmode" id="aModeSeg" role="group" aria-label="Difficoltà">' +
               '<button type="button" class="seg-btn ' + (!A.hard ? "active" : "") + '" data-h="0">🟢 Facile</button>' +
               '<button type="button" class="seg-btn ' + (A.hard ? "active" : "") + '" data-h="1">🔴 Difficile</button>' +
             '</div>' +
             '<div class="hwa-stat"><small>Montati</small><b id="aPieces">0/' + A.pieces.length + '</b></div>' +
-            '<div class="hwa-stat hwa-errstat" id="aErrStat"' + (A.hard ? "" : " hidden") + '><small>Errori</small><b id="aErr">0</b></div>' +
             '<button type="button" class="ghost-btn" id="aHint">Aiuto</button>' +
             '<button type="button" class="ghost-btn" id="aReset">Ricomincia</button></div>' +
         '</div>' +
@@ -573,7 +579,7 @@
     document.querySelectorAll(".hwa-card").forEach((c) => c.classList.toggle("sel", c.dataset.id === id));
     const b = $("hwaBoard"); if (b) b.classList.toggle("selecting", !!id);
     document.querySelectorAll(".hwa-zone").forEach((z) => z.classList.remove("guide"));
-    if (id && !A.hard) {
+    if (id) {
       const p = A.pieces.find((x) => x.id === id);
       if (p) { let t = p.accepts.slice(); if (p.group === "ram") t = t.filter((z) => !A.slot[z]); document.querySelectorAll(".hwa-zone").forEach((z) => { if (t.indexOf(z.dataset.zone) >= 0) z.classList.add("guide"); }); }
     }
@@ -599,7 +605,6 @@
   function failA(id, msg) {
     toastA(msg, "bad");
     A.errors++;
-    const e = $("aErr"); if (e) e.textContent = A.errors;
     const c = document.querySelector('.hwa-card[data-id="' + id + '"]');
     c.classList.remove("shake"); void c.offsetWidth; c.classList.add("shake");
   }
@@ -644,20 +649,21 @@
     setTimeout(() => showAInfo(key), 360);
   }
 
+  function onComplete() { if (A.hard && !A.tidied) startCableMgmt(); else revealPower(); }
+
   function showAInfo(key) {
-    if (A.hard) { toastA("Montato ✓", "ok"); if (A.complete) startCableMgmt(); return; }
     const d = AINFO[key];
-    if (!d) { if (A.complete) startCableMgmt(); return; }
+    if (!d) { if (A.complete) onComplete(); return; }
     $("aSheet").innerHTML =
       '<div class="i-tag">' + d.tag + '</div><h3 id="aSheetT">' + d.title + '</h3>' +
       '<p>' + d.what + '</p>' +
       '<div class="where"><small>Dove va</small><span>' + d.where + '</span></div>' +
       '<h4>Mentre lo monti</h4><ul class="hwa-tips">' + d.tips.map((t) => '<li>' + t + '</li>').join("") + '</ul>' +
       '<div class="hwa-fun"><b>Lo sapevi?</b> ' + d.fun + '</div>' +
-      '<button class="run-btn" type="button" id="aInfoOk">' + (A.complete ? "Ultimo passo: i cavi →" : "Ho capito, avanti") + '</button>';
+      '<button class="run-btn" type="button" id="aInfoOk">' + (A.complete ? (A.hard ? "Ultimo passo: i cavi →" : "Ho capito: accendiamo! →") : "Ho capito, avanti") + '</button>';
     $("aModal").hidden = false;
     $("aInfoOk").focus();
-    $("aInfoOk").addEventListener("click", () => { $("aModal").hidden = true; if (A.complete) startCableMgmt(); });
+    $("aInfoOk").addEventListener("click", () => { $("aModal").hidden = true; if (A.complete) onComplete(); });
   }
 
   function startCableMgmt() {
@@ -750,16 +756,12 @@
   }
 
   function applyMode() {
-    const banner = $("aGuide");
-    const hint = $("aHint"); if (hint) hint.style.display = A.hard ? "none" : "";
-    const es = $("aErrStat"); if (es) es.hidden = !A.hard;
-    const er = $("aErr"); if (er) er.textContent = A.errors;
-    if (!banner) return;
+    const banner = $("aGuide"); if (!banner) return;
     if (A.complete) { banner.hidden = true; return; }
     banner.hidden = false;
     banner.innerHTML = A.hard
-      ? '<span class="g-step g-hard">🔴 Difficile</span><div>Nessun indizio e gli <b>errori si contano</b>: devi sapere dove va ogni pezzo. Niente «Aiuto», niente schede esplicative.</div>'
-      : '<span class="g-step">🟢 Facile</span><div>Scegli un pezzo e il <b>punto giusto si illumina</b>. Dopo ogni montaggio ti spiego il componente, e c\'è il tasto <b>Aiuto</b> se ti blocchi.</div>';
+      ? '<span class="g-step g-hard">🔴 Difficile</span><div>Tutti i componenti e i cavi di un PC vero: <b>alimentatore</b>, cavi <b>PCIe</b> e <b>SATA</b>, <b>doppio SSD M.2</b> e la gestione cavi finale. Realismo massimo.</div>'
+      : '<span class="g-step">🟢 Facile</span><div>I componenti <b>essenziali</b> per capire le basi. Passa a <b>Difficile</b> per il PC completo di alimentatore e di tutti i cavi.</div>';
   }
 
   function hintA() {
@@ -824,13 +826,14 @@
     $("aReset").addEventListener("click", renderAssembly);
     $("aModeSeg").addEventListener("click", (e) => {
       const b = e.target.closest("[data-h]"); if (!b) return;
-      A.hard = b.dataset.h === "1";
-      $("aModeSeg").querySelectorAll(".seg-btn").forEach((x) => x.classList.toggle("active", x === b));
-      selectA(A.selected); applyMode();
-      toastA(A.hard ? "Modalità <b>difficile</b>: nessun indizio, gli errori si contano." : "Modalità <b>facile</b>: ti illumino il punto giusto e ti spiego ogni pezzo.", "info");
+      const nh = b.dataset.h === "1";
+      if (nh === hardMode) return;
+      hardMode = nh;
+      renderAssembly();
+      toastA(hardMode ? "Modalità <b>difficile</b>: il PC completo, con alimentatore e tutti i cavi." : "Modalità <b>facile</b>: i componenti essenziali.", "info");
     });
     $("aPower").addEventListener("click", bootA);
-    $("aModal").addEventListener("click", (e) => { if (e.target === $("aModal")) { $("aModal").hidden = true; if (A.complete) { A.tidied ? revealPower() : startCableMgmt(); } } });
+    $("aModal").addEventListener("click", (e) => { if (e.target === $("aModal")) { $("aModal").hidden = true; if (A.complete) onComplete(); } });
     $("aCpuModal").addEventListener("click", (e) => { if (e.target === $("aCpuModal")) $("aCpuModal").hidden = true; });
     applyMode();
   }
