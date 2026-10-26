@@ -453,7 +453,8 @@
     psu: [10, 248, 150, 24], gpupwr: [138, 137, 26, 12], satapwr: [250, 150, 32, 13],
     m2b: [20, 180, 110, 13]
   };
-  let hardMode = false;
+  let hardMode = false;   // componenti: Base (false) / Avanzato (true)
+  let guidedMode = false; // modalità: Fai da solo (false) / Guidata (true)
 
   function boardSVG() {
     const sock = hasK("cpu") ? build.cpu.socket : "SOCKET";
@@ -535,16 +536,20 @@
   let A = null;
 
   function renderAssembly() {
-    A = { placed: {}, slot: {}, errors: 0, hints: 0, selected: null, complete: false, hard: hardMode, tidied: false, pieces: aPieces(), start: Date.now() };
+    A = { placed: {}, slot: {}, errors: 0, hints: 0, selected: null, complete: false, hard: hardMode, guided: guidedMode, tidied: false, pieces: aPieces(), start: Date.now() };
     const L = A.pieces.filter((p) => p.tray === "L"), R = A.pieces.filter((p) => p.tray === "R");
     $("asm").innerHTML =
       '<div class="hwa-wrap">' +
         '<div class="hwa-top">' +
-          '<div><h2 class="wiz-title">Monta il PC</h2><p class="hwa-sub">Monti sempre nell\'ordine che vuoi: <b>sperimenta</b>, con gli aiuti sempre attivi. In <b>Facile</b> i componenti essenziali; in <b>Difficile</b> il PC completo, con alimentatore e tutti i cavi.</p></div>' +
+          '<div><h2 class="wiz-title">Monta il PC</h2><p class="hwa-sub"><b>Componenti</b>: Base (l\'essenziale) o Avanzato (il PC completo, alimentatore e tutti i cavi). <b>Modalità</b>: Fai da solo (scopri tu dove va ogni pezzo) o Guidata (ti guido passo per passo).</p></div>' +
           '<div class="hwa-stats">' +
-            '<div class="seg hwa-asmmode" id="aModeSeg" role="group" aria-label="Difficoltà">' +
-              '<button type="button" class="seg-btn ' + (!A.hard ? "active" : "") + '" data-h="0">🟢 Facile</button>' +
-              '<button type="button" class="seg-btn ' + (A.hard ? "active" : "") + '" data-h="1">🔴 Difficile</button>' +
+            '<div class="seg hwa-asmmode" id="aCompSeg" role="group" aria-label="Componenti">' +
+              '<button type="button" class="seg-btn ' + (!A.hard ? "active" : "") + '" data-c="0">Base</button>' +
+              '<button type="button" class="seg-btn ' + (A.hard ? "active" : "") + '" data-c="1">Avanzato</button>' +
+            '</div>' +
+            '<div class="seg hwa-asmmode" id="aModeSeg" role="group" aria-label="Modalità">' +
+              '<button type="button" class="seg-btn ' + (!A.guided ? "active" : "") + '" data-m="0">🧩 Fai da solo</button>' +
+              '<button type="button" class="seg-btn ' + (A.guided ? "active" : "") + '" data-m="1">🧭 Guidata</button>' +
             '</div>' +
             '<div class="hwa-stat"><small>Montati</small><b id="aPieces">0/' + A.pieces.length + '</b></div>' +
             '<button type="button" class="ghost-btn" id="aHint">Aiuto</button>' +
@@ -578,14 +583,11 @@
     A.selected = id;
     document.querySelectorAll(".hwa-card").forEach((c) => c.classList.toggle("sel", c.dataset.id === id));
     const b = $("hwaBoard"); if (b) b.classList.toggle("selecting", !!id);
-    document.querySelectorAll(".hwa-zone").forEach((z) => z.classList.remove("guide"));
-    if (id) {
-      const p = A.pieces.find((x) => x.id === id);
-      if (p) { let t = p.accepts.slice(); if (p.group === "ram") t = t.filter((z) => !A.slot[z]); document.querySelectorAll(".hwa-zone").forEach((z) => { if (t.indexOf(z.dataset.zone) >= 0) z.classList.add("guide"); }); }
-    }
   }
+  function nextLabel() { return (A.pieces.find((p) => p.id === activePieceId()) || {}).label || "il prossimo pezzo"; }
   function toggleSelectA(id) {
     if (A.placed[id] || A.complete) return;
+    if (A.guided && activePieceId() !== id) { toastA("Modalità guidata: monta prima <b>" + nextLabel() + "</b>.", "info"); return; }
     if (A.selected === id) { selectA(null); return; }
     selectA(id);
     toastA((A.pieces.find((p) => p.id === id).label) + ": ora tocca il punto della scheda dove va.", "info");
@@ -617,6 +619,7 @@
   function tryPlaceA(id, zone) {
     const p = A.pieces.find((x) => x.id === id);
     if (!p || A.placed[id] || A.complete || !zone) return;
+    if (A.guided && activePieceId() !== id) return failA(id, "Modalità <b>guidata</b>: ora tocca montare <b>" + nextLabel() + "</b>.");
     if (p.requires && !A.placed[p.requires]) return failA(id, p.requiresMsg);
     if (p.requiresAll) { for (let i = 0; i < p.requiresAll.length; i++) { if (!A.placed[p.requiresAll[i]]) return failA(id, p.requiresMsg); } }
     if (p.group === "ram") {
@@ -642,7 +645,7 @@
     const n = Object.keys(A.placed).length;
     $("aPieces").textContent = n + "/" + A.pieces.length;
     if (n === A.pieces.length) A.complete = true;
-    applyMode();
+    applyGuidance();
     let key = id;
     if (p.group === "ram") key = (A.slot.dimm2 && A.slot.dimm4) ? "ram2" : "ram";
     else if (id === "storage") key = p.nvme ? "ssd" : "drive";
@@ -755,13 +758,25 @@
     }, lines.length * 340 + 250);
   }
 
-  function applyMode() {
-    const banner = $("aGuide"); if (!banner) return;
+  function applyGuidance() {
+    const banner = $("aGuide");
+    document.querySelectorAll(".hwa-zone").forEach((z) => z.classList.remove("guide"));
+    document.querySelectorAll(".hwa-card").forEach((c) => c.classList.remove("locked"));
+    if (!banner) return;
     if (A.complete) { banner.hidden = true; return; }
+    if (!A.guided) {
+      banner.hidden = false;
+      banner.innerHTML = '<span class="g-step">🧩 Fai da solo</span><div>Scopri <b>tu</b> dove va ogni pezzo: nessun indizio automatico. Premi <b>Aiuto</b> solo se ti blocchi.</div>';
+      return;
+    }
+    const actId = activePieceId();
+    document.querySelectorAll(".hwa-card").forEach((c) => { const id = c.dataset.id; c.classList.toggle("locked", !A.placed[id] && id !== actId); });
+    const p = A.pieces.find((x) => x.id === actId);
+    if (!p) { banner.hidden = true; return; }
     banner.hidden = false;
-    banner.innerHTML = A.hard
-      ? '<span class="g-step g-hard">🔴 Difficile</span><div>Tutti i componenti e i cavi di un PC vero: <b>alimentatore</b>, cavi <b>PCIe</b> e <b>SATA</b>, <b>doppio SSD M.2</b> e la gestione cavi finale. Realismo massimo.</div>'
-      : '<span class="g-step">🟢 Facile</span><div>I componenti <b>essenziali</b> per capire le basi. Passa a <b>Difficile</b> per il PC completo di alimentatore e di tutti i cavi.</div>';
+    banner.innerHTML = '<span class="g-step g-guided">Passo ' + (Object.keys(A.placed).length + 1) + "/" + A.pieces.length + "</span><div><b>Monta ora: " + p.label + "</b><br>" + p.hint + "</div>";
+    let targets = p.accepts.slice(); if (p.group === "ram") targets = targets.filter((z) => !A.slot[z]);
+    document.querySelectorAll(".hwa-zone").forEach((z) => { if (targets.indexOf(z.dataset.zone) >= 0) z.classList.add("guide"); });
   }
 
   function hintA() {
@@ -785,6 +800,7 @@
       c.addEventListener("pointerdown", (e) => {
         if (e.button > 0) return;
         const id = c.dataset.id; if (A.placed[id] || A.complete) return;
+        if (A.guided && activePieceId() !== id) { failA(id, "Modalità <b>guidata</b>: monta prima <b>" + nextLabel() + "</b>."); return; }
         drag = { id, x0: e.clientX, y0: e.clientY, ghost: null };
         try { c.setPointerCapture(e.pointerId); } catch (_) {}
       });
@@ -824,18 +840,24 @@
     }));
     $("aHint").addEventListener("click", hintA);
     $("aReset").addEventListener("click", renderAssembly);
+    $("aCompSeg").addEventListener("click", (e) => {
+      const b = e.target.closest("[data-c]"); if (!b) return;
+      const nh = b.dataset.c === "1"; if (nh === hardMode) return;
+      hardMode = nh; renderAssembly();
+      toastA(hardMode ? "Componenti <b>avanzati</b>: il PC completo, con alimentatore e tutti i cavi." : "Componenti <b>base</b>: l'essenziale per capire il montaggio.", "info");
+    });
     $("aModeSeg").addEventListener("click", (e) => {
-      const b = e.target.closest("[data-h]"); if (!b) return;
-      const nh = b.dataset.h === "1";
-      if (nh === hardMode) return;
-      hardMode = nh;
-      renderAssembly();
-      toastA(hardMode ? "Modalità <b>difficile</b>: il PC completo, con alimentatore e tutti i cavi." : "Modalità <b>facile</b>: i componenti essenziali.", "info");
+      const b = e.target.closest("[data-m]"); if (!b) return;
+      const ng = b.dataset.m === "1"; if (ng === guidedMode) return;
+      guidedMode = ng; A.guided = ng;
+      $("aModeSeg").querySelectorAll(".seg-btn").forEach((x) => x.classList.toggle("active", x === b));
+      selectA(null); applyGuidance();
+      toastA(guidedMode ? "Modalità <b>guidata</b>: ti dico cosa montare, passo per passo." : "Modalità <b>fai da solo</b>: scopri tu dove va ogni pezzo.", "info");
     });
     $("aPower").addEventListener("click", bootA);
     $("aModal").addEventListener("click", (e) => { if (e.target === $("aModal")) { $("aModal").hidden = true; if (A.complete) onComplete(); } });
     $("aCpuModal").addEventListener("click", (e) => { if (e.target === $("aCpuModal")) $("aCpuModal").hidden = true; });
-    applyMode();
+    applyGuidance();
   }
 
   /* ---------- Modalità ---------- */
