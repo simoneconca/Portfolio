@@ -94,6 +94,21 @@ function updateActiveNav() {
   links.forEach((link) => link.classList.toggle("active", link.dataset.section === current));
 }
 
+/* ---------- Deterrente: tasto destro e ispeziona ----------
+   Nota: scoraggia l'utente comune, ma non è una vera protezione —
+   gli strumenti di sviluppo restano apribili dal menu del browser. */
+function setupNoInspect() {
+  document.addEventListener("contextmenu", (e) => e.preventDefault());
+  document.addEventListener("keydown", (e) => {
+    const k = (e.key || "").toLowerCase();
+    if (k === "f12") { e.preventDefault(); return; }
+    // Inspect / Console / Element picker: Ctrl/Cmd + Shift + I/J/C (o Cmd+Alt+… su Mac)
+    if ((e.ctrlKey || e.metaKey) && (e.shiftKey || e.altKey) && (k === "i" || k === "j" || k === "c")) { e.preventDefault(); return; }
+    // Visualizza sorgente: Ctrl/Cmd + U
+    if ((e.ctrlKey || e.metaKey) && k === "u") { e.preventDefault(); return; }
+  });
+}
+
 /* ---------- Init condiviso ---------- */
 const yearEl = document.getElementById("year");
 if (yearEl) yearEl.textContent = new Date().getFullYear();
@@ -101,3 +116,4 @@ if (yearEl) yearEl.textContent = new Date().getFullYear();
 setupTheme();
 setupNavigation();
 observeReveal(".reveal");
+setupNoInspect();

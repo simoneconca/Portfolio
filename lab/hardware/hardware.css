@@ -140,10 +140,12 @@
 .hwa-stat small { font-family: var(--font-mono); font-size: 0.6rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--ink-faint); }
 .hwa-stat b { font-family: var(--font-display); font-weight: 500; font-size: 1.25rem; font-variant-numeric: tabular-nums; }
 
-.hwa-bench { display: grid; grid-template-columns: minmax(150px, 195px) minmax(0, 1fr) minmax(150px, 195px); gap: 16px; align-items: start; }
+.hwa-bench { display: flex; flex-direction: column; gap: 18px; }
+.hwa-board-col { width: 100%; max-width: 560px; margin: 0 auto; }
+.hwa-trays { display: grid; grid-template-columns: 1fr 1fr; gap: 16px 26px; }
 .hwa-tray { display: flex; flex-direction: column; gap: 10px; }
-.hwa-tray h3 { margin: 0; font-family: var(--font-mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.12em; text-transform: uppercase; color: var(--ink-faint); }
-.hwa-cards { display: flex; flex-direction: column; gap: 9px; }
+.hwa-tray h3 { margin: 0; font-family: var(--font-mono); font-size: 0.68rem; font-weight: 500; letter-spacing: 0.1em; text-transform: uppercase; color: var(--ink-faint); }
+.hwa-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(132px, 1fr)); gap: 10px; align-content: start; }
 .hwa-card {
   position: relative; display: flex; flex-direction: column; align-items: flex-start; gap: 3px; text-align: left;
   background: var(--bg-elev); border: 1.5px solid var(--line); border-radius: 12px; padding: 9px 11px 10px;
@@ -246,15 +248,12 @@
 .hwa-cpu-msg { min-height: 1.3em; text-align: center; font-size: 0.86rem; line-height: 1.4; color: var(--ink-soft); margin-bottom: 12px; }
 .hwa-cpu-msg.bad { color: #e0533d; font-weight: 600; }
 
-@media (max-width: 900px) {
-  .hwa-bench { grid-template-columns: minmax(0, 1fr); }
-  .hwa-board-col { order: -1; }
-  .hwa-tray { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 9px; }
-  .hwa-tray h3 { grid-column: 1 / -1; }
+@media (max-width: 680px) {
+  .hwa-trays { grid-template-columns: 1fr; gap: 14px; }
   #hwaBoard { max-height: none; }
 }
 @media (max-width: 560px) {
-  .hwa-tray { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .hwa-cards { grid-template-columns: repeat(auto-fill, minmax(116px, 1fr)); }
   .hwa-card svg { width: 40px; }
 }
 @media (prefers-reduced-motion: reduce) {

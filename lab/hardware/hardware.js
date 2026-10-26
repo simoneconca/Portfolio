@@ -557,13 +557,15 @@
         '</div>' +
         '<div class="hwa-guide" id="aGuide"></div>' +
         '<div class="hwa-bench">' +
-          '<div class="hwa-tray"><h3>Vassoio A</h3><div class="hwa-cards" id="aTrayL">' + L.map(cardHTML).join("") + '</div></div>' +
           '<div class="hwa-board-col"><div class="hwa-boardwrap" id="aWrap">' +
             '<div class="hwa-toast" id="aToast" role="status"></div>' + boardSVG() +
             '<button class="hwa-power" id="aPower" type="button" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 3v8"/><path d="M6.3 7.5a8 8 0 1 0 11.4 0"/></svg>Accendi il PC</button>' +
             '<div class="hwa-boot" id="aBoot" hidden></div></div>' +
             '<p class="hwa-help"><b>Trascina</b> un componente sul punto giusto, o <b>toccalo</b> e poi tocca dove va.</p></div>' +
-          '<div class="hwa-tray"><h3>Vassoio B</h3><div class="hwa-cards" id="aTrayR">' + R.map(cardHTML).join("") + '</div></div>' +
+          '<div class="hwa-trays">' +
+            '<div class="hwa-tray"><h3>Vassoio A · componenti</h3><div class="hwa-cards" id="aTrayL">' + L.map(cardHTML).join("") + '</div></div>' +
+            '<div class="hwa-tray"><h3>Vassoio B · dischi, cavi e connettori</h3><div class="hwa-cards" id="aTrayR">' + R.map(cardHTML).join("") + '</div></div>' +
+          '</div>' +
         '</div>' +
       '</div>' +
       '<div class="hwa-modal" id="aModal" hidden><div class="hwa-sheet" id="aSheet" role="dialog" aria-modal="true" aria-labelledby="aSheetT"></div></div>' +
